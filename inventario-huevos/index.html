@@ -85,27 +85,47 @@ onAuthStateChanged(auth, async (user) => {
 
 async function loadData() {
   // Lotes
-  const qLotes = query(
-    collection(db, "lotes"),
-    where("uid", "==", currentUser.uid),
-    orderBy("fechaElaboracion", "desc")
-  );
-  const snapLotes = await getDocs(qLotes);
-  lotes = snapLotes.docs.map(d => ({ id: d.id, ...d.data() }));
+  try {
+    const qLotes = query(
+      collection(db, "lotes"),
+      where("uid", "==", currentUser.uid),
+      orderBy("fechaElaboracion", "desc")
+    );
+    const snapLotes = await getDocs(qLotes);
+    lotes = snapLotes.docs.map(d => ({ id: d.id, ...d.data() }));
+  } catch(e) {
+    console.warn("Índice lotes aún compilando, cargando sin orden:", e.message);
+    try {
+      const qLotes2 = query(collection(db,"lotes"), where("uid","==",currentUser.uid));
+      const snap2 = await getDocs(qLotes2);
+      lotes = snap2.docs.map(d => ({ id: d.id, ...d.data() }));
+    } catch(e2) { lotes = []; }
+  }
 
   // Ventas
-  const qVentas = query(
-    collection(db, "ventas"),
-    where("uid", "==", currentUser.uid),
-    orderBy("createdAt", "desc")
-  );
-  const snapVentas = await getDocs(qVentas);
-  ventas = snapVentas.docs.map(d => ({ id: d.id, ...d.data() }));
+  try {
+    const qVentas = query(
+      collection(db, "ventas"),
+      where("uid", "==", currentUser.uid),
+      orderBy("createdAt", "desc")
+    );
+    const snapVentas = await getDocs(qVentas);
+    ventas = snapVentas.docs.map(d => ({ id: d.id, ...d.data() }));
+  } catch(e) {
+    console.warn("Índice ventas aún compilando, cargando sin orden:", e.message);
+    try {
+      const qVentas2 = query(collection(db,"ventas"), where("uid","==",currentUser.uid));
+      const snap2 = await getDocs(qVentas2);
+      ventas = snap2.docs.map(d => ({ id: d.id, ...d.data() }));
+    } catch(e2) { ventas = []; }
+  }
 
   // Precios
-  const preciosDoc = doc(db, "precios", currentUser.uid);
-  const snap = await getDoc(preciosDoc);
-  if (snap.exists()) precios = snap.data();
+  try {
+    const preciosDoc = doc(db, "precios", currentUser.uid);
+    const snap = await getDoc(preciosDoc);
+    if (snap.exists()) precios = snap.data();
+  } catch(e) { console.warn("No se pudieron cargar precios:", e.message); }
 }
 
 // ── RENDER ─────────────────────────────────────────────────────────
