@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Sistema Avícola · Inventario Huevos</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet"/>
+
+<!-- Firebase -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {
+  getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
+  signOut, onAuthStateChanged, updateProfile
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import {
+  getFirestore, collection, addDoc, getDocs, query, where,
+  orderBy, doc, updateDoc, deleteDoc, serverTimestamp, getDoc
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyB4_nLqQF-58zt6FiBck--urkzwYbAETDY",
+  authDomain: "avicola-clarita.firebaseapp.com",
+  projectId: "avicola-clarita",
+  storageBucket: "avicola-clarita.firebasestorage.app",
+  messagingSenderId: "515153009051",
+  appId: "1:515153009051:web:579a104f6075a1e05f293e"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// ── STATE ──────────────────────────────────────────────────────────
+let currentUser = null;
+let currentTab = "inventario";
+let lotes = [];
+let ventas = [];
+let precios = { AAA: 120, AA: 105, A: 90, B: 75, C: 55 };
+
+const CATEGORIAS = [
+  { id: "AAA", color: "#D4AF37", peso: "≥73g" },
+  { id: "AA",  color: "#b8b8b8", peso: "63–72g" },
+  { id: "A",   color: "#CD7F32", peso: "53–62g" },
+  { id: "B",   color: "#6ec49a", peso: "43–52g" },
+  { id: "C",   color: "#888",    peso: "<43g" },
+];
+const FORMATOS = [
+  { id: "caja180", label: "Caja 180",        unidades: 180 },
+  { id: "caja30",  label: "Caja 30",          unidades: 30  },
+  { id: "caja12",  label: "Docena (12)",       unidades: 12  },
+  { id: "caja6",   label: "Media doc. (6)",    unidades: 6   },
+];
+
+// ── HELPERS ────────────────────────────────────────────────────────
+const $  = (sel) => document.querySelector(sel);
+const $$ = (sel) => document.querySelectorAll(sel);
+const fNum = (n) => (n||0).toLocaleString("es-CL");
+const fCLP = (n) => `$${(n||0).toLocaleString("es-CL")}`;
+const today = () => new Date().toISOString().slice(0,10);
+
+function calcStock() {
+  const stock = {};
+  CATEGORIAS.forEach(c => stock[c.id] = 0);
+  lotes.forEach(l => { stock[l.categoria] = (stock[l.categoria]||0) + l.disponible; });
+  return stock;
+}
+
+function totalStock() {
+  const s = calcStock();
+  return Object.values(s).reduce((a,b) => a+b, 0);
+}
+
+// ── AUTH ───────────────────────────────────────────────────────────
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    currentUser = user;
+    await loadData();
+    showApp();
+  } else {
+    currentUser = null;
+    showAuth();
+  }
+});
+
+async function loadData() {
+  // Lotes
+  const qLotes = query(
+    collection(db, "lotes"),
+    where("uid", "==", currentUser.uid),
+    orderBy("fechaElaboracion", "desc")
+  );
+  const snapLotes = await getDocs(qLotes);
+  lotes = snapLotes.docs.map(d => ({ id: d.id, ...d.data() }));
+
+  // Ventas
+  const qVentas = query(
+    collection(db, "ventas"),
+    where("uid", "==", currentUser.uid),
+    orderBy("createdAt", "desc")
+  );
+  const snapVentas = await getDocs(qVentas);
+  ventas = snapVentas.docs.map(d => ({ id: d.id, ...d.data() }));
+
+  // Precios
+  const preciosDoc = doc(db, "precios", currentUser.uid);
+  const snap = await getDoc(preciosDoc);
+  if (snap.exists()) precios = snap.data();
+}
+
+// ── RENDER ─────────────────────────────────────────────────────────
+function showAuth() {
+  document.body.innerHTML = `
+  <div id="auth-wrap">
+    <div id="auth-box">
+      <div class="auth-logo">🥚</div>
+      <div class="auth-title">Sistema Avícola</div>
+      <div class="auth-sub">Gestión de inventario por productor</div>
+
+      <div class="auth-tabs">
+        <button class="atab active" onclick="switchAuthTab('login')">Ingresar</button>
+        <button class="atab" onclick="switchAuthTab('register')">Registrarse</button>
+      </div>
+
+      <div id="auth-login">
+        <input class="inp" id="login-email" type="email" placeholder="Correo electrónico"/>
+        <input class="inp" id="login-pass"  type="password" placeholder="Contraseña"/>
+        <button class="btn-primary" onclick="doLogin()">Ingresar</button>
+      </div>
+
+      <div id="auth-register" style="display:none">
+        <input class="inp" id="reg-name"  type="text"     placeholder="Tu nombre (ej: Juan Pérez)"/>
+        <input class="inp" id="reg-email" type="email"    placeholder="Correo electrónico"/>
+        <input class="inp" id="reg-pass"  type="password" placeholder="Contraseña (mín. 6 caracteres)"/>
+        <button class="btn-primary" onclick="doRegister()">Crear cuenta</button>
+      </div>
+
+      <div id="auth-error" class="auth-err"></div>
+    </div>
+  </div>`;
+  attachAuthHandlers();
+}
+
+function attachAuthHandlers() {
+  window.switchAuthTab = (tab) => {
+    $$('.atab').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+    $('#auth-login').style.display    = tab === 'login'    ? 'flex' : 'none';
+    $('#auth-register').style.display = tab === 'register' ? 'flex' : 'none';
+  };
+
+  window.doLogin = async () => {
+    const email = $('#login-email').value.trim();
+    const pass  = $('#login-pass').value;
+    try {
+      await signInWithEmailAndPassword(auth, email, pass);
+    } catch(e) {
+      showAuthError(e.code);
+    }
+  };
+
+  window.doRegister = async () => {
+    const name  = $('#reg-name').value.trim();
+    const email = $('#reg-email').value.trim();
+    const pass  = $('#reg-pass').value;
+    if (!name) { showAuthError('Ingresa tu nombre'); return; }
+    try {
+      const cred = await createUserWithEmailAndPassword(auth, email, pass);
+      await updateProfile(cred.user, { displayName: name });
+    } catch(e) {
+      showAuthError(e.code);
+    }
+  };
+}
+
+function showAuthError(code) {
+  const msgs = {
+    'auth/invalid-email': 'Correo inválido',
+    'auth/user-not-found': 'Usuario no encontrado',
+    'auth/wrong-password': 'Contraseña incorrecta',
+    'auth/email-already-in-use': 'Ese correo ya está registrado',
+    'auth/weak-password': 'Contraseña muy corta (mín. 6 caracteres)',
+    'auth/invalid-credential': 'Correo o contraseña incorrectos',
+  };
+  const el = $('#auth-error');
+  if (el) el.textContent = msgs[code] || code;
+}
+
+function showApp() {
+  const nombre = currentUser.displayName || currentUser.email;
+  document.body.innerHTML = `
+  <div id="app">
+    <header id="hdr">
+      <div class="hdr-left">
+        <span class="hdr-icon">🥚</span>
+        <div>
+          <div class="hdr-title">Sistema Avícola</div>
+          <div class="hdr-sub">Productor: <strong>${nombre}</strong></div>
+        </div>
+      </div>
+      <div class="hdr-right">
+        <div class="hdr-stat">
+          <span class="hs-label">Stock total</span>
+          <span class="hs-val gold" id="h-stock">—</span>
+          <span class="hs-unit">unidades</span>
+        </div>
+        <div class="hdr-divider"></div>
+        <div class="hdr-stat">
+          <span class="hs-label">Ventas</span>
+          <span class="hs-val green" id="h-ventas">—</span>
+        </div>
+        <button class="btn-logout" onclick="doLogout()">Salir</button>
+      </div>
+    </header>
+
+    <nav id="nav">
+      <button class="ntab active" data-tab="inventario"  onclick="switchTab(this,'inventario')">📦 Inventario</button>
+      <button class="ntab"        data-tab="ingresar"    onclick="switchTab(this,'ingresar')">➕ Ingresar Lote</button>
+      <button class="ntab"        data-tab="vender"      onclick="switchTab(this,'vender')">🛒 Vender</button>
+      <button class="ntab"        data-tab="historial"   onclick="switchTab(this,'historial')">📋 Historial</button>
+      <button class="ntab"        data-tab="lotes"       onclick="switchTab(this,'lotes')">🗂 Lotes</button>
+      <button class="ntab"        data-tab="precios"     onclick="switchTab(this,'precios')">⚙️ Precios</button>
+    </nav>
+
+    <main id="main"></main>
+  </div>`;
+
+  window.doLogout = async () => { await signOut(auth); };
+  window.switchTab = (el, tab) => {
+    $$('.ntab').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+    currentTab = tab;
+    renderTab();
+  };
+
+  renderTab();
+  updateHeader();
+}
+
+function updateHeader() {
+  const s = totalStock();
+  const tv = ventas.reduce((a,v) => a + (v.total||0), 0);
+  const el1 = $('#h-stock');
+  const el2 = $('#h-ventas');
+  if (el1) el1.textContent = fNum(s);
+  if (el2) el2.textContent = fCLP(tv);
+}
+
+function renderTab() {
+  const main = $('#main');
+  if (!main) return;
+  if (currentTab === 'inventario') main.innerHTML = renderInventario();
+  if (currentTab === 'ingresar')   main.innerHTML = renderIngresar();
+  if (currentTab === 'vender')     main.innerHTML = renderVender();
+  if (currentTab === 'historial')  main.innerHTML = renderHistorial();
+  if (currentTab === 'lotes')      main.innerHTML = renderLotes();
+  if (currentTab === 'precios')    main.innerHTML = renderPrecios();
+  attachTabHandlers();
+}
+
+// ── TAB: INVENTARIO ────────────────────────────────────────────────
+function renderInventario() {
+  const stock = calcStock();
+  const total = Object.values(stock).reduce((a,b)=>a+b,0);
+  const valorTotal = CATEGORIAS.reduce((a,c) => a + stock[c.id]*(precios[c.id]||0), 0);
+
+  const tarjetas = CATEGORIAS.map(cat => {
+    const u = stock[cat.id]||0;
+    const pct = total > 0 ? (u/total*100) : 0;
+    const lotesActivos = lotes.filter(l => l.categoria === cat.id && l.disponible > 0).length;
+    return `
+    <div class="cat-card" style="--cat-color:${cat.color}">
+      <div class="cat-stripe"></div>
+      <div class="cat-label">${cat.id}</div>
+      <div class="cat-peso">${cat.peso}</div>
+      <div class="cat-num">${fNum(u)}</div>
+      <div class="cat-unit">unidades</div>
+      <div class="cat-bar"><div class="cat-bar-fill" style="width:${pct}%"></div></div>
+      <div class="cat-meta">${pct.toFixed(1)}% · ${lotesActivos} lote${lotesActivos!==1?'s':''} activo${lotesActivos!==1?'s':''}</div>
+      <div class="cat-equiv">≈ ${Math.floor(u/30)} cajas×30</div>
+      <div class="cat-valor">${fCLP(u*(precios[cat.id]||0))}</div>
+    </div>`;
+  }).join('');
+
+  const filas = CATEGORIAS.map((cat,i) => {
+    const u = stock[cat.id]||0;
+    return `<tr class="${i%2===0?'tr-even':''}">
+      <td><span class="badge" style="color:${cat.color}">${cat.id}</span> <span class="td-muted">${cat.peso}</span></td>
+      <td class="tr">${fNum(u)}</td>
+      <td class="tr gold">${Math.floor(u/180)}</td>
+      <td class="tr">${Math.floor(u/30)}</td>
+      <td class="tr">${Math.floor(u/12)}</td>
+      <td class="tr">${Math.floor(u/6)}</td>
+      <td class="tr green">${fCLP(u*(precios[cat.id]||0))}</td>
+    </tr>`;
+  }).join('');
+
+  return `
+  <div class="section">
+    <div class="section-hdr">
+      <h2>Inventario actual</h2>
+      <div class="kpi-row">
+        <div class="kpi"><span class="kpi-n gold">${fNum(total)}</span><span class="kpi-l">unidades totales</span></div>
+        <div class="kpi"><span class="kpi-n green">${fCLP(valorTotal)}</span><span class="kpi-l">valor en stock</span></div>
+        <div class="kpi"><span class="kpi-n">${lotes.filter(l=>l.disponible>0).length}</span><span class="kpi-l">lotes activos</span></div>
+      </div>
+    </div>
+    <div class="cat-grid">${tarjetas}</div>
+
+    <div class="table-box" style="margin-top:28px">
+      <div class="table-title">Equivalencias en formatos</div>
+      <table>
+        <thead><tr>
+          <th>Categoría</th><th class="tr">Unidades</th>
+          <th class="tr" style="color:#D4AF37">Caja×180</th>
+          <th class="tr">Caja×30</th>
+          <th class="tr">Doc×12</th>
+          <th class="tr">Med×6</th>
+          <th class="tr">Valor</th>
+        </tr></thead>
+        <tbody>${filas}</tbody>
+        <tfoot><tr class="tr-total">
+          <td>TOTAL</td>
+          <td class="tr gold">${fNum(total)}</td>
+          <td colspan="4"></td>
+          <td class="tr gold">${fCLP(valorTotal)}</td>
+        </tr></tfoot>
+      </table>
+    </div>
+  </div>`;
+}
+
+// ── TAB: INGRESAR ──────────────────────────────────────────────────
+function renderIngresar() {
+  const catBtns = CATEGORIAS.map(c => `
+    <button class="sel-btn" data-val="${c.id}" data-group="cat-ing" style="--cc:${c.color}" onclick="selBtn(this,'cat-ing')">${c.id}<span class="sel-sub">${c.peso}</span></button>
+  `).join('');
+  const fmtBtns = FORMATOS.map(f => `
+    <button class="sel-btn wide" data-val="${f.id}" data-group="fmt-ing" onclick="selBtn(this,'fmt-ing')">${f.label}<span class="sel-sub">${f.unidades} unid.</span></button>
+  `).join('');
+
+  return `
+  <div class="section">
+    <h2>Ingresar nuevo lote</h2>
+    <div class="form-card">
+      <div class="field">
+        <label>Categoría <span class="norma">(Norma Chilena)</span></label>
+        <div class="btn-group" id="cat-ing">${catBtns}</div>
+      </div>
+      <div class="field">
+        <label>Formato de caja</label>
+        <div class="btn-group" id="fmt-ing">${fmtBtns}</div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Cantidad de cajas</label>
+          <div class="num-ctrl">
+            <button onclick="adjNum('ing-cant',-1)">−</button>
+            <input id="ing-cant" type="number" min="1" value="1"/>
+            <button onclick="adjNum('ing-cant',1)">+</button>
+          </div>
+        </div>
+        <div class="field">
+          <label>N° de lote</label>
+          <input class="inp-text" id="ing-lote" type="text" placeholder="Ej: L-2024-001"/>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Fecha de elaboración</label>
+          <input class="inp-text" id="ing-fecha" type="date" value="${today()}"/>
+        </div>
+        <div class="field">
+          <label>Notas (opcional)</label>
+          <input class="inp-text" id="ing-notas" type="text" placeholder="Observaciones..."/>
+        </div>
+      </div>
+
+      <div id="ing-preview" class="preview-box">
+        Selecciona categoría y formato para ver el resumen
+      </div>
+      <div id="ing-error" class="err-box" style="display:none"></div>
+      <button class="btn-primary" onclick="doIngresar()">✓ Registrar lote</button>
+    </div>
+  </div>`;
+}
+
+// ── TAB: VENDER ────────────────────────────────────────────────────
+function renderVender() {
+  const catBtns = CATEGORIAS.map(c => {
+    const stock = calcStock()[c.id]||0;
+    return `<button class="sel-btn" data-val="${c.id}" data-group="cat-vta" style="--cc:${c.color}" onclick="selBtn(this,'cat-vta');updateVentaPreview()">
+      ${c.id}<span class="sel-sub">${fNum(stock)} disp.</span>
+    </button>`;
+  }).join('');
+  const fmtBtns = FORMATOS.map(f => `
+    <button class="sel-btn wide" data-val="${f.id}" data-group="fmt-vta" onclick="selBtn(this,'fmt-vta');updateVentaPreview()">${f.label}<span class="sel-sub">${f.unidades} unid.</span></button>
+  `).join('');
+
+  return `
+  <div class="section">
+    <h2>Registrar venta</h2>
+    <div class="form-card">
+      <div class="field">
+        <label>Categoría</label>
+        <div class="btn-group" id="cat-vta">${catBtns}</div>
+      </div>
+      <div class="field">
+        <label>Formato</label>
+        <div class="btn-group" id="fmt-vta">${fmtBtns}</div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Cantidad</label>
+          <div class="num-ctrl">
+            <button onclick="adjNum('vta-cant',-1);updateVentaPreview()">−</button>
+            <input id="vta-cant" type="number" min="1" value="1" oninput="updateVentaPreview()"/>
+            <button onclick="adjNum('vta-cant',1);updateVentaPreview()">+</button>
+          </div>
+        </div>
+        <div class="field">
+          <label>Cliente (opcional)</label>
+          <input class="inp-text" id="vta-cliente" type="text" placeholder="Nombre cliente..."/>
+        </div>
+      </div>
+
+      <div id="vta-preview" class="preview-box">
+        Selecciona categoría y formato para ver el total
+      </div>
+      <div id="vta-error" class="err-box" style="display:none"></div>
+      <button class="btn-green" onclick="doVender()">✓ Registrar venta</button>
+    </div>
+  </div>`;
+}
+
+// ── TAB: HISTORIAL ─────────────────────────────────────────────────
+function renderHistorial() {
+  const totalVal = ventas.reduce((a,v)=>a+(v.total||0),0);
+  const totalUnid = ventas.reduce((a,v)=>a+(v.unidades||0),0);
+
+  const filas = ventas.length === 0
+    ? `<tr><td colspan="8" class="empty">No hay ventas registradas</td></tr>`
+    : ventas.map((v,i) => {
+        const cat = CATEGORIAS.find(c=>c.id===v.categoria);
+        const fecha = v.createdAt?.toDate ? v.createdAt.toDate().toLocaleDateString('es-CL') : (v.fechaLocal||'—');
+        return `<tr class="${i%2===0?'tr-even':''}">
+          <td class="td-muted" style="font-size:12px">${fecha}</td>
+          <td>${v.cliente||'—'}</td>
+          <td><span class="badge" style="color:${cat?.color}">${v.categoria}</span></td>
+          <td>${v.formato||'—'}</td>
+          <td class="tr">${v.cajas}</td>
+          <td class="tr td-muted">${fNum(v.unidades)}</td>
+          <td class="tr td-muted">${fCLP(v.precioUnit)}</td>
+          <td class="tr green fw">${fCLP(v.total)}</td>
+        </tr>`;
+      }).join('');
+
+  return `
+  <div class="section">
+    <div class="section-hdr">
+      <h2>Historial de ventas</h2>
+      <div class="kpi-row">
+        <div class="kpi"><span class="kpi-n green">${fCLP(totalVal)}</span><span class="kpi-l">total recaudado</span></div>
+        <div class="kpi"><span class="kpi-n gold">${fNum(totalUnid)}</span><span class="kpi-l">unidades vendidas</span></div>
+        <div class="kpi"><span class="kpi-n">${ventas.length}</span><span class="kpi-l">transacciones</span></div>
+      </div>
+    </div>
+    <div class="table-box">
+      <table>
+        <thead><tr>
+          <th>Fecha</th><th>Cliente</th><th>Cat.</th><th>Formato</th>
+          <th class="tr">Cajas</th><th class="tr">Unid.</th><th class="tr">P.unit</th><th class="tr">Total</th>
+        </tr></thead>
+        <tbody>${filas}</tbody>
+        ${ventas.length > 0 ? `<tfoot><tr class="tr-total">
+          <td colspan="7">TOTAL</td>
+          <td class="tr gold">${fCLP(totalVal)}</td>
+        </tr></tfoot>` : ''}
+      </table>
+    </div>
+  </div>`;
+}
+
+// ── TAB: LOTES ─────────────────────────────────────────────────────
+function renderLotes() {
+  const filas = lotes.length === 0
+    ? `<tr><td colspan="8" class="empty">No hay lotes registrados</td></tr>`
+    : lotes.map((l,i) => {
+        const cat = CATEGORIAS.find(c=>c.id===l.categoria);
+        const pct = l.unidadesTotal > 0 ? Math.round((1 - l.disponible/l.unidadesTotal)*100) : 100;
+        const estado = l.disponible === 0 ? 'agotado' : l.disponible < l.unidadesTotal ? 'parcial' : 'completo';
+        const estadoColor = { agotado:'#c06060', parcial:'#D4AF37', completo:'#6ec49a' };
+        return `<tr class="${i%2===0?'tr-even':''}">
+          <td class="td-muted" style="font-size:12px">${l.fechaElaboracion||'—'}</td>
+          <td class="fw">${l.numeroLote||'—'}</td>
+          <td><span class="badge" style="color:${cat?.color}">${l.categoria}</span></td>
+          <td class="tr">${fNum(l.unidadesTotal)}</td>
+          <td class="tr green">${fNum(l.disponible)}</td>
+          <td class="tr">${fNum(l.unidadesTotal - l.disponible)}</td>
+          <td class="tr"><span style="color:${estadoColor[estado]};font-size:12px">${estado} (${pct}%)</span></td>
+          <td class="td-muted" style="font-size:12px">${l.notas||'—'}</td>
+        </tr>`;
+      }).join('');
+
+  return `
+  <div class="section">
+    <div class="section-hdr">
+      <h2>Gestión de lotes</h2>
+      <div class="kpi-row">
+        <div class="kpi"><span class="kpi-n">${lotes.length}</span><span class="kpi-l">lotes totales</span></div>
+        <div class="kpi"><span class="kpi-n green">${lotes.filter(l=>l.disponible>0).length}</span><span class="kpi-l">lotes activos</span></div>
+        <div class="kpi"><span class="kpi-n td-muted">${lotes.filter(l=>l.disponible===0).length}</span><span class="kpi-l">agotados</span></div>
+      </div>
+    </div>
+    <div class="table-box">
+      <table>
+        <thead><tr>
+          <th>F. Elaboración</th><th>N° Lote</th><th>Cat.</th>
+          <th class="tr">Total</th><th class="tr">Disponible</th><th class="tr">Vendido</th>
+          <th class="tr">Estado</th><th>Notas</th>
+        </tr></thead>
+        <tbody>${filas}</tbody>
+      </table>
+    </div>
+  </div>`;
+}
+
+// ── TAB: PRECIOS ───────────────────────────────────────────────────
+function renderPrecios() {
+  const filas = CATEGORIAS.map(cat => `
+    <div class="precio-row" style="--cc:${cat.color}">
+      <div class="precio-cat">
+        <span class="badge big" style="color:${cat.color}">${cat.id}</span>
+        <span class="td-muted">${cat.peso}</span>
+      </div>
+      <div class="precio-inputs">
+        <div class="precio-field">
+          <label>$/unidad</label>
+          <div style="display:flex;align-items:center;gap:6px">
+            <span class="peso-sign">$</span>
+            <input class="inp-precio" id="precio-${cat.id}" type="number" min="1" value="${precios[cat.id]||0}" oninput="previewPrecio('${cat.id}')"/>
+          </div>
+        </div>
+        <div class="precio-equiv" id="equiv-${cat.id}">
+          <span>×30 = ${fCLP((precios[cat.id]||0)*30)}</span>
+          <span>×12 = ${fCLP((precios[cat.id]||0)*12)}</span>
+          <span>×6 = ${fCLP((precios[cat.id]||0)*6)}</span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  return `
+  <div class="section">
+    <h2>Precios por unidad</h2>
+    <p class="sub-txt">Define el precio base por unidad para cada categoría. Los totales de venta se calculan automáticamente.</p>
+    <div class="precios-card">${filas}</div>
+    <button class="btn-primary" style="margin-top:20px" onclick="doGuardarPrecios()">💾 Guardar precios</button>
+    <div id="precio-ok" class="ok-box" style="display:none">✓ Precios guardados correctamente</div>
+  </div>`;
+}
+
+// ── HANDLERS ───────────────────────────────────────────────────────
+function attachTabHandlers() {
+  // Selector de botones
+  window.selBtn = (el, group) => {
+    document.querySelectorAll(`#${group} .sel-btn`).forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+    if (currentTab === 'ingresar') updateIngresarPreview();
+  };
+
+  window.adjNum = (id, delta) => {
+    const inp = $(`#${id}`);
+    if (!inp) return;
+    const v = Math.max(1, parseInt(inp.value||1) + delta);
+    inp.value = v;
+    if (id === 'ing-cant') updateIngresarPreview();
+    if (id === 'vta-cant') updateVentaPreview();
+  };
+
+  window.updateIngresarPreview = () => {
+    const catBtn = document.querySelector('#cat-ing .sel-btn.active');
+    const fmtBtn = document.querySelector('#fmt-ing .sel-btn.active');
+    const cant   = parseInt($('#ing-cant')?.value||1);
+    const prev   = $('#ing-preview');
+    if (!prev) return;
+    if (!catBtn || !fmtBtn) { prev.innerHTML = 'Selecciona categoría y formato'; return; }
+    const cat = CATEGORIAS.find(c=>c.id===catBtn.dataset.val);
+    const fmt = FORMATOS.find(f=>f.id===fmtBtn.dataset.val);
+    const unids = fmt.unidades * cant;
+    prev.innerHTML = `
+      <div class="prev-row"><span>${cant} × ${fmt.label} — Cat. <strong style="color:${cat.color}">${cat.id}</strong></span>
+      <span class="prev-total">${fNum(unids)} unidades</span></div>
+      <div class="prev-sub">Stock actual: ${fNum(calcStock()[cat.id])} → <strong>${fNum(calcStock()[cat.id]+unids)}</strong></div>`;
+  };
+
+  window.updateVentaPreview = () => {
+    const catBtn = document.querySelector('#cat-vta .sel-btn.active');
+    const fmtBtn = document.querySelector('#fmt-vta .sel-btn.active');
+    const cant   = parseInt($('#vta-cant')?.value||1);
+    const prev   = $('#vta-preview');
+    if (!prev) return;
+    if (!catBtn || !fmtBtn) { prev.innerHTML = 'Selecciona categoría y formato'; return; }
+    const cat  = CATEGORIAS.find(c=>c.id===catBtn.dataset.val);
+    const fmt  = FORMATOS.find(f=>f.id===fmtBtn.dataset.val);
+    const unids = fmt.unidades * cant;
+    const total = unids * (precios[cat.id]||0);
+    const stock = calcStock()[cat.id]||0;
+    const ok = stock >= unids;
+    prev.innerHTML = `
+      <div class="prev-row"><span>${cant} × ${fmt.label} — Cat. <strong style="color:${cat.color}">${cat.id}</strong> · ${fNum(unids)} unid.</span></div>
+      <div class="prev-total-big ${ok?'green':'red'}">${fCLP(total)}</div>
+      <div class="prev-sub ${ok?'':'red'}">Stock: ${fNum(stock)} disponibles${ok?'':' — INSUFICIENTE'}</div>`;
+  };
+
+  window.doIngresar = async () => {
+    const catBtn = document.querySelector('#cat-ing .sel-btn.active');
+    const fmtBtn = document.querySelector('#fmt-ing .sel-btn.active');
+    const cant   = parseInt($('#ing-cant')?.value||1);
+    const loteNum= $('#ing-lote')?.value.trim();
+    const fecha  = $('#ing-fecha')?.value;
+    const notas  = $('#ing-notas')?.value.trim();
+    const errEl  = $('#ing-error');
+
+    if (!catBtn || !fmtBtn) { showErr(errEl,'Selecciona categoría y formato'); return; }
+    if (!fecha) { showErr(errEl,'Ingresa la fecha de elaboración'); return; }
+
+    const fmt = FORMATOS.find(f=>f.id===fmtBtn.dataset.val);
+    const unids = fmt.unidades * cant;
+
+    try {
+      const docRef = await addDoc(collection(db,'lotes'), {
+        uid: currentUser.uid,
+        productor: currentUser.displayName || currentUser.email,
+        categoria: catBtn.dataset.val,
+        formato: fmt.label,
+        formatoId: fmt.id,
+        cajasIngresadas: cant,
+        unidadesTotal: unids,
+        disponible: unids,
+        numeroLote: loteNum || `L-${Date.now()}`,
+        fechaElaboracion: fecha,
+        notas: notas || '',
+        createdAt: serverTimestamp(),
+      });
+      lotes.unshift({
+        id: docRef.id,
+        uid: currentUser.uid,
+        categoria: catBtn.dataset.val,
+        formato: fmt.label,
+        cajasIngresadas: cant,
+        unidadesTotal: unids,
+        disponible: unids,
+        numeroLote: loteNum || `L-${Date.now()}`,
+        fechaElaboracion: fecha,
+        notas: notas || '',
+        fechaLocal: new Date().toLocaleDateString('es-CL'),
+      });
+      updateHeader();
+      showOk(errEl, `✓ Lote ingresado: ${fNum(unids)} unidades de categoría ${catBtn.dataset.val}`);
+      setTimeout(() => renderTab(), 1500);
+    } catch(e) {
+      showErr(errEl, 'Error al guardar: ' + e.message);
+    }
+  };
+
+  window.doVender = async () => {
+    const catBtn  = document.querySelector('#cat-vta .sel-btn.active');
+    const fmtBtn  = document.querySelector('#fmt-vta .sel-btn.active');
+    const cant    = parseInt($('#vta-cant')?.value||1);
+    const cliente = $('#vta-cliente')?.value.trim();
+    const errEl   = $('#vta-error');
+
+    if (!catBtn || !fmtBtn) { showErr(errEl,'Selecciona categoría y formato'); return; }
+
+    const cat   = CATEGORIAS.find(c=>c.id===catBtn.dataset.val);
+    const fmt   = FORMATOS.find(f=>f.id===fmtBtn.dataset.val);
+    const unids = fmt.unidades * cant;
+    const stock = calcStock()[cat.id]||0;
+
+    if (stock < unids) { showErr(errEl,`Stock insuficiente. Disponible: ${fNum(stock)} unidades`); return; }
+
+    const total = unids * (precios[cat.id]||0);
+    const ahora = new Date();
+
+    try {
+      // Descontar de lotes FIFO (más antiguos primero)
+      let restante = unids;
+      const lotesDisp = [...lotes]
+        .filter(l => l.categoria === cat.id && l.disponible > 0)
+        .sort((a,b) => (a.fechaElaboracion||'').localeCompare(b.fechaElaboracion||''));
+
+      for (const lote of lotesDisp) {
+        if (restante <= 0) break;
+        const desc = Math.min(lote.disponible, restante);
+        const nuevoDisp = lote.disponible - desc;
+        await updateDoc(doc(db,'lotes',lote.id), { disponible: nuevoDisp });
+        const idx = lotes.findIndex(l=>l.id===lote.id);
+        if (idx>=0) lotes[idx].disponible = nuevoDisp;
+        restante -= desc;
+      }
+
+      const docRef = await addDoc(collection(db,'ventas'), {
+        uid: currentUser.uid,
+        productor: currentUser.displayName || currentUser.email,
+        categoria: cat.id,
+        formato: fmt.label,
+        formatoId: fmt.id,
+        cajas: cant,
+        unidades: unids,
+        precioUnit: precios[cat.id]||0,
+        total,
+        cliente: cliente || '',
+        createdAt: serverTimestamp(),
+        fechaLocal: ahora.toLocaleDateString('es-CL'),
+      });
+
+      ventas.unshift({
+        id: docRef.id,
+        categoria: cat.id,
+        formato: fmt.label,
+        cajas: cant,
+        unidades: unids,
+        precioUnit: precios[cat.id]||0,
+        total,
+        cliente: cliente || '',
+        fechaLocal: ahora.toLocaleDateString('es-CL'),
+      });
+
+      updateHeader();
+      showOk(errEl, `✓ Venta registrada: ${fCLP(total)}`);
+      setTimeout(() => renderTab(), 1500);
+    } catch(e) {
+      showErr(errEl, 'Error: ' + e.message);
+    }
+  };
+
+  window.previewPrecio = (catId) => {
+    const val = parseInt($(`#precio-${catId}`)?.value||0);
+    const el  = $(`#equiv-${catId}`);
+    if (el) el.innerHTML = `
+      <span>×30 = ${fCLP(val*30)}</span>
+      <span>×12 = ${fCLP(val*12)}</span>
+      <span>×6 = ${fCLP(val*6)}</span>`;
+  };
+
+  window.doGuardarPrecios = async () => {
+    CATEGORIAS.forEach(cat => {
+      const val = parseInt($(`#precio-${cat.id}`)?.value||0);
+      precios[cat.id] = val;
+    });
+    try {
+      await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js").then(async ({ setDoc, doc: fdoc }) => {
+        await setDoc(fdoc(db,'precios',currentUser.uid), precios);
+      });
+      const ok = $('#precio-ok');
+      if (ok) { ok.style.display='block'; setTimeout(()=>ok.style.display='none',3000); }
+    } catch(e) { console.error(e); }
+  };
+}
+
+function showErr(el, msg) {
+  if (!el) return;
+  el.style.display = 'block';
+  el.className = 'err-box';
+  el.textContent = '⚠ ' + msg;
+}
+function showOk(el, msg) {
+  if (!el) return;
+  el.style.display = 'block';
+  el.className = 'ok-box';
+  el.textContent = msg;
+}
+
+</script>
+
+<style>
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+
+body {
+  background: #f5f0e8;
+  font-family: 'Source Sans 3', sans-serif;
+  color: #2a2010;
+  min-height: 100vh;
+}
+
+/* AUTH */
+#auth-wrap {
+  min-height:100vh;
+  background: linear-gradient(135deg,#1a1205 0%,#2d2010 50%,#1a1205 100%);
+  display:flex; align-items:center; justify-content:center;
+}
+#auth-box {
+  background:#fff;
+  border-radius:20px;
+  padding:44px 40px;
+  width:380px;
+  box-shadow:0 32px 80px #00000060;
+  display:flex; flex-direction:column; gap:16px;
+}
+.auth-logo { font-size:48px; text-align:center; }
+.auth-title { font-family:'Playfair Display',serif; font-size:26px; font-weight:900; text-align:center; color:#1a1205; }
+.auth-sub { font-size:13px; text-align:center; color:#a09070; }
+.auth-tabs { display:flex; gap:0; border-radius:10px; overflow:hidden; border:1px solid #e0d8c8; }
+.atab {
+  flex:1; padding:10px; border:none; background:#f5f0e8;
+  cursor:pointer; font-family:inherit; font-size:14px; color:#a09070;
+  transition:all .2s;
+}
+.atab.active { background:#2a2010; color:#D4AF37; font-weight:600; }
+#auth-login,#auth-register { display:flex; flex-direction:column; gap:10px; }
+.inp {
+  width:100%; padding:11px 14px; border-radius:8px;
+  border:1px solid #e0d8c8; font-family:inherit; font-size:14px;
+  background:#fafaf7; transition:border .2s;
+}
+.inp:focus { outline:none; border-color:#D4AF37; }
+.auth-err { color:#c06060; font-size:13px; text-align:center; min-height:18px; }
+
+/* APP */
+#hdr {
+  background: linear-gradient(135deg,#1a1205,#2d2010);
+  padding:16px 32px;
+  display:flex; align-items:center; justify-content:space-between;
+  border-bottom:3px solid #D4AF37;
+}
+.hdr-left { display:flex; align-items:center; gap:14px; }
+.hdr-icon { font-size:36px; }
+.hdr-title { font-family:'Playfair Display',serif; font-size:20px; color:#D4AF37; font-weight:700; }
+.hdr-sub { font-size:12px; color:#a09070; }
+.hdr-right { display:flex; align-items:center; gap:20px; }
+.hdr-stat { text-align:right; }
+.hs-label { display:block; font-size:10px; color:#a09070; text-transform:uppercase; letter-spacing:1px; }
+.hs-val { display:block; font-size:22px; font-family:'Playfair Display',serif; font-weight:700; }
+.hs-unit { font-size:10px; color:#a09070; }
+.hdr-divider { width:1px; height:40px; background:#D4AF3740; }
+.btn-logout {
+  padding:8px 16px; border-radius:8px; border:1px solid #D4AF3760;
+  background:transparent; color:#D4AF37; cursor:pointer; font-family:inherit; font-size:13px;
+  transition:all .2s;
+}
+.btn-logout:hover { background:#D4AF3720; }
+
+#nav {
+  background:#2a2010;
+  display:flex; overflow-x:auto;
+  border-bottom:1px solid #3a3020;
+}
+.ntab {
+  padding:13px 20px; border:none; background:none; cursor:pointer;
+  font-family:inherit; font-size:13px; color:#a09070; white-space:nowrap;
+  border-bottom:2px solid transparent; transition:all .2s;
+}
+.ntab.active { color:#D4AF37; border-bottom-color:#D4AF37; }
+.ntab:hover { color:#e8d0a0; }
+
+#main { padding:28px 32px; max-width:1100px; margin:0 auto; }
+
+.section h2 {
+  font-family:'Playfair Display',serif; font-size:22px;
+  color:#1a1205; margin-bottom:20px;
+}
+.section-hdr { margin-bottom:20px; }
+.section-hdr h2 { margin-bottom:12px; }
+.sub-txt { color:#a09070; font-size:14px; margin-bottom:20px; margin-top:-10px; }
+
+.kpi-row { display:flex; gap:28px; }
+.kpi { display:flex; flex-direction:column; }
+.kpi-n { font-family:'Playfair Display',serif; font-size:26px; font-weight:700; }
+.kpi-l { font-size:11px; color:#a09070; text-transform:uppercase; letter-spacing:.5px; }
+
+/* Cards inventario */
+.cat-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:14px; }
+.cat-card {
+  background:#fff;
+  border:1px solid #e0d8c8;
+  border-radius:14px; padding:18px 14px; text-align:center;
+  position:relative; overflow:hidden;
+  box-shadow:0 2px 12px #00000010;
+  transition:transform .2s, box-shadow .2s;
+}
+.cat-card:hover { transform:translateY(-2px); box-shadow:0 6px 24px #00000018; }
+.cat-stripe { position:absolute; top:0; left:0; right:0; height:4px; background:var(--cat-color); }
+.cat-label { font-family:'Playfair Display',serif; font-size:26px; font-weight:900; color:var(--cat-color); }
+.cat-peso  { font-size:11px; color:#a09070; margin-bottom:10px; }
+.cat-num   { font-size:28px; font-weight:700; color:#1a1205; }
+.cat-unit  { font-size:11px; color:#a09070; margin-bottom:8px; }
+.cat-bar   { background:#f0ebe0; border-radius:4px; height:5px; overflow:hidden; margin-bottom:4px; }
+.cat-bar-fill { height:100%; background:var(--cat-color); transition:width .5s; }
+.cat-meta  { font-size:10px; color:#a09070; margin-bottom:6px; }
+.cat-equiv { font-size:12px; color:#6ec49a; font-weight:600; }
+.cat-valor { font-size:12px; color:#a09070; margin-top:4px; }
+
+/* Tables */
+.table-box {
+  background:#fff; border:1px solid #e0d8c8;
+  border-radius:12px; overflow:hidden;
+  box-shadow:0 2px 12px #00000008;
+}
+.table-title { padding:12px 20px; font-size:12px; color:#a09070; text-transform:uppercase; letter-spacing:1px; border-bottom:1px solid #f0ebe0; }
+table { width:100%; border-collapse:collapse; font-size:13px; }
+th { padding:10px 14px; color:#a09070; font-weight:600; font-size:11px; text-transform:uppercase; letter-spacing:.5px; background:#fafaf7; }
+td { padding:9px 14px; border-top:1px solid #f5f0e8; }
+.tr { text-align:right; }
+.tr-even { background:#fdfcf8; }
+.tr-total td { background:#1a1205; color:#D4AF37; font-weight:700; padding:11px 14px; }
+.empty { text-align:center; color:#a09070; padding:40px; }
+
+/* Forms */
+.form-card {
+  background:#fff; border:1px solid #e0d8c8; border-radius:14px;
+  padding:28px; max-width:600px;
+  display:flex; flex-direction:column; gap:20px;
+  box-shadow:0 2px 12px #00000008;
+}
+.field { display:flex; flex-direction:column; gap:8px; }
+.field label { font-size:12px; color:#a09070; text-transform:uppercase; letter-spacing:.8px; font-weight:600; }
+.field-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.norma { font-size:10px; color:#c0b090; font-weight:400; }
+
+.btn-group { display:flex; gap:6px; flex-wrap:wrap; }
+.sel-btn {
+  flex:1; min-width:60px; padding:10px 6px;
+  border:1.5px solid #e0d8c8; border-radius:8px;
+  background:#fafaf7; cursor:pointer; font-family:inherit; font-size:13px;
+  color:#6a5a40; text-align:center; line-height:1.2; transition:all .18s;
+}
+.sel-btn.wide { flex:1; min-width:120px; }
+.sel-sub { display:block; font-size:10px; color:#a09070; margin-top:3px; }
+.sel-btn.active { background:var(--cc,#2a2010); border-color:var(--cc,#2a2010); color:#fff; }
+.sel-btn.active .sel-sub { color:#ffffff90; }
+.sel-btn:not(.active)[data-group^="cat"] { color:var(--cc,#6a5a40); border-color:var(--cc,#e0d8c8); }
+
+.num-ctrl { display:flex; align-items:center; gap:8px; }
+.num-ctrl button {
+  width:34px; height:34px; border-radius:8px; border:1px solid #e0d8c8;
+  background:#fafaf7; cursor:pointer; font-size:18px; color:#2a2010;
+  font-family:inherit; transition:all .15s;
+}
+.num-ctrl button:hover { background:#e0d8c8; }
+.num-ctrl input {
+  width:72px; text-align:center; padding:7px;
+  border:1px solid #D4AF3780; border-radius:8px;
+  font-family:inherit; font-size:16px; color:#2a2010;
+  background:#fffdf5;
+}
+
+.inp-text {
+  padding:9px 12px; border-radius:8px; border:1px solid #e0d8c8;
+  font-family:inherit; font-size:14px; background:#fafaf7; color:#2a2010;
+  width:100%; transition:border .2s;
+}
+.inp-text:focus { outline:none; border-color:#D4AF37; }
+
+.preview-box {
+  background:#fffdf0; border:1px solid #D4AF3750; border-radius:10px;
+  padding:14px 16px; font-size:14px; color:#4a3a20; min-height:58px;
+}
+.prev-row { display:flex; justify-content:space-between; align-items:center; }
+.prev-total { font-size:15px; font-weight:700; color:#6ec49a; }
+.prev-total-big { font-family:'Playfair Display',serif; font-size:28px; font-weight:700; margin:6px 0; }
+.prev-sub { font-size:12px; color:#a09070; margin-top:4px; }
+
+.err-box { background:#fff0f0; border:1px solid #c0606060; border-radius:8px; padding:10px 14px; font-size:13px; color:#c04040; }
+.ok-box  { background:#f0fff4; border:1px solid #6ec49a80; border-radius:8px; padding:10px 14px; font-size:13px; color:#2a7a50; }
+
+/* Botones */
+.btn-primary {
+  padding:13px; border-radius:10px;
+  background:linear-gradient(135deg,#2a2010,#4a3a20);
+  border:none; cursor:pointer; color:#D4AF37;
+  font-weight:700; font-size:15px; font-family:inherit;
+  letter-spacing:.3px; transition:opacity .2s;
+}
+.btn-primary:hover { opacity:.88; }
+.btn-green {
+  padding:13px; border-radius:10px;
+  background:linear-gradient(135deg,#1a5c3a,#2d8a5a);
+  border:none; cursor:pointer; color:#fff;
+  font-weight:700; font-size:15px; font-family:inherit;
+  letter-spacing:.3px; transition:opacity .2s;
+}
+.btn-green:hover { opacity:.88; }
+
+/* Precios */
+.precios-card { background:#fff; border:1px solid #e0d8c8; border-radius:14px; overflow:hidden; }
+.precio-row {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:16px 20px; border-top:1px solid #f0ebe0;
+  transition:background .15s;
+}
+.precio-row:first-child { border-top:none; }
+.precio-row:hover { background:#fafaf7; }
+.precio-cat { display:flex; align-items:center; gap:10px; }
+.badge { font-weight:700; font-size:15px; }
+.badge.big { font-size:22px; }
+.precio-inputs { display:flex; align-items:center; gap:24px; }
+.precio-field { display:flex; flex-direction:column; gap:4px; }
+.precio-field label { font-size:10px; color:#a09070; text-transform:uppercase; }
+.peso-sign { color:#a09070; font-size:14px; }
+.inp-precio {
+  width:90px; padding:7px 10px; border-radius:7px;
+  border:1px solid #e0d8c8; font-family:inherit; font-size:15px; color:#2a2010;
+  background:#fafaf7; text-align:right;
+}
+.inp-precio:focus { outline:none; border-color:#D4AF37; }
+.precio-equiv { display:flex; gap:12px; font-size:12px; color:#a09070; }
+
+/* Utils */
+.gold { color:#b8860b; }
+.green { color:#2a8050; }
+.red { color:#c04040; }
+.fw { font-weight:700; }
+.td-muted { color:#a09070; }
+.badge { font-family:'Playfair Display',serif; }
+
+@media(max-width:768px) {
+  #hdr { flex-direction:column; gap:12px; padding:14px 16px; }
+  .hdr-right { justify-content:center; }
+  #main { padding:16px; }
+  .cat-grid { grid-template-columns:repeat(2,1fr); }
+  .field-row { grid-template-columns:1fr; }
+  .precio-row { flex-direction:column; align-items:flex-start; gap:10px; }
+  .precio-equiv { flex-wrap:wrap; }
+}
+</style>
+</head>
+<body></body>
+</html>
