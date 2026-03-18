@@ -1,1 +1,729 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Auditoría SAG Bioseguridad — AviVet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+/* ───────────────────────────────────────────────────────── */
+/* CONFIGURACIÓN: https://script.google.com/macros/s/AKfycbxqLF0jiNGb2KR14V5Jt-6E5qIezyl02jtsuM6NIW9NXJ95Ri0eAtPMoibIKdJCn_pX/execí           */
+/* ───────────────────────────────────────────────────────── */
+:root {
+  --APPS_SCRIPT_URL: '';    /* ← se inyecta desde JS, ver abajo */
+  --bg: #0f1117;
+  --surface: #181c26;
+  --surface2: #1e2433;
+  --border: #2a3045;
+  --accent: #e8c547;
+  --accent2: #4ecdc4;
+  --accent3: #ff6b6b;
+  --text: #e8eaf0;
+  --muted: #6b7591;
+  --ok: #52d68a;
+  --warn: #ff6b6b;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: "DM Mono", monospace; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 14px; }
+
+/* ── HEADER ── */
+header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; gap: 12px; flex-wrap: wrap; }
+.logo { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.logo-icon { width: 34px; height: 34px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+.logo-text { font-family: Syne, sans-serif; font-weight: 800; font-size: 15px; }
+.logo-sub { font-size: 10px; color: var(--muted); letter-spacing: 0.8px; text-transform: uppercase; }
+.header-center { flex: 1; display: flex; align-items: center; gap: 10px; min-width: 120px; }
+.progress-bar { flex: 1; height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--accent); border-radius: 3px; transition: width 0.3s; width: 0%; }
+.progress-text { font-size: 11px; color: var(--muted); white-space: nowrap; }
+.header-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+
+/* ── INDICADOR DE SINCRONIZACIÓN ── */
+.sync-indicator { display: flex; align-items: center; gap: 5px; font-size: 11px; padding: 5px 10px; border-radius: 7px; border: 1px solid var(--border); background: var(--surface2); white-space: nowrap; cursor: default; }
+.sync-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--muted); transition: background 0.3s; }
+.sync-indicator.online .sync-dot { background: var(--ok); }
+.sync-indicator.offline .sync-dot { background: var(--warn); }
+.sync-indicator.saving .sync-dot { background: var(--accent); animation: pulse 0.8s infinite; }
+.sync-indicator.error .sync-dot { background: var(--accent3); }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+.btn-save { background: var(--ok); color: #0a1a0f; padding: 7px 14px; border-radius: 9px; border: none; font-family: "DM Mono", monospace; font-size: 12px; font-weight: 700; cursor: pointer; }
+.btn-save:hover { background: #6de8a0; }
+.btn-sync { background: transparent; color: var(--accent); padding: 7px 14px; border-radius: 9px; border: 1px solid var(--accent); font-family: "DM Mono", monospace; font-size: 12px; font-weight: 700; cursor: pointer; display: none; }
+.btn-sync:hover { background: rgba(232,197,71,0.1); }
+.btn-sync.visible { display: inline-flex; align-items: center; gap: 5px; }
+
+/* ── LAYOUT ── */
+.layout { display: flex; height: calc(100vh - 65px); }
+.sidebar { width: 196px; background: var(--surface); border-right: 1px solid var(--border); overflow-y: auto; padding: 10px 0; flex-shrink: 0; }
+.sidebar-item { padding: 9px 14px; cursor: pointer; border-left: 3px solid transparent; display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+.sidebar-item:hover { background: var(--surface2); }
+.sidebar-item.active { background: var(--surface2); border-left-color: var(--accent); }
+.sidebar-item-name { font-family: Syne, sans-serif; font-size: 11px; font-weight: 700; display: flex; align-items: center; gap: 5px; line-height: 1.3; }
+.sidebar-badge { font-size: 9px; color: var(--muted); background: var(--bg); padding: 2px 4px; border-radius: 3px; border: 1px solid var(--border); white-space: nowrap; }
+.sidebar-badge.done { color: var(--ok); border-color: var(--ok); }
+.content { flex: 1; overflow-y: auto; padding: 24px; }
+
+/* ── DATOS ── */
+.datos-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px; margin-bottom: 20px; }
+.datos-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; }
+@media (max-width: 600px) { .datos-grid { grid-template-columns: 1fr; } }
+.form-group { display: flex; flex-direction: column; gap: 4px; }
+.form-label { font-size: 10px; color: var(--muted); letter-spacing: 0.8px; text-transform: uppercase; }
+.form-input, .form-select { background: var(--surface2); border: 1px solid var(--border); border-radius: 7px; padding: 8px 11px; color: var(--text); font-family: "DM Mono", monospace; font-size: 12px; width: 100%; }
+.form-input:focus, .form-select:focus { outline: none; border-color: var(--accent); }
+.form-select option { background: var(--surface2); }
+
+/* ── SECCIONES ── */
+.section-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+.section-icon { width: 44px; height: 44px; background: rgba(232,197,71,0.12); border: 1px solid rgba(232,197,71,0.3); border-radius: 11px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+.section-title { font-family: Syne, sans-serif; font-weight: 800; font-size: 20px; letter-spacing: -0.5px; }
+.section-count { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+/* ── CHECKS ── */
+.subsection { background: var(--surface); border: 1px solid var(--border); border-radius: 11px; margin-bottom: 12px; overflow: hidden; }
+.subsection-header { padding: 11px 16px; background: var(--surface2); border-bottom: 1px solid var(--border); font-family: Syne, sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; }
+.check-item { padding: 9px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.check-item:last-child { border-bottom: none; }
+.check-item:hover { background: rgba(255,255,255,0.02); }
+.check-label { flex: 1; font-size: 12px; line-height: 1.4; }
+.nota-req { font-size: 9px; color: var(--accent3); margin-left: 3px; }
+.btn-group { display: flex; gap: 4px; flex-shrink: 0; }
+.btn-check { padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border); background: transparent; color: var(--muted); font-family: "DM Mono", monospace; font-size: 11px; cursor: pointer; transition: 0.15s; white-space: nowrap; }
+.btn-check:hover { border-color: var(--text); color: var(--text); }
+.btn-check.cumple.active   { background: rgba(82,214,138,0.15); border-color: var(--ok); color: var(--ok); font-weight: 700; }
+.btn-check.nocumple.active { background: rgba(255,107,107,0.15); border-color: var(--warn); color: var(--warn); font-weight: 700; }
+.btn-check.noaplica.active { background: rgba(107,117,145,0.2); border-color: var(--muted); color: var(--text); font-weight: 700; }
+
+/* ── NAV ── */
+.nav-btns { display: flex; justify-content: space-between; align-items: center; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border); }
+.btn { padding: 8px 16px; border-radius: 9px; border: 1px solid var(--border); background: var(--surface2); color: var(--text); font-family: "DM Mono", monospace; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: 0.2s; }
+.btn:hover { border-color: var(--accent); color: var(--accent); }
+.btn-primary { background: var(--accent); color: #0a1a0f; border-color: var(--accent); font-weight: 700; }
+.btn-primary:hover { background: #f0d050; }
+
+/* ── RESUMEN ── */
+.summary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px,1fr)); gap: 14px; margin-bottom: 20px; }
+.summary-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px; }
+.summary-card-title { font-family: Syne, sans-serif; font-size: 13px; font-weight: 800; margin-bottom: 12px; }
+.pct-bar { height: 6px; background: var(--border); border-radius: 3px; margin-bottom: 5px; overflow: hidden; }
+.pct-fill { height: 100%; border-radius: 3px; transition: width 0.5s; }
+.pct-fill.high { background: var(--ok); }
+.pct-fill.mid  { background: var(--accent); }
+.pct-fill.low  { background: var(--warn); }
+.pct-value { font-size: 24px; font-weight: 700; font-family: Syne, sans-serif; }
+.verdict { border-radius: 7px; padding: 6px 12px; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px; margin-top: 8px; }
+.verdict.verde   { background: rgba(82,214,138,0.15); color: var(--ok); border: 1px solid rgba(82,214,138,0.3); }
+.verdict.amarillo { background: rgba(232,197,71,0.15); color: var(--accent); border: 1px solid rgba(232,197,71,0.3); }
+.verdict.rojo    { background: rgba(255,107,107,0.15); color: var(--warn); border: 1px solid rgba(255,107,107,0.3); }
+
+/* ── BANNER OFFLINE PENDIENTE ── */
+.offline-banner { background: rgba(232,197,71,0.1); border: 1px solid rgba(232,197,71,0.3); border-radius: 10px; padding: 14px 18px; margin-bottom: 20px; display: none; }
+.offline-banner.visible { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.offline-banner-text { font-size: 12px; color: var(--accent); }
+
+/* ── TOAST ── */
+.toast { position: fixed; bottom: 18px; right: 18px; background: var(--surface); border: 1px solid var(--ok); border-radius: 9px; padding: 9px 16px; font-size: 12px; z-index: 200; opacity: 0; transform: translateY(50px); transition: 0.3s; max-width: 300px; }
+.toast.show { opacity: 1; transform: translateY(0); }
+.toast.error { border-color: var(--warn); }
+
+/* ── PRINT ── */
+@media print {
+  header, .sidebar, .nav-btns, .btn-save, .btn-sync, .sync-indicator, .offline-banner { display: none !important; }
+  .layout { height: auto; display: block; }
+  .content { overflow: visible; padding: 0; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">🇨🇱</div>
+    <div>
+      <div class="logo-text">SAG Bioseguridad</div>
+      <div class="logo-sub">Res. 7695/2024 · AviVet</div>
+    </div>
+  </div>
+  <div class="header-center">
+    <div class="progress-bar"><div class="progress-fill" id="pFill"></div></div>
+    <span class="progress-text" id="pText">0%</span>
+  </div>
+  <div class="header-right">
+    <div class="sync-indicator offline" id="syncInd">
+      <div class="sync-dot"></div>
+      <span id="syncTxt">Sin conexión</span>
+    </div>
+    <button class="btn-sync" id="btnSync" onclick="sincronizarPendientes()">↑ Sincronizar</button>
+    <button class="btn-save" onclick="guardar()">💾 PDF</button>
+  </div>
+</header>
+
+<div class="layout">
+  <nav class="sidebar" id="sb"></nav>
+  <main class="content" id="mc"></main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================================
+// CONFIGURACIÓN — CAMBIA SOLO ESTA URL
+// ============================================================
+var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxqLF0jiNGb2KR14V5Jt-6E5qIezyl02jtsuM6NIW9NXJ95Ri0eAtPMoibIKdJCn_pX/exec';
+// Ejemplo:
+// var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfy.../exec';
+// ============================================================
+
+// ── DATOS DE LA AUDITORÍA ───────────────────────────────────
+var SAGS = [
+  { id: "datos", name: "Datos del Predio", icon: "📋", isDatos: true },
+  {
+    id: "secA", name: "A) Infraestructura y Control", icon: "🏗️",
+    subsections: [
+      { sub: "1. Instalación e Infraestructura", items: [
+        { l: "El establecimiento cuenta con un Responsable de Bioseguridad.", req: true },
+        { l: "Existe imagen o plano de la granja donde se observen caminos de acceso, cercos, zona de ingreso, entre otros.", req: true },
+        { l: "Existe letrero visible que prohíbe la entrada a personas ajenas a la empresa.", req: true },
+        { l: "El establecimiento cuenta con cerco perimetral.", req: true },
+        { l: "El cerco perimetral delimita la unidad epidemiológica e impide el ingreso de personas y vehículos no autorizados.", req: true },
+        { l: "El cerco perimetral evita el ingreso de animales domésticos al establecimiento.", req: true },
+        { l: "Cuenta con señalética de bioseguridad visible para personal y visitas al ingreso.", req: true },
+        { l: "Existe zona de acceso para control y registro de personas y vehículos.", req: true },
+        { l: "Existe zona de desinfección de vehículos que ingresen al establecimiento.", req: true },
+        { l: "Los vehículos del personal o visitas se estacionan fuera del cerco perimetral.", req: true },
+        { l: "Existe filtro sanitario de desinfección para el ingreso y egreso de objetos e insumos.", req: true }
+      ]},
+      { sub: "2. Control de Vehículos", items: [
+        { l: "Existe control y registro de vehículos que ingresan al establecimiento." },
+        { l: "Existe una ruta de tránsito de vehículos autorizados incorporada en los planos.", req: true },
+        { l: "Existe filtro sanitario que permite la desinfección de todos los vehículos que ingresen." },
+        { l: "El establecimiento solo ocupa productos desinfectantes autorizados por el organismo estatal sanitario." },
+        { l: "Existe procedimiento documentado de mantención de los equipos de desinfección." },
+        { l: "Existen registros de verificación de operación y dosificación de desinfectantes auditables." }
+      ]},
+      { sub: "3. Control de Personas y Visitas", items: [
+        { l: "Existe registro de visitas al ingreso del establecimiento." },
+        { l: "Para reproductoras/abuelas, existe ducha obligatoria. (Aplica para rubro reproductora)" },
+        { l: "Se capacita a visitas sobre normas de bioseguridad al ingreso del establecimiento." },
+        { l: "Existe filtro sanitario al ingreso de personas al establecimiento." },
+        { l: "El filtro sanitario permite el lavado y desinfección de manos.", req: true },
+        { l: "El establecimiento cumple con periodo de vacío sanitario exigido para el ingreso de visitas." },
+        { l: "Existen señaléticas claras con indicaciones de operación del filtro sanitario." },
+        { l: "Se realiza desinfección del calzado al ingreso y egreso del filtro sanitario.", req: true },
+        { l: "El filtro sanitario cuenta con delimitación de zona sucia y zona limpia." },
+        { l: "Existe un procedimiento de limpieza y mantención del filtro sanitario." },
+        { l: "El filtro asegura el cambio completo de vestuario y calzado exclusivo de la empresa, o uso de overol desechable y cubrecalzado." }
+      ]},
+      { sub: "4. Trazabilidad de Aves", items: [
+        { l: "Las aves de un día que ingresan provienen de plantas de incubación de empresas registradas ante el SAG." },
+        { l: "Toda ave que ingrese o egrese del establecimiento cumple con la normativa de trazabilidad vigente." },
+        { l: "En caso de expendio de gallinas vivas al detalle, mantiene registro auditable por al menos 1 año. (Aplica rubro postura)", req: true }
+      ]},
+      { sub: "5. Control de Implementos", items: [
+        { l: "Todos los implementos que ingresan o egresan del establecimiento son desinfectados.", req: true }
+      ]}
+    ]
+  },
+  {
+    id: "secB", name: "B) Pabellones e Incubación", icon: "🏠",
+    subsections: [
+      { sub: "1. Infraestructura de Pabellones", items: [
+        { l: "El área de tránsito dentro de la zona perimetral está libre de malezas y desechos que puedan atraer vectores y roedores.", req: true },
+        { l: "Cuenta con pediluvio al ingreso de cada pabellón." },
+        { l: "La infraestructura permite realizar limpieza y desinfección.", req: true },
+        { l: "Planteles con cuerpos de agua u otro tipo de producción ajena al avícola al interior de la granja, adoptan medidas de mitigación." },
+        { l: "La infraestructura de los pabellones evita el ingreso de aves silvestres, domésticas y otros animales ajenos." }
+      ]},
+      { sub: "2. Limpieza y Desinfección de Pabellones", items: [
+        { l: "El producto desinfectante usado se encuentra autorizado por la autoridad competente." },
+        { l: "El producto desinfectante es usado y dosificado según su ficha técnica disponible." },
+        { l: "Existen registros que avalen el cumplimiento de la frecuencia de limpieza y desinfección establecida por la empresa." }
+      ]}
+    ]
+  },
+  {
+    id: "secC", name: "C) Procedimientos Operacionales", icon: "⚙️",
+    subsections: [
+      { sub: "1. Agua de Bebida", items: [
+        { l: "El agua de bebida provista a las aves es potable, sanitizada o potabilizada, o en su defecto mantienen resultados de análisis microbiológicos vigentes." },
+        { l: "Realiza aseo, desinfección y mantención de estanques y red de agua al menos 1 vez al año. Registros auditables.", req: true }
+      ]},
+      { sub: "2. Alimentación", items: [
+        { l: "El establecimiento mantiene guías de despacho o facturas de procedencia del alimento." },
+        { l: "El alimento para las aves se almacena en silos o bodegas cerradas que evitan el ingreso de aves silvestres o roedores." },
+        { l: "La base del silo o alrededor del lugar de almacenamiento del alimento, se encuentra limpia y sin alimento." },
+        { l: "Los silos se limpian y desinfectan en su interior al menos una vez al año o al término del proceso productivo. Registro." },
+        { l: "Para alimento de autoconsumo, el camión que lo transporta es lavado y desinfectado al menos una vez a la semana. Registros verificables." }
+      ]},
+      { sub: "3. Personal y Materiales", items: [
+        { l: "El personal se encuentra capacitado en normas de bioseguridad para el manejo de las aves. Registros." },
+        { l: "Los materiales, herramientas o implementos utilizados con las aves son de uso exclusivo del establecimiento. Maquinarias de uso común son limpiadas y desinfectadas.", req: true },
+        { l: "Se desinfectan los implementos a ocupar con las aves.", req: true }
+      ]},
+      { sub: "4. Manejo de Huevos", items: [
+        { l: "Los huevos de consumo son almacenados en bodegas en condiciones que disminuyan al mínimo el contacto con polvo y plagas. (Aplica para rubro ponedora)" },
+        { l: "Para huevos de desecho, el establecimiento cuenta con una zona de disposición final separada del área de producción. (Aplica reproductora, incubadora y ponedora)" },
+        { l: "Los huevos fértiles que irán a plantas de incubación son desinfectados. (Aplica para rubro reproductora)" },
+        { l: "En caso de utilizar bandejas plásticas para huevos fértiles, estas son sanitizadas. (Aplica para reproductora e incubadora)" }
+      ]},
+      { sub: "5. Manejo de Mortandad", items: [
+        { l: "El establecimiento cuenta con una zona o área para disposición de cadáveres, cerrada." },
+        { l: "Los contenedores para almacenar y/o transportar aves muertas son fáciles de limpiar y desinfectar." },
+        { l: "Existe registro de mortalidad diaria." },
+        { l: "Las aves muertas son depositadas en recipientes cerrados e identificados, a la espera de necropsia y/o disposición final." },
+        { l: "El establecimiento cuenta con una zona de transferencia de cadáveres separada de la zona de producción, cuando se envía a planta de rendering." },
+        { l: "El retiro de aves muertas en ponedoras con destino a rendering es en camión encarpado o cerrado, con certificado médico veterinario." },
+        { l: "Existe un protocolo de necropsia y/o de huevos picados no nacidos. (No aplica para ponedora B)" }
+      ]},
+      { sub: "6. Movimiento de Aves", items: [
+        { l: "Los movimientos de aves cuentan con registro de salida que cumple con normativa de trazabilidad vigente. (Aplica para engorda y reproductoras)", req: true },
+        { l: "El retiro de las aves del pabellón es al término del ciclo productivo." },
+        { l: "El retiro de las aves sigue un esquema todo adentro todo afuera. (Aplica solo para rubro engorda)" },
+        { l: "El transporte de aves se realiza en jaulas específicas, lavadas y desinfectadas. (Aplica para engorda y reproductora)" }
+      ]},
+      { sub: "7. Manejo de Guano", items: [
+        { l: "El establecimiento realiza retiro de guano en forma periódica de acuerdo al tipo de producción." },
+        { l: "Existe registro de salida, ya sea por venta o regalo del guano." },
+        { l: "En caso de tener guanera, está señalizada y tiene un cerco perimetral en perfecto estado." }
+      ]},
+      { sub: "8. Control de Plagas y Vectores", items: [
+        { l: "Existen registros del cumplimiento del programa periódico de control de plagas y vectores." },
+        { l: "Existen medidas correctivas frente al aumento en la detección de plagas y vectores." }
+      ]},
+      { sub: "9. Capacitación", items: [
+        { l: "Existe programa de capacitación anual en normas de bioseguridad.", req: true },
+        { l: "Registro de capacitaciones realizadas y a quiénes fueron orientadas.", req: true }
+      ]}
+    ]
+  },
+  { id: "resumen", name: "Resumen", icon: "📊", isResumen: true }
+];
+
+// ── ESTADO ──────────────────────────────────────────────────
+var STATE = {
+  nombre: '', email: '', rubro: '', establecimiento: '',
+  fecha: new Date().toISOString().split('T')[0],
+  responses: {}, currentPage: 0,
+  pendienteSync: false,
+  ultimoSync: null
+};
+
+// ── INIT IDs ─────────────────────────────────────────────────
+var __ic = 0;
+var ITEMS_FLAT = []; // lista plana de todos los items con metadatos
+SAGS.forEach(function(s) {
+  if (s.subsections) {
+    s.totalItems = 0;
+    s.subsections.forEach(function(sub) {
+      s.totalItems += sub.items.length;
+      sub.items.forEach(function(item) {
+        item.id = 'i' + (__ic++);
+        item.seccion = s.name;
+        item.seccionId = s.id;
+        item.subseccion = sub.sub;
+        ITEMS_FLAT.push({ id: item.id, label: item.l, seccion: s.name, subseccion: sub.sub });
+      });
+    });
+  }
+});
+
+// ── LOCAL STORAGE ────────────────────────────────────────────
+var STORAGE_KEY = 'sag_bio_v2';
+function saveState() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      nombre: STATE.nombre, email: STATE.email, rubro: STATE.rubro,
+      establecimiento: STATE.establecimiento, fecha: STATE.fecha,
+      responses: STATE.responses,
+      pendienteSync: STATE.pendienteSync,
+      ultimoSync: STATE.ultimoSync
+    }));
+  } catch(e) {}
+}
+function loadState() {
+  try {
+    var s = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
+    if (s) {
+      STATE.nombre = s.nombre || '';
+      STATE.email = s.email || '';
+      STATE.rubro = s.rubro || '';
+      STATE.establecimiento = s.establecimiento || '';
+      STATE.fecha = s.fecha || STATE.fecha;
+      STATE.responses = s.responses || {};
+      STATE.pendienteSync = s.pendienteSync || false;
+      STATE.ultimoSync = s.ultimoSync || null;
+    }
+  } catch(e) {}
+}
+
+// ── CONECTIVIDAD ─────────────────────────────────────────────
+var isOnline = navigator.onLine;
+function actualizarIndicadorConexion() {
+  var ind = document.getElementById('syncInd');
+  var txt = document.getElementById('syncTxt');
+  var btnSync = document.getElementById('btnSync');
+  if (!ind) return;
+  isOnline = navigator.onLine;
+  if (isOnline) {
+    ind.className = 'sync-indicator online';
+    txt.textContent = STATE.ultimoSync
+      ? 'Sincronizado ' + formatearHora(STATE.ultimoSync)
+      : 'En línea';
+  } else {
+    ind.className = 'sync-indicator offline';
+    txt.textContent = 'Sin conexión';
+  }
+  // Mostrar botón sync si hay pendientes
+  if (STATE.pendienteSync && isOnline) {
+    btnSync.classList.add('visible');
+  } else {
+    btnSync.classList.remove('visible');
+  }
+}
+window.addEventListener('online',  function() { isOnline = true; actualizarIndicadorConexion(); if (STATE.pendienteSync) sincronizarPendientes(); });
+window.addEventListener('offline', function() { isOnline = false; actualizarIndicadorConexion(); });
+
+function formatearHora(iso) {
+  if (!iso) return '';
+  try {
+    var d = new Date(iso);
+    return d.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' });
+  } catch(e) { return ''; }
+}
+
+// ── ENVÍO AL SHEET ───────────────────────────────────────────
+function calcularScores() {
+  var scores = {};
+  SAGS.forEach(function(s) {
+    if (!s.subsections) return;
+    var c = 0, nc = 0, na = 0;
+    s.subsections.forEach(function(sub) {
+      sub.items.forEach(function(i) {
+        var r = STATE.responses[i.id];
+        if (r === 'cumple') c++;
+        else if (r === 'nocumple') nc++;
+        else if (r === 'noaplica') na++;
+      });
+    });
+    var ap = c + nc;
+    scores[s.id] = { cumple: c, nocumple: nc, noaplica: na, ap: ap, pct: ap ? Math.round(c / ap * 100) : 0 };
+  });
+  var totalC = 0, totalNC = 0;
+  Object.values(scores).forEach(function(sc) { totalC += sc.cumple; totalNC += sc.nocumple; });
+  var tAp = totalC + totalNC;
+  return { scores: scores, totalPct: tAp ? Math.round(totalC / tAp * 100) : 0 };
+}
+
+function enviarAlSheet(callback) {
+  if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.indexOf('PEGA_AQUI') !== -1) {
+    if (callback) callback(false, 'URL de Apps Script no configurada');
+    return;
+  }
+  if (!isOnline) {
+    STATE.pendienteSync = true;
+    saveState();
+    actualizarIndicadorConexion();
+    if (callback) callback(false, 'Sin conexión — guardado local');
+    return;
+  }
+
+  var sc = calcularScores();
+  var payload = {
+    action: 'guardar',
+    nombre: STATE.nombre,
+    email: STATE.email,
+    rubro: STATE.rubro,
+    establecimiento: STATE.establecimiento,
+    fecha: STATE.fecha,
+    responses: STATE.responses,
+    items: ITEMS_FLAT,
+    scores: sc.scores,
+    totalPct: sc.totalPct
+  };
+
+  setSyncStatus('saving', 'Guardando...');
+
+  fetch(APPS_SCRIPT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify(payload)
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.ok) {
+      STATE.pendienteSync = false;
+      STATE.ultimoSync = new Date().toISOString();
+      saveState();
+      setSyncStatus('online', 'Sincronizado ' + formatearHora(STATE.ultimoSync));
+      if (callback) callback(true, data.msg);
+    } else {
+      STATE.pendienteSync = true;
+      saveState();
+      setSyncStatus('error', 'Error al guardar');
+      if (callback) callback(false, data.msg);
+    }
+  })
+  .catch(function(err) {
+    STATE.pendienteSync = true;
+    saveState();
+    setSyncStatus('error', 'Error de red');
+    if (callback) callback(false, 'Error de red');
+  });
+}
+
+function setSyncStatus(cls, txt) {
+  var ind = document.getElementById('syncInd');
+  var span = document.getElementById('syncTxt');
+  if (!ind) return;
+  ind.className = 'sync-indicator ' + cls;
+  span.textContent = txt;
+}
+
+function sincronizarPendientes() {
+  if (!STATE.pendienteSync) return;
+  enviarAlSheet(function(ok, msg) {
+    mostrarToast(ok ? '✓ Sincronizado con Google Sheets' : '✗ ' + msg, !ok);
+    actualizarIndicadorConexion();
+  });
+}
+
+// ── UI ───────────────────────────────────────────────────────
+function escH(str) { return (str || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;'); }
+
+function mostrarToast(msg, esError) {
+  var t = document.getElementById('toast');
+  if (!t) return;
+  t.textContent = msg;
+  t.className = 'toast' + (esError ? ' error' : '');
+  t.classList.add('show');
+  setTimeout(function() { t.classList.remove('show'); }, 3000);
+}
+
+function updateProgress() {
+  var total = 0, answered = 0;
+  SAGS.forEach(function(s) {
+    if (s.subsections) s.subsections.forEach(function(sub) {
+      sub.items.forEach(function(item) {
+        total++;
+        if (STATE.responses[item.id]) answered++;
+      });
+    });
+  });
+  var pct = total ? Math.round(answered / total * 100) : 0;
+  var pf = document.getElementById('pFill');
+  var pt = document.getElementById('pText');
+  if (pf) pf.style.width = pct + '%';
+  if (pt) pt.textContent = pct + '%';
+}
+
+function buildSidebar() {
+  var sb = document.getElementById('sb');
+  if (!sb) return;
+  sb.innerHTML = '';
+  SAGS.forEach(function(s, idx) {
+    var answered = 0;
+    if (s.subsections) s.subsections.forEach(function(sub) {
+      sub.items.forEach(function(i) { if (STATE.responses[i.id]) answered++; });
+    });
+    var total = s.totalItems || 0;
+    var isDone = total && answered >= total;
+    var div = document.createElement('div');
+    div.className = 'sidebar-item' + (STATE.currentPage === idx ? ' active' : '');
+    div.innerHTML = '<span class="sidebar-item-name">' + s.icon + ' ' + s.name + '</span>'
+      + (total ? '<span class="sidebar-badge' + (isDone ? ' done' : '') + '">' + answered + '/' + total + '</span>' : '');
+    div.onclick = (function(i) { return function() { navigateTo(i); }; })(idx);
+    sb.appendChild(div);
+  });
+}
+
+function setResp(itemId, val) {
+  STATE.responses[itemId] = val;
+  var ci = document.getElementById('ci_' + itemId);
+  if (ci) ci.querySelectorAll('.btn-check').forEach(function(b) {
+    b.classList.remove('active');
+    if (b.dataset.val === val) b.classList.add('active');
+  });
+  updateProgress();
+  buildSidebar();
+  saveState();
+  // Envío silencioso al sheet en cada respuesta (debounce 2s)
+  clearTimeout(window._syncTimer);
+  window._syncTimer = setTimeout(function() {
+    enviarAlSheet(function(ok) {
+      if (!ok && STATE.pendienteSync) actualizarIndicadorConexion();
+    });
+  }, 2000);
+}
+
+function renderCheckItem(item) {
+  var r = STATE.responses[item.id] || '';
+  return '<div class="check-item" id="ci_' + item.id + '">'
+    + '<span class="check-label">' + item.l + (item.req ? '<span class="nota-req"> *</span>' : '') + '</span>'
+    + '<div class="btn-group">'
+    + '<button class="btn-check cumple'  + (r === 'cumple'   ? ' active' : '') + '" data-val="cumple"   onclick="setResp(\'' + item.id + '\',\'cumple\')"  >Cumple</button>'
+    + '<button class="btn-check nocumple'+ (r === 'nocumple' ? ' active' : '') + '" data-val="nocumple" onclick="setResp(\'' + item.id + '\',\'nocumple\')">No Cumple</button>'
+    + '<button class="btn-check noaplica'+ (r === 'noaplica' ? ' active' : '') + '" data-val="noaplica" onclick="setResp(\'' + item.id + '\',\'noaplica\')">N/A</button>'
+    + '</div></div>';
+}
+
+function navigateTo(idx) {
+  STATE.currentPage = idx;
+  buildSidebar();
+  renderPage(idx);
+  updateProgress();
+  var mc = document.getElementById('mc');
+  if (mc) mc.scrollTop = 0;
+}
+
+function renderPage(idx) {
+  var mc = document.getElementById('mc');
+  if (!mc) return;
+  var s = SAGS[idx];
+  if (!s) return;
+
+  if (s.isDatos) {
+    mc.innerHTML = '<div class="section-header"><div class="section-icon">📋</div><div><div class="section-title">Datos del Establecimiento</div><div class="section-count">Información general de la auditoría SAG</div></div></div>'
+      + '<div class="datos-card"><div class="datos-grid">'
+      + '<div class="form-group"><label class="form-label">Nombre del responsable</label><input class="form-input" placeholder="Ej: Juan Pérez" value="' + escH(STATE.nombre) + '" oninput="STATE.nombre=this.value;saveState()"></div>'
+      + '<div class="form-group"><label class="form-label">Correo electrónico</label><input class="form-input" type="email" placeholder="Ej: juan@empresa.cl" value="' + escH(STATE.email) + '" oninput="STATE.email=this.value;saveState()"></div>'
+      + '<div class="form-group"><label class="form-label">Nombre del establecimiento *</label><input class="form-input" placeholder="Ej: Granja Santa Rosa" value="' + escH(STATE.establecimiento) + '" oninput="STATE.establecimiento=this.value;saveState()"></div>'
+      + '<div class="form-group"><label class="form-label">Seleccionar Rubro *</label><select class="form-select" onchange="STATE.rubro=this.value;saveState()">'
+      + '<option value="">Seleccione un rubro...</option>'
+      + '<option value="reproductora"'  + (STATE.rubro === 'reproductora'  ? ' selected' : '') + '>Abuela / Reproductora</option>'
+      + '<option value="incubadora"'    + (STATE.rubro === 'incubadora'    ? ' selected' : '') + '>Incubadora</option>'
+      + '<option value="engorda"'       + (STATE.rubro === 'engorda'       ? ' selected' : '') + '>Engorda</option>'
+      + '<option value="ponedora_a"'    + (STATE.rubro === 'ponedora_a'    ? ' selected' : '') + '>Ponedora A (≥20.000 aves)</option>'
+      + '<option value="ponedora_b"'    + (STATE.rubro === 'ponedora_b'    ? ' selected' : '') + '>Ponedora B (&lt;20.000 aves)</option>'
+      + '</select></div>'
+      + '<div class="form-group"><label class="form-label">Fecha de auditoría</label><input class="form-input" type="date" value="' + escH(STATE.fecha) + '" oninput="STATE.fecha=this.value;saveState()"></div>'
+      + '</div></div>'
+      + '<div class="nav-btns"><span></span><button class="btn btn-primary" onclick="navigateTo(1)">Siguiente → Sección A</button></div>';
+
+  } else if (s.isResumen) {
+    renderResumen(mc);
+  } else {
+    var answered = 0, cumple = 0, noapl = 0;
+    s.subsections.forEach(function(sub) {
+      sub.items.forEach(function(i) {
+        if (STATE.responses[i.id]) answered++;
+        if (STATE.responses[i.id] === 'cumple') cumple++;
+        if (STATE.responses[i.id] === 'noaplica') noapl++;
+      });
+    });
+    var ap = answered - noapl;
+    var pct = ap ? Math.round(cumple / ap * 100) : 0;
+    var pctColor = pct >= 80 ? 'var(--ok)' : pct >= 60 ? 'var(--accent)' : 'var(--warn)';
+    var html = '<div class="section-header"><div class="section-icon">' + s.icon + '</div><div>'
+      + '<div class="section-title">' + s.name + '</div>'
+      + '<div class="section-count">' + answered + ' de ' + s.totalItems + ' ítems evaluados'
+      + (ap ? ' · <span style="color:' + pctColor + '">' + pct + '% cumplimiento</span>' : '')
+      + '</div></div></div>';
+    s.subsections.forEach(function(sub) {
+      html += '<div class="subsection"><div class="subsection-header">' + sub.sub + '</div>';
+      sub.items.forEach(function(item) { html += renderCheckItem(item); });
+      html += '</div>';
+    });
+    var prev = idx > 0 ? '<button class="btn" onclick="navigateTo(' + (idx - 1) + ')">← Anterior</button>' : '<span></span>';
+    var nextI = idx < SAGS.length - 1 ? idx + 1 : SAGS.length - 1;
+    var nextTxt = idx < SAGS.length - 2 ? 'Siguiente →' : '📊 Ver Resumen';
+    html += '<div class="nav-btns">' + prev + '<button class="btn btn-primary" onclick="navigateTo(' + nextI + ')">' + nextTxt + '</button></div>';
+    mc.innerHTML = html;
+  }
+}
+
+function renderResumen(mc) {
+  var totalC = 0, totalNC = 0, totalNA = 0, ss = [];
+  SAGS.forEach(function(s) {
+    if (!s.subsections) return;
+    var c = 0, nc = 0, na = 0;
+    s.subsections.forEach(function(sub) {
+      sub.items.forEach(function(i) {
+        var r = STATE.responses[i.id];
+        if (r === 'cumple') c++;
+        else if (r === 'nocumple') nc++;
+        else if (r === 'noaplica') na++;
+      });
+    });
+    var ap = c + nc;
+    var pct = ap ? Math.round(c / ap * 100) : 0;
+    totalC += c; totalNC += nc; totalNA += na;
+    ss.push({ name: s.name.replace(/^[A-C]\) /, ''), icon: s.icon, c: c, nc: nc, na: na, ap: ap, pct: pct });
+  });
+  var tAp = totalC + totalNC;
+  var tPct = tAp ? Math.round(totalC / tAp * 100) : 0;
+  var vCls = tPct >= 80 ? 'verde' : tPct >= 60 ? 'amarillo' : 'rojo';
+  var vTxt = tPct >= 80 ? '✓ Cumplimiento Satisfactorio' : tPct >= 60 ? '⚠ Cumplimiento Parcial' : '✗ Requiere Mejoras Urgentes';
+  var rl = { reproductora: 'Reproductora', incubadora: 'Incubadora', engorda: 'Engorda', ponedora_a: 'Ponedora A', ponedora_b: 'Ponedora B' };
+
+  // Banner si hay pendiente de sync
+  var bannerHtml = '';
+  if (STATE.pendienteSync) {
+    bannerHtml = '<div class="offline-banner visible">'
+      + '<span class="offline-banner-text">⚠ Esta auditoría tiene cambios no sincronizados con Google Sheets.</span>'
+      + '<button class="btn" onclick="sincronizarPendientes()">↑ Sincronizar ahora</button>'
+      + '</div>';
+  }
+
+  var html = '<div class="section-header"><div class="section-icon">📊</div><div>'
+    + '<div class="section-title">Resumen de Auditoría SAG</div>'
+    + '<div class="section-count">' + (STATE.establecimiento ? STATE.establecimiento + ' · ' : '') + STATE.fecha + '</div>'
+    + '</div></div>'
+    + bannerHtml;
+
+  if (STATE.rubro) html += '<div style="margin-bottom:12px"><span style="background:rgba(78,205,196,.15);color:var(--accent2);border:1px solid rgba(78,205,196,.3);border-radius:5px;padding:3px 9px;font-size:11px;font-weight:700">Rubro: ' + (rl[STATE.rubro] || STATE.rubro) + '</span></div>';
+
+  html += '<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px">'
+    + '<div><div class="pct-value">' + tPct + '%</div><div style="font-size:11px;color:var(--muted)">Cumplimiento Total · ' + totalC + ' de ' + tAp + ' aplicables</div></div>'
+    + '<span class="verdict ' + vCls + '">' + vTxt + '</span></div>';
+
+  html += '<div class="summary-grid">';
+  ss.forEach(function(s) {
+    var cls = s.pct >= 80 ? 'high' : s.pct >= 60 ? 'mid' : 'low';
+    html += '<div class="summary-card"><div class="summary-card-title">' + s.icon + ' ' + s.name + '</div>'
+      + '<div class="pct-bar"><div class="pct-fill ' + cls + '" style="width:' + s.pct + '%"></div></div>'
+      + '<div style="display:flex;justify-content:space-between;margin-top:5px">'
+      + '<span class="pct-value">' + s.pct + '%</span>'
+      + '<span style="font-size:10px;color:var(--muted)">✓ ' + s.c + ' &nbsp;✗ ' + s.nc + ' &nbsp;N/A: ' + s.na + '</span>'
+      + '</div></div>';
+  });
+  html += '</div>';
+
+  // Botón de envío manual si no se ha sincronizado
+  var syncBtn = STATE.pendienteSync
+    ? '<button class="btn" onclick="sincronizarPendientes()" style="border-color:var(--accent);color:var(--accent)">↑ Guardar en Sheet</button>'
+    : '<button class="btn" onclick="enviarAlSheet(function(ok){mostrarToast(ok?\'✓ Re-enviado al Sheet\':\'Ya sincronizado\', false);})" style="opacity:0.6">↑ Re-enviar</button>';
+
+  html += '<div class="nav-btns"><button class="btn" onclick="navigateTo(' + (SAGS.length - 2) + ')">← Volver</button>'
+    + '<div style="display:flex;gap:8px">' + syncBtn + '<button class="btn-save" onclick="guardar()">💾 Guardar PDF</button></div></div>';
+
+  mc.innerHTML = html;
+}
+
+function guardar() {
+  // Enviar primero si hay pendientes
+  enviarAlSheet(function(ok) {
+    mostrarToast(ok ? '✓ Guardado en Sheets — imprimiendo PDF...' : '💾 Solo PDF (sin conexión)', false);
+  });
+  saveState();
+  setTimeout(function() { window.print(); }, 400);
+}
+
+// ── ARRANQUE ─────────────────────────────────────────────────
+loadState();
+buildSidebar();
+renderPage(STATE.currentPage);
+updateProgress();
+actualizarIndicadorConexion();
+
+// Verificar pendientes al iniciar
+setTimeout(function() {
+  if (STATE.pendienteSync && isOnline) {
+    sincronizarPendientes();
+  }
+}, 1500);
+</script>
+</body>
+</html>
 
