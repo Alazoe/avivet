@@ -258,6 +258,25 @@ header{
 .btn-mail{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.3);border-radius:9px;padding:11px 18px;font-family:"DM Sans",sans-serif;font-size:13px;font-weight:700;cursor:pointer;text-decoration:none;transition:background 0.2s;}
 .btn-mail:hover{background:rgba(255,255,255,0.25);}
 
+.btn-nueva{background:transparent;color:var(--text2);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-family:"DM Sans",sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
+.btn-nueva:hover{border-color:var(--red);color:var(--red);}
+
+/* Modal confirmación */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.35);z-index:400;display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn 0.2s ease;}
+.modal-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px;max-width:380px;width:100%;box-shadow:var(--shadow-md);}
+.modal-icon{font-size:32px;margin-bottom:12px;}
+.modal-title{font-family:"Fraunces",serif;font-size:20px;font-weight:700;margin-bottom:8px;}
+.modal-msg{font-size:14px;color:var(--text2);line-height:1.5;margin-bottom:24px;}
+.modal-btns{display:flex;gap:10px;justify-content:flex-end;}
+
+/* Aviso en pantalla inicio cuando hay datos guardados */
+.inicio-retomar{background:var(--accent-l);border:1px solid #a8dfc0;border-radius:10px;padding:14px 16px;margin-bottom:16px;display:none;}
+.inicio-retomar.visible{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+.retomar-txt strong{display:block;font-size:13px;font-weight:700;color:var(--accent);margin-bottom:2px;}
+.retomar-txt span{font-size:12px;color:var(--text2);}
+.btn-retomar{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:8px 14px;font-family:"DM Sans",sans-serif;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;}
+.btn-limpiar{background:transparent;color:var(--text3);border:1px solid var(--border);border-radius:8px;padding:8px 14px;font-family:"DM Sans",sans-serif;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;}
+
 .toast{position:fixed;bottom:20px;right:20px;background:var(--text);color:#fff;border-radius:10px;padding:11px 18px;font-size:13px;font-weight:500;z-index:300;opacity:0;transform:translateY(12px);transition:all 0.3s;box-shadow:var(--shadow-md);max-width:320px;}
 .toast.show{opacity:1;transform:translateY(0);}
 .toast.ok{background:var(--ok);}
@@ -292,7 +311,17 @@ header{
         <div class="aviso-icon">💡</div>
         <div>Los ítems con <strong style="color:var(--red)">*</strong> son requisitos críticos según la Res. 7695/2024. Puedes completar la auditoría sin internet — se sincronizará automáticamente cuando tengas conexión.</div>
       </div>
-      <button class="btn-comenzar" onclick="comenzar()">Comenzar auditoría →</button>
+      <div class="inicio-retomar" id="inicioBanner">
+        <div class="retomar-txt">
+          <strong id="retomarTitulo">Auditoría en progreso</strong>
+          <span id="retomarSub">Tienes una evaluación sin terminar guardada</span>
+        </div>
+        <div style="display:flex;gap:8px;flex-shrink:0;">
+          <button class="btn-limpiar" onclick="limpiarYComenzar()">Nueva</button>
+          <button class="btn-retomar" onclick="comenzar()">Continuar →</button>
+        </div>
+      </div>
+      <button class="btn-comenzar" id="btnComenzar" onclick="comenzar()">Comenzar auditoría →</button>
     </div>
   </div>
   <div class="inicio-footer">AviVet · Médico Veterinario Andrés Lazo · avivet.cl</div>
@@ -311,6 +340,7 @@ header{
     <div class="hdr-right">
       <div class="sync-pill offline" id="syncInd"><div class="sync-dot"></div><span id="syncTxt">Sin conexión</span></div>
       <button class="btn-sync" id="btnSync" onclick="sincronizarPendientes()">↑ Sincronizar</button>
+      <button class="btn-nueva" onclick="confirmarNueva()">+ Nueva</button>
       <button class="btn-pdf" onclick="guardar()">Guardar PDF</button>
     </div>
   </header>
@@ -321,6 +351,18 @@ header{
 </div>
 
 <div class="toast" id="toast"></div>
+
+<div class="modal-overlay" id="modalNueva" style="display:none">
+  <div class="modal-box">
+    <div class="modal-icon">⚠️</div>
+    <div class="modal-title">¿Comenzar nueva auditoría?</div>
+    <div class="modal-msg">Se borrarán todos los datos de la auditoría actual. Esta acción no se puede deshacer.<br><br>Asegúrate de haber guardado el PDF si necesitas el registro.</div>
+    <div class="modal-btns">
+      <button class="btn" onclick="cerrarModal()">Cancelar</button>
+      <button class="btn" onclick="limpiarYComenzar()" style="background:var(--red);color:#fff;border-color:var(--red);font-weight:700">Sí, nueva auditoría</button>
+    </div>
+  </div>
+</div>
 
 <script>
 var APPS_SCRIPT_URL='https://script.google.com/macros/s/AKfycbxqLF0jiNGb2KR14V5Jt-6E5qIezyl02jtsuM6NIW9NXJ95Ri0eAtPMoibIKdJCn_pX/exec';
@@ -464,6 +506,48 @@ function comenzar(){
   loadState();buildSidebar();renderPage(STATE.currentPage);updateProgress();actualizarSync();
   setTimeout(function(){if(STATE.pendienteSync&&navigator.onLine)sincronizarPendientes();},1500);
 }
+
+function limpiarYComenzar(){
+  cerrarModal();
+  try{ localStorage.removeItem(SK); }catch(e){}
+  STATE={nombre:'',email:'',rubro:'',establecimiento:'',fecha:new Date().toISOString().split('T')[0],responses:{},currentPage:0,pendienteSync:false,ultimoSync:null};
+  document.getElementById('pantalla-inicio').style.display='none';
+  document.getElementById('app').classList.add('visible');
+  buildSidebar();renderPage(0);updateProgress();actualizarSync();
+  toast('✓ Nueva auditoría lista','ok');
+}
+
+function confirmarNueva(){
+  document.getElementById('modalNueva').style.display='flex';
+}
+function cerrarModal(){
+  document.getElementById('modalNueva').style.display='none';
+}
+// Cerrar modal al click fuera
+document.getElementById('modalNueva').addEventListener('click',function(e){
+  if(e.target===this)cerrarModal();
+});
+
+function verificarDatosGuardados(){
+  try{
+    var s=JSON.parse(localStorage.getItem(SK)||'null');
+    if(!s)return;
+    var totalResp=Object.keys(s.responses||{}).length;
+    if(totalResp===0&&!s.establecimiento)return;
+    var banner=document.getElementById('inicioBanner');
+    var titulo=document.getElementById('retomarTitulo');
+    var sub=document.getElementById('retomarSub');
+    var btnComenzar=document.getElementById('btnComenzar');
+    if(s.establecimiento) titulo.textContent=s.establecimiento;
+    sub.textContent=(totalResp>0?totalResp+' ítems respondidos':'Datos del predio ingresados')+(s.fecha?' · '+s.fecha:'');
+    banner.classList.add('visible');
+    btnComenzar.textContent='Comenzar nueva auditoría →';
+    btnComenzar.onclick=function(){ confirmarNueva(); };
+  }catch(e){}
+}
+
+// Llamar al cargar la página
+verificarDatosGuardados();
 
 var isOnline=navigator.onLine;
 window.addEventListener('online',function(){isOnline=true;actualizarSync();if(STATE.pendienteSync)sincronizarPendientes();});
