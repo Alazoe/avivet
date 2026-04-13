@@ -301,6 +301,12 @@ body { font-family: 'DM Sans', sans-serif; color: var(--texto); overflow-x: hidd
     </div>
     Historial
   </button>
+  <button class="nav-btn" id="navPDF" onclick="exportarPDF()">
+    <div class="nav-ico-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+    </div>
+    Exportar
+  </button>
 </nav>
 
 <div class="toast" id="toast"></div>
@@ -445,7 +451,9 @@ function renderCard(mp) {
       <div class="form-row">
         <div class="form-group">
           <label>Cantidad (${mp.unidad})</label>
-          <input type="number" id="qty-${mp.codigo}" placeholder="0" min="0" step="0.1" inputmode="decimal">
+          <input type="text" id="qty-${mp.codigo}" placeholder="Ej: 770+22+21" inputmode="decimal"
+            oninput="previsualizarCantidad(this)" autocomplete="off" autocorrect="off" spellcheck="false">
+          <div id="preview-${mp.codigo}" style="font-size:12px;color:var(--verde-clar);font-family:'DM Mono',monospace;margin-top:4px;min-height:16px"></div>
         </div>
         <div class="form-group">
           <label>Obs. (opcional)</label>
@@ -474,12 +482,39 @@ function toggleCard(codigo) {
   }
 }
 
+// ── CALCULADORA DE EXPRESIONES ──
+function evaluarCantidad(expr) {
+  if (!expr || !expr.trim()) return NaN;
+  // Solo permite números, +, -, *, /, punto, coma, espacios y paréntesis
+  const limpio = expr.replace(/,/g, ".").replace(/[^0-9+\-*\/().\s]/g, "");
+  try {
+    const resultado = Function(`"use strict"; return (${limpio})`)();
+    return typeof resultado === "number" && isFinite(resultado) && resultado >= 0 ? Math.round(resultado * 100) / 100 : NaN;
+  } catch(e) { return NaN; }
+}
+
+function previsualizarCantidad(input) {
+  const codigo = input.id.replace("qty-", "");
+  const preview = document.getElementById(`preview-${codigo}`);
+  if (!preview) return;
+  const val = input.value.trim();
+  if (!val) { preview.textContent = ""; return; }
+  // Si es expresión con operadores
+  if (/[+\-*\/]/.test(val)) {
+    const resultado = evaluarCantidad(val);
+    preview.textContent = isNaN(resultado) ? "⚠ expresión inválida" : `= ${resultado}`;
+    preview.style.color = isNaN(resultado) ? "var(--rojo)" : "var(--verde-clar)";
+  } else {
+    preview.textContent = "";
+  }
+}
+
 // ── GUARDAR CONTEO ──
 async function guardarConteo(codigo, nombre, unidad) {
   const qtyEl = document.getElementById(`qty-${codigo}`);
   const obsEl = document.getElementById(`obs-${codigo}`);
   const btn   = document.getElementById(`btn-${codigo}`);
-  const qty = parseFloat(qtyEl.value);
+  const qty = evaluarCantidad(qtyEl.value);
 
   if (isNaN(qty) || qty < 0) { mostrarToast("Ingresa una cantidad válida", "error"); return; }
 
@@ -609,6 +644,93 @@ function mostrarToast(msg, tipo) {
 function verificarConexion() { if (!navigator.onLine) mostrarOffline(); }
 function mostrarOffline() { document.getElementById("offlineBar").classList.add("show"); }
 function ocultarOffline() { document.getElementById("offlineBar").classList.remove("show"); }
+
+// ── EXPORTAR PDF ──
+function badgePDF(estado) {
+  const map = { "OK":"#2D6A4F","BAJO":"#E67E22","CRÍTICO":"#C0392B","SIN STOCK":"#C0392B","N/D":"#888" };
+  const bg  = { "OK":"#D8F3DC","BAJO":"#FEF9F0","CRÍTICO":"#FDF0EF","SIN STOCK":"#FDF0EF","N/D":"#F5F5F5" };
+  const c = map[estado]||"#888"; const b = bg[estado]||"#F5F5F5";
+  return `<span style="background:${b};color:${c};padding:2px 7px;border-radius:4px;font-size:10px;font-weight:600">${estado||"N/D"}</span>`;
+}
+
+function exportarPDF() {
+  const hoy = new Date();
+  const fechaStr   = hoy.toLocaleDateString("es-CL", { weekday:"long", year:"numeric", month:"long", day:"numeric" });
+  const fechaCorta = hoy.toISOString().split("T")[0];
+
+  const conteosHoy = historial.filter(h => {
+    const ts = new Date(h.ts || h.ts_local);
+    return ts.toISOString().split("T")[0] === fechaCorta;
+  });
+
+  const stockRows = Object.values(stockMap).sort((a,b) => {
+    const ord = {"SIN STOCK":0,"CRÍTICO":1,"BAJO":2,"OK":3,"N/D":4};
+    return (ord[a.estado]??4) - (ord[b.estado]??4);
+  });
+
+  const html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">
+  <title>Cierre Inventario ${fechaCorta}</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family: Arial, sans-serif; font-size: 12px; color: #111; padding: 28px; }
+    .header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:24px; padding-bottom:14px; border-bottom:2px solid #1B4332; }
+    .header h1 { font-size:20px; color:#1B4332; font-weight:700; }
+    .header .sub { font-size:11px; color:#666; margin-top:3px; }
+    .header .meta { text-align:right; font-size:11px; color:#666; }
+    h2 { font-size:13px; font-weight:700; color:#1B4332; margin:20px 0 8px; padding:6px 10px; background:#D8F3DC; border-radius:4px; }
+    table { width:100%; border-collapse:collapse; margin-bottom:8px; }
+    thead th { background:#1B4332; color:white; padding:7px 10px; font-size:10px; text-align:left; font-weight:600; text-transform:uppercase; letter-spacing:0.04em; }
+    tbody tr:nth-child(even) { background:#F8F9FA; }
+    tbody tr { border-bottom:1px solid #E5E7EB; }
+    td { padding:7px 10px; font-size:11px; }
+    .num { text-align:right; font-family:monospace; }
+    .vacio { color:#999; font-style:italic; padding:16px 10px; text-align:center; }
+    .footer { margin-top:28px; padding-top:12px; border-top:1px solid #ddd; display:flex; justify-content:space-between; font-size:10px; color:#999; }
+    .firma { margin-top:40px; display:flex; gap:80px; }
+    .firma-linea { border-top:1px solid #333; width:180px; padding-top:6px; font-size:10px; color:#666; text-align:center; }
+    @media print { body { padding:16px; } }
+  </style></head><body>
+  <div class="header">
+    <div>
+      <h1>Informe de Inventario — Cierre del Día</h1>
+      <div class="sub">Planta de Alimentos · Huevos La Campestre</div>
+      <div class="sub" style="margin-top:4px;text-transform:capitalize">${fechaStr}</div>
+    </div>
+    <div class="meta">
+      <div><strong>Responsable:</strong> Verónica Gangas</div>
+      <div style="margin-top:3px"><strong>Generado:</strong> ${hoy.toLocaleTimeString("es-CL",{hour:"2-digit",minute:"2-digit"})}</div>
+    </div>
+  </div>
+  <h2>1. Conteos registrados hoy (${conteosHoy.length} registros)</h2>
+  ${conteosHoy.length ? `<table>
+    <thead><tr><th>Hora</th><th>Código</th><th>Materia Prima</th><th class="num">Cantidad</th><th>Observaciones</th></tr></thead>
+    <tbody>${conteosHoy.map(h => {
+      const hora = new Date(h.ts||h.ts_local).toLocaleTimeString("es-CL",{hour:"2-digit",minute:"2-digit"});
+      return '<tr><td>'+hora+'</td><td style="font-family:monospace;font-size:10px">'+h.codigo+'</td><td>'+h.nombre+'</td><td class="num"><strong>'+h.cantidad+'</strong></td><td style="color:#666">'+(h.obs||'')+'</td></tr>';
+    }).join("")}</tbody></table>` : '<div class="vacio">Sin conteos registrados hoy</div>'}
+  <h2>2. Stock actual — todas las materias primas</h2>
+  ${stockRows.length ? `<table>
+    <thead><tr><th>Código</th><th>Materia Prima</th><th class="num">Stock (kg)</th><th class="num">Mín (kg)</th><th class="num">Días</th><th>Estado</th><th>Último conteo</th></tr></thead>
+    <tbody>${stockRows.map(s =>
+      '<tr><td style="font-family:monospace;font-size:10px">'+s.codigo+'</td><td>'+s.nombre+'</td><td class="num"><strong>'+(s.stock||0)+'</strong></td><td class="num">'+(s.stock_min||0)+'</td><td class="num">'+(s.dias_stock||'N/D')+'</td><td>'+badgePDF(s.estado)+'</td><td style="font-size:10px;color:#666">'+(s.ultimo_conteo||'Sin conteo')+'</td></tr>'
+    ).join("")}</tbody></table>` : '<div class="vacio">Sin datos de stock disponibles</div>'}
+  <div class="firma" style="margin-top:40px">
+    <div class="firma-linea">Verónica Gangas · Encargada Bodega</div>
+    <div class="firma-linea" style="margin-left:80px">Andrés Lazo · Médico Veterinario</div>
+  </div>
+  <div class="footer">
+    <span>Sistema Inventario La Campestre · avivet.cl</span>
+    <span>Documento generado automáticamente · ${fechaCorta}</span>
+  </div>
+  <script>window.onload = () => window.print();<\/script>
+  </body></html>`;
+
+  const blob = new Blob([html], { type: "text/html" });
+  const url  = URL.createObjectURL(blob);
+  const win  = window.open(url, "_blank");
+  if (!win) mostrarToast("Permite ventanas emergentes para exportar", "error");
+  setTimeout(() => URL.revokeObjectURL(url), 10000);
+}
 </script>
 </body>
 </html>
