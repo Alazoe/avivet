@@ -1,1 +1,596 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Inventario La Campestre</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --verde: #1B4332; --verde-med: #2D6A4F; --verde-clar: #40916C;
+  --verde-bg: #D8F3DC; --verde-light: #F0FAF4;
+  --rojo: #C0392B; --rojo-bg: #FDF0EF;
+  --amarillo: #E67E22; --amarillo-bg: #FEF9F0;
+  --azul: #1E6091; --azul-bg: #EBF5FB;
+  --gris: #6B7280; --gris-bg: #F8F9FA; --borde: #E5E7EB;
+  --texto: #111827; --texto-sec: #6B7280;
+  --blanco: #FFFFFF;
+  --sombra: 0 1px 3px rgba(0,0,0,0.08); --sombra-md: 0 4px 12px rgba(0,0,0,0.10);
+  --radio: 12px; --radio-sm: 8px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans', sans-serif; color: var(--texto); background: #EEF0EE; }
 
+/* LOGIN */
+.login-screen {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  background: var(--verde); padding: 20px;
+}
+.login-card {
+  background: white; border-radius: 20px; padding: 40px;
+  width: 100%; max-width: 380px; box-shadow: var(--sombra-md);
+}
+.login-logo { font-size: 13px; font-weight: 600; color: var(--verde-clar); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px; }
+.login-card h1 { font-size: 24px; font-weight: 600; color: var(--verde); margin-bottom: 4px; }
+.login-card p  { font-size: 14px; color: var(--gris); margin-bottom: 28px; }
+.login-card input {
+  width: 100%; padding: 12px 14px; border: 1.5px solid var(--borde);
+  border-radius: var(--radio-sm); font-family: 'DM Sans', sans-serif;
+  font-size: 15px; outline: none; margin-bottom: 12px;
+  transition: border-color 0.15s;
+}
+.login-card input:focus { border-color: var(--verde-clar); }
+.login-btn {
+  width: 100%; padding: 13px; background: var(--verde); color: white;
+  border: none; border-radius: var(--radio-sm); font-family: 'DM Sans', sans-serif;
+  font-size: 15px; font-weight: 600; cursor: pointer; transition: background 0.15s;
+}
+.login-btn:hover { background: var(--verde-med); }
+.login-error { color: var(--rojo); font-size: 13px; margin-top: 8px; text-align: center; display: none; }
+
+/* APP SHELL */
+#app { display: none; min-height: 100vh; }
+
+/* SIDEBAR */
+.layout { display: flex; min-height: 100vh; }
+.sidebar {
+  width: 220px; background: var(--verde); position: fixed;
+  top: 0; left: 0; bottom: 0; z-index: 100;
+  display: flex; flex-direction: column; padding: 28px 0 20px;
+}
+.sidebar-logo { padding: 0 20px 28px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.sidebar-logo .brand { font-size: 11px; font-weight: 600; color: #95D5B2; letter-spacing: 0.12em; text-transform: uppercase; }
+.sidebar-logo .title { font-size: 16px; font-weight: 600; color: white; margin-top: 2px; }
+
+.nav-items { padding: 16px 12px; flex: 1; }
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border-radius: var(--radio-sm);
+  color: #95D5B2; font-size: 13px; font-weight: 500;
+  cursor: pointer; margin-bottom: 2px;
+  transition: background 0.15s, color 0.15s;
+  border: none; background: none; width: 100%; text-align: left;
+}
+.nav-item:hover { background: rgba(255,255,255,0.08); color: white; }
+.nav-item.activo { background: rgba(255,255,255,0.15); color: white; }
+.nav-item svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+.sidebar-footer { padding: 16px 20px 0; border-top: 1px solid rgba(255,255,255,0.1); }
+.user-info { font-size: 11px; color: #74C69D; }
+.user-name { font-size: 13px; font-weight: 500; color: white; margin-top: 1px; }
+
+/* MAIN */
+.main { margin-left: 220px; padding: 28px; min-height: 100vh; }
+.page { display: none; }
+.page.activa { display: block; }
+
+.page-header { margin-bottom: 24px; }
+.page-header h2 { font-size: 22px; font-weight: 600; color: var(--verde); }
+.page-header p  { font-size: 13px; color: var(--gris); margin-top: 2px; }
+
+/* MÉTRICAS */
+.metricas { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 24px; }
+.metrica-card {
+  background: var(--blanco); border-radius: var(--radio);
+  padding: 18px 20px; box-shadow: var(--sombra);
+  border-left: 3px solid transparent;
+}
+.metrica-card.verde { border-color: var(--verde-clar); }
+.metrica-card.rojo  { border-color: var(--rojo); }
+.metrica-card.amarillo { border-color: var(--amarillo); }
+.metrica-card.azul  { border-color: var(--azul); }
+.met-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--gris); }
+.met-valor { font-size: 32px; font-weight: 600; font-family: 'DM Mono', monospace; margin-top: 4px; color: var(--texto); }
+.met-sub   { font-size: 12px; color: var(--gris); margin-top: 2px; }
+
+/* TABLAS */
+.card { background: var(--blanco); border-radius: var(--radio); box-shadow: var(--sombra); overflow: hidden; margin-bottom: 20px; }
+.card-header { padding: 16px 20px; border-bottom: 1px solid var(--borde); display: flex; align-items: center; justify-content: space-between; }
+.card-header h3 { font-size: 15px; font-weight: 600; }
+.card-header .ts { font-size: 11px; color: var(--gris); font-family: 'DM Mono', monospace; }
+.card-body { overflow-x: auto; }
+
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead th {
+  background: var(--gris-bg); padding: 10px 14px;
+  font-weight: 600; font-size: 11px; text-transform: uppercase;
+  letter-spacing: 0.05em; color: var(--gris); text-align: left;
+  border-bottom: 1px solid var(--borde);
+}
+tbody tr { border-bottom: 1px solid var(--borde); transition: background 0.1s; }
+tbody tr:hover { background: var(--verde-light); }
+tbody tr:last-child { border-bottom: none; }
+td { padding: 11px 14px; }
+.cod-cell { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--gris); }
+.nombre-cell { font-weight: 500; }
+.num-cell { font-family: 'DM Mono', monospace; text-align: right; }
+
+/* BADGES */
+.badge {
+  display: inline-block; padding: 3px 8px;
+  border-radius: 5px; font-size: 11px; font-weight: 600;
+}
+.badge-ok    { background: var(--verde-bg);  color: var(--verde-med); }
+.badge-bajo  { background: var(--amarillo-bg); color: var(--amarillo); }
+.badge-crit  { background: var(--rojo-bg);   color: var(--rojo); }
+.badge-nd    { background: var(--gris-bg);   color: var(--gris); }
+.badge-pend  { background: var(--azul-bg);   color: var(--azul); }
+.badge-recib { background: var(--verde-bg);  color: var(--verde-med); }
+
+/* ALERTA CRÍTICOS */
+.alerta-banner {
+  background: var(--rojo-bg); border: 1px solid #F5C6C6;
+  border-radius: var(--radio); padding: 14px 18px; margin-bottom: 20px;
+  display: flex; align-items: center; gap: 12px;
+}
+.alerta-banner svg { color: var(--rojo); flex-shrink: 0; }
+.alerta-banner .alerta-txt { font-size: 14px; font-weight: 500; color: var(--rojo); }
+.alerta-banner .alerta-sub { font-size: 12px; color: var(--rojo); opacity: 0.8; margin-top: 2px; }
+
+/* OC FORM */
+.oc-form {
+  background: var(--verde-light); border: 1px solid #B7E4C7;
+  border-radius: var(--radio); padding: 20px; margin-bottom: 20px;
+  display: none;
+}
+.oc-form.abierto { display: block; }
+.form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; }
+.fg label { font-size: 11px; font-weight: 600; color: var(--gris); text-transform: uppercase; display: block; margin-bottom: 5px; }
+.fg input, .fg select {
+  width: 100%; padding: 9px 12px; border: 1.5px solid var(--borde);
+  border-radius: var(--radio-sm); font-family: 'DM Sans', sans-serif;
+  font-size: 13px; background: white; outline: none;
+  transition: border-color 0.15s;
+}
+.fg input:focus, .fg select:focus { border-color: var(--verde-clar); }
+.btn-primary {
+  background: var(--verde); color: white; border: none;
+  border-radius: var(--radio-sm); padding: 10px 20px;
+  font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: background 0.15s;
+}
+.btn-primary:hover { background: var(--verde-med); }
+.btn-outline {
+  background: white; color: var(--verde); border: 1.5px solid var(--verde);
+  border-radius: var(--radio-sm); padding: 9px 20px;
+  font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600;
+  cursor: pointer; margin-left: 8px; transition: all 0.15s;
+}
+.btn-outline:hover { background: var(--verde-light); }
+
+/* LOADING */
+.loading-msg { padding: 40px; text-align: center; color: var(--gris); font-size: 14px; }
+.dot-anim::after { content: '...'; animation: dots 1.2s steps(3) infinite; }
+@keyframes dots { 0%,33%{content:'.'} 34%,66%{content:'..'} 67%,100%{content:'...'} }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .sidebar { width: 100%; height: 56px; bottom: 0; top: auto; flex-direction: row; padding: 0; overflow-x: auto; }
+  .sidebar-logo { display: none; }
+  .nav-items { display: flex; flex-direction: row; padding: 0; gap: 0; }
+  .nav-item { flex-direction: column; gap: 2px; font-size: 10px; padding: 8px 12px; border-radius: 0; flex: 1; justify-content: center; }
+  .sidebar-footer { display: none; }
+  .main { margin-left: 0; margin-bottom: 56px; padding: 16px; }
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo">La Campestre</div>
+    <h1>Panel Admin</h1>
+    <p>Inventario Planta de Alimentos</p>
+    <input type="password" id="passInput" placeholder="Contraseña" onkeydown="if(event.key==='Enter')login()">
+    <button class="login-btn" onclick="login()">Ingresar</button>
+    <div class="login-error" id="loginError">Contraseña incorrecta</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div class="layout">
+    <!-- SIDEBAR -->
+    <nav class="sidebar">
+      <div class="sidebar-logo">
+        <div class="brand">La Campestre</div>
+        <div class="title">Admin Inventario</div>
+      </div>
+      <div class="nav-items">
+        <button class="nav-item activo" onclick="irA('dashboard')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          Dashboard
+        </button>
+        <button class="nav-item" onclick="irA('stock')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7H4a2 2 0 00-2 2v9a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+          Stock Actual
+        </button>
+        <button class="nav-item" onclick="irA('ordenes')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>
+          Órdenes de Compra
+        </button>
+        <button class="nav-item" onclick="irA('recetas')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="2"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
+          Recetas
+        </button>
+        <button class="nav-item" onclick="irA('proyecciones')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          Proyecciones
+        </button>
+      </div>
+      <div class="sidebar-footer">
+        <div class="user-info">Administrador</div>
+        <div class="user-name">Andrés Lazo</div>
+      </div>
+    </nav>
+
+    <!-- MAIN -->
+    <main class="main">
+
+      <!-- DASHBOARD -->
+      <div class="page activa" id="pg-dashboard">
+        <div class="page-header">
+          <h2>Dashboard</h2>
+          <p id="dash-ts">Cargando datos<span class="dot-anim"></span></p>
+        </div>
+        <div class="metricas" id="metricas"></div>
+        <div id="alertas-criticas"></div>
+        <div class="card">
+          <div class="card-header"><h3>Stock por estado</h3><span class="ts" id="dash-update"></span></div>
+          <div class="card-body"><div id="tabla-dash-stock" class="loading-msg">Cargando<span class="dot-anim"></span></div></div>
+        </div>
+      </div>
+
+      <!-- STOCK -->
+      <div class="page" id="pg-stock">
+        <div class="page-header">
+          <h2>Stock Actual</h2>
+          <p>Último conteo físico registrado por materia prima</p>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <h3>Inventario completo</h3>
+            <button class="btn-primary" onclick="cargarDashboard()">↻ Actualizar</button>
+          </div>
+          <div class="card-body"><div id="tabla-stock" class="loading-msg">Cargando<span class="dot-anim"></span></div></div>
+        </div>
+      </div>
+
+      <!-- ÓRDENES -->
+      <div class="page" id="pg-ordenes">
+        <div class="page-header">
+          <h2>Órdenes de Compra</h2>
+          <p>Gestión y seguimiento de compras de materias primas</p>
+        </div>
+        <button class="btn-primary" onclick="toggleOCForm()" style="margin-bottom:16px">+ Nueva OC</button>
+        <div class="oc-form" id="ocForm">
+          <h3 style="font-size:15px;margin-bottom:14px;color:var(--verde)">Nueva Orden de Compra</h3>
+          <div class="form-grid">
+            <div class="fg"><label>Materia Prima</label><select id="oc-codigo"><option value="">Seleccionar...</option></select></div>
+            <div class="fg"><label>Cantidad (kg)</label><input type="number" id="oc-cantidad" min="0" step="0.1" placeholder="0"></div>
+            <div class="fg"><label>Precio $/kg</label><input type="number" id="oc-precio" min="0" placeholder="0"></div>
+            <div class="fg"><label>Proveedor</label><input type="text" id="oc-proveedor" placeholder="Nombre proveedor"></div>
+            <div class="fg"><label>Fecha Entrega Est.</label><input type="date" id="oc-fecha"></div>
+            <div class="fg"><label>Observaciones</label><input type="text" id="oc-obs" placeholder="Opcional"></div>
+          </div>
+          <div style="margin-top:16px">
+            <button class="btn-primary" onclick="crearOC()">Guardar OC</button>
+            <button class="btn-outline" onclick="toggleOCForm()">Cancelar</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><h3>Historial de órdenes</h3></div>
+          <div class="card-body"><div id="tabla-oc" class="loading-msg">Cargando<span class="dot-anim"></span></div></div>
+        </div>
+      </div>
+
+      <!-- RECETAS -->
+      <div class="page" id="pg-recetas">
+        <div class="page-header">
+          <h2>Recetas y Fórmulas</h2>
+          <p>Composición de dietas por 1.000 kg de mezcla</p>
+        </div>
+        <div id="tabla-recetas" class="loading-msg">Cargando<span class="dot-anim"></span></div>
+      </div>
+
+      <!-- PROYECCIONES -->
+      <div class="page" id="pg-proyecciones">
+        <div class="page-header">
+          <h2>Proyecciones de Consumo</h2>
+          <p>Ingresa la producción diaria por dieta para calcular consumo de MPs</p>
+        </div>
+        <div class="card">
+          <div class="card-header"><h3>Producción diaria activa (kg/día)</h3></div>
+          <div class="card-body" style="padding:20px" id="form-proyecciones">Cargando<span class="dot-anim"></span></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><h3>Consumo estimado de materias primas</h3></div>
+          <div class="card-body"><div id="tabla-proyecciones" class="loading-msg"></div></div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script>
+const BACKEND = "https://script.google.com/macros/s/AKfycby8dfFibuDyDeRRK3J44Vqw9pJA1F3sMFKuYPHoC_1OHB-GIeeOlAYCdMDklE8o7b7u/exec";
+const PASS = "campestre2025";
+
+const RECETAS_DATA = {
+  "PONEDORA 1":    {"30MAIZ-00":562,"30AFSY-00":266,"30COCH-00":106,"30HTR3-00":50,"30PHSB-00":6,"30MSRB-00":0.5,"30MET2-00":2.5,"30INMU-00":0.5,"30LIS2-00":0.5,"30PLFD-00":2,"30NSLP-00":0.5,"30SAL6-00":4,"30OVTO-00":1,"30NSLG-00":1,"30PIGM-00":0.2},
+  "PONEDORA 2":    {"30MAIZ-00":552,"30AFSY-00":257,"30COCH-00":127,"30HTR3-00":50,"30PHSB-00":4,"30MSRB-00":0.5,"30MET2-00":2,"30INMU-00":0.5,"30LIS2-00":0.3,"30PLFD-00":2.5,"30SAL6-00":4,"30OVTO-00":1,"30NSLG-00":1,"30PIGM-00":0.2},
+  "POLLITA INICIAL":{"30MAIZ-00":600,"30AFSY-00":315,"30COCH-00":15,"30HTR3-00":50,"30PHSB-00":10,"30MSRB-00":0.5,"30MET2-00":2.5,"30INMU-00":0.5,"30LIS2-00":1.6,"30COCI-00":0.5,"30NSLP-00":1,"30SAL6-00":2.5},
+  "RECRÍA":        {"30MAIZ-00":661,"30AFSY-00":260,"30COCH-00":13,"30HTR3-00":50,"30PHSB-00":9,"30MSRB-00":0.5,"30MET2-00":1,"30INMU-00":0.5,"30LIS2-00":0.3,"30COCI-00":0.4,"30NSLP-00":1,"30SAL6-00":2.5},
+  "PREPOSTURA":    {"30MAIZ-00":646,"30AFSY-00":250,"30COCH-00":63,"30HTR3-00":25,"30PHSB-00":9,"30MSRB-00":0.5,"30MET2-00":1,"30INMU-00":0.5,"30LIS2-00":0.3,"30SAL6-00":3,"30NSLG-00":1},
+  "LOLOL":         {"30MAIZ-00":562,"30AFSY-00":269,"30COCH-00":105,"30HTR3-00":50,"30PHSB-00":6,"30MSRB-00":0.5,"30MET2-00":2,"30INMU-00":0.5,"30LIS2-00":0.3,"30PLFD-00":2,"30SAL6-00":3,"30NSLG-00":1},
+  "POLLA NUEVA":   {"30MAIZ-00":558,"30AFSY-00":267,"30COCH-00":108,"30HTR3-00":50,"30PHSB-00":7,"30MSRB-00":0.5,"30MET2-00":2,"30INMU-00":0.5,"30LIS2-00":0.3,"30PLFD-00":3,"30NSLP-00":0.5,"30SAL6-00":3,"30NSLG-00":1,"30PIGM-00":0.2},
+};
+
+const MP_NOMBRES = {
+  "30MAIZ-00":"MAÍZ","30AFSY-00":"AFRECHO SOYA","30COCH-00":"CONCHUELA","30HTR3-00":"HARINILLA TRIGO",
+  "30PHSB-00":"FOSFATO PHOSBIC","30MSRB-00":"SECUESTRANTE","30MET2-00":"METIONINA","30INMU-00":"REG. INTESTINAL",
+  "30LIS2-00":"LISINA 99%","30PLFD-00":"POLIFEED","30COCI-00":"COCCISAN","30NSLP-00":"NUCLEO POLLITA",
+  "30NSLG-00":"NUCLEO PONEDORA","30SAL6-00":"SAL FINA","30OVTO-00":"OVOTOP","30PIGM-00":"PIGMENTO",
+  "30EMEL-00":"EMERAL","30FITO-00":"FITOGÉNICO","10VSCT-00":"CHICKTONIC",
+};
+
+let dashData = null;
+let produccionDiaria = {};
+Object.keys(RECETAS_DATA).forEach(d => { produccionDiaria[d] = 0; });
+
+// ── LOGIN ──
+function login() {
+  const pass = document.getElementById("passInput").value;
+  if (pass === PASS) {
+    document.getElementById("loginScreen").style.display = "none";
+    document.getElementById("app").style.display = "block";
+    cargarDashboard();
+    cargarMPsParaOC();
+  } else {
+    document.getElementById("loginError").style.display = "block";
+    setTimeout(() => document.getElementById("loginError").style.display = "none", 2000);
+  }
+}
+document.getElementById("passInput")?.addEventListener("keydown", e => { if(e.key==="Enter") login(); });
+
+// ── NAVEGACIÓN ──
+function irA(pagina) {
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("activa"));
+  document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("activo"));
+  document.getElementById(`pg-${pagina}`).classList.add("activa");
+  event.currentTarget.classList.add("activo");
+
+  if (pagina === "stock" && dashData) renderTablaStock(dashData.stock);
+  if (pagina === "ordenes") cargarOrdenes();
+  if (pagina === "recetas") renderRecetas();
+  if (pagina === "proyecciones") renderProyecciones();
+}
+
+// ── DASHBOARD ──
+async function cargarDashboard() {
+  try {
+    const res = await fetch(`${BACKEND}?action=getDashboard`);
+    dashData = await res.json();
+    if (!dashData.ok) throw new Error();
+    renderDashboard(dashData);
+  } catch(e) {
+    document.getElementById("dash-ts").textContent = "Error al cargar datos";
+  }
+}
+
+function renderDashboard(d) {
+  const ts = new Date(d.ts).toLocaleString("es-CL", { day:"2-digit", month:"short", hour:"2-digit", minute:"2-digit" });
+  document.getElementById("dash-ts").textContent = `Actualizado: ${ts}`;
+  document.getElementById("dash-update").textContent = ts;
+
+  const r = d.resumen;
+  document.getElementById("metricas").innerHTML = `
+    <div class="metrica-card verde"><div class="met-label">Total MPs</div><div class="met-valor">${r.total_mps}</div><div class="met-sub">materias primas</div></div>
+    <div class="metrica-card rojo"><div class="met-label">Críticos</div><div class="met-valor">${r.criticos}</div><div class="met-sub">sin stock o bajo mínimo</div></div>
+    <div class="metrica-card amarillo"><div class="met-label">Sin stock</div><div class="met-valor">${r.sin_stock}</div><div class="met-sub">requieren reposición</div></div>
+    <div class="metrica-card azul"><div class="met-label">OC Pendientes</div><div class="met-valor">${r.oc_pendientes}</div><div class="met-sub">órdenes activas</div></div>
+  `;
+
+  // Alertas críticas
+  const alertasEl = document.getElementById("alertas-criticas");
+  if (d.alertas.length > 0) {
+    alertasEl.innerHTML = `<div class="alerta-banner">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><triangle points="12 2 22 20 2 20"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <div><div class="alerta-txt">⚠ ${d.alertas.length} materia${d.alertas.length>1?"s":"} prima"} en estado crítico</div>
+      <div class="alerta-sub">${d.alertas.map(a=>a.nombre).join(" · ")}</div></div></div>`;
+  } else {
+    alertasEl.innerHTML = "";
+  }
+
+  renderTablaStockResumen(d.stock, "tabla-dash-stock");
+}
+
+function badgeEstado(estado) {
+  const map = {"OK":"badge-ok","BAJO":"badge-bajo","CRÍTICO":"badge-crit","SIN STOCK":"badge-crit","N/D":"badge-nd"};
+  return `<span class="badge ${map[estado]||"badge-nd"}">${estado||"N/D"}</span>`;
+}
+
+function renderTablaStockResumen(stock, elId) {
+  const el = document.getElementById(elId);
+  if (!stock?.length) { el.innerHTML = `<div class="loading-msg">Sin datos</div>`; return; }
+  const ordenado = [...stock].sort((a,b) => {
+    const ord = {"SIN STOCK":0,"CRÍTICO":1,"BAJO":2,"OK":3,"N/D":4};
+    return (ord[a.estado]??4) - (ord[b.estado]??4);
+  });
+  el.innerHTML = `<table>
+    <thead><tr><th>Código</th><th>Nombre</th><th style="text-align:right">Stock (kg)</th><th style="text-align:right">Mín (kg)</th><th style="text-align:right">Días</th><th>Estado</th><th>Último Conteo</th></tr></thead>
+    <tbody>${ordenado.map(m=>`<tr>
+      <td class="cod-cell">${m.codigo}</td>
+      <td class="nombre-cell">${m.nombre}</td>
+      <td class="num-cell">${m.stock||0}</td>
+      <td class="num-cell">${m.stock_min||0}</td>
+      <td class="num-cell">${m.dias_stock||"N/D"}</td>
+      <td>${badgeEstado(m.estado)}</td>
+      <td style="font-size:11px;color:var(--gris)">${m.ultimo_conteo||"Sin conteo"}</td>
+    </tr>`).join("")}</tbody></table>`;
+}
+
+function renderTablaStock(stock) {
+  renderTablaStockResumen(stock, "tabla-stock");
+}
+
+// ── ÓRDENES ──
+async function cargarOrdenes() {
+  document.getElementById("tabla-oc").innerHTML = `<div class="loading-msg">Cargando<span class="dot-anim"></span></div>`;
+  try {
+    const res = await fetch(`${BACKEND}?action=getOrdenes`);
+    const data = await res.json();
+    if (!data.ok) throw new Error();
+    renderTablaOC(data.data);
+  } catch(e) {
+    document.getElementById("tabla-oc").innerHTML = `<div class="loading-msg">Error al cargar</div>`;
+  }
+}
+
+function renderTablaOC(ordenes) {
+  const el = document.getElementById("tabla-oc");
+  if (!ordenes.length) { el.innerHTML = `<div class="loading-msg">Sin órdenes registradas</div>`; return; }
+  el.innerHTML = `<table>
+    <thead><tr><th>N° OC</th><th>Fecha</th><th>MP</th><th style="text-align:right">Cantidad</th><th style="text-align:right">Total ($)</th><th>Proveedor</th><th>Entrega Est.</th><th>Estado</th></tr></thead>
+    <tbody>${ordenes.map(o=>`<tr>
+      <td class="cod-cell">${o.noc}</td><td style="font-size:11px">${o.fecha}</td>
+      <td class="nombre-cell">${o.nombre}</td>
+      <td class="num-cell">${o.cantidad} kg</td>
+      <td class="num-cell">$${Number(o.total||0).toLocaleString("es-CL")}</td>
+      <td>${o.proveedor||"—"}</td><td style="font-size:11px">${o.fecha_entrega||"—"}</td>
+      <td><span class="badge ${o.estado==="PENDIENTE"?"badge-pend":"badge-recib"}">${o.estado}</span></td>
+    </tr>`).join("")}</tbody></table>`;
+}
+
+async function cargarMPsParaOC() {
+  try {
+    const res = await fetch(`${BACKEND}?action=getMateriasPrimas`);
+    const data = await res.json();
+    if (!data.ok) return;
+    const sel = document.getElementById("oc-codigo");
+    data.data.filter(m=>m.grupo!=="Envases").forEach(m => {
+      sel.innerHTML += `<option value="${m.codigo}" data-nombre="${m.nombre}">${m.nombre}</option>`;
+    });
+  } catch(e) {}
+}
+
+function toggleOCForm() {
+  document.getElementById("ocForm").classList.toggle("abierto");
+}
+
+async function crearOC() {
+  const sel = document.getElementById("oc-codigo");
+  const codigo = sel.value;
+  const nombre = sel.options[sel.selectedIndex]?.dataset.nombre || "";
+  const body = {
+    action: "guardarOrden", codigo, nombre,
+    cantidad: parseFloat(document.getElementById("oc-cantidad").value)||0,
+    precio:   parseFloat(document.getElementById("oc-precio").value)||0,
+    proveedor: document.getElementById("oc-proveedor").value,
+    fecha_entrega: document.getElementById("oc-fecha").value,
+    obs: document.getElementById("oc-obs").value,
+  };
+  if (!codigo) { alert("Selecciona una materia prima"); return; }
+  try {
+    const res = await fetch(BACKEND, { method:"POST", body: JSON.stringify(body), headers:{"Content-Type":"application/json"} });
+    const data = await res.json();
+    if (data.ok) { toggleOCForm(); cargarOrdenes(); }
+  } catch(e) { alert("Error al guardar"); }
+}
+
+// ── RECETAS ──
+function renderRecetas() {
+  const el = document.getElementById("tabla-recetas");
+  const dietas = Object.keys(RECETAS_DATA);
+  const todasMPs = [...new Set(dietas.flatMap(d => Object.keys(RECETAS_DATA[d])))];
+
+  el.innerHTML = `<div class="card"><div class="card-body"><table>
+    <thead><tr>
+      <th>Materia Prima</th><th>Código</th>
+      ${dietas.map(d=>`<th style="text-align:right">${d}</th>`).join("")}
+    </tr></thead>
+    <tbody>${todasMPs.map(cod=>`<tr>
+      <td class="nombre-cell">${MP_NOMBRES[cod]||cod}</td>
+      <td class="cod-cell">${cod}</td>
+      ${dietas.map(d=>`<td class="num-cell">${RECETAS_DATA[d][cod]||""}</td>`).join("")}
+    </tr>`).join("")}
+    <tr style="font-weight:600;background:var(--verde-light)">
+      <td colspan="2" style="font-weight:600">TOTAL</td>
+      ${dietas.map(d=>`<td class="num-cell">${Object.values(RECETAS_DATA[d]).reduce((a,b)=>a+b,0).toFixed(1)}</td>`).join("")}
+    </tr></tbody></table></div></div>`;
+}
+
+// ── PROYECCIONES ──
+function renderProyecciones() {
+  const formEl = document.getElementById("form-proyecciones");
+  const dietas = Object.keys(RECETAS_DATA);
+
+  formEl.innerHTML = `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px">
+    ${dietas.map(d=>`<div><label style="font-size:11px;font-weight:600;color:var(--gris);display:block;margin-bottom:5px;text-transform:uppercase">${d}</label>
+    <input type="number" class="prod-input" data-dieta="${d}" value="${produccionDiaria[d]||0}" min="0" step="1"
+      style="width:100%;padding:9px 12px;border:1.5px solid var(--borde);border-radius:8px;font-family:'DM Mono',monospace;font-size:15px;outline:none"
+      onchange="actualizarProduccion(this)" placeholder="kg/día"></div>`).join("")}
+  </div>
+  <button class="btn-primary" style="margin-top:16px" onclick="calcularProyecciones()">Calcular consumo</button>`;
+}
+
+function actualizarProduccion(el) {
+  produccionDiaria[el.dataset.dieta] = parseFloat(el.value)||0;
+}
+
+function calcularProyecciones() {
+  const el = document.getElementById("tabla-proyecciones");
+  const todasMPs = [...new Set(Object.values(RECETAS_DATA).flatMap(r => Object.keys(r)))];
+
+  const consumos = todasMPs.map(cod => {
+    let diario = 0;
+    Object.entries(RECETAS_DATA).forEach(([dieta, insumos]) => {
+      const proporcion = insumos[cod] || 0;
+      diario += (produccionDiaria[dieta]||0) * (proporcion/1000);
+    });
+    const stockActual = dashData?.stock?.find(s=>s.codigo===cod)?.stock || 0;
+    const dias = diario > 0 ? Math.round(stockActual/diario) : null;
+    return { cod, nombre: MP_NOMBRES[cod]||cod, diario, semanal: diario*7, mensual: diario*30, stockActual, dias };
+  }).filter(m => m.diario > 0).sort((a,b) => (a.dias||9999)-(b.dias||9999));
+
+  el.innerHTML = `<table>
+    <thead><tr><th>Materia Prima</th><th style="text-align:right">Cons/día (kg)</th><th style="text-align:right">Cons/semana</th><th style="text-align:right">Cons/mes</th><th style="text-align:right">Stock actual</th><th style="text-align:right">Días de stock</th><th>Estado</th></tr></thead>
+    <tbody>${consumos.map(m=>{
+      const alertaClass = m.dias===null?"badge-nd":m.dias<7?"badge-crit":m.dias<14?"badge-bajo":"badge-ok";
+      const alertaTxt   = m.dias===null?"N/D":m.dias<7?"⚠ "+m.dias+" días":m.dias+" días";
+      return `<tr>
+        <td class="nombre-cell">${m.nombre}</td>
+        <td class="num-cell">${m.diario.toFixed(1)}</td>
+        <td class="num-cell">${m.semanal.toFixed(1)}</td>
+        <td class="num-cell">${m.mensual.toFixed(0)}</td>
+        <td class="num-cell">${m.stockActual}</td>
+        <td class="num-cell">${m.dias!==null?m.dias:"N/D"}</td>
+        <td><span class="badge ${alertaClass}">${alertaTxt}</span></td>
+      </tr>`;
+    }).join("")}</tbody></table>`;
+}
+</script>
+</body>
+</html>
