@@ -1,1 +1,614 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Inventario — La Campestre</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --verde: #1B4332;
+  --verde-med: #2D6A4F;
+  --verde-clar: #40916C;
+  --verde-bg: #D8F3DC;
+  --verde-light: #F0FAF3;
+  --gold: #D4A017;
+  --gold-light: #FFF8E7;
+  --rojo: #C0392B;
+  --rojo-bg: #FDF0EF;
+  --amarillo: #E67E22;
+  --amarillo-bg: #FEF9F0;
+  --gris: #6B7280;
+  --gris-bg: #F8F9FA;
+  --borde: #E5E7EB;
+  --texto: #111827;
+  --texto-sec: #6B7280;
+  --blanco: #FFFFFF;
+  --sombra: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+  --sombra-md: 0 4px 12px rgba(0,0,0,0.10);
+  --radio: 14px;
+  --radio-sm: 8px;
+}
 
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; background: #F0F2F0; }
+body { font-family: 'DM Sans', sans-serif; color: var(--texto); overflow-x: hidden; }
+
+/* HEADER */
+.header {
+  background: var(--verde);
+  padding: 52px 20px 20px;
+  position: sticky; top: 0; z-index: 100;
+}
+.header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.logo { font-size: 11px; font-weight: 600; color: #95D5B2; letter-spacing: 0.12em; text-transform: uppercase; }
+.fecha-badge {
+  background: rgba(255,255,255,0.12);
+  color: #B7E4C7;
+  font-size: 11px; font-family: 'DM Mono', monospace;
+  padding: 4px 10px; border-radius: 20px;
+}
+.header h1 { font-size: 22px; font-weight: 600; color: #FFFFFF; line-height: 1.2; }
+.header-sub { font-size: 13px; color: #95D5B2; margin-top: 2px; }
+
+/* BARRA BÚSQUEDA */
+.search-bar {
+  background: var(--verde-med);
+  padding: 0 20px 16px;
+  position: sticky; top: 100px; z-index: 99;
+}
+.search-wrap { position: relative; }
+.search-wrap svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); opacity: 0.5; }
+#buscar {
+  width: 100%; padding: 11px 12px 11px 38px;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: var(--radio-sm);
+  color: white; font-family: 'DM Sans', sans-serif; font-size: 15px;
+  outline: none;
+}
+#buscar::placeholder { color: rgba(255,255,255,0.5); }
+
+/* FILTROS */
+.filtros {
+  display: flex; gap: 8px; padding: 14px 20px 10px;
+  overflow-x: auto; scrollbar-width: none;
+}
+.filtros::-webkit-scrollbar { display: none; }
+.filtro-btn {
+  white-space: nowrap; padding: 6px 14px;
+  border-radius: 20px; border: 1.5px solid var(--borde);
+  background: var(--blanco); color: var(--gris);
+  font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500;
+  cursor: pointer; transition: all 0.15s;
+}
+.filtro-btn.activo { background: var(--verde); border-color: var(--verde); color: white; }
+
+/* LISTA MP */
+.lista-container { padding: 8px 16px 120px; }
+.grupo-titulo {
+  font-size: 10px; font-weight: 600; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--gris);
+  padding: 12px 4px 6px;
+}
+.mp-card {
+  background: var(--blanco);
+  border-radius: var(--radio);
+  margin-bottom: 8px;
+  box-shadow: var(--sombra);
+  overflow: hidden;
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+.mp-card:active { transform: scale(0.98); }
+.mp-header {
+  display: flex; align-items: center;
+  padding: 14px 16px; gap: 12px; cursor: pointer;
+}
+.mp-icon {
+  width: 40px; height: 40px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.mp-info { flex: 1; min-width: 0; }
+.mp-nombre { font-size: 14px; font-weight: 600; color: var(--texto); line-height: 1.2; }
+.mp-codigo { font-size: 11px; font-family: 'DM Mono', monospace; color: var(--gris); margin-top: 2px; }
+.mp-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
+.stock-badge {
+  font-size: 12px; font-weight: 600; font-family: 'DM Mono', monospace;
+  padding: 3px 8px; border-radius: 6px;
+}
+.stock-ok    { background: var(--verde-bg);  color: var(--verde-med); }
+.stock-bajo  { background: var(--amarillo-bg); color: var(--amarillo); }
+.stock-crit  { background: var(--rojo-bg);   color: var(--rojo); }
+.stock-nd    { background: var(--gris-bg);   color: var(--gris); }
+.ultimo-txt  { font-size: 10px; color: var(--gris); }
+
+/* FORM CONTEO */
+.mp-form {
+  display: none; padding: 0 16px 16px;
+  border-top: 1px solid var(--borde);
+  animation: slideDown 0.2s ease;
+}
+.mp-form.abierto { display: block; }
+@keyframes slideDown { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
+
+.form-row { display: flex; gap: 10px; margin-top: 12px; }
+.form-group { flex: 1; }
+.form-group label { font-size: 11px; font-weight: 600; color: var(--gris); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 5px; }
+.form-group input, .form-group textarea {
+  width: 100%; padding: 11px 13px;
+  border: 1.5px solid var(--borde); border-radius: var(--radio-sm);
+  font-family: 'DM Sans', sans-serif; font-size: 15px; color: var(--texto);
+  background: var(--gris-bg); outline: none;
+  transition: border-color 0.15s, background 0.15s;
+}
+.form-group input:focus, .form-group textarea:focus {
+  border-color: var(--verde-clar); background: var(--blanco);
+}
+.form-group input[type=number] { font-family: 'DM Mono', monospace; font-size: 18px; font-weight: 500; }
+.form-group textarea { resize: none; height: 60px; font-size: 13px; }
+
+.btn-guardar {
+  width: 100%; margin-top: 12px;
+  background: var(--verde); color: white;
+  border: none; border-radius: var(--radio-sm);
+  padding: 14px; font-family: 'DM Sans', sans-serif;
+  font-size: 15px; font-weight: 600; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  transition: background 0.15s, transform 0.1s;
+}
+.btn-guardar:active { transform: scale(0.98); background: var(--verde-med); }
+.btn-guardar.loading { background: var(--gris); pointer-events: none; }
+
+/* TOAST */
+.toast {
+  position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(20px);
+  background: var(--texto); color: white;
+  padding: 12px 20px; border-radius: 24px;
+  font-size: 14px; font-weight: 500;
+  opacity: 0; transition: all 0.3s; z-index: 999;
+  white-space: nowrap; pointer-events: none;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast.exito { background: var(--verde-med); }
+.toast.error  { background: var(--rojo); }
+
+/* OFFLINE */
+.offline-bar {
+  background: var(--amarillo); color: white;
+  text-align: center; font-size: 12px; font-weight: 600;
+  padding: 6px; display: none;
+}
+.offline-bar.show { display: block; }
+
+/* NAVBAR */
+.navbar {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: var(--blanco);
+  border-top: 1px solid var(--borde);
+  display: flex; padding: 10px 0 20px;
+  z-index: 200;
+}
+.nav-btn {
+  flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
+  background: none; border: none; cursor: pointer;
+  font-family: 'DM Sans', sans-serif; font-size: 10px; color: var(--gris);
+  transition: color 0.15s;
+}
+.nav-btn.activo { color: var(--verde); }
+.nav-btn svg { width: 22px; height: 22px; }
+
+/* PANEL HISTORIAL */
+.panel { display: none; padding: 16px 16px 120px; }
+.panel.activo { display: block; }
+.lista-activa { display: block; }
+.lista-activa .lista-container { padding-bottom: 0; }
+
+.historial-card {
+  background: var(--blanco); border-radius: var(--radio);
+  padding: 14px 16px; margin-bottom: 8px;
+  box-shadow: var(--sombra);
+  display: flex; align-items: center; gap: 12px;
+}
+.hist-ico { width: 36px; height: 36px; background: var(--verde-bg); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+.hist-info { flex: 1; min-width: 0; }
+.hist-nombre { font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hist-meta { font-size: 11px; color: var(--gris); margin-top: 2px; }
+.hist-qty { font-family: 'DM Mono', monospace; font-size: 16px; font-weight: 600; color: var(--verde-med); flex-shrink: 0; }
+
+/* QUEUE badge */
+.queue-badge {
+  background: var(--amarillo); color: white;
+  font-size: 10px; font-weight: 700;
+  width: 16px; height: 16px; border-radius: 50%;
+  display: none; align-items: center; justify-content: center;
+  position: absolute; top: -2px; right: -2px;
+}
+.queue-badge.show { display: flex; }
+.nav-ico-wrap { position: relative; }
+
+/* EMPTY STATE */
+.empty-state { text-align: center; padding: 60px 20px; color: var(--gris); }
+.empty-state svg { opacity: 0.25; margin-bottom: 12px; }
+.empty-state p { font-size: 14px; }
+
+/* SPINNER */
+.spinner { animation: spin 0.8s linear infinite; display: inline-block; }
+@keyframes spin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
+
+/* LOADING SKELETON */
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s infinite;
+  border-radius: 8px; height: 72px; margin-bottom: 8px;
+}
+@keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+</style>
+</head>
+<body>
+
+<div class="offline-bar" id="offlineBar">⚠ Sin conexión — los conteos se guardarán localmente</div>
+
+<div class="header">
+  <div class="header-top">
+    <span class="logo">La Campestre</span>
+    <span class="fecha-badge" id="fechaHoy"></span>
+  </div>
+  <h1>Control de Inventario</h1>
+  <div class="header-sub" id="headerSub">Cargando materias primas...</div>
+</div>
+
+<!-- VISTA CONTEO -->
+<div id="vistaConteo" class="lista-activa">
+  <div class="search-bar">
+    <div class="search-wrap">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="search" id="buscar" placeholder="Buscar materia prima..." autocomplete="off">
+    </div>
+  </div>
+
+  <div class="filtros" id="filtros">
+    <button class="filtro-btn activo" data-grupo="Todos">Todos</button>
+  </div>
+
+  <div class="lista-container" id="listaMPs">
+    <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>
+    <div class="skeleton"></div><div class="skeleton"></div>
+  </div>
+</div>
+
+<!-- VISTA HISTORIAL -->
+<div id="vistaHistorial" class="panel">
+  <div id="listaHistorial"></div>
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <button class="nav-btn activo" id="navConteo" onclick="cambiarVista('conteo')">
+    <div class="nav-ico-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="2"/><path d="M9 12h6M9 16h4"/></svg>
+      <span class="queue-badge" id="queueBadge">0</span>
+    </div>
+    Conteo
+  </button>
+  <button class="nav-btn" id="navHistorial" onclick="cambiarVista('historial')">
+    <div class="nav-ico-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+    </div>
+    Historial
+  </button>
+</nav>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const BACKEND = "https://script.google.com/macros/s/AKfycby8dfFibuDyDeRRK3J44Vqw9pJA1F3sMFKuYPHoC_1OHB-GIeeOlAYCdMDklE8o7b7u/exec";
+const RESPONSABLE = "Verónica Gangas";
+
+const ICONOS = {
+  "Energéticos": "🌽", "Proteínas": "🫘", "Minerales": "🪨",
+  "Aminoácidos": "⚗️", "Núcleos": "🔬", "Aditivos": "🧪",
+  "Medicamentos": "💊", "Envases": "📦"
+};
+const COLORES = {
+  "Energéticos": "#FFF9C4", "Proteínas": "#DCEEFB", "Minerales": "#E8F5E9",
+  "Aminoácidos": "#FCE4EC", "Núcleos": "#EDE7F6", "Aditivos": "#FFF3E0",
+  "Medicamentos": "#FFEBEE", "Envases": "#F5F5F5"
+};
+
+let mps = [];
+let stockMap = {};
+let offlineQueue = JSON.parse(localStorage.getItem("campestre_queue") || "[]");
+let historial = JSON.parse(localStorage.getItem("campestre_historial") || "[]");
+let cardAbierta = null;
+
+// ── INIT ──
+document.addEventListener("DOMContentLoaded", () => {
+  const hoy = new Date();
+  document.getElementById("fechaHoy").textContent =
+    hoy.toLocaleDateString("es-CL", { day: "2-digit", month: "short" }).toUpperCase();
+
+  verificarConexion();
+  window.addEventListener("online",  () => { ocultarOffline(); sincronizarQueue(); });
+  window.addEventListener("offline", mostrarOffline);
+
+  document.getElementById("buscar").addEventListener("input", renderLista);
+  cargarDatos();
+  actualizarQueueBadge();
+});
+
+async function cargarDatos() {
+  try {
+    const [resMPs, resStock] = await Promise.all([
+      fetch(`${BACKEND}?action=getMateriasPrimas`),
+      fetch(`${BACKEND}?action=getStockActual`)
+    ]);
+    const dataMPs   = await resMPs.json();
+    const dataStock = await resStock.json();
+
+    if (dataMPs.ok) mps = dataMPs.data.filter(m => m.grupo !== "Envases");
+    if (dataStock.ok) {
+      dataStock.data.forEach(s => { stockMap[s.codigo] = s; });
+    }
+
+    document.getElementById("headerSub").textContent = `${mps.length} materias primas · Verónica Gangas`;
+    construirFiltros();
+    renderLista();
+  } catch(e) {
+    document.getElementById("headerSub").textContent = "Modo offline";
+    renderListaOffline();
+  }
+}
+
+// ── FILTROS ──
+function construirFiltros() {
+  const grupos = [...new Set(mps.map(m => m.grupo))];
+  const cont = document.getElementById("filtros");
+  cont.innerHTML = `<button class="filtro-btn activo" data-grupo="Todos" onclick="filtrar(this)">Todos</button>`;
+  grupos.forEach(g => {
+    cont.innerHTML += `<button class="filtro-btn" data-grupo="${g}" onclick="filtrar(this)">${ICONOS[g]||""} ${g}</button>`;
+  });
+}
+
+function filtrar(btn) {
+  document.querySelectorAll(".filtro-btn").forEach(b => b.classList.remove("activo"));
+  btn.classList.add("activo");
+  renderLista();
+}
+
+// ── RENDER LISTA ──
+function renderLista() {
+  const busqueda = document.getElementById("buscar").value.toLowerCase();
+  const grupActivo = document.querySelector(".filtro-btn.activo")?.dataset.grupo || "Todos";
+  const cont = document.getElementById("listaMPs");
+
+  let filtrados = mps.filter(m => {
+    const matchGrupo = grupActivo === "Todos" || m.grupo === grupActivo;
+    const matchBusq  = !busqueda || m.nombre.toLowerCase().includes(busqueda) || m.codigo.toLowerCase().includes(busqueda);
+    return matchGrupo && matchBusq;
+  });
+
+  if (!filtrados.length) {
+    cont.innerHTML = `<div class="empty-state"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><p>Sin resultados</p></div>`;
+    return;
+  }
+
+  // Agrupar
+  const grupos = {};
+  filtrados.forEach(m => {
+    if (!grupos[m.grupo]) grupos[m.grupo] = [];
+    grupos[m.grupo].push(m);
+  });
+
+  let html = "";
+  Object.entries(grupos).forEach(([grupo, items]) => {
+    if (grupActivo === "Todos") html += `<div class="grupo-titulo">${ICONOS[grupo]||""} ${grupo}</div>`;
+    items.forEach(mp => { html += renderCard(mp); });
+  });
+  cont.innerHTML = html;
+}
+
+function renderListaOffline() {
+  document.getElementById("listaMPs").innerHTML = `
+    <div class="empty-state">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 1l22 22M16.72 11.06A10.94 10.94 0 0 1 19 12.55M5 12.55a10.94 10.94 0 0 1 5.17-2.39M10.71 5.05A16 16 0 0 1 22.56 9M1.42 9a15.91 15.91 0 0 1 4.7-2.88M8.53 16.11a6 6 0 0 1 6.95 0M12 20h.01"/></svg>
+      <p>Sin conexión. Revisa tu red e intenta de nuevo.</p>
+    </div>`;
+}
+
+function renderCard(mp) {
+  const s = stockMap[mp.codigo];
+  const estado  = s ? s.estado : "N/D";
+  const stockKg = s ? s.stock  : "—";
+  const ultimoConteo = s?.ultimo_conteo ? s.ultimo_conteo.split(" ")[0] : "Sin conteo";
+
+  const badgeClass = estado === "OK" ? "stock-ok" : estado === "BAJO" ? "stock-bajo" : estado === "CRÍTICO" || estado === "SIN STOCK" ? "stock-crit" : "stock-nd";
+  const icoBg = COLORES[mp.grupo] || "#F5F5F5";
+
+  return `<div class="mp-card" id="card-${mp.codigo}">
+    <div class="mp-header" onclick="toggleCard('${mp.codigo}')">
+      <div class="mp-icon" style="background:${icoBg}">${ICONOS[mp.grupo]||"📦"}</div>
+      <div class="mp-info">
+        <div class="mp-nombre">${mp.nombre}</div>
+        <div class="mp-codigo">${mp.codigo}</div>
+      </div>
+      <div class="mp-right">
+        <span class="stock-badge ${badgeClass}">${stockKg !== "—" ? stockKg+" kg" : "—"}</span>
+        <span class="ultimo-txt">${ultimoConteo}</span>
+      </div>
+    </div>
+    <div class="mp-form" id="form-${mp.codigo}">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Cantidad (${mp.unidad})</label>
+          <input type="number" id="qty-${mp.codigo}" placeholder="0" min="0" step="0.1" inputmode="decimal">
+        </div>
+        <div class="form-group">
+          <label>Obs. (opcional)</label>
+          <textarea id="obs-${mp.codigo}" placeholder="Ej: sacos mojados..."></textarea>
+        </div>
+      </div>
+      <button class="btn-guardar" id="btn-${mp.codigo}" onclick="guardarConteo('${mp.codigo}','${mp.nombre.replace(/'/g,"\\'")}','${mp.unidad}')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20,6 9,17 4,12"/></svg>
+        Registrar conteo
+      </button>
+    </div>
+  </div>`;
+}
+
+function toggleCard(codigo) {
+  if (cardAbierta && cardAbierta !== codigo) {
+    document.getElementById(`form-${cardAbierta}`)?.classList.remove("abierto");
+  }
+  const form = document.getElementById(`form-${codigo}`);
+  form.classList.toggle("abierto");
+  if (form.classList.contains("abierto")) {
+    cardAbierta = codigo;
+    setTimeout(() => document.getElementById(`qty-${codigo}`)?.focus(), 100);
+  } else {
+    cardAbierta = null;
+  }
+}
+
+// ── GUARDAR CONTEO ──
+async function guardarConteo(codigo, nombre, unidad) {
+  const qtyEl = document.getElementById(`qty-${codigo}`);
+  const obsEl = document.getElementById(`obs-${codigo}`);
+  const btn   = document.getElementById(`btn-${codigo}`);
+  const qty = parseFloat(qtyEl.value);
+
+  if (isNaN(qty) || qty < 0) { mostrarToast("Ingresa una cantidad válida", "error"); return; }
+
+  const registro = {
+    action: "registrarConteo",
+    codigo, nombre, cantidad: qty,
+    responsable: RESPONSABLE,
+    obs: obsEl.value,
+    ts_local: new Date().toISOString()
+  };
+
+  btn.classList.add("loading");
+  btn.innerHTML = `<span class="spinner">↻</span> Guardando...`;
+
+  if (navigator.onLine) {
+    try {
+      const res = await fetch(BACKEND, {
+        method: "POST",
+        body: JSON.stringify(registro),
+        headers: { "Content-Type": "application/json" }
+      });
+      const data = await res.json();
+      if (data.ok) {
+        stockMap[codigo] = { ...stockMap[codigo], stock: qty, ultimo_conteo: new Date().toISOString() };
+        guardarEnHistorial(registro);
+        mostrarToast(`✓ ${nombre}: ${qty} ${unidad}`, "exito");
+        qtyEl.value = ""; obsEl.value = "";
+        document.getElementById(`form-${codigo}`).classList.remove("abierto");
+        renderLista();
+      } else { throw new Error(data.error); }
+    } catch(e) {
+      guardarOffline(registro);
+      mostrarToast("Guardado offline — se enviará luego", "");
+    }
+  } else {
+    guardarOffline(registro);
+    mostrarToast("Sin conexión — guardado localmente", "");
+  }
+
+  btn.classList.remove("loading");
+  btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20,6 9,17 4,12"/></svg> Registrar conteo`;
+}
+
+// ── OFFLINE QUEUE ──
+function guardarOffline(registro) {
+  offlineQueue.push(registro);
+  localStorage.setItem("campestre_queue", JSON.stringify(offlineQueue));
+  guardarEnHistorial(registro);
+  actualizarQueueBadge();
+}
+
+function guardarEnHistorial(registro) {
+  historial.unshift({ ...registro, ts: new Date().toISOString() });
+  if (historial.length > 100) historial = historial.slice(0, 100);
+  localStorage.setItem("campestre_historial", JSON.stringify(historial));
+}
+
+async function sincronizarQueue() {
+  if (!offlineQueue.length) return;
+  const pendientes = [...offlineQueue];
+  offlineQueue = [];
+  localStorage.setItem("campestre_queue", JSON.stringify(offlineQueue));
+  actualizarQueueBadge();
+
+  for (const reg of pendientes) {
+    try {
+      await fetch(BACKEND, { method: "POST", body: JSON.stringify(reg), headers: { "Content-Type": "application/json" } });
+    } catch(e) {
+      offlineQueue.push(reg);
+    }
+  }
+  if (offlineQueue.length) localStorage.setItem("campestre_queue", JSON.stringify(offlineQueue));
+  mostrarToast(`${pendientes.length} conteos sincronizados`, "exito");
+  actualizarQueueBadge();
+  cargarDatos();
+}
+
+function actualizarQueueBadge() {
+  const badge = document.getElementById("queueBadge");
+  if (offlineQueue.length > 0) {
+    badge.textContent = offlineQueue.length;
+    badge.classList.add("show");
+  } else {
+    badge.classList.remove("show");
+  }
+}
+
+// ── HISTORIAL ──
+function renderHistorial() {
+  const cont = document.getElementById("listaHistorial");
+  if (!historial.length) {
+    cont.innerHTML = `<div class="empty-state"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg><p>Sin registros aún</p></div>`;
+    return;
+  }
+  cont.innerHTML = historial.slice(0, 50).map(h => {
+    const fecha = new Date(h.ts || h.ts_local).toLocaleString("es-CL", { day:"2-digit", month:"short", hour:"2-digit", minute:"2-digit" });
+    const icoBg = COLORES[mps.find(m=>m.codigo===h.codigo)?.grupo] || "#F5F5F5";
+    const ico   = ICONOS[mps.find(m=>m.codigo===h.codigo)?.grupo] || "📦";
+    return `<div class="historial-card">
+      <div class="hist-ico" style="background:${icoBg}">${ico}</div>
+      <div class="hist-info">
+        <div class="hist-nombre">${h.nombre}</div>
+        <div class="hist-meta">${fecha} · ${h.responsable}</div>
+        ${h.obs ? `<div class="hist-meta" style="font-style:italic">${h.obs}</div>` : ""}
+      </div>
+      <div class="hist-qty">${h.cantidad} kg</div>
+    </div>`;
+  }).join("");
+}
+
+// ── NAVEGACIÓN ──
+function cambiarVista(vista) {
+  document.getElementById("vistaConteo").style.display   = vista === "conteo"    ? "block" : "none";
+  document.getElementById("vistaHistorial").style.display= vista === "historial" ? "block" : "none";
+  document.getElementById("navConteo").classList.toggle("activo",    vista === "conteo");
+  document.getElementById("navHistorial").classList.toggle("activo", vista === "historial");
+  if (vista === "historial") renderHistorial();
+}
+
+// ── UI HELPERS ──
+function mostrarToast(msg, tipo) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.className = `toast ${tipo} show`;
+  setTimeout(() => t.classList.remove("show"), 2800);
+}
+function verificarConexion() { if (!navigator.onLine) mostrarOffline(); }
+function mostrarOffline() { document.getElementById("offlineBar").classList.add("show"); }
+function ocultarOffline() { document.getElementById("offlineBar").classList.remove("show"); }
+</script>
+</body>
+</html>
