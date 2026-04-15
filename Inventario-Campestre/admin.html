@@ -400,7 +400,7 @@ function irA(pagina, btn) {
   if(pagina==="stock"         && dashData) renderTablaStock(dashData.stock);
   if(pagina==="ordenes")      cargarOrdenes();
   if(pagina==="recetas")      renderRecetas();
-  if(pagina==="planificacion")renderPlan();
+  if(pagina==="planificacion"){ cargarPlanDesdeSheet().then(()=>renderPlan()); }
   if(pagina==="stockdia")     renderStockDia();
 }
 
@@ -511,11 +511,44 @@ function renderRecetas() {
 }
 
 // ── PLANIFICACIÓN ──
+// ── JSONP helper (mismo que index.html) ──
+function jsonpGet(params) {
+  return new Promise((resolve,reject) => {
+    const cb="cb_"+Math.random().toString(36).slice(2);
+    const qs=new URLSearchParams({...params,callback:cb}).toString();
+    const script=document.createElement("script");
+    const timer=setTimeout(()=>{cleanup();reject(new Error("timeout"));},12000);
+    window[cb]=(data)=>{cleanup();resolve(data);};
+    function cleanup(){clearTimeout(timer);delete window[cb];script.remove();}
+    script.onerror=()=>{cleanup();reject(new Error("network"));};
+    script.src=`${BACKEND}?${qs}`;
+    document.head.appendChild(script);
+  });
+}
+
 function cargarPlanLocal() {
   const s=localStorage.getItem("campestre_plan");
   if(s) planData=JSON.parse(s);
 }
 function guardarPlanLocal() { localStorage.setItem("campestre_plan",JSON.stringify(planData)); }
+
+async function cargarPlanDesdeSheet() {
+  try {
+    const dias=getDias();
+    const desde=fechaStr(dias[0]);
+    // Pedir un rango amplio para tener datos previos también
+    const desdeFar=new Date(); desdeFar.setDate(desdeFar.getDate()-14);
+    const hastaFar=new Date(); hastaFar.setDate(hastaFar.getDate()+30);
+    const data=await jsonpGet({action:"getPlanificacion",desde:fechaStr(desdeFar),hasta:fechaStr(hastaFar)});
+    if(data.ok && data.data.length) {
+      data.data.forEach(({fecha,dieta,kg_dia})=>{
+        if(!planData[fecha]) planData[fecha]={};
+        planData[fecha][dieta]=kg_dia;
+      });
+      guardarPlanLocal();
+    }
+  } catch(e){ console.log("No se pudo cargar plan del Sheet, usando local"); }
+}
 
 function moverVentana(dias) { planOffset+=dias; renderPlan(); }
 
@@ -606,7 +639,46 @@ function calcularConsumoMPs() {
   document.getElementById("plan-total-prod").innerHTML=totalProd>0?`Total producción: <strong>${Math.round(totalProd).toLocaleString("es-CL")} kg</strong>`:"";
 }
 
-function guardarPlan() { guardarPlanLocal(); alert("✅ Planificación guardada"); }
+async function guardarPlan() {
+  const btn=event.target;
+  btn.textContent="Guardando..."; btn.disabled=true;
+  // Guardar local siempre
+  guardarPlanLocal();
+  // Preparar payload para Sheet
+  const dias=getDias();
+  const rows=[];
+  dias.forEach(d=>{
+    const fk=fechaStr(d);
+    Object.entries(RECETAS_DATA).forEach(([dieta])=>{
+      const kg=parseFloat(planData[fk]?.[dieta]||0);
+      if(kg>0) rows.push({fecha:fk,dieta,kg_dia:kg});
+    });
+  });
+  if(rows.length) {
+    try {
+      const payload=encodeURIComponent(JSON.stringify({dias:rows}));
+      const data=await jsonpGet({action:"guardarPlanificacion",payload});
+      if(data.ok) {
+        btn.textContent="Guardar planificación";
+        btn.disabled=false;
+        mostrarToastPlan("✅ Guardado en Sheet — "+rows.length+" entradas");
+        return;
+      }
+    } catch(e){ console.log("Error Sheet, guardado solo local"); }
+  }
+  btn.textContent="Guardar planificación";
+  btn.disabled=false;
+  mostrarToastPlan("✅ Guardado localmente");
+}
+
+function mostrarToastPlan(msg) {
+  let t=document.getElementById("toast-plan");
+  if(!t){ t=document.createElement("div"); t.id="toast-plan";
+    t.style.cssText="position:fixed;bottom:20px;right:20px;background:#1B4332;color:white;padding:12px 20px;border-radius:8px;font-size:13px;z-index:999;transition:opacity 0.3s";
+    document.body.appendChild(t); }
+  t.textContent=msg; t.style.opacity="1";
+  setTimeout(()=>{ t.style.opacity="0"; },3000);
+}
 
 function limpiarPlan() {
   if(!confirm("¿Limpiar la planificación del período visible?")) return;
