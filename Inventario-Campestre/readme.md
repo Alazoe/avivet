@@ -8,8 +8,8 @@ Sistema de control de inventario de materias primas para la planta de alimentos 
 
 | App | URL | Usuario |
 |-----|-----|---------|
-| Control de inventario | [avivet.cl/Inventario-Campestre/](https://avivet.cl/Inventario-Campestre/) | Verónica Gangas |
-| Panel admin | [avivet.cl/Inventario-Campestre/admin.html](https://avivet.cl/Inventario-Campestre/admin.html) | Andrés Lazo |
+| Control de inventario | [avivet.cl/Inventario-Campestre/](https://avivet.cl/avivet/Inventario-Campestre/) | Verónica Gangas |
+| Panel admin | [avivet.cl/Inventario-Campestre/admin.html](https://avivet.cl/avivet/Inventario-Campestre/admin) | Andrés Lazo |
 
 ---
 
