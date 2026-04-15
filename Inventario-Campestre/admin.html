@@ -169,6 +169,25 @@ td { padding:11px 14px; }
 .fill-warn { background:var(--amarillo); }
 .fill-crit { background:var(--rojo); }
 .sc-dias { font-size:10px; color:var(--gris); margin-top:4px; text-align:right; }
+
+/* PROYECCIÓN 5 DÍAS */
+.proy-tabla-wrap { overflow-x:auto; }
+.proy-tabla { width:100%; border-collapse:collapse; min-width:600px; }
+.proy-tabla thead th { background:var(--verde); color:white; font-size:11px; font-weight:600; padding:9px 12px; text-align:center; border-right:1px solid rgba(255,255,255,0.15); white-space:nowrap; }
+.proy-tabla thead th:first-child { text-align:left; min-width:160px; }
+.proy-tabla thead th.hoy-th { background:var(--verde-clar); }
+.proy-tabla tbody tr { border-bottom:1px solid var(--borde); }
+.proy-tabla tbody tr:hover { background:var(--verde-light); }
+.proy-tabla td { padding:9px 12px; font-size:12px; border-right:1px solid var(--borde); text-align:center; }
+.proy-tabla td:first-child { text-align:left; font-weight:500; background:var(--gris-bg); }
+.proy-tabla td.hoy-td { background:#F0FAF4; }
+.proy-num { font-family:'DM Mono',monospace; font-size:12px; }
+.proy-ok   { color:var(--verde-med); font-weight:600; }
+.proy-warn { color:var(--amarillo);  font-weight:600; }
+.proy-crit { color:var(--rojo);      font-weight:600; }
+.proy-cons { font-size:10px; color:var(--gris); margin-top:2px; }
+.proy-prod-row td { background:var(--gris-bg); font-size:11px; color:var(--gris); font-family:'DM Mono',monospace; border-bottom:2px solid var(--borde); }
+.proy-prod-row td:first-child { font-weight:600; color:var(--texto); font-family:'DM Sans',sans-serif; }
 .aviso-plan { padding:30px 20px; text-align:center; color:var(--gris); font-size:14px; }
 
 @media (max-width:768px) {
@@ -315,7 +334,7 @@ td { padding:11px 14px; }
         <div class="card">
           <div class="card-header">
             <h3>Stock hoy → mañana</h3>
-            <span style="font-size:11px;color:var(--gris)">MPs principales · después de producción de hoy</span>
+            <span style="font-size:11px;color:var(--gris)">MPs principales · stock proyectado hoy + 4 días</span>
           </div>
           <div id="stock-dia-contenido"><div class="loading-msg">Cargando<span class="dot-anim"></span></div></div>
         </div>
@@ -688,19 +707,43 @@ function limpiarPlan() {
 }
 
 // ── STOCK DEL DÍA ──
+function calcularConsumoDia(fk) {
+  // Calcula consumo de cada MP para una fecha dada según planData
+  const cons={};
+  MPS_PRINCIPALES.forEach(({cod})=>{cons[cod]=0;});
+  Object.entries(RECETAS_DATA).forEach(([dieta,insumos])=>{
+    const kg=parseFloat(planData[fk]?.[dieta]||0);
+    Object.entries(insumos).forEach(([cod,prop])=>{
+      if(cons[cod]!==undefined) cons[cod]+=kg*(prop/1000);
+    });
+  });
+  return cons;
+}
+
+function calcularProdDia(fk) {
+  return Object.keys(RECETAS_DATA).reduce((s,d)=>s+parseFloat(planData[fk]?.[d]||0),0);
+}
+
 function renderStockDia() {
-  const hoy=new Date();
+  const hoy=new Date(); hoy.setHours(0,0,0,0);
   document.getElementById("stockdia-fecha").textContent=
     hoy.toLocaleDateString("es-CL",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
 
-  const fk=fechaHoy();
+  // Construir array de 5 días: hoy + 4 siguientes
+  const diasVentana=[];
+  for(let i=0;i<5;i++){
+    const d=new Date(hoy); d.setDate(hoy.getDate()+i);
+    diasVentana.push(d);
+  }
+
+  // Producción de hoy para el card superior
+  const fkHoy=fechaHoy();
   const dietas=Object.keys(RECETAS_DATA);
   const prodHoy={};
-  dietas.forEach(d=>{prodHoy[d]=parseFloat(planData[fk]?.[d]||0);});
-  const totalKg=Object.values(prodHoy).reduce((a,b)=>a+b,0);
-
-  // Render producción hoy
+  dietas.forEach(d=>{prodHoy[d]=parseFloat(planData[fkHoy]?.[d]||0);});
+  const totalKgHoy=Object.values(prodHoy).reduce((a,b)=>a+b,0);
   const filasConProd=dietas.filter(d=>prodHoy[d]>0);
+
   const prodEl=document.getElementById("prod-hoy-contenido");
   if(!filasConProd.length) {
     prodEl.innerHTML=`<div class="aviso-plan">Sin producción planificada para hoy.<br><small>Ve a <strong>Planificación</strong> e ingresa los kg del día de hoy.</small></div>`;
@@ -711,20 +754,10 @@ function renderStockDia() {
       <span class="prod-hoy-sacos">${Math.round(prodHoy[d]/50)} sacos</span>
     </div>`).join("")}
     <div class="prod-hoy-footer">
-      <span>Total: <strong>${totalKg.toLocaleString("es-CL")} kg</strong></span>
-      <span><strong>${Math.round(totalKg/50)}</strong> sacos de 50 kg</span>
+      <span>Total: <strong>${totalKgHoy.toLocaleString("es-CL")} kg</strong></span>
+      <span><strong>${Math.round(totalKgHoy/50)}</strong> sacos de 50 kg</span>
     </div>`;
   }
-
-  // Consumo MPs hoy
-  const consumoHoy={};
-  MPS_PRINCIPALES.forEach(({cod})=>{consumoHoy[cod]=0;});
-  dietas.forEach(dieta=>{
-    const kg=prodHoy[dieta]||0;
-    Object.entries(RECETAS_DATA[dieta]).forEach(([cod,prop])=>{
-      if(consumoHoy[cod]!==undefined) consumoHoy[cod]+=kg*(prop/1000);
-    });
-  });
 
   const stockEl=document.getElementById("stock-dia-contenido");
   if(!dashData?.stock) {
@@ -732,32 +765,71 @@ function renderStockDia() {
     return;
   }
 
-  const stockMap={};
-  dashData.stock.forEach(s=>{stockMap[s.codigo]=parseFloat(s.stock)||0;});
+  // Stock inicial desde último conteo
+  const stockBase={};
+  dashData.stock.forEach(s=>{stockBase[s.codigo]=parseFloat(s.stock)||0;});
 
-  stockEl.innerHTML=`<div class="stock-cards-grid">
-    ${MPS_PRINCIPALES.map(({cod,nombre,grupo})=>{
-      const stockHoy=stockMap[cod]||0;
-      const cons=Math.round(consumoHoy[cod]*10)/10;
-      const manana=Math.round((stockHoy-cons)*10)/10;
-      const pct=stockHoy>0?Math.min(100,Math.max(4,(manana/stockHoy)*100)):0;
-      const dias=cons>0?Math.round(stockHoy/cons):null;
-      const cls=dias===null?"ok":dias<5?"crit":dias<10?"warn":"ok";
-      const fillCls=cls==="ok"?"fill-ok":cls==="warn"?"fill-warn":"fill-crit";
-      const diasTxt=dias!==null?`~${dias} días de stock`:"Sin consumo hoy";
-      return `<div class="sc-card">
-        <div class="sc-nombre">${nombre} <span class="sc-grupo">${grupo}</span></div>
-        <div class="sc-body">
-          <div class="sc-row"><span class="sc-label">Stock hoy</span><span class="sc-val">${stockHoy.toLocaleString("es-CL")} kg</span></div>
-          <div class="sc-row"><span class="sc-label">Consumo hoy</span><span class="sc-val sc-consumo">− ${cons.toLocaleString("es-CL")} kg</span></div>
-          <hr class="sc-div">
-          <div class="sc-row"><span class="sc-label">Mañana</span><span class="sc-manana ${cls}">${manana.toLocaleString("es-CL")} kg</span></div>
-          <div class="sc-barra"><div class="sc-barra-fill ${fillCls}" style="width:${pct.toFixed(0)}%"></div></div>
-          <div class="sc-dias">${diasTxt}</div>
-        </div>
-      </div>`;
+  // Calcular stock proyectado día a día acumulado
+  // proyStock[i][cod] = stock al INICIO del día i (antes de producir)
+  const proyStock=[{}];
+  MPS_PRINCIPALES.forEach(({cod})=>{proyStock[0][cod]=stockBase[cod]||0;});
+
+  diasVentana.forEach((d,i)=>{
+    const fk=fechaStr(d);
+    const cons=calcularConsumoDia(fk);
+    const next={};
+    MPS_PRINCIPALES.forEach(({cod})=>{
+      next[cod]=Math.max(0, proyStock[i][cod]-cons[cod]);
+    });
+    proyStock.push(next);
+  });
+
+  // Headers de la tabla
+  const labDias=diasVentana.map((d,i)=>{
+    const label=i===0?"HOY":i===1?"MAÑANA":
+      d.toLocaleDateString("es-CL",{weekday:"short",day:"numeric",month:"short"}).toUpperCase();
+    return {label, fk:fechaStr(d), esHoy:i===0};
+  });
+
+  // Render tabla
+  let html=`<div class="proy-tabla-wrap"><table class="proy-tabla"><thead>
+    <tr><th>Materia Prima</th>
+    ${labDias.map((d,i)=>`<th class="${d.esHoy?"hoy-th":""}">${d.label}</th>`).join("")}
+    </tr>
+    <tr><th style="font-size:10px;font-weight:400;color:#95D5B2">Stock al inicio del día</th>
+    ${labDias.map(()=>`<th style="font-size:10px;font-weight:400;color:#95D5B2">cons. / saldo</th>`).join("")}
+    </tr>
+  </thead><tbody>`;
+
+  // Fila de producción total planificada
+  html+=`<tr class="proy-prod-row"><td>Producción planificada</td>
+    ${diasVentana.map(d=>{
+      const tot=calcularProdDia(fechaStr(d));
+      return `<td>${tot>0?Math.round(tot).toLocaleString("es-CL")+" kg":"—"}</td>`;
     }).join("")}
-  </div>`;
+  </tr>`;
+
+  // Filas por MP
+  MPS_PRINCIPALES.forEach(({cod,nombre})=>{
+    html+=`<tr><td>${nombre}</td>`;
+    diasVentana.forEach((d,i)=>{
+      const fk=fechaStr(d);
+      const cons=calcularConsumoDia(fk);
+      const stockInicio=proyStock[i][cod];
+      const stockFin=proyStock[i+1][cod];
+      const consHoy=Math.round(cons[cod]*10)/10;
+      const cls=stockFin<100?"proy-crit":stockFin<500?"proy-warn":"proy-ok";
+      const tdCls=i===0?"hoy-td":"";
+      html+=`<td class="${tdCls}">
+        <div class="proy-num ${cls}">${Math.round(stockFin).toLocaleString("es-CL")} kg</div>
+        <div class="proy-cons">− ${consHoy.toLocaleString("es-CL")} kg</div>
+      </td>`;
+    });
+    html+=`</tr>`;
+  });
+
+  html+=`</tbody></table></div>`;
+  stockEl.innerHTML=html;
 }
 </script>
 </body>
