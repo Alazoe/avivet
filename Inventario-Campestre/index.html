@@ -235,6 +235,27 @@ body { font-family: 'DM Sans', sans-serif; color: var(--texto); overflow-x: hidd
 .empty-state svg { opacity: 0.25; margin-bottom: 12px; }
 .empty-state p { font-size: 14px; }
 
+/* QTY STEPPER (Fix móvil) */
+.qty-controls { display: flex; align-items: center; gap: 8px; }
+.qty-btn {
+  width: 48px; height: 48px; flex-shrink: 0;
+  border: 2px solid var(--borde); border-radius: 10px;
+  background: var(--blanco); font-size: 24px; font-weight: 400;
+  color: var(--verde-med); cursor: pointer; line-height: 1;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.12s, border-color 0.12s;
+  -webkit-tap-highlight-color: transparent; user-select: none;
+}
+.qty-btn:active { background: var(--verde-bg); border-color: var(--verde-clar); }
+.qty-btn.plus { background: var(--verde); color: white; border-color: var(--verde); }
+.qty-btn.plus:active { background: var(--verde-med); }
+.qty-controls input { flex: 1; min-width: 0; }
+.saco-tag {
+  display: inline-block; background: var(--gold-light); color: var(--gold);
+  font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 10px;
+  margin-left: 6px; vertical-align: middle; letter-spacing: 0.04em;
+}
+
 /* SPINNER */
 .spinner { animation: spin 0.8s linear infinite; display: inline-block; }
 @keyframes spin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
@@ -320,6 +341,15 @@ const ICONOS = {
   "Aminoácidos": "⚗️", "Núcleos": "🔬", "Aditivos": "🧪",
   "Medicamentos": "💊", "Envases": "📦"
 };
+// kg por saco para insumos que se cuentan en sacos (fallback si el backend no envía kg_por_saco)
+const SACOS_CONFIG = {
+  "MAIZ":    25, "TRIGO":   25, "AFRECHO": 25, "AFRECHILLO": 25,
+  "SOYA":    25, "GIRASOL": 25, "CANOLA":  25,
+  "CEBADA":  25, "AVENA":   25, "TRITICALE": 25,
+  "FOSFATO": 25, "CALIZA":  25, "CAL":     20,
+  "CONCENTRADO": 25, "PREMEZCLA": 25
+};
+
 const COLORES = {
   "Energéticos": "#FFF9C4", "Proteínas": "#DCEEFB", "Minerales": "#E8F5E9",
   "Aminoácidos": "#FCE4EC", "Núcleos": "#EDE7F6", "Aditivos": "#FFF3E0",
@@ -426,6 +456,20 @@ function renderListaOffline() {
     </div>`;
 }
 
+function getSacoFactor(mp) {
+  if (mp.kg_por_saco) return mp.kg_por_saco;
+  const key = Object.keys(SACOS_CONFIG).find(k => mp.codigo.toUpperCase().includes(k) || mp.nombre.toUpperCase().includes(k));
+  return key ? SACOS_CONFIG[key] : null;
+}
+
+function adjQty(codigo, delta) {
+  const input = document.getElementById(`qty-${codigo}`);
+  const current = parseFloat(input.value) || 0;
+  const next = Math.max(0, current + delta);
+  input.value = next === 0 ? "" : String(next);
+  previsualizarCantidad(input);
+}
+
 function renderCard(mp) {
   const s = stockMap[mp.codigo];
   const estado  = s ? s.estado : "N/D";
@@ -450,9 +494,13 @@ function renderCard(mp) {
     <div class="mp-form" id="form-${mp.codigo}">
       <div class="form-row">
         <div class="form-group">
-          <label>Cantidad (${mp.unidad})</label>
-          <input type="text" id="qty-${mp.codigo}" placeholder="Ej: 770+22+21" inputmode="decimal"
-            oninput="previsualizarCantidad(this)" autocomplete="off" autocorrect="off" spellcheck="false">
+          <label>Cantidad (${mp.unidad})${getSacoFactor(mp) ? `<span class="saco-tag">×${getSacoFactor(mp)} kg/saco</span>` : ""}</label>
+          <div class="qty-controls">
+            <button type="button" class="qty-btn minus" onclick="adjQty('${mp.codigo}',-1)" aria-label="Restar">−</button>
+            <input type="text" id="qty-${mp.codigo}" placeholder="Ej: 5" inputmode="decimal"
+              oninput="previsualizarCantidad(this)" autocomplete="off" autocorrect="off" spellcheck="false">
+            <button type="button" class="qty-btn plus" onclick="adjQty('${mp.codigo}',1)" aria-label="Sumar">+</button>
+          </div>
           <div id="preview-${mp.codigo}" style="font-size:12px;color:var(--verde-clar);font-family:'DM Mono',monospace;margin-top:4px;min-height:16px"></div>
         </div>
         <div class="form-group">
@@ -499,11 +547,24 @@ function previsualizarCantidad(input) {
   if (!preview) return;
   const val = input.value.trim();
   if (!val) { preview.textContent = ""; return; }
-  // Si es expresión con operadores
-  if (/[+\-*\/]/.test(val)) {
-    const resultado = evaluarCantidad(val);
-    preview.textContent = isNaN(resultado) ? "⚠ expresión inválida" : `= ${resultado}`;
-    preview.style.color = isNaN(resultado) ? "var(--rojo)" : "var(--verde-clar)";
+
+  const cantidad = evaluarCantidad(val);
+  if (isNaN(cantidad)) {
+    preview.textContent = "⚠ expresión inválida";
+    preview.style.color = "var(--rojo)";
+    return;
+  }
+
+  const mp = mps.find(m => m.codigo === codigo);
+  const factor = mp ? getSacoFactor(mp) : null;
+
+  if (factor) {
+    const totalKg = cantidad * factor;
+    preview.textContent = `${cantidad} saco${cantidad !== 1 ? "s" : ""} × ${factor} kg = ${totalKg} kg`;
+    preview.style.color = "var(--verde-clar)";
+  } else if (/[+\-*\/]/.test(val)) {
+    preview.textContent = `= ${cantidad}`;
+    preview.style.color = "var(--verde-clar)";
   } else {
     preview.textContent = "";
   }
@@ -529,15 +590,19 @@ async function guardarConteo(codigo, nombre, unidad) {
   const qtyEl = document.getElementById(`qty-${codigo}`);
   const obsEl = document.getElementById(`obs-${codigo}`);
   const btn   = document.getElementById(`btn-${codigo}`);
-  const qty   = evaluarCantidad(qtyEl.value);
+  const qtyRaw = evaluarCantidad(qtyEl.value);
 
-  if (isNaN(qty) || qty < 0) { mostrarToast("Ingresa una cantidad válida", "error"); return; }
+  if (isNaN(qtyRaw) || qtyRaw < 0) { mostrarToast("Ingresa una cantidad válida", "error"); return; }
+
+  const mp = mps.find(m => m.codigo === codigo);
+  const factor = mp ? getSacoFactor(mp) : null;
+  const qty = factor ? qtyRaw * factor : qtyRaw;
 
   const registro = {
     action: "registrarConteo",
     codigo, nombre, cantidad: qty,
     responsable: RESPONSABLE,
-    obs: obsEl.value || "",
+    obs: factor ? `${qtyRaw} sacos × ${factor} kg/saco${obsEl.value ? " — " + obsEl.value : ""}` : (obsEl.value || ""),
     ts_local: new Date().toISOString()
   };
 

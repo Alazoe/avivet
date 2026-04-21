@@ -265,6 +265,37 @@ td { padding:11px 14px; }
 
       <div class="page" id="pg-stock">
         <div class="page-header"><h2>Stock Actual</h2><p>Último conteo físico por materia prima</p></div>
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-header">
+            <h3>Registrar conteo</h3>
+            <button class="btn-primary" onclick="toggleStockForm()">+ Nuevo conteo</button>
+          </div>
+          <div id="stock-form-panel" style="display:none;padding:20px;border-top:1px solid var(--borde)">
+            <div style="display:grid;grid-template-columns:1fr 1fr 2fr;gap:12px;align-items:end">
+              <div>
+                <label style="font-size:12px;font-weight:600;color:var(--gris);display:block;margin-bottom:6px">Materia Prima</label>
+                <select id="admin-mp-select" style="width:100%;padding:9px 10px;border:1.5px solid var(--borde);border-radius:var(--radio-sm);font-family:'DM Sans',sans-serif;font-size:14px;outline:none">
+                  <option value="">— seleccionar —</option>
+                </select>
+              </div>
+              <div>
+                <label style="font-size:12px;font-weight:600;color:var(--gris);display:block;margin-bottom:6px">Cantidad (kg)</label>
+                <input type="number" id="admin-qty-input" min="0" step="0.01" placeholder="Ej: 750"
+                  style="width:100%;padding:9px 10px;border:1.5px solid var(--borde);border-radius:var(--radio-sm);font-family:'DM Sans',sans-serif;font-size:14px;outline:none">
+              </div>
+              <div>
+                <label style="font-size:12px;font-weight:600;color:var(--gris);display:block;margin-bottom:6px">Observación (opcional)</label>
+                <input type="text" id="admin-obs-input" placeholder="Ej: recepción proveedor"
+                  style="width:100%;padding:9px 10px;border:1.5px solid var(--borde);border-radius:var(--radio-sm);font-family:'DM Sans',sans-serif;font-size:14px;outline:none">
+              </div>
+            </div>
+            <div style="margin-top:12px;display:flex;gap:10px">
+              <button class="btn-primary" onclick="guardarConteoAdmin()">Guardar conteo</button>
+              <button onclick="toggleStockForm()" style="padding:9px 18px;border:1.5px solid var(--borde);border-radius:var(--radio-sm);background:white;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:14px">Cancelar</button>
+            </div>
+            <div id="admin-form-msg" style="margin-top:10px;font-size:13px;display:none"></div>
+          </div>
+        </div>
         <div class="card">
           <div class="card-header"><h3>Inventario completo</h3><button class="btn-primary" onclick="cargarDashboard()">↻ Actualizar</button></div>
           <div class="card-body"><div id="tabla-stock" class="loading-msg">Cargando<span class="dot-anim"></span></div></div>
@@ -465,7 +496,63 @@ function renderTablaStockResumen(stock,elId) {
   <td class="num-cell">${m.dias_stock||"N/D"}</td><td>${badgeEstado(m.estado)}</td>
   <td style="font-size:11px;color:var(--gris)">${m.ultimo_conteo||"Sin conteo"}</td></tr>`).join("")}</tbody></table>`;
 }
-function renderTablaStock(stock){renderTablaStockResumen(stock,"tabla-stock");}
+function renderTablaStock(stock) {
+  renderTablaStockResumen(stock, "tabla-stock");
+  // Populate MP selector for admin conteo form
+  const sel = document.getElementById("admin-mp-select");
+  if (sel && stock?.length) {
+    const current = sel.value;
+    sel.innerHTML = '<option value="">— seleccionar —</option>' +
+      stock.map(m => `<option value="${m.codigo}|${m.nombre}">${m.nombre} (${m.codigo})</option>`).join("");
+    sel.value = current;
+  }
+}
+
+function toggleStockForm() {
+  const panel = document.getElementById("stock-form-panel");
+  panel.style.display = panel.style.display === "none" ? "block" : "none";
+  if (panel.style.display === "block") {
+    document.getElementById("admin-mp-select").focus();
+    document.getElementById("admin-form-msg").style.display = "none";
+  }
+}
+
+async function guardarConteoAdmin() {
+  const sel   = document.getElementById("admin-mp-select");
+  const qtyEl = document.getElementById("admin-qty-input");
+  const obsEl = document.getElementById("admin-obs-input");
+  const msg   = document.getElementById("admin-form-msg");
+
+  const [codigo, nombre] = (sel.value || "").split("|");
+  const qty = parseFloat(qtyEl.value);
+
+  if (!codigo) { msg.style.cssText = "display:block;color:var(--rojo)"; msg.textContent = "⚠ Selecciona una materia prima"; return; }
+  if (isNaN(qty) || qty < 0) { msg.style.cssText = "display:block;color:var(--rojo)"; msg.textContent = "⚠ Ingresa una cantidad válida"; return; }
+
+  msg.style.cssText = "display:block;color:var(--gris)";
+  msg.textContent = "Guardando...";
+
+  try {
+    const data = await jsonpGet({
+      action: "registrarConteo",
+      codigo, nombre, cantidad: qty,
+      responsable: "Admin",
+      obs: obsEl.value || "",
+      ts_local: new Date().toISOString()
+    });
+    if (data.ok) {
+      msg.style.cssText = "display:block;color:var(--verde-clar)";
+      msg.textContent = `✓ Conteo guardado: ${nombre} → ${qty} kg`;
+      qtyEl.value = ""; obsEl.value = ""; sel.value = "";
+      setTimeout(() => { toggleStockForm(); cargarDashboard(); }, 1200);
+    } else {
+      throw new Error(data.error || "Error desconocido");
+    }
+  } catch(e) {
+    msg.style.cssText = "display:block;color:var(--rojo)";
+    msg.textContent = `⚠ ${e.message}`;
+  }
+}
 
 // ── ÓRDENES ──
 async function cargarOrdenes() {
@@ -731,7 +818,7 @@ function renderStockDia() {
 
   // Construir array de 5 días: hoy + 4 siguientes
   const diasVentana=[];
-  for(let i=0;i<5;i++){
+  for(let i=0;i<7;i++){
     const d=new Date(hoy); d.setDate(hoy.getDate()+i);
     diasVentana.push(d);
   }
