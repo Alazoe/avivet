@@ -260,8 +260,8 @@ function crearHojaStockActual(ss) {
     ws.getRange(row, 3).setValue(0).setNote("Se actualiza automáticamente al registrar conteo físico");
     ws.getRange(row, 4).setValue(0).setNote("Completar manualmente: stock mínimo de seguridad");
     ws.getRange(row, 5).setValue(0).setNote("Completar: consumo diario estimado en kg");
-    ws.getRange(row, 6).setFormula(`=IF(E${row}>0,ROUND(C${row}/E${row},1),"N/D")`);
-    ws.getRange(row, 7).setFormula(`=IF(C${row}=0,"SIN STOCK",IF(C${row}<D${row},"CRÍTICO",IF(C${row}<D${row}*1.5,"BAJO","OK")))`);
+    ws.getRange(row, 6).setFormula(`=IFERROR(IF(E${row}>0,ROUND(C${row}/E${row},1),"N/D"),"N/D")`);
+    ws.getRange(row, 7).setFormula(`=IFERROR(IF(C${row}=0,"SIN STOCK",IF(C${row}<D${row},"CRÍTICO",IF(C${row}<D${row}*1.5,"BAJO","OK"))),"N/D")`);
     ws.getRange(row, 8).setValue("").setNote("Se actualiza automáticamente");
     ws.getRange(row, 9).setFormula(`=IF(AND(F${row}<>"N/D",F${row}<7),"⚠ REPONER","")`);
     ws.getRange(row, 1, 1, 9).setFontFamily("Arial").setFontSize(10);
@@ -408,16 +408,29 @@ function getMateriasPrimas() {
 }
 
 function getStockActual() {
-  const ss = SpreadsheetApp.openById(SHEET_ID);
-  const ws = ss.getSheetByName("STOCK_ACTUAL");
-  const data = ws.getRange(3, 1, ws.getLastRow()-2, 9).getValues();
+  const ss   = SpreadsheetApp.openById(SHEET_ID);
+  const ws   = ss.getSheetByName("STOCK_ACTUAL");
+  const last = ws.getLastRow();
+  if (last < 3) return { ok: true, ts: new Date().toISOString(), data: [] };
+
+  const data = ws.getRange(3, 1, last - 2, 9).getValues();
+
+  // GAS devuelve objetos Error cuando una celda tiene fórmula errónea
+  const safe = (v, fallback) => (v instanceof Error || v === null || v === undefined || v === "") ? fallback : v;
+
   return {
     ok: true,
     ts: new Date().toISOString(),
     data: data.filter(r => r[0]).map(r => ({
-      codigo: r[0], nombre: r[1], stock: r[2], stock_min: r[3],
-      consumo_diario: r[4], dias_stock: r[5], estado: r[6],
-      ultimo_conteo: r[7] ? r[7].toString() : "", alerta: r[8]
+      codigo:         r[0],
+      nombre:         r[1],
+      stock:          safe(r[2], 0),
+      stock_min:      safe(r[3], 0),
+      consumo_diario: safe(r[4], 0),
+      dias_stock:     safe(r[5], "N/D"),
+      estado:         safe(r[6], "N/D"),
+      ultimo_conteo:  r[7] ? r[7].toString() : "",
+      alerta:         safe(r[8], ""),
     }))
   };
 }
