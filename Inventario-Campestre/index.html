@@ -311,6 +311,26 @@ body { font-family: 'DM Sans', sans-serif; color: var(--texto); overflow-x: hidd
   <div id="listaHistorial"></div>
 </div>
 
+<!-- VISTA BALANCE DEL DÍA -->
+<div id="vistaBalance" class="panel">
+  <div style="padding:16px 16px 0">
+    <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--gris);margin-bottom:4px">Resumen del día</div>
+    <div style="font-size:14px;font-weight:600;color:var(--verde)" id="balance-fecha"></div>
+  </div>
+  <!-- Progreso conteo -->
+  <div style="padding:12px 16px">
+    <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--gris);margin-bottom:6px">
+      <span>Progreso del conteo</span>
+      <span id="balance-progreso-txt">—</span>
+    </div>
+    <div style="height:8px;background:var(--borde);border-radius:4px;overflow:hidden">
+      <div id="balance-barra" style="height:100%;background:var(--verde-clar);border-radius:4px;transition:width 0.3s;width:0%"></div>
+    </div>
+  </div>
+  <div id="balance-contados"></div>
+  <div id="balance-pendientes"></div>
+</div>
+
 <!-- NAVBAR -->
 <nav class="navbar">
   <button class="nav-btn activo" id="navConteo" onclick="cambiarVista('conteo')">
@@ -319,6 +339,12 @@ body { font-family: 'DM Sans', sans-serif; color: var(--texto); overflow-x: hidd
       <span class="queue-badge" id="queueBadge">0</span>
     </div>
     Conteo
+  </button>
+  <button class="nav-btn" id="navBalance" onclick="cambiarVista('balance')">
+    <div class="nav-ico-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+    </div>
+    Hoy
   </button>
   <button class="nav-btn" id="navHistorial" onclick="cambiarVista('historial')">
     <div class="nav-ico-wrap">
@@ -760,13 +786,82 @@ function renderHistorial() {
   }).join("");
 }
 
+// ── BALANCE DEL DÍA ──
+function renderBalance() {
+  const hoyStr = new Date().toISOString().slice(0, 10);
+  const hoyLabel = new Date().toLocaleDateString("es-CL",
+    { weekday:"long", day:"numeric", month:"long" });
+  document.getElementById("balance-fecha").textContent = hoyLabel.charAt(0).toUpperCase() + hoyLabel.slice(1);
+
+  // Filtrar historial: solo registros de hoy (usando ts o ts_local)
+  const conteosHoy = historial.filter(h => {
+    const ts = h.ts || h.ts_local || "";
+    return ts.slice(0, 10) === hoyStr;
+  });
+
+  // Último conteo por MP (puede haber varios del mismo día)
+  const conteoMap = {};
+  conteosHoy.forEach(h => {
+    if (!conteoMap[h.codigo] || h.ts > (conteoMap[h.codigo].ts || "")) {
+      conteoMap[h.codigo] = h;
+    }
+  });
+
+  const contados  = Object.values(conteoMap);
+  const codigos   = new Set(contados.map(c => c.codigo));
+  const pendientes = mps.filter(m => !codigos.has(m.codigo));
+  const total = mps.length || 1;
+  const pct   = Math.round((contados.length / total) * 100);
+
+  document.getElementById("balance-progreso-txt").textContent = `${contados.length} / ${mps.length} MPs`;
+  document.getElementById("balance-barra").style.width = pct + "%";
+
+  // Contados
+  const contEl = document.getElementById("balance-contados");
+  contEl.innerHTML = contados.length
+    ? `<div style="padding:12px 16px 4px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--verde-med)">Contados hoy (${contados.length})</div>` +
+      contados.map(h => {
+        const mp  = mps.find(m => m.codigo === h.codigo);
+        const ico = ICONOS[mp?.grupo] || "📦";
+        const bg  = COLORES[mp?.grupo] || "#F5F5F5";
+        const hora = new Date(h.ts || h.ts_local).toLocaleTimeString("es-CL", { hour:"2-digit", minute:"2-digit" });
+        return `<div style="display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid var(--borde)">
+          <div style="width:36px;height:36px;border-radius:10px;background:${bg};display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">${ico}</div>
+          <div style="flex:1;min-width:0">
+            <div style="font-weight:500;font-size:14px">${h.nombre}</div>
+            <div style="font-size:11px;color:var(--gris)">${hora} · ${h.obs || "—"}</div>
+          </div>
+          <div style="font-family:'DM Mono',monospace;font-size:14px;font-weight:600;color:var(--verde-med)">${h.cantidad} kg</div>
+        </div>`;
+      }).join("")
+    : `<div style="padding:16px 16px;text-align:center;font-size:13px;color:var(--gris)">Aún no hay conteos registrados hoy</div>`;
+
+  // Pendientes
+  const pendEl = document.getElementById("balance-pendientes");
+  pendEl.innerHTML = pendientes.length
+    ? `<div style="padding:12px 16px 4px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--gris)">Pendientes (${pendientes.length})</div>` +
+      pendientes.map(mp => {
+        const ico = ICONOS[mp.grupo] || "📦";
+        const bg  = COLORES[mp.grupo] || "#F5F5F5";
+        return `<div style="display:flex;align-items:center;gap:12px;padding:9px 16px;border-bottom:1px solid var(--borde);opacity:0.6">
+          <div style="width:36px;height:36px;border-radius:10px;background:${bg};display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">${ico}</div>
+          <div style="flex:1;font-weight:500;font-size:14px">${mp.nombre}</div>
+          <div style="font-size:11px;color:var(--gris)">Pendiente</div>
+        </div>`;
+      }).join("")
+    : `<div style="padding:16px 16px;text-align:center;font-size:13px;color:var(--verde-med);font-weight:600">✓ Todas las MPs contadas hoy</div>`;
+}
+
 // ── NAVEGACIÓN ──
 function cambiarVista(vista) {
-  document.getElementById("vistaConteo").style.display   = vista === "conteo"    ? "block" : "none";
-  document.getElementById("vistaHistorial").style.display= vista === "historial" ? "block" : "none";
+  document.getElementById("vistaConteo").style.display   = vista === "conteo"   ? "block" : "none";
+  document.getElementById("vistaHistorial").style.display= vista === "historial"? "block" : "none";
+  document.getElementById("vistaBalance").style.display  = vista === "balance"  ? "block" : "none";
   document.getElementById("navConteo").classList.toggle("activo",    vista === "conteo");
+  document.getElementById("navBalance").classList.toggle("activo",   vista === "balance");
   document.getElementById("navHistorial").classList.toggle("activo", vista === "historial");
   if (vista === "historial") renderHistorial();
+  if (vista === "balance")   renderBalance();
 }
 
 // ── UI HELPERS ──

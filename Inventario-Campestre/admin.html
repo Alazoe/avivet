@@ -170,6 +170,24 @@ td { padding:11px 14px; }
 .fill-crit { background:var(--rojo); }
 .sc-dias { font-size:10px; color:var(--gris); margin-top:4px; text-align:right; }
 
+/* CONTROL DIARIO */
+.ctrl-ok   { color:var(--verde-med); font-weight:600; }
+.ctrl-warn { color:var(--amarillo);  font-weight:600; }
+.ctrl-crit { color:var(--rojo);      font-weight:600; }
+.ctrl-nd   { color:var(--gris); font-style:italic; }
+.ctrl-info { padding:11px 16px; background:var(--amarillo-bg); border-top:1px solid #FDDCB5; font-size:12px; color:var(--amarillo); }
+.ctrl-badge-ok   { display:inline-block;padding:3px 9px;border-radius:5px;font-size:11px;font-weight:600;background:var(--verde-bg);color:var(--verde-med); }
+.ctrl-badge-warn { display:inline-block;padding:3px 9px;border-radius:5px;font-size:11px;font-weight:600;background:var(--amarillo-bg);color:var(--amarillo); }
+.ctrl-badge-crit { display:inline-block;padding:3px 9px;border-radius:5px;font-size:11px;font-weight:600;background:var(--rojo-bg);color:var(--rojo); }
+.ctrl-badge-nd   { display:inline-block;padding:3px 9px;border-radius:5px;font-size:11px;font-weight:600;background:var(--gris-bg);color:var(--gris); }
+.ctrl-fecha-row  { display:flex;gap:12px;align-items:flex-end;margin-bottom:20px;flex-wrap:wrap; }
+.ctrl-fecha-row label { font-size:11px;font-weight:600;color:var(--gris);text-transform:uppercase;display:block;margin-bottom:5px; }
+.ctrl-fecha-row input[type=date] { padding:9px 12px;border:1.5px solid var(--borde);border-radius:var(--radio-sm);font-family:'DM Sans',sans-serif;font-size:14px;outline:none; }
+.ctrl-fecha-row input[type=date]:focus { border-color:var(--verde-clar); }
+.ctrl-plan-pills { display:flex;flex-wrap:wrap;gap:8px;padding:14px 16px; }
+.ctrl-pill { padding:6px 14px;background:var(--verde-light);border:1px solid #B7E4C7;border-radius:20px;font-size:13px; }
+.ctrl-pill strong { color:var(--verde);font-family:'DM Mono',monospace; }
+
 /* PROYECCIÓN 5 DÍAS */
 .proy-tabla-wrap { overflow-x:auto; }
 .proy-tabla { width:100%; border-collapse:collapse; min-width:600px; }
@@ -243,6 +261,10 @@ td { padding:11px 14px; }
         <button class="nav-item" onclick="irA('stockdia',this)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
           Stock del Día
+        </button>
+        <button class="nav-item" onclick="irA('control',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="3" y1="4" x2="21" y2="4"/></svg>
+          Control Diario
         </button>
       </div>
       <div class="sidebar-footer">
@@ -371,6 +393,41 @@ td { padding:11px 14px; }
         </div>
       </div>
 
+      <!-- CONTROL DIARIO -->
+      <div class="page" id="pg-control">
+        <div class="page-header">
+          <h2>Control Diario</h2>
+          <p>Consumo real vs consumo planificado — identifica descuadres y pérdidas</p>
+        </div>
+
+        <div class="ctrl-fecha-row">
+          <div>
+            <label>Fecha a controlar</label>
+            <input type="date" id="ctrl-fecha" onchange="cargarControlDiario()">
+          </div>
+          <button class="btn-primary" onclick="cargarControlDiario()">↻ Actualizar</button>
+          <button class="btn-outline" onclick="imprimirControl()">🖨 Imprimir</button>
+        </div>
+
+        <div class="metricas" id="ctrl-metricas" style="margin-bottom:20px"></div>
+
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-header">
+            <h3>Plan de producción</h3>
+            <span class="ts" id="ctrl-total-feed"></span>
+          </div>
+          <div id="ctrl-plan-body"><div class="loading-msg">Selecciona una fecha</div></div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3>Balance por materia prima</h3>
+            <span class="ts" id="ctrl-tabla-ts"></span>
+          </div>
+          <div id="ctrl-tabla-body"><div class="loading-msg">Selecciona una fecha</div></div>
+        </div>
+      </div>
+
     </main>
   </div>
 </div>
@@ -452,6 +509,7 @@ function irA(pagina, btn) {
   if(pagina==="recetas")      renderRecetas();
   if(pagina==="planificacion"){ cargarPlanDesdeSheet().then(()=>renderPlan()); }
   if(pagina==="stockdia")     renderStockDia();
+  if(pagina==="control")      iniciarControlDiario();
 }
 
 // ── DASHBOARD ──
@@ -775,6 +833,187 @@ async function guardarPlan() {
   btn.textContent="Guardar planificación";
   btn.disabled=false;
   mostrarToastPlan("✅ Guardado localmente");
+}
+
+// ── CONTROL DIARIO ──
+function iniciarControlDiario() {
+  const el = document.getElementById("ctrl-fecha");
+  if (!el.value) el.value = fechaHoy();
+  cargarControlDiario();
+}
+
+async function cargarControlDiario() {
+  const fecha = document.getElementById("ctrl-fecha").value;
+  if (!fecha) return;
+
+  ["ctrl-metricas","ctrl-plan-body","ctrl-tabla-body"].forEach(id => {
+    const el = document.getElementById(id);
+    if (id === "ctrl-metricas") el.innerHTML = "";
+    else el.innerHTML = `<div class="loading-msg">Cargando<span class="dot-anim"></span></div>`;
+  });
+
+  // Asegurar que el plan esté cargado
+  if (!Object.keys(planData).length) await cargarPlanDesdeSheet();
+
+  // Llamar al backend por los conteos del día y del día anterior
+  const fechaAnt = calcFechaAnterior(fecha);
+  const [conteosDia, conteosAnt] = await Promise.all([
+    fetchConteosDelDia(fecha),
+    fetchConteosDelDia(fechaAnt)
+  ]);
+
+  renderControlDiario(fecha, conteosDia, conteosAnt);
+}
+
+function calcFechaAnterior(fecha) {
+  const d = new Date(fecha + "T12:00:00");
+  d.setDate(d.getDate() - 1);
+  return fechaStr(d);
+}
+
+async function fetchConteosDelDia(fecha) {
+  try {
+    const data = await jsonpGet({ action: "getConteosDelDia", fecha });
+    return data.ok ? data.data : null;
+  } catch(e) { return null; }
+}
+
+function calcularConsumoDiaCompleto(fk) {
+  // Calcula consumo de TODOS los ingredientes (no solo MPS_PRINCIPALES)
+  const cons = {};
+  let totalFeed = 0;
+  Object.entries(RECETAS_DATA).forEach(([dieta, insumos]) => {
+    const kg = parseFloat(planData[fk]?.[dieta] || 0);
+    if (kg <= 0) return;
+    totalFeed += kg;
+    Object.entries(insumos).forEach(([cod, prop]) => {
+      cons[cod] = (cons[cod] || 0) + kg * (prop / 1000);
+    });
+  });
+  return { cons, totalFeed };
+}
+
+function renderControlDiario(fecha, conteosDia, conteosAnt) {
+  const { cons: consumos, totalFeed } = calcularConsumoDiaCompleto(fecha);
+  const fechaLabel = new Date(fecha + "T12:00:00").toLocaleDateString("es-CL",
+    { weekday:"long", day:"numeric", month:"long", year:"numeric" });
+
+  // ── Plan del día ──────────────────────────────────────────────────────
+  document.getElementById("ctrl-total-feed").textContent =
+    totalFeed > 0 ? `Total: ${Math.round(totalFeed).toLocaleString("es-CL")} kg` : "";
+
+  const planPills = Object.entries(RECETAS_DATA)
+    .filter(([dieta]) => parseFloat(planData[fecha]?.[dieta] || 0) > 0)
+    .map(([dieta]) => {
+      const kg = planData[fecha][dieta];
+      return `<div class="ctrl-pill">${dieta}: <strong>${Math.round(kg).toLocaleString("es-CL")} kg</strong></div>`;
+    }).join("");
+
+  document.getElementById("ctrl-plan-body").innerHTML = planPills
+    ? `<div class="ctrl-plan-pills">${planPills}</div>`
+    : `<div class="aviso-plan">Sin plan para esta fecha. Ingresa kg en <strong>Planificación</strong>.</div>`;
+
+  // ── Sin datos de consumo ──────────────────────────────────────────────
+  const allCods = [...new Set([...Object.keys(consumos), ...(conteosDia||[]).map(c=>c.codigo)])];
+  if (!allCods.length) {
+    document.getElementById("ctrl-tabla-body").innerHTML =
+      `<div class="aviso-plan">Sin datos de producción ni conteos para esta fecha.</div>`;
+    document.getElementById("ctrl-metricas").innerHTML = "";
+    return;
+  }
+
+  // ── Construir mapas de conteos ────────────────────────────────────────
+  const mapDia = {}, mapAnt = {};
+  (conteosDia  || []).forEach(c => { if(!mapDia[c.codigo]||c.ts_local>mapDia[c.codigo].ts_local) mapDia[c.codigo]=c; });
+  (conteosAnt  || []).forEach(c => { if(!mapAnt[c.codigo]||c.ts_local>mapAnt[c.codigo].ts_local) mapAnt[c.codigo]=c; });
+
+  // Ordenar: primero los que tienen consumo teórico, luego por kg desc
+  allCods.sort((a,b) => (consumos[b]||0) - (consumos[a]||0));
+
+  let okC=0, warnC=0, critC=0, ndC=0;
+
+  const rows = allCods.map(cod => {
+    const nombre   = MP_NOMBRES[cod] || cod;
+    const teorico  = consumos[cod] || 0;
+    const stockAnt = conteosDia && mapAnt[cod] != null  ? parseFloat(mapAnt[cod].cantidad)  : null;
+    const stockFis = conteosDia && mapDia[cod] != null  ? parseFloat(mapDia[cod].cantidad)  : null;
+
+    let diffHtml = `<td class="num-cell ctrl-nd">S/D</td>`;
+    let pctHtml  = `<td class="num-cell ctrl-nd">—</td>`;
+    let badgeHtml = `<span class="ctrl-badge-nd">Sin conteo</span>`;
+
+    if (stockAnt !== null && stockFis !== null && teorico > 0) {
+      const esperado = stockAnt - teorico;
+      const diff     = stockFis - esperado;
+      const pct      = (diff / teorico) * 100;
+      const sign     = diff >= 0 ? "+" : "";
+      let cls, label;
+      if      (Math.abs(pct) > 5)  { cls="crit"; label = diff < 0 ? "Pérdida" : "Exceso"; critC++; }
+      else if (Math.abs(pct) > 2)  { cls="warn"; label = "Alerta"; warnC++; }
+      else                          { cls="ok";   label = "OK"; okC++; }
+      diffHtml  = `<td class="num-cell ctrl-${cls}"><b>${sign}${diff.toFixed(1)} kg</b></td>`;
+      pctHtml   = `<td class="num-cell ctrl-${cls}">${sign}${pct.toFixed(1)}%</td>`;
+      badgeHtml = `<span class="ctrl-badge-${cls}">${label}</span>`;
+    } else if (stockFis !== null && teorico <= 0) {
+      // Conteo existe pero sin consumo planificado
+      badgeHtml = `<span class="ctrl-badge-nd">Solo conteo</span>`;
+      ndC++;
+    } else {
+      ndC++;
+    }
+
+    return `<tr>
+      <td><div class="nombre-cell">${nombre}</div><div class="cod-cell">${cod}</div></td>
+      <td class="num-cell">${teorico > 0 ? teorico.toFixed(1)+" kg" : `<span class="ctrl-nd">—</span>`}</td>
+      <td class="num-cell">${stockAnt !== null ? stockAnt.toFixed(1)+" kg" : `<span class="ctrl-nd">S/D</span>`}</td>
+      <td class="num-cell">${stockFis !== null ? stockFis.toFixed(1)+" kg" : `<span class="ctrl-nd">S/D</span>`}</td>
+      ${diffHtml}${pctHtml}
+      <td>${badgeHtml}</td>
+    </tr>`;
+  }).join("");
+
+  // ── Métricas resumen ──────────────────────────────────────────────────
+  document.getElementById("ctrl-metricas").innerHTML = `
+    <div class="metrica-card verde"><div class="met-label">OK</div>
+      <div class="met-valor" style="font-size:28px;color:var(--verde-med)">${okC}</div>
+      <div class="met-sub">Insumos cuadrados (≤2%)</div></div>
+    <div class="metrica-card amarillo"><div class="met-label">Alerta</div>
+      <div class="met-valor" style="font-size:28px;color:var(--amarillo)">${warnC}</div>
+      <div class="met-sub">Descuadre 2–5%</div></div>
+    <div class="metrica-card rojo"><div class="met-label">Crítico</div>
+      <div class="met-valor" style="font-size:28px;color:var(--rojo)">${critC}</div>
+      <div class="met-sub">Descuadre &gt;5%</div></div>
+    <div class="metrica-card azul"><div class="met-label">Sin datos</div>
+      <div class="met-valor" style="font-size:28px;color:var(--azul)">${ndC}</div>
+      <div class="met-sub">Conteo pendiente</div></div>`;
+
+  // ── Tabla ─────────────────────────────────────────────────────────────
+  const backendNote = conteosDia === null
+    ? `<div class="ctrl-info">ℹ️ Para ver la comparación completa, el backend GAS debe tener la acción
+        <code>getConteosDelDia?fecha=YYYY-MM-DD</code> que devuelva los registros físicos del día.
+        El consumo teórico se muestra igual.</div>`
+    : "";
+
+  document.getElementById("ctrl-tabla-ts").textContent = fechaLabel;
+  document.getElementById("ctrl-tabla-body").innerHTML = `
+    <div style="overflow-x:auto">
+    <table>
+      <thead><tr>
+        <th>Materia Prima</th>
+        <th style="text-align:right">Consumo<br>Teórico</th>
+        <th style="text-align:right">Stock<br>Anterior</th>
+        <th style="text-align:right">Conteo<br>Físico</th>
+        <th style="text-align:right">Diferencia<br>(kg)</th>
+        <th style="text-align:right">Diferencia<br>(%)</th>
+        <th>Estado</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    </div>${backendNote}`;
+}
+
+function imprimirControl() {
+  window.print();
 }
 
 function mostrarToastPlan(msg) {
