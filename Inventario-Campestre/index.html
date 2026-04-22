@@ -249,7 +249,11 @@ body { font-family: 'DM Sans', sans-serif; color: var(--texto); overflow-x: hidd
 .qty-btn:active { background: var(--verde-bg); border-color: var(--verde-clar); }
 .qty-btn.plus { background: var(--verde); color: white; border-color: var(--verde); }
 .qty-btn.plus:active { background: var(--verde-med); }
-.qty-controls input { flex: 1; min-width: 0; }
+.qty-controls input { flex: 1; min-width: 0; text-align: center; }
+.qty-resto-row { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+.qty-resto-label { font-size: 12px; color: var(--gris); white-space: nowrap; flex-shrink: 0; }
+.qty-resto-row input { flex: 1; min-width: 0; }
+.qty-preview { font-size: 12px; color: var(--verde-clar); font-family: 'DM Mono', monospace; margin-top: 4px; min-height: 16px; }
 .saco-tag {
   display: inline-block; background: var(--gold-light); color: var(--gold);
   font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 10px;
@@ -341,14 +345,12 @@ const ICONOS = {
   "Aminoácidos": "⚗️", "Núcleos": "🔬", "Aditivos": "🧪",
   "Medicamentos": "💊", "Envases": "📦"
 };
-// kg por saco para insumos que se cuentan en sacos (fallback si el backend no envía kg_por_saco)
-const SACOS_CONFIG = {
-  "MAIZ":    25, "TRIGO":   25, "AFRECHO": 25, "AFRECHILLO": 25,
-  "SOYA":    25, "GIRASOL": 25, "CANOLA":  25,
-  "CEBADA":  25, "AVENA":   25, "TRITICALE": 25,
-  "FOSFATO": 25, "CALIZA":  25, "CAL":     20,
-  "CONCENTRADO": 25, "PREMEZCLA": 25
-};
+// Productos que se miden en kg directo (sin conversión por saco)
+const SIN_SACOS = ["MAIZ", "MAÍZ", "AFRECHO DE SOYA", "AFRECHO SOYA", "CONCHUELA"];
+
+// Sacos con factor distinto al default
+const KG_POR_SACO_ESPECIAL = { "FINTOX": 20, "POLIFEED": 20 };
+const KG_POR_SACO_DEFAULT = 25;
 
 const COLORES = {
   "Energéticos": "#FFF9C4", "Proteínas": "#DCEEFB", "Minerales": "#E8F5E9",
@@ -457,17 +459,62 @@ function renderListaOffline() {
 }
 
 function getSacoFactor(mp) {
+  const upper = (mp.nombre + " " + mp.codigo).toUpperCase();
+  // Productos sin sacos: retornar null → modo kg directo
+  if (SIN_SACOS.some(s => upper.includes(s))) return null;
+  // Si el backend entrega el factor, usarlo
   if (mp.kg_por_saco) return mp.kg_por_saco;
-  const key = Object.keys(SACOS_CONFIG).find(k => mp.codigo.toUpperCase().includes(k) || mp.nombre.toUpperCase().includes(k));
-  return key ? SACOS_CONFIG[key] : null;
+  // Casos especiales de 20 kg
+  for (const [key, val] of Object.entries(KG_POR_SACO_ESPECIAL)) {
+    if (upper.includes(key)) return val;
+  }
+  return KG_POR_SACO_DEFAULT;
 }
 
 function adjQty(codigo, delta) {
   const input = document.getElementById(`qty-${codigo}`);
-  const current = parseFloat(input.value) || 0;
+  const current = parseInt(input.value) || 0;
   const next = Math.max(0, current + delta);
   input.value = next === 0 ? "" : String(next);
   previsualizarCantidad(input);
+}
+
+function renderFormCantidad(mp) {
+  const factor = getSacoFactor(mp);
+  const cod = mp.codigo;
+
+  if (!factor) {
+    // Modo kg directo (maíz, afrecho de soya, conchuela)
+    return `<div class="form-group">
+      <label>Cantidad (kg)</label>
+      <div class="qty-controls">
+        <button type="button" class="qty-btn minus" onclick="adjQty('${cod}',-1)" aria-label="Restar">−</button>
+        <input type="text" id="qty-${cod}" placeholder="Ej: 770+22" inputmode="decimal"
+          oninput="previsualizarCantidad(this)" autocomplete="off" autocorrect="off" spellcheck="false">
+        <button type="button" class="qty-btn plus" onclick="adjQty('${cod}',1)" aria-label="Sumar">+</button>
+      </div>
+      <div id="preview-${cod}" class="qty-preview"></div>
+    </div>`;
+  }
+
+  // Modo sacos: sacos completos + kg del saco abierto
+  return `<div class="form-group">
+    <label>Sacos completos <span class="saco-tag">× ${factor} kg/saco</span></label>
+    <div class="qty-controls">
+      <button type="button" class="qty-btn minus" onclick="adjQty('${cod}',-1)" aria-label="Restar">−</button>
+      <input type="number" id="qty-${cod}" placeholder="0" inputmode="numeric" min="0" step="1"
+        oninput="previsualizarCantidad(this)" autocomplete="off" style="text-align:center">
+      <button type="button" class="qty-btn plus" onclick="adjQty('${cod}',1)" aria-label="Sumar">+</button>
+    </div>
+    <div class="qty-resto-row">
+      <span class="qty-resto-label">+ saco abierto (kg):</span>
+      <input type="number" id="qty-resto-${cod}" placeholder="0.0" inputmode="decimal"
+        min="0" step="0.1" max="${factor}"
+        oninput="previsualizarCantidad(document.getElementById('qty-${cod}'))"
+        autocomplete="off">
+    </div>
+    <div id="preview-${cod}" class="qty-preview"></div>
+  </div>`;
 }
 
 function renderCard(mp) {
@@ -492,21 +539,10 @@ function renderCard(mp) {
       </div>
     </div>
     <div class="mp-form" id="form-${mp.codigo}">
-      <div class="form-row">
-        <div class="form-group">
-          <label>Cantidad (${mp.unidad})${getSacoFactor(mp) ? `<span class="saco-tag">×${getSacoFactor(mp)} kg/saco</span>` : ""}</label>
-          <div class="qty-controls">
-            <button type="button" class="qty-btn minus" onclick="adjQty('${mp.codigo}',-1)" aria-label="Restar">−</button>
-            <input type="text" id="qty-${mp.codigo}" placeholder="Ej: 5" inputmode="decimal"
-              oninput="previsualizarCantidad(this)" autocomplete="off" autocorrect="off" spellcheck="false">
-            <button type="button" class="qty-btn plus" onclick="adjQty('${mp.codigo}',1)" aria-label="Sumar">+</button>
-          </div>
-          <div id="preview-${mp.codigo}" style="font-size:12px;color:var(--verde-clar);font-family:'DM Mono',monospace;margin-top:4px;min-height:16px"></div>
-        </div>
-        <div class="form-group">
-          <label>Obs. (opcional)</label>
-          <textarea id="obs-${mp.codigo}" placeholder="Ej: sacos mojados..."></textarea>
-        </div>
+      ${renderFormCantidad(mp)}
+      <div class="form-group" style="margin-top:10px">
+        <label>Obs. (opcional)</label>
+        <textarea id="obs-${mp.codigo}" placeholder="Ej: sacos mojados..."></textarea>
       </div>
       <button class="btn-guardar" id="btn-${mp.codigo}" onclick="guardarConteo('${mp.codigo}','${mp.nombre.replace(/'/g,"\\'")}','${mp.unidad}')">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20,6 9,17 4,12"/></svg>
@@ -545,28 +581,37 @@ function previsualizarCantidad(input) {
   const codigo = input.id.replace("qty-", "");
   const preview = document.getElementById(`preview-${codigo}`);
   if (!preview) return;
-  const val = input.value.trim();
-  if (!val) { preview.textContent = ""; return; }
-
-  const cantidad = evaluarCantidad(val);
-  if (isNaN(cantidad)) {
-    preview.textContent = "⚠ expresión inválida";
-    preview.style.color = "var(--rojo)";
-    return;
-  }
 
   const mp = mps.find(m => m.codigo === codigo);
   const factor = mp ? getSacoFactor(mp) : null;
 
   if (factor) {
-    const totalKg = cantidad * factor;
-    preview.textContent = `${cantidad} saco${cantidad !== 1 ? "s" : ""} × ${factor} kg = ${totalKg} kg`;
-    preview.style.color = "var(--verde-clar)";
-  } else if (/[+\-*\/]/.test(val)) {
-    preview.textContent = `= ${cantidad}`;
+    // Modo sacos: leer sacos + resto
+    const sacos = parseInt(input.value) || 0;
+    const restoEl = document.getElementById(`qty-resto-${codigo}`);
+    const resto   = parseFloat(restoEl?.value) || 0;
+    if (sacos === 0 && resto === 0) { preview.textContent = ""; return; }
+    const totalKg = sacos * factor + resto;
+    let txt = "";
+    if (sacos > 0) txt += `${sacos} saco${sacos !== 1 ? "s" : ""} × ${factor} kg`;
+    if (resto > 0) txt += (sacos > 0 ? ` + ${resto} kg` : `${resto} kg`);
+    txt += ` = ${Math.round(totalKg * 100) / 100} kg`;
+    preview.textContent = txt;
     preview.style.color = "var(--verde-clar)";
   } else {
-    preview.textContent = "";
+    // Modo kg directo
+    const val = input.value.trim();
+    if (!val) { preview.textContent = ""; return; }
+    const cantidad = evaluarCantidad(val);
+    if (isNaN(cantidad)) {
+      preview.textContent = "⚠ expresión inválida";
+      preview.style.color = "var(--rojo)";
+    } else if (/[+\-*\/]/.test(val)) {
+      preview.textContent = `= ${cantidad} kg`;
+      preview.style.color = "var(--verde-clar)";
+    } else {
+      preview.textContent = "";
+    }
   }
 }
 
@@ -587,22 +632,37 @@ function jsonpGet(params) {
 
 // ── GUARDAR CONTEO ──
 async function guardarConteo(codigo, nombre, unidad) {
-  const qtyEl = document.getElementById(`qty-${codigo}`);
-  const obsEl = document.getElementById(`obs-${codigo}`);
-  const btn   = document.getElementById(`btn-${codigo}`);
-  const qtyRaw = evaluarCantidad(qtyEl.value);
+  const qtyEl  = document.getElementById(`qty-${codigo}`);
+  const obsEl  = document.getElementById(`obs-${codigo}`);
+  const btn    = document.getElementById(`btn-${codigo}`);
+  const restoEl = document.getElementById(`qty-resto-${codigo}`);
 
-  if (isNaN(qtyRaw) || qtyRaw < 0) { mostrarToast("Ingresa una cantidad válida", "error"); return; }
-
-  const mp = mps.find(m => m.codigo === codigo);
+  const mp     = mps.find(m => m.codigo === codigo);
   const factor = mp ? getSacoFactor(mp) : null;
-  const qty = factor ? qtyRaw * factor : qtyRaw;
 
+  let qty, obsAuto;
+  if (factor) {
+    const sacos = parseInt(qtyEl.value) || 0;
+    const resto  = parseFloat(restoEl?.value) || 0;
+    if (sacos === 0 && resto === 0) { mostrarToast("Ingresa una cantidad válida", "error"); return; }
+    qty = sacos * factor + resto;
+    let partes = [];
+    if (sacos > 0) partes.push(`${sacos} saco${sacos !== 1 ? "s" : ""} × ${factor} kg`);
+    if (resto  > 0) partes.push(`${resto} kg sueltos`);
+    obsAuto = partes.join(" + ");
+  } else {
+    const qtyRaw = evaluarCantidad(qtyEl.value);
+    if (isNaN(qtyRaw) || qtyRaw < 0) { mostrarToast("Ingresa una cantidad válida", "error"); return; }
+    qty = qtyRaw;
+    obsAuto = "";
+  }
+
+  const obsExtra = obsEl.value.trim();
   const registro = {
     action: "registrarConteo",
     codigo, nombre, cantidad: qty,
     responsable: RESPONSABLE,
-    obs: factor ? `${qtyRaw} sacos × ${factor} kg/saco${obsEl.value ? " — " + obsEl.value : ""}` : (obsEl.value || ""),
+    obs: [obsAuto, obsExtra].filter(Boolean).join(" — "),
     ts_local: new Date().toISOString()
   };
 
@@ -617,6 +677,7 @@ async function guardarConteo(codigo, nombre, unidad) {
         guardarEnHistorial(registro);
         mostrarToast(`✓ ${nombre}: ${qty} ${unidad}`, "exito");
         qtyEl.value = ""; obsEl.value = "";
+        if (restoEl) restoEl.value = "";
         document.getElementById(`form-${codigo}`).classList.remove("abierto");
         renderLista();
       } else { throw new Error(data.error); }
