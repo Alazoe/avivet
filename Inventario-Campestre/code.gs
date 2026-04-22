@@ -259,9 +259,9 @@ function crearHojaStockActual(ss) {
     ws.getRange(row, 2).setValue(nombre);
     ws.getRange(row, 3).setValue(0).setNote("Se actualiza automáticamente al registrar conteo físico");
     ws.getRange(row, 4).setValue(0).setNote("Completar manualmente: stock mínimo de seguridad");
-    ws.getRange(row, 5).setValue(0).setNote("Completar: consumo diario estimado en kg");
-    ws.getRange(row, 6).setFormula(`=IFERROR(IF(E${row}>0,ROUND(C${row}/E${row},1),"N/D"),"N/D")`);
-    ws.getRange(row, 7).setFormula(`=IFERROR(IF(C${row}=0,"SIN STOCK",IF(C${row}<D${row},"CRÍTICO",IF(C${row}<D${row}*1.5,"BAJO","OK"))),"N/D")`);
+    ws.getRange(row, 5).setValue(0).setNote("Calculado automáticamente desde Planificación");
+    ws.getRange(row, 6).setValue("N/D").setNote("Calculado automáticamente desde Planificación");
+    ws.getRange(row, 7).setValue("SIN STOCK").setNote("Calculado automáticamente por GAS");
     ws.getRange(row, 8).setValue("").setNote("Se actualiza automáticamente");
     ws.getRange(row, 9).setFormula(`=IF(AND(F${row}<>"N/D",F${row}<7),"⚠ REPONER","")`);
     ws.getRange(row, 1, 1, 9).setFontFamily("Arial").setFontSize(10);
@@ -352,8 +352,8 @@ function crearHojaProyecciones(ss) {
     ws.getRange(row, 3).setFormula(formula);
     ws.getRange(row, 4).setFormula(`=C${row}*7`);
     ws.getRange(row, 5).setFormula(`=C${row}*30`);
-    ws.getRange(row, 6).setFormula(`=IFERROR(VLOOKUP(A${row},STOCK_ACTUAL!A:C,3,FALSE),0)`);
-    ws.getRange(row, 7).setFormula(`=IF(C${row}>0,ROUND(F${row}/C${row},0),"N/D")`);
+    ws.getRange(row, 6).setFormulaR1C1('=IFERROR(VLOOKUP(RC1,STOCK_ACTUAL!C1:C3,3,FALSE),0)');
+    ws.getRange(row, 7).setFormulaR1C1('=IFERROR(IF(RC3>0,ROUND(RC6/RC3,0),"N/D"),"N/D")');
     ws.getRange(row, 1, 1, 7).setFontFamily("Arial").setFontSize(10);
     ws.setRowHeight(row, 18);
   });
@@ -407,31 +407,83 @@ function getMateriasPrimas() {
   };
 }
 
+// ── Calcula consumo diario promedio de cada MP
+//    usando el plan de los próximos 7 días desde hoy
+function calcularConsumosDiariosDesdeplan() {
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  const ws = ss.getSheetByName("PLANIFICACION");
+  if (!ws || ws.getLastRow() < 3) return {};
+
+  const tz    = "America/Santiago";
+  const hoy   = new Date();
+  const hasta = new Date(hoy); hasta.setDate(hasta.getDate() + 7);
+  const hoyStr   = Utilities.formatDate(hoy,   tz, "yyyy-MM-dd");
+  const hastaStr = Utilities.formatDate(hasta,  tz, "yyyy-MM-dd");
+
+  const rows = ws.getRange(3, 1, ws.getLastRow() - 2, 3).getValues();
+
+  // Sumar kg_dia por dieta y contar fechas distintas con producción
+  const planSum  = {};
+  const fechaSet = new Set();
+  rows.filter(r => r[0] && r[2] > 0).forEach(r => {
+    const f = r[0];
+    if (f >= hoyStr && f <= hastaStr) {
+      fechaSet.add(f);
+      planSum[r[1]] = (planSum[r[1]] || 0) + parseFloat(r[2]);
+    }
+  });
+
+  const numDias = Math.max(fechaSet.size, 1);
+
+  // Consumo diario promedio por MP = Σ(kg_planificados_dieta / numDias × proporción_MP / 1000)
+  const consumos = {};
+  Object.entries(RECETAS).forEach(([dieta, receta]) => {
+    const kgDia = (planSum[dieta] || 0) / numDias;
+    if (kgDia <= 0) return;
+    Object.entries(receta.insumos).forEach(([cod, prop]) => {
+      consumos[cod] = (consumos[cod] || 0) + kgDia * (prop / 1000);
+    });
+  });
+
+  return consumos;
+}
+
 function getStockActual() {
   const ss   = SpreadsheetApp.openById(SHEET_ID);
   const ws   = ss.getSheetByName("STOCK_ACTUAL");
   const last = ws.getLastRow();
   if (last < 3) return { ok: true, ts: new Date().toISOString(), data: [] };
 
-  const data = ws.getRange(3, 1, last - 2, 9).getValues();
-
-  // GAS devuelve objetos Error cuando una celda tiene fórmula errónea
-  const safe = (v, fallback) => (v instanceof Error || v === null || v === undefined || v === "") ? fallback : v;
+  const data    = ws.getRange(3, 1, last - 2, 9).getValues();
+  const consumos = calcularConsumosDiariosDesdeplan();
 
   return {
     ok: true,
     ts: new Date().toISOString(),
-    data: data.filter(r => r[0]).map(r => ({
-      codigo:         r[0],
-      nombre:         r[1],
-      stock:          safe(r[2], 0),
-      stock_min:      safe(r[3], 0),
-      consumo_diario: safe(r[4], 0),
-      dias_stock:     safe(r[5], "N/D"),
-      estado:         safe(r[6], "N/D"),
-      ultimo_conteo:  r[7] ? r[7].toString() : "",
-      alerta:         safe(r[8], ""),
-    }))
+    data: data.filter(r => r[0]).map(r => {
+      const stock    = parseFloat(r[2]) || 0;
+      const stockMin = parseFloat(r[3]) || 0;
+      const consumoD = Math.round((consumos[r[0]] || 0) * 10) / 10;
+      const diasStock = consumoD > 0 ? Math.round(stock / consumoD * 10) / 10 : "N/D";
+
+      let estado;
+      if (stock === 0)          estado = "SIN STOCK";
+      else if (stock < stockMin)           estado = "CRÍTICO";
+      else if (stock < stockMin * 1.5)     estado = "BAJO";
+      else                                 estado = "OK";
+
+      return {
+        codigo:         r[0],
+        nombre:         r[1],
+        stock,
+        stock_min:      stockMin,
+        consumo_diario: consumoD,
+        dias_stock:     diasStock,
+        estado,
+        ultimo_conteo:  r[7] ? r[7].toString() : "",
+        alerta:         diasStock !== "N/D" && diasStock < 7 ? "⚠ REPONER" : "",
+      };
+    })
   };
 }
 
