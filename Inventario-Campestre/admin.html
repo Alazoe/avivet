@@ -459,15 +459,7 @@ td { padding:11px 14px; }
 <script>
 const BACKEND = "https://script.google.com/macros/s/AKfycby8dfFibuDyDeRRK3J44Vqw9pJA1F3sMFKuYPHoC_1OHB-GIeeOlAYCdMDklE8o7b7u/exec";
 
-const RECETAS_DATA = {
-  "PONEDORA 1":     {"30MAIZ-00":562,"30AFSY-00":266,"30COCH-00":106,"30HTR3-00":50,"30PHSB-00":6,"30MSRB-00":0.5,"30MET2-00":2.5,"30INMU-00":0.5,"30LIS2-00":0.5,"30PLFD-00":2,"30NSLP-00":0.5,"30SAL6-00":4,"30OVTO-00":1,"30NSLG-00":1,"30PIGM-00":0.2},
-  "PONEDORA 2":     {"30MAIZ-00":552,"30AFSY-00":257,"30COCH-00":127,"30HTR3-00":50,"30PHSB-00":4,"30MSRB-00":0.5,"30MET2-00":2,"30INMU-00":0.5,"30LIS2-00":0.3,"30PLFD-00":2.5,"30SAL6-00":4,"30OVTO-00":1,"30NSLG-00":1,"30PIGM-00":0.2},
-  "POLLITA INICIAL":{"30MAIZ-00":600,"30AFSY-00":315,"30COCH-00":15,"30HTR3-00":50,"30PHSB-00":10,"30MSRB-00":0.5,"30MET2-00":2.5,"30INMU-00":0.5,"30LIS2-00":1.6,"30COCI-00":0.5,"30NSLP-00":1,"30SAL6-00":2.5},
-  "RECRÍA":         {"30MAIZ-00":661,"30AFSY-00":260,"30COCH-00":13,"30HTR3-00":50,"30PHSB-00":9,"30MSRB-00":0.5,"30MET2-00":1,"30INMU-00":0.5,"30LIS2-00":0.3,"30COCI-00":0.4,"30NSLP-00":1,"30SAL6-00":2.5},
-  "PREPOSTURA":     {"30MAIZ-00":646,"30AFSY-00":250,"30COCH-00":63,"30HTR3-00":25,"30PHSB-00":9,"30MSRB-00":0.5,"30MET2-00":1,"30INMU-00":0.5,"30LIS2-00":0.3,"30SAL6-00":3,"30NSLG-00":1},
-  "LOLOL":          {"30MAIZ-00":562,"30AFSY-00":269,"30COCH-00":105,"30HTR3-00":50,"30PHSB-00":6,"30MSRB-00":0.5,"30MET2-00":2,"30INMU-00":0.5,"30LIS2-00":0.3,"30PLFD-00":2,"30SAL6-00":3,"30NSLG-00":1},
-  "POLLA NUEVA":    {"30MAIZ-00":558,"30AFSY-00":267,"30COCH-00":108,"30HTR3-00":50,"30PHSB-00":7,"30MSRB-00":0.5,"30MET2-00":2,"30INMU-00":0.5,"30LIS2-00":0.3,"30PLFD-00":3,"30NSLP-00":0.5,"30SAL6-00":3,"30NSLG-00":1,"30PIGM-00":0.2},
-};
+let RECETAS_DATA = {}; // cargado desde GAS al iniciar y al navegar a Recetas
 
 const MP_NOMBRES = {
   "30MAIZ-00":"Maíz","30AFSY-00":"Afrecho Soya","30COCH-00":"Conchuela","30HTR3-00":"Harinilla Trigo",
@@ -487,16 +479,6 @@ const MPS_PRINCIPALES = [
   {cod:"30HTR3-00",  nombre:"Harinilla Trigo",grupo:"Energético"},
 ];
 
-// Cargar recetas desde localStorage (sobreescribe los defaults si existen cambios guardados)
-(function() {
-  try {
-    const saved = localStorage.getItem("recetas_campestre");
-    if (saved) Object.assign(RECETAS_DATA, JSON.parse(saved));
-    // Eliminar dietas que el usuario borró (no están en saved)
-    const savedKeys = saved ? Object.keys(JSON.parse(saved)) : null;
-    if (savedKeys) Object.keys(RECETAS_DATA).forEach(k => { if (!savedKeys.includes(k)) delete RECETAS_DATA[k]; });
-  } catch(e) {}
-})();
 
 const DIAS_SEM = ["Dom","Lun","Mar","Mié","Jue","Vie","Sáb"];
 const MESES    = ["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
@@ -522,6 +504,7 @@ document.getElementById("app").style.display="block";
 cargarPlanLocal();
 cargarDashboard();
 cargarMPsParaOC();
+cargarRecetasDesdeGAS();
 
 // ── NAVEGACIÓN ──
 function irA(pagina, btn) {
@@ -531,8 +514,8 @@ function irA(pagina, btn) {
   if(btn) btn.classList.add("activo");
   if(pagina==="stock"         && dashData) renderTablaStock(dashData.stock);
   if(pagina==="ordenes")      cargarOrdenes();
-  if(pagina==="recetas")      renderRecetas();
-  if(pagina==="planificacion"){ cargarPlanDesdeSheet().then(()=>renderPlan()); }
+  if(pagina==="recetas")      cargarRecetasDesdeGAS().then(()=>renderRecetas());
+  if(pagina==="planificacion"){ Promise.all([cargarPlanDesdeSheet(),cargarRecetasDesdeGAS()]).then(()=>renderPlan()); }
   if(pagina==="stockdia")     renderStockDia();
   if(pagina==="control")      iniciarControlDiario();
 }
@@ -686,30 +669,53 @@ async function crearOC() {
   } catch(e){alert("Error al guardar");}
 }
 
-// ── RECETAS ──
+// ── RECETAS — carga y persistencia GAS ──
+async function cargarRecetasDesdeGAS() {
+  try {
+    const data = await jsonpGet({ action: "getRecetas" });
+    if (data.ok && data.data) {
+      Object.keys(RECETAS_DATA).forEach(k => delete RECETAS_DATA[k]);
+      Object.assign(RECETAS_DATA, data.data);
+    }
+  } catch(e) { console.log("Error cargando recetas GAS:", e); }
+}
+
+async function guardarRecetasEnGAS() {
+  const payload = encodeURIComponent(JSON.stringify(RECETAS_DATA));
+  const data = await jsonpGet({ action: "guardarRecetas", payload });
+  if (!data.ok) throw new Error(data.error || "Error al guardar");
+  return data;
+}
+
 function renderRecetas() {
   const dietas = Object.keys(RECETAS_DATA);
   if (!dietas.length) {
-    document.getElementById("tabla-recetas").innerHTML = '<div class="loading-msg">Sin dietas — agrega una con el botón +</div>';
+    document.getElementById("tabla-recetas").innerHTML = '<div class="loading-msg">Cargando dietas<span class="dot-anim"></span></div>';
     return;
   }
   let html = "";
   dietas.forEach(nombre => {
-    const ings = RECETAS_DATA[nombre];
+    const rec = RECETAS_DATA[nombre] || {};
+    const ings = rec.insumos || {};
     const total = Object.values(ings).reduce((a,b) => a+b, 0);
+    const activo = rec.activo !== false;
+    const activoBadge = activo
+      ? `<span class="badge badge-ok" style="font-size:10px">Activa</span>`
+      : `<span class="badge badge-nd" style="font-size:10px">Inactiva</span>`;
     const chips = Object.entries(ings).map(([cod, kg]) =>
       `<span class="ing-chip">${MP_NOMBRES[cod]||cod} <strong>${kg}</strong></span>`
     ).join("");
+    const safeName = nombre.replace(/\\/g,"\\\\").replace(/'/g,"\\'");
     html += `
       <div class="dieta-card">
         <div class="dieta-card-header">
           <div>
-            <div class="dieta-card-nombre">${nombre}</div>
-            <div class="dieta-card-total">Total: ${total.toFixed(1)} kg/ton</div>
+            <div class="dieta-card-nombre">${nombre} ${activoBadge}</div>
+            <div class="dieta-card-total">Total: ${total.toFixed(1)} kg/ton${rec.fecha ? ` · desde ${rec.fecha}` : ""}</div>
           </div>
           <div class="dieta-card-btns">
-            <button class="btn-sm btn-sm-edit" onclick="abrirEditarDieta('${nombre.replace(/'/g,"\\'")}')">Editar</button>
-            <button class="btn-sm btn-sm-del"  onclick="confirmarEliminarDieta('${nombre.replace(/'/g,"\\'")}')">Eliminar</button>
+            <button class="btn-sm btn-sm-edit" onclick="abrirEditarDieta('${safeName}')">Editar</button>
+            <button class="btn-sm btn-sm-del"  onclick="confirmarEliminarDieta('${safeName}')">Eliminar</button>
           </div>
         </div>
         <div class="dieta-ings">${chips}</div>
@@ -719,13 +725,13 @@ function renderRecetas() {
 }
 
 // ── GESTIÓN DIETAS ──
-let _editandoDieta = null; // nombre original al editar, null si es nueva
+let _editandoDieta = null;
 
 function abrirNuevaDieta() {
   _editandoDieta = null;
   document.getElementById("modal-dieta-titulo").textContent = "Nueva Dieta";
   document.getElementById("modal-dieta-nombre").value = "";
-  document.getElementById("modal-dieta-nombre").disabled = false;
+  document.getElementById("modal-dieta-activo").checked = true;
   document.getElementById("modal-ings-list").innerHTML = "";
   actualizarTotalDieta();
   document.getElementById("modal-dieta").classList.add("abierto");
@@ -735,10 +741,10 @@ function abrirEditarDieta(nombre) {
   _editandoDieta = nombre;
   document.getElementById("modal-dieta-titulo").textContent = "Editar Dieta";
   document.getElementById("modal-dieta-nombre").value = nombre;
-  document.getElementById("modal-dieta-nombre").disabled = false;
-  const ings = RECETAS_DATA[nombre] || {};
+  const rec = RECETAS_DATA[nombre] || {};
+  document.getElementById("modal-dieta-activo").checked = rec.activo !== false;
   document.getElementById("modal-ings-list").innerHTML = "";
-  Object.entries(ings).forEach(([cod, kg]) => agregarIngredienteModal(cod, kg));
+  Object.entries(rec.insumos || {}).forEach(([cod, kg]) => agregarIngredienteModal(cod, kg));
   actualizarTotalDieta();
   document.getElementById("modal-dieta").classList.add("abierto");
 }
@@ -777,7 +783,7 @@ function actualizarTotalDieta() {
   el.className = "total-dieta-val" + (Math.abs(total - 1000) > 20 ? " warn" : "");
 }
 
-function guardarDieta() {
+async function guardarDieta() {
   const nombre = document.getElementById("modal-dieta-nombre").value.trim().toUpperCase();
   if (!nombre) { alert("Ingresa un nombre para la dieta."); return; }
 
@@ -793,19 +799,33 @@ function guardarDieta() {
   if (!valido) { alert("Hay ingredientes sin materia prima seleccionada."); return; }
   if (!Object.keys(ings).length) { alert("Agrega al menos un ingrediente."); return; }
 
-  // Si se renombró, eliminar la clave antigua
-  if (_editandoDieta && _editandoDieta !== nombre) delete RECETAS_DATA[_editandoDieta];
+  const activo = document.getElementById("modal-dieta-activo").checked;
+  const fechaExistente = (_editandoDieta && RECETAS_DATA[_editandoDieta]?.fecha) || "";
 
-  RECETAS_DATA[nombre] = ings;
-  localStorage.setItem("recetas_campestre", JSON.stringify(RECETAS_DATA));
-  cerrarModalDieta();
-  renderRecetas();
+  if (_editandoDieta && _editandoDieta !== nombre) delete RECETAS_DATA[_editandoDieta];
+  RECETAS_DATA[nombre] = { activo, fecha: fechaExistente, insumos: ings };
+
+  const btn = document.querySelector("#modal-dieta .modal-footer .btn-primary");
+  btn.textContent = "Guardando..."; btn.disabled = true;
+  try {
+    await guardarRecetasEnGAS();
+    cerrarModalDieta();
+    renderRecetas();
+  } catch(e) {
+    alert("Error al guardar en el servidor: " + e.message);
+  } finally {
+    btn.textContent = "Guardar dieta"; btn.disabled = false;
+  }
 }
 
-function confirmarEliminarDieta(nombre) {
+async function confirmarEliminarDieta(nombre) {
   if (!confirm(`¿Eliminar la dieta "${nombre}"? Esta acción no se puede deshacer.`)) return;
   delete RECETAS_DATA[nombre];
-  localStorage.setItem("recetas_campestre", JSON.stringify(RECETAS_DATA));
+  try {
+    await guardarRecetasEnGAS();
+  } catch(e) {
+    alert("Error al guardar en el servidor: " + e.message);
+  }
   renderRecetas();
 }
 
@@ -923,10 +943,10 @@ function calcularConsumoMPs() {
   let totalProd=0;
   dias.forEach(d=>{
     const fk=fechaStr(d);
-    Object.entries(RECETAS_DATA).forEach(([dieta,insumos])=>{
+    Object.entries(RECETAS_DATA).forEach(([dieta,rec])=>{
       const kg=parseFloat(planData[fk]?.[dieta]||0);
       totalProd+=kg;
-      Object.entries(insumos).forEach(([cod,prop])=>{consumos[cod]=(consumos[cod]||0)+kg*(prop/1000);});
+      Object.entries(rec.insumos||{}).forEach(([cod,prop])=>{consumos[cod]=(consumos[cod]||0)+kg*(prop/1000);});
     });
   });
   const entradas=Object.entries(consumos).filter(([,v])=>v>0).sort((a,b)=>b[1]-a[1]);
@@ -1014,14 +1034,13 @@ async function fetchConteosDelDia(fecha) {
 }
 
 function calcularConsumoDiaCompleto(fk) {
-  // Calcula consumo de TODOS los ingredientes (no solo MPS_PRINCIPALES)
   const cons = {};
   let totalFeed = 0;
-  Object.entries(RECETAS_DATA).forEach(([dieta, insumos]) => {
+  Object.entries(RECETAS_DATA).forEach(([dieta, rec]) => {
     const kg = parseFloat(planData[fk]?.[dieta] || 0);
     if (kg <= 0) return;
     totalFeed += kg;
-    Object.entries(insumos).forEach(([cod, prop]) => {
+    Object.entries(rec.insumos || {}).forEach(([cod, prop]) => {
       cons[cod] = (cons[cod] || 0) + kg * (prop / 1000);
     });
   });
@@ -1169,12 +1188,11 @@ function limpiarPlan() {
 
 // ── STOCK DEL DÍA ──
 function calcularConsumoDia(fk) {
-  // Calcula consumo de cada MP para una fecha dada según planData
   const cons={};
   MPS_PRINCIPALES.forEach(({cod})=>{cons[cod]=0;});
-  Object.entries(RECETAS_DATA).forEach(([dieta,insumos])=>{
+  Object.entries(RECETAS_DATA).forEach(([dieta,rec])=>{
     const kg=parseFloat(planData[fk]?.[dieta]||0);
-    Object.entries(insumos).forEach(([cod,prop])=>{
+    Object.entries(rec.insumos||{}).forEach(([cod,prop])=>{
       if(cons[cod]!==undefined) cons[cod]+=kg*(prop/1000);
     });
   });
@@ -1302,9 +1320,13 @@ function renderStockDia() {
       <button class="modal-close-btn" onclick="cerrarModalDieta()">✕</button>
     </div>
     <div class="modal-body">
-      <div class="fg-modal" style="margin-bottom:16px">
+      <div class="fg-modal" style="margin-bottom:12px">
         <label>Nombre de la dieta</label>
         <input type="text" id="modal-dieta-nombre" placeholder="Ej: PONEDORA 3" style="text-transform:uppercase">
+      </div>
+      <div style="margin-bottom:16px;display:flex;align-items:center;gap:8px">
+        <input type="checkbox" id="modal-dieta-activo" style="width:16px;height:16px;accent-color:var(--verde-clar);cursor:pointer">
+        <label for="modal-dieta-activo" style="font-size:13px;color:var(--gris);cursor:pointer">Dieta activa (se incluye en planificación)</label>
       </div>
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
         <span style="font-size:11px;font-weight:600;color:var(--gris);text-transform:uppercase;letter-spacing:0.04em">Ingredientes (kg / ton)</span>

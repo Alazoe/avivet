@@ -375,6 +375,8 @@ function doGet(e) {
       case "getStockActual":       result = getStockActual();                             break;
       case "getOrdenes":           result = getOrdenes();                                 break;
       case "getDashboard":         result = getDashboard();                               break;
+      case "getRecetas":           result = getRecetas();                                 break;
+      case "guardarRecetas":       result = guardarRecetas(e.parameter);                  break;
       case "registrarConteo":      result = registrarConteo(e.parameter);                 break;
       case "guardarOrden":         result = guardarOrden(e.parameter);                    break;
       case "guardarPlanificacion": result = guardarPlanificacion(JSON.parse(decodeURIComponent(e.parameter.payload||"{}"))); break;
@@ -435,12 +437,18 @@ function calcularConsumosDiariosDesdeplan() {
 
   const numDias = Math.max(fechaSet.size, 1);
 
+  // Usar recetas desde la hoja (con fallback al constante hardcodeado)
+  const recetasRes = getRecetas();
+  const recetasViva = recetasRes.ok && Object.keys(recetasRes.data).length
+    ? recetasRes.data
+    : Object.fromEntries(Object.entries(RECETAS).map(([k,v]) => [k, { activo: v.activo, fecha: v.fecha, insumos: v.insumos }]));
+
   // Consumo diario promedio por MP = Σ(kg_planificados_dieta / numDias × proporción_MP / 1000)
   const consumos = {};
-  Object.entries(RECETAS).forEach(([dieta, receta]) => {
+  Object.entries(recetasViva).forEach(([dieta, receta]) => {
     const kgDia = (planSum[dieta] || 0) / numDias;
     if (kgDia <= 0) return;
-    Object.entries(receta.insumos).forEach(([cod, prop]) => {
+    Object.entries(receta.insumos || {}).forEach(([cod, prop]) => {
       consumos[cod] = (consumos[cod] || 0) + kgDia * (prop / 1000);
     });
   });
@@ -501,6 +509,144 @@ function getOrdenes() {
       fecha_entrega: r[8]?.toString(), estado: r[9], fecha_recepcion: r[10]?.toString(), obs: r[11]
     }))
   };
+}
+
+// ──────────────────────────────────────────────
+// RECETAS — leer y escribir desde la hoja
+// ──────────────────────────────────────────────
+function getRecetas() {
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  const ws = ss.getSheetByName("RECETAS");
+  if (!ws) return { ok: false, error: "Hoja RECETAS no encontrada" };
+
+  const lastCol = ws.getLastColumn();
+  const lastRow = ws.getLastRow();
+  if (lastRow < 5) return { ok: true, data: {} };
+
+  const allData = ws.getRange(2, 1, lastRow - 1, lastCol).getValues();
+  const headersRow = allData[0]; // row 2: INSUMO | Código MP | dieta1 | dieta2 ...
+  const datesRow   = allData[1]; // row 3: fechas
+  const activoRow  = allData[2]; // row 4: SÍ/NO
+  const ingRows    = allData.slice(3); // rows 5+
+
+  const dietNames = headersRow.slice(2).filter(n => n !== "");
+  const recetas = {};
+  dietNames.forEach((nombre, i) => {
+    recetas[nombre] = {
+      activo: activoRow[2 + i] === "SÍ",
+      fecha:  String(datesRow[2 + i] || ""),
+      insumos: {}
+    };
+  });
+
+  ingRows.forEach(row => {
+    const cod = String(row[1] || "").trim();
+    if (!cod || row[0] === "TOTAL") return;
+    dietNames.forEach((nombre, i) => {
+      const val = parseFloat(row[2 + i]);
+      if (val > 0) recetas[nombre].insumos[cod] = val;
+    });
+  });
+
+  return { ok: true, data: recetas };
+}
+
+function guardarRecetas(body) {
+  let recetas;
+  try {
+    recetas = JSON.parse(decodeURIComponent(body.payload || "{}"));
+  } catch(e) {
+    return { ok: false, error: "JSON inválido: " + e.message };
+  }
+  if (!recetas || typeof recetas !== "object") return { ok: false, error: "Datos inválidos" };
+
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  escribirHojaRecetas(ss, recetas);
+  SpreadsheetApp.flush();
+  return { ok: true, msg: "Recetas actualizadas", n: Object.keys(recetas).length };
+}
+
+function escribirHojaRecetas(ss, recetasObj) {
+  const ws = getOrCreate(ss, "RECETAS");
+  ws.clearContents();
+
+  const nombresDietas = Object.keys(recetasObj);
+  if (!nombresDietas.length) return;
+  const numCols = 2 + nombresDietas.length;
+
+  ws.getRange(1, 1, 1, numCols).merge()
+    .setValue("RECETAS / FÓRMULAS — kg por 1.000 kg de mezcla")
+    .setBackground("#1B4332").setFontColor("#FFFFFF").setFontWeight("bold")
+    .setFontSize(13).setHorizontalAlignment("center");
+  ws.setRowHeight(1, 30);
+
+  ws.getRange(2, 1).setValue("INSUMO").setBackground("#2D6A4F").setFontColor("#FFFFFF").setFontWeight("bold").setHorizontalAlignment("center");
+  ws.getRange(2, 2).setValue("Código MP").setBackground("#2D6A4F").setFontColor("#FFFFFF").setFontWeight("bold").setHorizontalAlignment("center");
+  nombresDietas.forEach((nombre, i) => {
+    const bg = recetasObj[nombre].activo ? "#2D6A4F" : "#888888";
+    ws.getRange(2, 3+i).setValue(nombre).setBackground(bg).setFontColor("#FFFFFF").setFontWeight("bold").setHorizontalAlignment("center");
+  });
+  ws.setRowHeight(2, 24);
+
+  ws.getRange(3, 1).setValue("Fecha inicio").setBackground("#95D5B2").setFontWeight("bold").setHorizontalAlignment("center");
+  ws.getRange(3, 2).setBackground("#95D5B2");
+  nombresDietas.forEach((nombre, i) => {
+    ws.getRange(3, 3+i).setValue(recetasObj[nombre].fecha || "").setBackground("#95D5B2").setHorizontalAlignment("center").setFontWeight("bold");
+  });
+
+  ws.getRange(4, 1).setValue("Activo").setBackground("#D8F3DC").setFontWeight("bold").setHorizontalAlignment("center");
+  ws.getRange(4, 2).setBackground("#D8F3DC");
+  nombresDietas.forEach((nombre, i) => {
+    const activo = recetasObj[nombre].activo;
+    ws.getRange(4, 3+i).setValue(activo ? "SÍ" : "NO")
+      .setBackground(activo ? "#D8F3DC" : "#FFD6D6")
+      .setFontColor(activo ? "#006400" : "#CC0000")
+      .setFontWeight("bold").setHorizontalAlignment("center");
+  });
+
+  // Collect codes: first from MATERIAS_PRIMAS order, then any extras
+  const allCods = [];
+  MATERIAS_PRIMAS.forEach(([cod]) => {
+    let tieneValor = false;
+    nombresDietas.forEach(d => { if ((recetasObj[d].insumos || {})[cod]) tieneValor = true; });
+    if (tieneValor) allCods.push(cod);
+  });
+  nombresDietas.forEach(d => {
+    Object.keys(recetasObj[d].insumos || {}).forEach(cod => {
+      if (!allCods.includes(cod)) allCods.push(cod);
+    });
+  });
+
+  let row = 5;
+  allCods.forEach(cod => {
+    const mp = MATERIAS_PRIMAS.find(m => m[0] === cod);
+    const nombre = mp ? mp[1] : cod;
+    ws.getRange(row, 1).setValue(nombre).setFontWeight("bold").setFontFamily("Arial").setFontSize(10);
+    ws.getRange(row, 2).setValue(cod).setFontColor("#555555").setFontFamily("Arial").setFontSize(9);
+    nombresDietas.forEach((dieta, i) => {
+      const val = (recetasObj[dieta].insumos || {})[cod] || "";
+      const c = ws.getRange(row, 3+i);
+      c.setValue(val).setHorizontalAlignment("center").setFontFamily("Arial").setFontSize(10);
+      if (!recetasObj[dieta].activo) c.setFontColor("#AAAAAA");
+    });
+    ws.setRowHeight(row, 18);
+    row++;
+  });
+
+  ws.getRange(row, 1).setValue("TOTAL").setBackground("#1B4332").setFontColor("#FFFFFF").setFontWeight("bold").setHorizontalAlignment("center");
+  ws.getRange(row, 2).setBackground("#1B4332");
+  for (let i = 0; i < nombresDietas.length; i++) {
+    const col = 3 + i;
+    const letra = columnToLetter(col);
+    ws.getRange(row, col)
+      .setFormula(`=SUM(${letra}5:${letra}${row-1})`)
+      .setBackground("#1B4332").setFontColor("#FFFFFF").setFontWeight("bold").setHorizontalAlignment("center");
+  }
+  ws.setRowHeight(row, 22);
+  ws.setColumnWidth(1, 240);
+  ws.setColumnWidth(2, 140);
+  for (let i = 0; i < nombresDietas.length; i++) ws.setColumnWidth(3+i, 110);
+  ws.setFrozenRows(4);
 }
 
 function getDashboard() {
