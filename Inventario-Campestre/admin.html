@@ -188,6 +188,38 @@ td { padding:11px 14px; }
 .ctrl-pill { padding:6px 14px;background:var(--verde-light);border:1px solid #B7E4C7;border-radius:20px;font-size:13px; }
 .ctrl-pill strong { color:var(--verde);font-family:'DM Mono',monospace; }
 
+/* MODAL DIETAS */
+.modal-overlay { position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity 0.2s; }
+.modal-overlay.abierto { opacity:1;pointer-events:all; }
+.modal-box { background:white;border-radius:var(--radio);box-shadow:0 8px 32px rgba(0,0,0,0.2);width:100%;max-width:680px;max-height:88vh;display:flex;flex-direction:column;overflow:hidden; }
+.modal-header { padding:18px 22px;border-bottom:1px solid var(--borde);display:flex;align-items:center;justify-content:space-between;flex-shrink:0; }
+.modal-header h3 { font-size:17px;font-weight:600;color:var(--verde); }
+.modal-close-btn { width:30px;height:30px;border-radius:50%;border:none;background:var(--gris-bg);cursor:pointer;font-size:16px;color:var(--gris);display:flex;align-items:center;justify-content:center; }
+.modal-body { padding:20px 22px;overflow-y:auto;flex:1; }
+.modal-footer { padding:14px 22px;border-top:1px solid var(--borde);display:flex;justify-content:flex-end;gap:10px;flex-shrink:0; }
+.fg-modal label { font-size:11px;font-weight:600;color:var(--gris);text-transform:uppercase;letter-spacing:0.04em;display:block;margin-bottom:5px; }
+.fg-modal input,.fg-modal select { width:100%;padding:9px 12px;border:1.5px solid var(--borde);border-radius:var(--radio-sm);font-family:'DM Sans',sans-serif;font-size:14px;background:white;outline:none; }
+.fg-modal input:focus,.fg-modal select:focus { border-color:var(--verde-clar); }
+.ing-row { display:grid;grid-template-columns:1fr 110px 34px;gap:8px;align-items:center;margin-bottom:8px; }
+.ing-row select { font-size:13px; }
+.ing-row input { text-align:right;font-family:'DM Mono',monospace; }
+.ing-del-btn { width:30px;height:30px;border:none;background:var(--rojo-bg);color:var(--rojo);border-radius:var(--radio-sm);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;padding:0; }
+.total-dieta-row { display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--verde-light);border:1px solid var(--verde-bg);border-radius:var(--radio-sm);margin-top:12px; }
+.total-dieta-label { font-size:13px;font-weight:600;color:var(--verde); }
+.total-dieta-val { font-size:16px;font-weight:700;font-family:'DM Mono',monospace;color:var(--verde); }
+.total-dieta-val.warn { color:var(--amarillo); }
+.dieta-card { background:white;border:1px solid var(--borde);border-radius:var(--radio);margin-bottom:12px;overflow:hidden; }
+.dieta-card-header { padding:12px 16px;background:var(--verde-light);display:flex;align-items:center;justify-content:space-between; }
+.dieta-card-nombre { font-size:14px;font-weight:600;color:var(--verde); }
+.dieta-card-total { font-size:11px;font-family:'DM Mono',monospace;color:var(--gris); }
+.dieta-card-btns { display:flex;gap:6px; }
+.btn-sm { padding:5px 12px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;border:none;font-family:'DM Sans',sans-serif; }
+.btn-sm-edit { background:var(--verde-bg);color:var(--verde-med); }
+.btn-sm-del  { background:var(--rojo-bg);color:var(--rojo); }
+.dieta-ings  { display:flex;flex-wrap:wrap;gap:6px;padding:12px 16px; }
+.ing-chip { padding:3px 10px;background:var(--gris-bg);border-radius:20px;font-size:11px;color:var(--gris); }
+.ing-chip strong { color:var(--texto);font-family:'DM Mono',monospace; }
+
 /* PROYECCIÓN 5 DÍAS */
 .proy-tabla-wrap { overflow-x:auto; }
 .proy-tabla { width:100%; border-collapse:collapse; min-width:600px; }
@@ -338,8 +370,11 @@ td { padding:11px 14px; }
       </div>
 
       <div class="page" id="pg-recetas">
-        <div class="page-header"><h2>Recetas y Fórmulas</h2><p>Composición por 1.000 kg de mezcla</p></div>
-        <div id="tabla-recetas" class="loading-msg">Cargando<span class="dot-anim"></span></div>
+        <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between">
+          <div><h2>Recetas y Dietas</h2><p>Composición por 1.000 kg de mezcla — editable</p></div>
+          <button class="btn-primary" onclick="abrirNuevaDieta()">+ Nueva dieta</button>
+        </div>
+        <div id="tabla-recetas"></div>
       </div>
 
       <!-- PLANIFICACIÓN -->
@@ -451,6 +486,17 @@ const MPS_PRINCIPALES = [
   {cod:"30LIS2-00",  nombre:"Lisina 99%",     grupo:"Aminoácido"},
   {cod:"30HTR3-00",  nombre:"Harinilla Trigo",grupo:"Energético"},
 ];
+
+// Cargar recetas desde localStorage (sobreescribe los defaults si existen cambios guardados)
+(function() {
+  try {
+    const saved = localStorage.getItem("recetas_campestre");
+    if (saved) Object.assign(RECETAS_DATA, JSON.parse(saved));
+    // Eliminar dietas que el usuario borró (no están en saved)
+    const savedKeys = saved ? Object.keys(JSON.parse(saved)) : null;
+    if (savedKeys) Object.keys(RECETAS_DATA).forEach(k => { if (!savedKeys.includes(k)) delete RECETAS_DATA[k]; });
+  } catch(e) {}
+})();
 
 const DIAS_SEM = ["Dom","Lun","Mar","Mié","Jue","Vie","Sáb"];
 const MESES    = ["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
@@ -642,15 +688,125 @@ async function crearOC() {
 
 // ── RECETAS ──
 function renderRecetas() {
-  const dietas=Object.keys(RECETAS_DATA);
-  const mps=[...new Set(dietas.flatMap(d=>Object.keys(RECETAS_DATA[d])))];
-  document.getElementById("tabla-recetas").innerHTML=`<div class="card"><div class="card-body"><table>
-    <thead><tr><th>Materia Prima</th><th>Código</th>${dietas.map(d=>`<th style="text-align:right">${d}</th>`).join("")}</tr></thead>
-    <tbody>${mps.map(cod=>`<tr><td class="nombre-cell">${MP_NOMBRES[cod]||cod}</td><td class="cod-cell">${cod}</td>
-    ${dietas.map(d=>`<td class="num-cell">${RECETAS_DATA[d][cod]||""}</td>`).join("")}</tr>`).join("")}
-    <tr style="font-weight:600;background:var(--verde-light)"><td colspan="2" style="padding:11px 14px;font-weight:600">TOTAL</td>
-    ${dietas.map(d=>`<td class="num-cell">${Object.values(RECETAS_DATA[d]).reduce((a,b)=>a+b,0).toFixed(1)}</td>`).join("")}
-    </tr></tbody></table></div></div>`;
+  const dietas = Object.keys(RECETAS_DATA);
+  if (!dietas.length) {
+    document.getElementById("tabla-recetas").innerHTML = '<div class="loading-msg">Sin dietas — agrega una con el botón +</div>';
+    return;
+  }
+  let html = "";
+  dietas.forEach(nombre => {
+    const ings = RECETAS_DATA[nombre];
+    const total = Object.values(ings).reduce((a,b) => a+b, 0);
+    const chips = Object.entries(ings).map(([cod, kg]) =>
+      `<span class="ing-chip">${MP_NOMBRES[cod]||cod} <strong>${kg}</strong></span>`
+    ).join("");
+    html += `
+      <div class="dieta-card">
+        <div class="dieta-card-header">
+          <div>
+            <div class="dieta-card-nombre">${nombre}</div>
+            <div class="dieta-card-total">Total: ${total.toFixed(1)} kg/ton</div>
+          </div>
+          <div class="dieta-card-btns">
+            <button class="btn-sm btn-sm-edit" onclick="abrirEditarDieta('${nombre.replace(/'/g,"\\'")}')">Editar</button>
+            <button class="btn-sm btn-sm-del"  onclick="confirmarEliminarDieta('${nombre.replace(/'/g,"\\'")}')">Eliminar</button>
+          </div>
+        </div>
+        <div class="dieta-ings">${chips}</div>
+      </div>`;
+  });
+  document.getElementById("tabla-recetas").innerHTML = html;
+}
+
+// ── GESTIÓN DIETAS ──
+let _editandoDieta = null; // nombre original al editar, null si es nueva
+
+function abrirNuevaDieta() {
+  _editandoDieta = null;
+  document.getElementById("modal-dieta-titulo").textContent = "Nueva Dieta";
+  document.getElementById("modal-dieta-nombre").value = "";
+  document.getElementById("modal-dieta-nombre").disabled = false;
+  document.getElementById("modal-ings-list").innerHTML = "";
+  actualizarTotalDieta();
+  document.getElementById("modal-dieta").classList.add("abierto");
+}
+
+function abrirEditarDieta(nombre) {
+  _editandoDieta = nombre;
+  document.getElementById("modal-dieta-titulo").textContent = "Editar Dieta";
+  document.getElementById("modal-dieta-nombre").value = nombre;
+  document.getElementById("modal-dieta-nombre").disabled = false;
+  const ings = RECETAS_DATA[nombre] || {};
+  document.getElementById("modal-ings-list").innerHTML = "";
+  Object.entries(ings).forEach(([cod, kg]) => agregarIngredienteModal(cod, kg));
+  actualizarTotalDieta();
+  document.getElementById("modal-dieta").classList.add("abierto");
+}
+
+function cerrarModalDieta() {
+  document.getElementById("modal-dieta").classList.remove("abierto");
+}
+
+function agregarIngredienteModal(cod = "", kg = "") {
+  const row = document.createElement("div");
+  row.className = "ing-row";
+  const opcionesMPs = Object.entries(MP_NOMBRES).map(([c, n]) =>
+    `<option value="${c}" ${c === cod ? "selected" : ""}>${n} (${c})</option>`
+  ).join("");
+  row.innerHTML = `
+    <select onchange="actualizarTotalDieta()">
+      <option value="">— Seleccionar MP —</option>
+      ${opcionesMPs}
+    </select>
+    <input type="number" min="0" step="0.1" placeholder="kg/ton" value="${kg}"
+      oninput="actualizarTotalDieta()">
+    <button class="ing-del-btn" onclick="this.closest('.ing-row').remove();actualizarTotalDieta()">×</button>`;
+  document.getElementById("modal-ings-list").appendChild(row);
+  row.querySelector("select").focus();
+}
+
+function actualizarTotalDieta() {
+  const rows = document.querySelectorAll("#modal-ings-list .ing-row");
+  let total = 0;
+  rows.forEach(r => {
+    const val = parseFloat(r.querySelector("input").value) || 0;
+    total += val;
+  });
+  const el = document.getElementById("modal-total");
+  el.textContent = total.toFixed(1) + " kg/ton";
+  el.className = "total-dieta-val" + (Math.abs(total - 1000) > 20 ? " warn" : "");
+}
+
+function guardarDieta() {
+  const nombre = document.getElementById("modal-dieta-nombre").value.trim().toUpperCase();
+  if (!nombre) { alert("Ingresa un nombre para la dieta."); return; }
+
+  const rows = document.querySelectorAll("#modal-ings-list .ing-row");
+  const ings = {};
+  let valido = true;
+  rows.forEach(r => {
+    const cod = r.querySelector("select").value;
+    const kg  = parseFloat(r.querySelector("input").value);
+    if (!cod) { valido = false; return; }
+    if (kg > 0) ings[cod] = kg;
+  });
+  if (!valido) { alert("Hay ingredientes sin materia prima seleccionada."); return; }
+  if (!Object.keys(ings).length) { alert("Agrega al menos un ingrediente."); return; }
+
+  // Si se renombró, eliminar la clave antigua
+  if (_editandoDieta && _editandoDieta !== nombre) delete RECETAS_DATA[_editandoDieta];
+
+  RECETAS_DATA[nombre] = ings;
+  localStorage.setItem("recetas_campestre", JSON.stringify(RECETAS_DATA));
+  cerrarModalDieta();
+  renderRecetas();
+}
+
+function confirmarEliminarDieta(nombre) {
+  if (!confirm(`¿Eliminar la dieta "${nombre}"? Esta acción no se puede deshacer.`)) return;
+  delete RECETAS_DATA[nombre];
+  localStorage.setItem("recetas_campestre", JSON.stringify(RECETAS_DATA));
+  renderRecetas();
 }
 
 // ── PLANIFICACIÓN ──
@@ -1137,5 +1293,39 @@ function renderStockDia() {
   stockEl.innerHTML=html;
 }
 </script>
+
+<!-- MODAL EDITAR DIETA -->
+<div class="modal-overlay" id="modal-dieta">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3 id="modal-dieta-titulo">Editar Dieta</h3>
+      <button class="modal-close-btn" onclick="cerrarModalDieta()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="fg-modal" style="margin-bottom:16px">
+        <label>Nombre de la dieta</label>
+        <input type="text" id="modal-dieta-nombre" placeholder="Ej: PONEDORA 3" style="text-transform:uppercase">
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <span style="font-size:11px;font-weight:600;color:var(--gris);text-transform:uppercase;letter-spacing:0.04em">Ingredientes (kg / ton)</span>
+        <button class="btn-sm btn-sm-edit" onclick="agregarIngredienteModal()">+ Ingrediente</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 110px 34px;gap:8px;margin-bottom:6px;padding:0 2px">
+        <span style="font-size:10px;font-weight:600;color:var(--gris);text-transform:uppercase">Materia Prima</span>
+        <span style="font-size:10px;font-weight:600;color:var(--gris);text-transform:uppercase;text-align:right">kg/ton</span>
+        <span></span>
+      </div>
+      <div id="modal-ings-list"></div>
+      <div class="total-dieta-row">
+        <span class="total-dieta-label">Total mezcla</span>
+        <span class="total-dieta-val" id="modal-total">0 kg/ton</span>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-outline" onclick="cerrarModalDieta()">Cancelar</button>
+      <button class="btn-primary" onclick="guardarDieta()">Guardar dieta</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
