@@ -10,21 +10,21 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --verde: #1B4332;
-  --verde-med: #2D6A4F;
-  --verde-clar: #40916C;
-  --verde-bg: #D8F3DC;
-  --verde-light: #F0FAF3;
-  --gold: #D4A017;
-  --gold-light: #FFF8E7;
+  --verde: #3B4A20;
+  --verde-med: #5A6B31;
+  --verde-clar: #7A9040;
+  --verde-bg: #DFE8C4;
+  --verde-light: #F2F5E8;
+  --gold: #C07B1E;
+  --gold-light: #FBF3E0;
   --rojo: #C0392B;
   --rojo-bg: #FDF0EF;
   --amarillo: #E67E22;
   --amarillo-bg: #FEF9F0;
   --gris: #6B7280;
-  --gris-bg: #F8F9FA;
-  --borde: #E5E7EB;
-  --texto: #111827;
+  --gris-bg: #F7F8F3;
+  --borde: #E2E6D8;
+  --texto: #1E2210;
   --texto-sec: #6B7280;
   --blanco: #FFFFFF;
   --sombra: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
@@ -34,7 +34,7 @@
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-html, body { height: 100%; background: #F0F2F0; }
+html, body { height: 100%; background: #EAEBDF; }
 body { font-family: 'DM Sans', sans-serif; color: var(--texto); overflow-x: hidden; }
 
 /* HEADER */
@@ -44,15 +44,15 @@ body { font-family: 'DM Sans', sans-serif; color: var(--texto); overflow-x: hidd
   position: sticky; top: 0; z-index: 100;
 }
 .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-.logo { font-size: 11px; font-weight: 600; color: #95D5B2; letter-spacing: 0.12em; text-transform: uppercase; }
+.logo { font-size: 11px; font-weight: 600; color: #C5D490; letter-spacing: 0.12em; text-transform: uppercase; }
 .fecha-badge {
   background: rgba(255,255,255,0.12);
-  color: #B7E4C7;
+  color: #D4E4A0;
   font-size: 11px; font-family: 'DM Mono', monospace;
   padding: 4px 10px; border-radius: 20px;
 }
 .header h1 { font-size: 22px; font-weight: 600; color: #FFFFFF; line-height: 1.2; }
-.header-sub { font-size: 13px; color: #95D5B2; margin-top: 2px; }
+.header-sub { font-size: 13px; color: #C5D490; margin-top: 2px; }
 
 /* BARRA BÚSQUEDA */
 .search-bar {
@@ -949,7 +949,7 @@ function exportarPDF() {
     <div class="firma-linea" style="margin-left:80px">Andrés Lazo · Médico Veterinario</div>
   </div>
   <div class="footer">
-    <span>Sistema Inventario La Campestre · avivet.cl</span>
+    <span>Sistema Inventario · Huevos La Campestre · huevoslacampestre.cl</span>
     <span>Documento generado automáticamente · ${fechaCorta}</span>
   </div>
   <script>window.onload = () => window.print();<\/script>
