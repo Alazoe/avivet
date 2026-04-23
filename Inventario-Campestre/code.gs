@@ -837,6 +837,12 @@ function crearHojaPlanificacion(ss) {
   ws.setFrozenRows(2);
 }
 
+function normFecha(val) {
+  if (!val) return "";
+  if (val instanceof Date) return Utilities.formatDate(val, "America/Santiago", "yyyy-MM-dd");
+  return String(val).substring(0, 10);
+}
+
 function guardarPlanificacion(body) {
   const ss  = SpreadsheetApp.openById(SHEET_ID);
   let ws    = ss.getSheetByName("PLANIFICACION");
@@ -852,7 +858,7 @@ function guardarPlanificacion(body) {
   if (last > 2) {
     const data        = ws.getRange(3, 1, last-2, 2).getValues();
     const rowsToDelete = [];
-    data.forEach((row, i) => { if (fechas.includes(row[0])) rowsToDelete.push(i+3); });
+    data.forEach((row, i) => { if (fechas.includes(normFecha(row[0]))) rowsToDelete.push(i+3); });
     for (let i = rowsToDelete.length-1; i >= 0; i--) ws.deleteRow(rowsToDelete[i]);
   }
 
@@ -875,11 +881,12 @@ function getPlanificacion(body) {
   const resultado = data
     .filter(r => r[0] && r[2] > 0)
     .filter(r => {
-      if (desde && r[0] < desde) return false;
-      if (hasta && r[0] > hasta) return false;
+      const f = normFecha(r[0]);
+      if (desde && f < desde) return false;
+      if (hasta && f > hasta) return false;
       return true;
     })
-    .map(r => ({ fecha: r[0], dieta: r[1], kg_dia: r[2] }));
+    .map(r => ({ fecha: normFecha(r[0]), dieta: r[1], kg_dia: r[2] }));
 
   return { ok: true, data: resultado };
 }
