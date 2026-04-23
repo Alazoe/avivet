@@ -219,17 +219,6 @@ td { padding:11px 14px; }
 </head>
 <body>
 
-<div class="login-screen" id="loginScreen">
-  <div class="login-card">
-    <div class="login-logo">La Campestre</div>
-    <h1>Panel Admin</h1>
-    <p>Inventario Planta de Alimentos</p>
-    <input type="password" id="passInput" placeholder="Contraseña" onkeydown="if(event.key==='Enter')login()">
-    <button class="login-btn" onclick="login()">Ingresar</button>
-    <div class="login-error" id="loginError">Contraseña incorrecta</div>
-  </div>
-</div>
-
 <div id="app">
   <div class="layout">
     <nav class="sidebar">
@@ -269,7 +258,7 @@ td { padding:11px 14px; }
       </div>
       <div class="sidebar-footer">
         <div class="user-info">Administrador</div>
-        <div class="user-name">Andrés Lazo</div>
+        <div class="user-name">Médico Veterinario</div>
       </div>
     </nav>
 
@@ -434,7 +423,6 @@ td { padding:11px 14px; }
 
 <script>
 const BACKEND = "https://script.google.com/macros/s/AKfycby8dfFibuDyDeRRK3J44Vqw9pJA1F3sMFKuYPHoC_1OHB-GIeeOlAYCdMDklE8o7b7u/exec";
-const PASS = "campestre2025";
 
 const RECETAS_DATA = {
   "PONEDORA 1":     {"30MAIZ-00":562,"30AFSY-00":266,"30COCH-00":106,"30HTR3-00":50,"30PHSB-00":6,"30MSRB-00":0.5,"30MET2-00":2.5,"30INMU-00":0.5,"30LIS2-00":0.5,"30PLFD-00":2,"30NSLP-00":0.5,"30SAL6-00":4,"30OVTO-00":1,"30NSLG-00":1,"30PIGM-00":0.2},
@@ -483,20 +471,11 @@ function getDias() {
   return dias;
 }
 
-// ── LOGIN ──
-function login() {
-  if(document.getElementById("passInput").value===PASS) {
-    document.getElementById("loginScreen").style.display="none";
-    document.getElementById("app").style.display="block";
-    cargarPlanLocal();
-    cargarDashboard();
-    cargarMPsParaOC();
-  } else {
-    document.getElementById("loginError").style.display="block";
-    setTimeout(()=>document.getElementById("loginError").style.display="none",2000);
-  }
-}
-document.getElementById("passInput")?.addEventListener("keydown",e=>{ if(e.key==="Enter") login(); });
+// ── INICIO DIRECTO ──
+document.getElementById("app").style.display="block";
+cargarPlanLocal();
+cargarDashboard();
+cargarMPsParaOC();
 
 // ── NAVEGACIÓN ──
 function irA(pagina, btn) {
