@@ -1,0 +1,7338 @@
+{
+  "metadata": {
+    "cliente": "avivet.cl",
+    "linea_genetica": "Hy-Line Brown",
+    "aves_por_galpon": 2000,
+    "ciclo_productivo_semanas": 100,
+    "fecha_generacion": "2026-04-24",
+    "horizonte": {
+      "inicio": "2025-07-14",
+      "fin": "2028-12-31",
+      "total_semanas": 181
+    }
+  },
+  "galpones": [
+    {
+      "id": "G1",
+      "nombre": "Galpón 1 (actual)",
+      "fecha_nacimiento": "2025-07-17",
+      "color": "f0a500",
+      "aves_iniciales": 2000,
+      "fecha_inicio_postura_estimada": "2025-11-20",
+      "fecha_pico_estimada": "2026-02-05",
+      "fecha_descarte_estimada": "2027-06-17"
+    },
+    {
+      "id": "G2",
+      "nombre": "Galpón 2 (a construir)",
+      "fecha_nacimiento": "2026-06-15",
+      "color": "1b4332",
+      "aves_iniciales": 2000,
+      "fecha_inicio_postura_estimada": "2026-10-19",
+      "fecha_pico_estimada": "2027-01-04",
+      "fecha_descarte_estimada": "2028-05-15"
+    },
+    {
+      "id": "G3",
+      "nombre": "Galpón 3 (a construir)",
+      "fecha_nacimiento": "2027-02-15",
+      "color": "58a6ff",
+      "aves_iniciales": 2000,
+      "fecha_inicio_postura_estimada": "2027-06-21",
+      "fecha_pico_estimada": "2027-09-06",
+      "fecha_descarte_estimada": "2029-01-15"
+    }
+  ],
+  "curva_hyline_brown": [
+    {
+      "semana": 19,
+      "postura_pct": 5.0,
+      "peso_huevo_g": 45.0
+    },
+    {
+      "semana": 20,
+      "postura_pct": 25.0,
+      "peso_huevo_g": 47.0
+    },
+    {
+      "semana": 21,
+      "postura_pct": 55.0,
+      "peso_huevo_g": 49.0
+    },
+    {
+      "semana": 22,
+      "postura_pct": 78.0,
+      "peso_huevo_g": 51.0
+    },
+    {
+      "semana": 23,
+      "postura_pct": 88.0,
+      "peso_huevo_g": 53.0
+    },
+    {
+      "semana": 24,
+      "postura_pct": 92.0,
+      "peso_huevo_g": 55.0
+    },
+    {
+      "semana": 25,
+      "postura_pct": 94.0,
+      "peso_huevo_g": 56.5
+    },
+    {
+      "semana": 26,
+      "postura_pct": 95.5,
+      "peso_huevo_g": 58.0
+    },
+    {
+      "semana": 27,
+      "postura_pct": 96.0,
+      "peso_huevo_g": 59.0
+    },
+    {
+      "semana": 28,
+      "postura_pct": 96.5,
+      "peso_huevo_g": 59.8
+    },
+    {
+      "semana": 29,
+      "postura_pct": 96.5,
+      "peso_huevo_g": 60.4
+    },
+    {
+      "semana": 30,
+      "postura_pct": 96.0,
+      "peso_huevo_g": 60.9
+    },
+    {
+      "semana": 31,
+      "postura_pct": 95.8,
+      "peso_huevo_g": 61.3
+    },
+    {
+      "semana": 32,
+      "postura_pct": 95.5,
+      "peso_huevo_g": 61.7
+    },
+    {
+      "semana": 33,
+      "postura_pct": 95.2,
+      "peso_huevo_g": 62.0
+    },
+    {
+      "semana": 34,
+      "postura_pct": 94.8,
+      "peso_huevo_g": 62.3
+    },
+    {
+      "semana": 35,
+      "postura_pct": 94.5,
+      "peso_huevo_g": 62.6
+    },
+    {
+      "semana": 36,
+      "postura_pct": 94.2,
+      "peso_huevo_g": 62.8
+    },
+    {
+      "semana": 37,
+      "postura_pct": 93.8,
+      "peso_huevo_g": 63.0
+    },
+    {
+      "semana": 38,
+      "postura_pct": 93.5,
+      "peso_huevo_g": 63.2
+    },
+    {
+      "semana": 39,
+      "postura_pct": 93.2,
+      "peso_huevo_g": 63.4
+    },
+    {
+      "semana": 40,
+      "postura_pct": 92.8,
+      "peso_huevo_g": 63.5
+    },
+    {
+      "semana": 41,
+      "postura_pct": 92.5,
+      "peso_huevo_g": 63.7
+    },
+    {
+      "semana": 42,
+      "postura_pct": 92.1,
+      "peso_huevo_g": 63.8
+    },
+    {
+      "semana": 43,
+      "postura_pct": 91.8,
+      "peso_huevo_g": 63.9
+    },
+    {
+      "semana": 44,
+      "postura_pct": 91.4,
+      "peso_huevo_g": 64.0
+    },
+    {
+      "semana": 45,
+      "postura_pct": 91.0,
+      "peso_huevo_g": 64.1
+    },
+    {
+      "semana": 46,
+      "postura_pct": 90.6,
+      "peso_huevo_g": 64.2
+    },
+    {
+      "semana": 47,
+      "postura_pct": 90.2,
+      "peso_huevo_g": 64.3
+    },
+    {
+      "semana": 48,
+      "postura_pct": 89.8,
+      "peso_huevo_g": 64.4
+    },
+    {
+      "semana": 49,
+      "postura_pct": 89.4,
+      "peso_huevo_g": 64.5
+    },
+    {
+      "semana": 50,
+      "postura_pct": 89.0,
+      "peso_huevo_g": 64.6
+    },
+    {
+      "semana": 51,
+      "postura_pct": 88.6,
+      "peso_huevo_g": 64.7
+    },
+    {
+      "semana": 52,
+      "postura_pct": 88.2,
+      "peso_huevo_g": 64.8
+    },
+    {
+      "semana": 53,
+      "postura_pct": 87.8,
+      "peso_huevo_g": 64.9
+    },
+    {
+      "semana": 54,
+      "postura_pct": 87.4,
+      "peso_huevo_g": 65.0
+    },
+    {
+      "semana": 55,
+      "postura_pct": 87.0,
+      "peso_huevo_g": 65.1
+    },
+    {
+      "semana": 56,
+      "postura_pct": 86.5,
+      "peso_huevo_g": 65.2
+    },
+    {
+      "semana": 57,
+      "postura_pct": 86.0,
+      "peso_huevo_g": 65.3
+    },
+    {
+      "semana": 58,
+      "postura_pct": 85.5,
+      "peso_huevo_g": 65.4
+    },
+    {
+      "semana": 59,
+      "postura_pct": 85.0,
+      "peso_huevo_g": 65.5
+    },
+    {
+      "semana": 60,
+      "postura_pct": 84.5,
+      "peso_huevo_g": 65.6
+    },
+    {
+      "semana": 61,
+      "postura_pct": 84.0,
+      "peso_huevo_g": 65.7
+    },
+    {
+      "semana": 62,
+      "postura_pct": 83.5,
+      "peso_huevo_g": 65.8
+    },
+    {
+      "semana": 63,
+      "postura_pct": 83.0,
+      "peso_huevo_g": 65.9
+    },
+    {
+      "semana": 64,
+      "postura_pct": 82.5,
+      "peso_huevo_g": 66.0
+    },
+    {
+      "semana": 65,
+      "postura_pct": 82.0,
+      "peso_huevo_g": 66.0
+    },
+    {
+      "semana": 66,
+      "postura_pct": 81.5,
+      "peso_huevo_g": 66.1
+    },
+    {
+      "semana": 67,
+      "postura_pct": 81.0,
+      "peso_huevo_g": 66.2
+    },
+    {
+      "semana": 68,
+      "postura_pct": 80.5,
+      "peso_huevo_g": 66.2
+    },
+    {
+      "semana": 69,
+      "postura_pct": 80.0,
+      "peso_huevo_g": 66.3
+    },
+    {
+      "semana": 70,
+      "postura_pct": 79.5,
+      "peso_huevo_g": 66.4
+    },
+    {
+      "semana": 71,
+      "postura_pct": 79.0,
+      "peso_huevo_g": 66.4
+    },
+    {
+      "semana": 72,
+      "postura_pct": 78.5,
+      "peso_huevo_g": 66.5
+    },
+    {
+      "semana": 73,
+      "postura_pct": 78.0,
+      "peso_huevo_g": 66.5
+    },
+    {
+      "semana": 74,
+      "postura_pct": 77.5,
+      "peso_huevo_g": 66.6
+    },
+    {
+      "semana": 75,
+      "postura_pct": 77.0,
+      "peso_huevo_g": 66.6
+    },
+    {
+      "semana": 76,
+      "postura_pct": 76.5,
+      "peso_huevo_g": 66.7
+    },
+    {
+      "semana": 77,
+      "postura_pct": 76.0,
+      "peso_huevo_g": 66.7
+    },
+    {
+      "semana": 78,
+      "postura_pct": 75.5,
+      "peso_huevo_g": 66.8
+    },
+    {
+      "semana": 79,
+      "postura_pct": 75.0,
+      "peso_huevo_g": 66.8
+    },
+    {
+      "semana": 80,
+      "postura_pct": 74.5,
+      "peso_huevo_g": 66.9
+    },
+    {
+      "semana": 81,
+      "postura_pct": 74.0,
+      "peso_huevo_g": 66.9
+    },
+    {
+      "semana": 82,
+      "postura_pct": 73.5,
+      "peso_huevo_g": 67.0
+    },
+    {
+      "semana": 83,
+      "postura_pct": 73.0,
+      "peso_huevo_g": 67.0
+    },
+    {
+      "semana": 84,
+      "postura_pct": 72.5,
+      "peso_huevo_g": 67.0
+    },
+    {
+      "semana": 85,
+      "postura_pct": 72.0,
+      "peso_huevo_g": 67.1
+    },
+    {
+      "semana": 86,
+      "postura_pct": 71.5,
+      "peso_huevo_g": 67.1
+    },
+    {
+      "semana": 87,
+      "postura_pct": 71.0,
+      "peso_huevo_g": 67.2
+    },
+    {
+      "semana": 88,
+      "postura_pct": 70.5,
+      "peso_huevo_g": 67.2
+    },
+    {
+      "semana": 89,
+      "postura_pct": 70.0,
+      "peso_huevo_g": 67.2
+    },
+    {
+      "semana": 90,
+      "postura_pct": 69.5,
+      "peso_huevo_g": 67.3
+    },
+    {
+      "semana": 91,
+      "postura_pct": 69.0,
+      "peso_huevo_g": 67.3
+    },
+    {
+      "semana": 92,
+      "postura_pct": 68.5,
+      "peso_huevo_g": 67.3
+    },
+    {
+      "semana": 93,
+      "postura_pct": 68.0,
+      "peso_huevo_g": 67.4
+    },
+    {
+      "semana": 94,
+      "postura_pct": 67.5,
+      "peso_huevo_g": 67.4
+    },
+    {
+      "semana": 95,
+      "postura_pct": 67.0,
+      "peso_huevo_g": 67.4
+    },
+    {
+      "semana": 96,
+      "postura_pct": 66.5,
+      "peso_huevo_g": 67.5
+    },
+    {
+      "semana": 97,
+      "postura_pct": 66.0,
+      "peso_huevo_g": 67.5
+    },
+    {
+      "semana": 98,
+      "postura_pct": 65.5,
+      "peso_huevo_g": 67.5
+    },
+    {
+      "semana": 99,
+      "postura_pct": 65.0,
+      "peso_huevo_g": 67.6
+    },
+    {
+      "semana": 100,
+      "postura_pct": 64.5,
+      "peso_huevo_g": 67.6
+    }
+  ],
+  "proyeccion_semanal": [
+    {
+      "semana_cal": 1,
+      "fecha_lunes": "2025-07-14",
+      "anio": 2025,
+      "mes": 7,
+      "G1": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      }
+    },
+    {
+      "semana_cal": 2,
+      "fecha_lunes": "2025-07-21",
+      "anio": 2025,
+      "mes": 7,
+      "G1": {
+        "sem_vida": 1,
+        "estado": "crianza",
+        "aves": 1996,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      }
+    },
+    {
+      "semana_cal": 3,
+      "fecha_lunes": "2025-07-28",
+      "anio": 2025,
+      "mes": 7,
+      "G1": {
+        "sem_vida": 2,
+        "estado": "crianza",
+        "aves": 1993,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      }
+    },
+    {
+      "semana_cal": 4,
+      "fecha_lunes": "2025-08-04",
+      "anio": 2025,
+      "mes": 8,
+      "G1": {
+        "sem_vida": 3,
+        "estado": "crianza",
+        "aves": 1990,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      }
+    },
+    {
+      "semana_cal": 5,
+      "fecha_lunes": "2025-08-11",
+      "anio": 2025,
+      "mes": 8,
+      "G1": {
+        "sem_vida": 4,
+        "estado": "crianza",
+        "aves": 1986,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      }
+    },
+    {
+      "semana_cal": 6,
+      "fecha_lunes": "2025-08-18",
+      "anio": 2025,
+      "mes": 8,
+      "G1": {
+        "sem_vida": 5,
+        "estado": "crianza",
+        "aves": 1983,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      }
+    },
+    {
+      "semana_cal": 7,
+      "fecha_lunes": "2025-08-25",
+      "anio": 2025,
+      "mes": 8,
+      "G1": {
+        "sem_vida": 6,
+        "estado": "crianza",
+        "aves": 1980,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      }
+    },
+    {
+      "semana_cal": 8,
+      "fecha_lunes": "2025-09-01",
+      "anio": 2025,
+      "mes": 9,
+      "G1": {
+        "sem_vida": 7,
+        "estado": "crianza",
+        "aves": 1976,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      }
+    },
+    {
+      "semana_cal": 9,
+      "fecha_lunes": "2025-09-08",
+      "anio": 2025,
+      "mes": 9,
+      "G1": {
+        "sem_vida": 8,
+        "estado": "crianza",
+        "aves": 1973,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      }
+    },
+    {
+      "semana_cal": 10,
+      "fecha_lunes": "2025-09-15",
+      "anio": 2025,
+      "mes": 9,
+      "G1": {
+        "sem_vida": 9,
+        "estado": "crianza",
+        "aves": 1970,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      }
+    },
+    {
+      "semana_cal": 11,
+      "fecha_lunes": "2025-09-22",
+      "anio": 2025,
+      "mes": 9,
+      "G1": {
+        "sem_vida": 10,
+        "estado": "crianza",
+        "aves": 1966,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      }
+    },
+    {
+      "semana_cal": 12,
+      "fecha_lunes": "2025-09-29",
+      "anio": 2025,
+      "mes": 9,
+      "G1": {
+        "sem_vida": 11,
+        "estado": "crianza",
+        "aves": 1963,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      }
+    },
+    {
+      "semana_cal": 13,
+      "fecha_lunes": "2025-10-06",
+      "anio": 2025,
+      "mes": 10,
+      "G1": {
+        "sem_vida": 12,
+        "estado": "crianza",
+        "aves": 1960,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      }
+    },
+    {
+      "semana_cal": 14,
+      "fecha_lunes": "2025-10-13",
+      "anio": 2025,
+      "mes": 10,
+      "G1": {
+        "sem_vida": 13,
+        "estado": "crianza",
+        "aves": 1956,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      }
+    },
+    {
+      "semana_cal": 15,
+      "fecha_lunes": "2025-10-20",
+      "anio": 2025,
+      "mes": 10,
+      "G1": {
+        "sem_vida": 14,
+        "estado": "crianza",
+        "aves": 1953,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      }
+    },
+    {
+      "semana_cal": 16,
+      "fecha_lunes": "2025-10-27",
+      "anio": 2025,
+      "mes": 10,
+      "G1": {
+        "sem_vida": 15,
+        "estado": "crianza",
+        "aves": 1950,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      }
+    },
+    {
+      "semana_cal": 17,
+      "fecha_lunes": "2025-11-03",
+      "anio": 2025,
+      "mes": 11,
+      "G1": {
+        "sem_vida": 16,
+        "estado": "crianza",
+        "aves": 1946,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      }
+    },
+    {
+      "semana_cal": 18,
+      "fecha_lunes": "2025-11-10",
+      "anio": 2025,
+      "mes": 11,
+      "G1": {
+        "sem_vida": 17,
+        "estado": "traspaso",
+        "aves": 1943,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      }
+    },
+    {
+      "semana_cal": 19,
+      "fecha_lunes": "2025-11-17",
+      "anio": 2025,
+      "mes": 11,
+      "G1": {
+        "sem_vida": 18,
+        "estado": "traspaso",
+        "aves": 1940,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      }
+    },
+    {
+      "semana_cal": 20,
+      "fecha_lunes": "2025-11-24",
+      "anio": 2025,
+      "mes": 11,
+      "G1": {
+        "sem_vida": 19,
+        "estado": "postura",
+        "aves": 1938,
+        "pct_postura": 5.0,
+        "peso_huevo_g": 45.0,
+        "huevos_dia": 97,
+        "huevos_semana": 678
+      },
+      "G2": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 1938,
+        "huevos_dia": 97,
+        "huevos_semana": 678
+      }
+    },
+    {
+      "semana_cal": 21,
+      "fecha_lunes": "2025-12-01",
+      "anio": 2025,
+      "mes": 12,
+      "G1": {
+        "sem_vida": 20,
+        "estado": "postura",
+        "aves": 1936,
+        "pct_postura": 25.0,
+        "peso_huevo_g": 47.0,
+        "huevos_dia": 484,
+        "huevos_semana": 3388
+      },
+      "G2": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 1936,
+        "huevos_dia": 484,
+        "huevos_semana": 3388
+      }
+    },
+    {
+      "semana_cal": 22,
+      "fecha_lunes": "2025-12-08",
+      "anio": 2025,
+      "mes": 12,
+      "G1": {
+        "sem_vida": 21,
+        "estado": "postura",
+        "aves": 1934,
+        "pct_postura": 55.0,
+        "peso_huevo_g": 49.0,
+        "huevos_dia": 1064,
+        "huevos_semana": 7446
+      },
+      "G2": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 1934,
+        "huevos_dia": 1064,
+        "huevos_semana": 7446
+      }
+    },
+    {
+      "semana_cal": 23,
+      "fecha_lunes": "2025-12-15",
+      "anio": 2025,
+      "mes": 12,
+      "G1": {
+        "sem_vida": 22,
+        "estado": "postura",
+        "aves": 1932,
+        "pct_postura": 78.0,
+        "peso_huevo_g": 51.0,
+        "huevos_dia": 1507,
+        "huevos_semana": 10549
+      },
+      "G2": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 1932,
+        "huevos_dia": 1507,
+        "huevos_semana": 10549
+      }
+    },
+    {
+      "semana_cal": 24,
+      "fecha_lunes": "2025-12-22",
+      "anio": 2025,
+      "mes": 12,
+      "G1": {
+        "sem_vida": 23,
+        "estado": "postura",
+        "aves": 1930,
+        "pct_postura": 88.0,
+        "peso_huevo_g": 53.0,
+        "huevos_dia": 1698,
+        "huevos_semana": 11889
+      },
+      "G2": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 1930,
+        "huevos_dia": 1698,
+        "huevos_semana": 11889
+      }
+    },
+    {
+      "semana_cal": 25,
+      "fecha_lunes": "2025-12-29",
+      "anio": 2025,
+      "mes": 12,
+      "G1": {
+        "sem_vida": 24,
+        "estado": "postura",
+        "aves": 1928,
+        "pct_postura": 92.0,
+        "peso_huevo_g": 55.0,
+        "huevos_dia": 1774,
+        "huevos_semana": 12416
+      },
+      "G2": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 1928,
+        "huevos_dia": 1774,
+        "huevos_semana": 12416
+      }
+    },
+    {
+      "semana_cal": 26,
+      "fecha_lunes": "2026-01-05",
+      "anio": 2026,
+      "mes": 1,
+      "G1": {
+        "sem_vida": 25,
+        "estado": "postura",
+        "aves": 1926,
+        "pct_postura": 94.0,
+        "peso_huevo_g": 56.5,
+        "huevos_dia": 1810,
+        "huevos_semana": 12673
+      },
+      "G2": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 1926,
+        "huevos_dia": 1810,
+        "huevos_semana": 12673
+      }
+    },
+    {
+      "semana_cal": 27,
+      "fecha_lunes": "2026-01-12",
+      "anio": 2026,
+      "mes": 1,
+      "G1": {
+        "sem_vida": 26,
+        "estado": "postura",
+        "aves": 1924,
+        "pct_postura": 95.5,
+        "peso_huevo_g": 58.0,
+        "huevos_dia": 1837,
+        "huevos_semana": 12862
+      },
+      "G2": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 1924,
+        "huevos_dia": 1837,
+        "huevos_semana": 12862
+      }
+    },
+    {
+      "semana_cal": 28,
+      "fecha_lunes": "2026-01-19",
+      "anio": 2026,
+      "mes": 1,
+      "G1": {
+        "sem_vida": 27,
+        "estado": "postura",
+        "aves": 1922,
+        "pct_postura": 96.0,
+        "peso_huevo_g": 59.0,
+        "huevos_dia": 1845,
+        "huevos_semana": 12916
+      },
+      "G2": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 1922,
+        "huevos_dia": 1845,
+        "huevos_semana": 12916
+      }
+    },
+    {
+      "semana_cal": 29,
+      "fecha_lunes": "2026-01-26",
+      "anio": 2026,
+      "mes": 1,
+      "G1": {
+        "sem_vida": 28,
+        "estado": "postura",
+        "aves": 1920,
+        "pct_postura": 96.5,
+        "peso_huevo_g": 59.8,
+        "huevos_dia": 1853,
+        "huevos_semana": 12970
+      },
+      "G2": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 1920,
+        "huevos_dia": 1853,
+        "huevos_semana": 12970
+      }
+    },
+    {
+      "semana_cal": 30,
+      "fecha_lunes": "2026-02-02",
+      "anio": 2026,
+      "mes": 2,
+      "G1": {
+        "sem_vida": 29,
+        "estado": "postura",
+        "aves": 1918,
+        "pct_postura": 96.5,
+        "peso_huevo_g": 60.4,
+        "huevos_dia": 1851,
+        "huevos_semana": 12956
+      },
+      "G2": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 1918,
+        "huevos_dia": 1851,
+        "huevos_semana": 12956
+      }
+    },
+    {
+      "semana_cal": 31,
+      "fecha_lunes": "2026-02-09",
+      "anio": 2026,
+      "mes": 2,
+      "G1": {
+        "sem_vida": 30,
+        "estado": "postura",
+        "aves": 1916,
+        "pct_postura": 96.0,
+        "peso_huevo_g": 60.9,
+        "huevos_dia": 1839,
+        "huevos_semana": 12876
+      },
+      "G2": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 1916,
+        "huevos_dia": 1839,
+        "huevos_semana": 12876
+      }
+    },
+    {
+      "semana_cal": 32,
+      "fecha_lunes": "2026-02-16",
+      "anio": 2026,
+      "mes": 2,
+      "G1": {
+        "sem_vida": 31,
+        "estado": "postura",
+        "aves": 1914,
+        "pct_postura": 95.8,
+        "peso_huevo_g": 61.3,
+        "huevos_dia": 1834,
+        "huevos_semana": 12835
+      },
+      "G2": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 1914,
+        "huevos_dia": 1834,
+        "huevos_semana": 12835
+      }
+    },
+    {
+      "semana_cal": 33,
+      "fecha_lunes": "2026-02-23",
+      "anio": 2026,
+      "mes": 2,
+      "G1": {
+        "sem_vida": 32,
+        "estado": "postura",
+        "aves": 1912,
+        "pct_postura": 95.5,
+        "peso_huevo_g": 61.7,
+        "huevos_dia": 1826,
+        "huevos_semana": 12782
+      },
+      "G2": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 1912,
+        "huevos_dia": 1826,
+        "huevos_semana": 12782
+      }
+    },
+    {
+      "semana_cal": 34,
+      "fecha_lunes": "2026-03-02",
+      "anio": 2026,
+      "mes": 3,
+      "G1": {
+        "sem_vida": 33,
+        "estado": "postura",
+        "aves": 1910,
+        "pct_postura": 95.2,
+        "peso_huevo_g": 62.0,
+        "huevos_dia": 1818,
+        "huevos_semana": 12728
+      },
+      "G2": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 1910,
+        "huevos_dia": 1818,
+        "huevos_semana": 12728
+      }
+    },
+    {
+      "semana_cal": 35,
+      "fecha_lunes": "2026-03-09",
+      "anio": 2026,
+      "mes": 3,
+      "G1": {
+        "sem_vida": 34,
+        "estado": "postura",
+        "aves": 1908,
+        "pct_postura": 94.8,
+        "peso_huevo_g": 62.3,
+        "huevos_dia": 1809,
+        "huevos_semana": 12661
+      },
+      "G2": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 1908,
+        "huevos_dia": 1809,
+        "huevos_semana": 12661
+      }
+    },
+    {
+      "semana_cal": 36,
+      "fecha_lunes": "2026-03-16",
+      "anio": 2026,
+      "mes": 3,
+      "G1": {
+        "sem_vida": 35,
+        "estado": "postura",
+        "aves": 1906,
+        "pct_postura": 94.5,
+        "peso_huevo_g": 62.6,
+        "huevos_dia": 1801,
+        "huevos_semana": 12608
+      },
+      "G2": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 1906,
+        "huevos_dia": 1801,
+        "huevos_semana": 12608
+      }
+    },
+    {
+      "semana_cal": 37,
+      "fecha_lunes": "2026-03-23",
+      "anio": 2026,
+      "mes": 3,
+      "G1": {
+        "sem_vida": 36,
+        "estado": "postura",
+        "aves": 1904,
+        "pct_postura": 94.2,
+        "peso_huevo_g": 62.8,
+        "huevos_dia": 1794,
+        "huevos_semana": 12555
+      },
+      "G2": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 1904,
+        "huevos_dia": 1794,
+        "huevos_semana": 12555
+      }
+    },
+    {
+      "semana_cal": 38,
+      "fecha_lunes": "2026-03-30",
+      "anio": 2026,
+      "mes": 3,
+      "G1": {
+        "sem_vida": 37,
+        "estado": "postura",
+        "aves": 1902,
+        "pct_postura": 93.8,
+        "peso_huevo_g": 63.0,
+        "huevos_dia": 1784,
+        "huevos_semana": 12489
+      },
+      "G2": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 1902,
+        "huevos_dia": 1784,
+        "huevos_semana": 12489
+      }
+    },
+    {
+      "semana_cal": 39,
+      "fecha_lunes": "2026-04-06",
+      "anio": 2026,
+      "mes": 4,
+      "G1": {
+        "sem_vida": 38,
+        "estado": "postura",
+        "aves": 1900,
+        "pct_postura": 93.5,
+        "peso_huevo_g": 63.2,
+        "huevos_dia": 1776,
+        "huevos_semana": 12436
+      },
+      "G2": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 1900,
+        "huevos_dia": 1776,
+        "huevos_semana": 12436
+      }
+    },
+    {
+      "semana_cal": 40,
+      "fecha_lunes": "2026-04-13",
+      "anio": 2026,
+      "mes": 4,
+      "G1": {
+        "sem_vida": 39,
+        "estado": "postura",
+        "aves": 1898,
+        "pct_postura": 93.2,
+        "peso_huevo_g": 63.4,
+        "huevos_dia": 1769,
+        "huevos_semana": 12383
+      },
+      "G2": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 1898,
+        "huevos_dia": 1769,
+        "huevos_semana": 12383
+      }
+    },
+    {
+      "semana_cal": 41,
+      "fecha_lunes": "2026-04-20",
+      "anio": 2026,
+      "mes": 4,
+      "G1": {
+        "sem_vida": 40,
+        "estado": "postura",
+        "aves": 1896,
+        "pct_postura": 92.8,
+        "peso_huevo_g": 63.5,
+        "huevos_dia": 1759,
+        "huevos_semana": 12316
+      },
+      "G2": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 1896,
+        "huevos_dia": 1759,
+        "huevos_semana": 12316
+      }
+    },
+    {
+      "semana_cal": 42,
+      "fecha_lunes": "2026-04-27",
+      "anio": 2026,
+      "mes": 4,
+      "G1": {
+        "sem_vida": 41,
+        "estado": "postura",
+        "aves": 1894,
+        "pct_postura": 92.5,
+        "peso_huevo_g": 63.7,
+        "huevos_dia": 1752,
+        "huevos_semana": 12264
+      },
+      "G2": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 1894,
+        "huevos_dia": 1752,
+        "huevos_semana": 12264
+      }
+    },
+    {
+      "semana_cal": 43,
+      "fecha_lunes": "2026-05-04",
+      "anio": 2026,
+      "mes": 5,
+      "G1": {
+        "sem_vida": 42,
+        "estado": "postura",
+        "aves": 1892,
+        "pct_postura": 92.1,
+        "peso_huevo_g": 63.8,
+        "huevos_dia": 1743,
+        "huevos_semana": 12198
+      },
+      "G2": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 1892,
+        "huevos_dia": 1743,
+        "huevos_semana": 12198
+      }
+    },
+    {
+      "semana_cal": 44,
+      "fecha_lunes": "2026-05-11",
+      "anio": 2026,
+      "mes": 5,
+      "G1": {
+        "sem_vida": 43,
+        "estado": "postura",
+        "aves": 1890,
+        "pct_postura": 91.8,
+        "peso_huevo_g": 63.9,
+        "huevos_dia": 1735,
+        "huevos_semana": 12145
+      },
+      "G2": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 1890,
+        "huevos_dia": 1735,
+        "huevos_semana": 12145
+      }
+    },
+    {
+      "semana_cal": 45,
+      "fecha_lunes": "2026-05-18",
+      "anio": 2026,
+      "mes": 5,
+      "G1": {
+        "sem_vida": 44,
+        "estado": "postura",
+        "aves": 1888,
+        "pct_postura": 91.4,
+        "peso_huevo_g": 64.0,
+        "huevos_dia": 1726,
+        "huevos_semana": 12079
+      },
+      "G2": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 1888,
+        "huevos_dia": 1726,
+        "huevos_semana": 12079
+      }
+    },
+    {
+      "semana_cal": 46,
+      "fecha_lunes": "2026-05-25",
+      "anio": 2026,
+      "mes": 5,
+      "G1": {
+        "sem_vida": 45,
+        "estado": "postura",
+        "aves": 1886,
+        "pct_postura": 91.0,
+        "peso_huevo_g": 64.1,
+        "huevos_dia": 1716,
+        "huevos_semana": 12014
+      },
+      "G2": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 1886,
+        "huevos_dia": 1716,
+        "huevos_semana": 12014
+      }
+    },
+    {
+      "semana_cal": 47,
+      "fecha_lunes": "2026-06-01",
+      "anio": 2026,
+      "mes": 6,
+      "G1": {
+        "sem_vida": 46,
+        "estado": "postura",
+        "aves": 1884,
+        "pct_postura": 90.6,
+        "peso_huevo_g": 64.2,
+        "huevos_dia": 1707,
+        "huevos_semana": 11948
+      },
+      "G2": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 1884,
+        "huevos_dia": 1707,
+        "huevos_semana": 11948
+      }
+    },
+    {
+      "semana_cal": 48,
+      "fecha_lunes": "2026-06-08",
+      "anio": 2026,
+      "mes": 6,
+      "G1": {
+        "sem_vida": 47,
+        "estado": "postura",
+        "aves": 1882,
+        "pct_postura": 90.2,
+        "peso_huevo_g": 64.3,
+        "huevos_dia": 1698,
+        "huevos_semana": 11883
+      },
+      "G2": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 1882,
+        "huevos_dia": 1698,
+        "huevos_semana": 11883
+      }
+    },
+    {
+      "semana_cal": 49,
+      "fecha_lunes": "2026-06-15",
+      "anio": 2026,
+      "mes": 6,
+      "G1": {
+        "sem_vida": 48,
+        "estado": "postura",
+        "aves": 1880,
+        "pct_postura": 89.8,
+        "peso_huevo_g": 64.4,
+        "huevos_dia": 1688,
+        "huevos_semana": 11818
+      },
+      "G2": {
+        "sem_vida": 1,
+        "estado": "crianza",
+        "aves": 1996,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 1880,
+        "huevos_dia": 1688,
+        "huevos_semana": 11818
+      }
+    },
+    {
+      "semana_cal": 50,
+      "fecha_lunes": "2026-06-22",
+      "anio": 2026,
+      "mes": 6,
+      "G1": {
+        "sem_vida": 49,
+        "estado": "postura",
+        "aves": 1878,
+        "pct_postura": 89.4,
+        "peso_huevo_g": 64.5,
+        "huevos_dia": 1679,
+        "huevos_semana": 11753
+      },
+      "G2": {
+        "sem_vida": 2,
+        "estado": "crianza",
+        "aves": 1993,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 1878,
+        "huevos_dia": 1679,
+        "huevos_semana": 11753
+      }
+    },
+    {
+      "semana_cal": 51,
+      "fecha_lunes": "2026-06-29",
+      "anio": 2026,
+      "mes": 6,
+      "G1": {
+        "sem_vida": 50,
+        "estado": "postura",
+        "aves": 1876,
+        "pct_postura": 89.0,
+        "peso_huevo_g": 64.6,
+        "huevos_dia": 1670,
+        "huevos_semana": 11687
+      },
+      "G2": {
+        "sem_vida": 3,
+        "estado": "crianza",
+        "aves": 1990,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 1876,
+        "huevos_dia": 1670,
+        "huevos_semana": 11687
+      }
+    },
+    {
+      "semana_cal": 52,
+      "fecha_lunes": "2026-07-06",
+      "anio": 2026,
+      "mes": 7,
+      "G1": {
+        "sem_vida": 51,
+        "estado": "postura",
+        "aves": 1874,
+        "pct_postura": 88.6,
+        "peso_huevo_g": 64.7,
+        "huevos_dia": 1660,
+        "huevos_semana": 11623
+      },
+      "G2": {
+        "sem_vida": 4,
+        "estado": "crianza",
+        "aves": 1986,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 1874,
+        "huevos_dia": 1660,
+        "huevos_semana": 11623
+      }
+    },
+    {
+      "semana_cal": 53,
+      "fecha_lunes": "2026-07-13",
+      "anio": 2026,
+      "mes": 7,
+      "G1": {
+        "sem_vida": 52,
+        "estado": "postura",
+        "aves": 1872,
+        "pct_postura": 88.2,
+        "peso_huevo_g": 64.8,
+        "huevos_dia": 1651,
+        "huevos_semana": 11558
+      },
+      "G2": {
+        "sem_vida": 5,
+        "estado": "crianza",
+        "aves": 1983,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 1872,
+        "huevos_dia": 1651,
+        "huevos_semana": 11558
+      }
+    },
+    {
+      "semana_cal": 54,
+      "fecha_lunes": "2026-07-20",
+      "anio": 2026,
+      "mes": 7,
+      "G1": {
+        "sem_vida": 53,
+        "estado": "postura",
+        "aves": 1869,
+        "pct_postura": 87.8,
+        "peso_huevo_g": 64.9,
+        "huevos_dia": 1641,
+        "huevos_semana": 11487
+      },
+      "G2": {
+        "sem_vida": 6,
+        "estado": "crianza",
+        "aves": 1980,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 1869,
+        "huevos_dia": 1641,
+        "huevos_semana": 11487
+      }
+    },
+    {
+      "semana_cal": 55,
+      "fecha_lunes": "2026-07-27",
+      "anio": 2026,
+      "mes": 7,
+      "G1": {
+        "sem_vida": 54,
+        "estado": "postura",
+        "aves": 1867,
+        "pct_postura": 87.4,
+        "peso_huevo_g": 65.0,
+        "huevos_dia": 1632,
+        "huevos_semana": 11422
+      },
+      "G2": {
+        "sem_vida": 7,
+        "estado": "crianza",
+        "aves": 1976,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 1867,
+        "huevos_dia": 1632,
+        "huevos_semana": 11422
+      }
+    },
+    {
+      "semana_cal": 56,
+      "fecha_lunes": "2026-08-03",
+      "anio": 2026,
+      "mes": 8,
+      "G1": {
+        "sem_vida": 55,
+        "estado": "postura",
+        "aves": 1865,
+        "pct_postura": 87.0,
+        "peso_huevo_g": 65.1,
+        "huevos_dia": 1623,
+        "huevos_semana": 11358
+      },
+      "G2": {
+        "sem_vida": 8,
+        "estado": "crianza",
+        "aves": 1973,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 1865,
+        "huevos_dia": 1623,
+        "huevos_semana": 11358
+      }
+    },
+    {
+      "semana_cal": 57,
+      "fecha_lunes": "2026-08-10",
+      "anio": 2026,
+      "mes": 8,
+      "G1": {
+        "sem_vida": 56,
+        "estado": "postura",
+        "aves": 1863,
+        "pct_postura": 86.5,
+        "peso_huevo_g": 65.2,
+        "huevos_dia": 1611,
+        "huevos_semana": 11280
+      },
+      "G2": {
+        "sem_vida": 9,
+        "estado": "crianza",
+        "aves": 1970,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 1863,
+        "huevos_dia": 1611,
+        "huevos_semana": 11280
+      }
+    },
+    {
+      "semana_cal": 58,
+      "fecha_lunes": "2026-08-17",
+      "anio": 2026,
+      "mes": 8,
+      "G1": {
+        "sem_vida": 57,
+        "estado": "postura",
+        "aves": 1861,
+        "pct_postura": 86.0,
+        "peso_huevo_g": 65.3,
+        "huevos_dia": 1600,
+        "huevos_semana": 11203
+      },
+      "G2": {
+        "sem_vida": 10,
+        "estado": "crianza",
+        "aves": 1966,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 1861,
+        "huevos_dia": 1600,
+        "huevos_semana": 11203
+      }
+    },
+    {
+      "semana_cal": 59,
+      "fecha_lunes": "2026-08-24",
+      "anio": 2026,
+      "mes": 8,
+      "G1": {
+        "sem_vida": 58,
+        "estado": "postura",
+        "aves": 1859,
+        "pct_postura": 85.5,
+        "peso_huevo_g": 65.4,
+        "huevos_dia": 1589,
+        "huevos_semana": 11126
+      },
+      "G2": {
+        "sem_vida": 11,
+        "estado": "crianza",
+        "aves": 1963,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 1859,
+        "huevos_dia": 1589,
+        "huevos_semana": 11126
+      }
+    },
+    {
+      "semana_cal": 60,
+      "fecha_lunes": "2026-08-31",
+      "anio": 2026,
+      "mes": 8,
+      "G1": {
+        "sem_vida": 59,
+        "estado": "postura",
+        "aves": 1857,
+        "pct_postura": 85.0,
+        "peso_huevo_g": 65.5,
+        "huevos_dia": 1578,
+        "huevos_semana": 11049
+      },
+      "G2": {
+        "sem_vida": 12,
+        "estado": "crianza",
+        "aves": 1960,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 1857,
+        "huevos_dia": 1578,
+        "huevos_semana": 11049
+      }
+    },
+    {
+      "semana_cal": 61,
+      "fecha_lunes": "2026-09-07",
+      "anio": 2026,
+      "mes": 9,
+      "G1": {
+        "sem_vida": 60,
+        "estado": "postura",
+        "aves": 1855,
+        "pct_postura": 84.5,
+        "peso_huevo_g": 65.6,
+        "huevos_dia": 1567,
+        "huevos_semana": 10972
+      },
+      "G2": {
+        "sem_vida": 13,
+        "estado": "crianza",
+        "aves": 1956,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 1855,
+        "huevos_dia": 1567,
+        "huevos_semana": 10972
+      }
+    },
+    {
+      "semana_cal": 62,
+      "fecha_lunes": "2026-09-14",
+      "anio": 2026,
+      "mes": 9,
+      "G1": {
+        "sem_vida": 61,
+        "estado": "postura",
+        "aves": 1853,
+        "pct_postura": 84.0,
+        "peso_huevo_g": 65.7,
+        "huevos_dia": 1557,
+        "huevos_semana": 10896
+      },
+      "G2": {
+        "sem_vida": 14,
+        "estado": "crianza",
+        "aves": 1953,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 1853,
+        "huevos_dia": 1557,
+        "huevos_semana": 10896
+      }
+    },
+    {
+      "semana_cal": 63,
+      "fecha_lunes": "2026-09-21",
+      "anio": 2026,
+      "mes": 9,
+      "G1": {
+        "sem_vida": 62,
+        "estado": "postura",
+        "aves": 1851,
+        "pct_postura": 83.5,
+        "peso_huevo_g": 65.8,
+        "huevos_dia": 1546,
+        "huevos_semana": 10819
+      },
+      "G2": {
+        "sem_vida": 15,
+        "estado": "crianza",
+        "aves": 1950,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 1851,
+        "huevos_dia": 1546,
+        "huevos_semana": 10819
+      }
+    },
+    {
+      "semana_cal": 64,
+      "fecha_lunes": "2026-09-28",
+      "anio": 2026,
+      "mes": 9,
+      "G1": {
+        "sem_vida": 63,
+        "estado": "postura",
+        "aves": 1849,
+        "pct_postura": 83.0,
+        "peso_huevo_g": 65.9,
+        "huevos_dia": 1535,
+        "huevos_semana": 10743
+      },
+      "G2": {
+        "sem_vida": 16,
+        "estado": "crianza",
+        "aves": 1946,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 1849,
+        "huevos_dia": 1535,
+        "huevos_semana": 10743
+      }
+    },
+    {
+      "semana_cal": 65,
+      "fecha_lunes": "2026-10-05",
+      "anio": 2026,
+      "mes": 10,
+      "G1": {
+        "sem_vida": 64,
+        "estado": "postura",
+        "aves": 1847,
+        "pct_postura": 82.5,
+        "peso_huevo_g": 66.0,
+        "huevos_dia": 1524,
+        "huevos_semana": 10666
+      },
+      "G2": {
+        "sem_vida": 17,
+        "estado": "traspaso",
+        "aves": 1943,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 1847,
+        "huevos_dia": 1524,
+        "huevos_semana": 10666
+      }
+    },
+    {
+      "semana_cal": 66,
+      "fecha_lunes": "2026-10-12",
+      "anio": 2026,
+      "mes": 10,
+      "G1": {
+        "sem_vida": 65,
+        "estado": "postura",
+        "aves": 1845,
+        "pct_postura": 82.0,
+        "peso_huevo_g": 66.0,
+        "huevos_dia": 1513,
+        "huevos_semana": 10590
+      },
+      "G2": {
+        "sem_vida": 18,
+        "estado": "traspaso",
+        "aves": 1940,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 1845,
+        "huevos_dia": 1513,
+        "huevos_semana": 10590
+      }
+    },
+    {
+      "semana_cal": 67,
+      "fecha_lunes": "2026-10-19",
+      "anio": 2026,
+      "mes": 10,
+      "G1": {
+        "sem_vida": 66,
+        "estado": "postura",
+        "aves": 1843,
+        "pct_postura": 81.5,
+        "peso_huevo_g": 66.1,
+        "huevos_dia": 1502,
+        "huevos_semana": 10514
+      },
+      "G2": {
+        "sem_vida": 19,
+        "estado": "postura",
+        "aves": 1938,
+        "pct_postura": 5.0,
+        "peso_huevo_g": 45.0,
+        "huevos_dia": 97,
+        "huevos_semana": 678
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 3781,
+        "huevos_dia": 1599,
+        "huevos_semana": 11193
+      }
+    },
+    {
+      "semana_cal": 68,
+      "fecha_lunes": "2026-10-26",
+      "anio": 2026,
+      "mes": 10,
+      "G1": {
+        "sem_vida": 67,
+        "estado": "postura",
+        "aves": 1841,
+        "pct_postura": 81.0,
+        "peso_huevo_g": 66.2,
+        "huevos_dia": 1491,
+        "huevos_semana": 10438
+      },
+      "G2": {
+        "sem_vida": 20,
+        "estado": "postura",
+        "aves": 1936,
+        "pct_postura": 25.0,
+        "peso_huevo_g": 47.0,
+        "huevos_dia": 484,
+        "huevos_semana": 3388
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 3777,
+        "huevos_dia": 1975,
+        "huevos_semana": 13826
+      }
+    },
+    {
+      "semana_cal": 69,
+      "fecha_lunes": "2026-11-02",
+      "anio": 2026,
+      "mes": 11,
+      "G1": {
+        "sem_vida": 68,
+        "estado": "postura",
+        "aves": 1839,
+        "pct_postura": 80.5,
+        "peso_huevo_g": 66.2,
+        "huevos_dia": 1480,
+        "huevos_semana": 10363
+      },
+      "G2": {
+        "sem_vida": 21,
+        "estado": "postura",
+        "aves": 1934,
+        "pct_postura": 55.0,
+        "peso_huevo_g": 49.0,
+        "huevos_dia": 1064,
+        "huevos_semana": 7446
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 3773,
+        "huevos_dia": 2544,
+        "huevos_semana": 17809
+      }
+    },
+    {
+      "semana_cal": 70,
+      "fecha_lunes": "2026-11-09",
+      "anio": 2026,
+      "mes": 11,
+      "G1": {
+        "sem_vida": 69,
+        "estado": "postura",
+        "aves": 1837,
+        "pct_postura": 80.0,
+        "peso_huevo_g": 66.3,
+        "huevos_dia": 1470,
+        "huevos_semana": 10287
+      },
+      "G2": {
+        "sem_vida": 22,
+        "estado": "postura",
+        "aves": 1932,
+        "pct_postura": 78.0,
+        "peso_huevo_g": 51.0,
+        "huevos_dia": 1507,
+        "huevos_semana": 10549
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 3769,
+        "huevos_dia": 2977,
+        "huevos_semana": 20836
+      }
+    },
+    {
+      "semana_cal": 71,
+      "fecha_lunes": "2026-11-16",
+      "anio": 2026,
+      "mes": 11,
+      "G1": {
+        "sem_vida": 70,
+        "estado": "postura",
+        "aves": 1835,
+        "pct_postura": 79.5,
+        "peso_huevo_g": 66.4,
+        "huevos_dia": 1459,
+        "huevos_semana": 10212
+      },
+      "G2": {
+        "sem_vida": 23,
+        "estado": "postura",
+        "aves": 1930,
+        "pct_postura": 88.0,
+        "peso_huevo_g": 53.0,
+        "huevos_dia": 1698,
+        "huevos_semana": 11889
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 3765,
+        "huevos_dia": 3157,
+        "huevos_semana": 22101
+      }
+    },
+    {
+      "semana_cal": 72,
+      "fecha_lunes": "2026-11-23",
+      "anio": 2026,
+      "mes": 11,
+      "G1": {
+        "sem_vida": 71,
+        "estado": "postura",
+        "aves": 1833,
+        "pct_postura": 79.0,
+        "peso_huevo_g": 66.4,
+        "huevos_dia": 1448,
+        "huevos_semana": 10136
+      },
+      "G2": {
+        "sem_vida": 24,
+        "estado": "postura",
+        "aves": 1928,
+        "pct_postura": 92.0,
+        "peso_huevo_g": 55.0,
+        "huevos_dia": 1774,
+        "huevos_semana": 12416
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 3761,
+        "huevos_dia": 3222,
+        "huevos_semana": 22553
+      }
+    },
+    {
+      "semana_cal": 73,
+      "fecha_lunes": "2026-11-30",
+      "anio": 2026,
+      "mes": 11,
+      "G1": {
+        "sem_vida": 72,
+        "estado": "postura",
+        "aves": 1831,
+        "pct_postura": 78.5,
+        "peso_huevo_g": 66.5,
+        "huevos_dia": 1437,
+        "huevos_semana": 10061
+      },
+      "G2": {
+        "sem_vida": 25,
+        "estado": "postura",
+        "aves": 1926,
+        "pct_postura": 94.0,
+        "peso_huevo_g": 56.5,
+        "huevos_dia": 1810,
+        "huevos_semana": 12673
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 3757,
+        "huevos_dia": 3248,
+        "huevos_semana": 22734
+      }
+    },
+    {
+      "semana_cal": 74,
+      "fecha_lunes": "2026-12-07",
+      "anio": 2026,
+      "mes": 12,
+      "G1": {
+        "sem_vida": 73,
+        "estado": "postura",
+        "aves": 1829,
+        "pct_postura": 78.0,
+        "peso_huevo_g": 66.5,
+        "huevos_dia": 1427,
+        "huevos_semana": 9986
+      },
+      "G2": {
+        "sem_vida": 26,
+        "estado": "postura",
+        "aves": 1924,
+        "pct_postura": 95.5,
+        "peso_huevo_g": 58.0,
+        "huevos_dia": 1837,
+        "huevos_semana": 12862
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 3753,
+        "huevos_dia": 3264,
+        "huevos_semana": 22848
+      }
+    },
+    {
+      "semana_cal": 75,
+      "fecha_lunes": "2026-12-14",
+      "anio": 2026,
+      "mes": 12,
+      "G1": {
+        "sem_vida": 74,
+        "estado": "postura",
+        "aves": 1827,
+        "pct_postura": 77.5,
+        "peso_huevo_g": 66.6,
+        "huevos_dia": 1416,
+        "huevos_semana": 9911
+      },
+      "G2": {
+        "sem_vida": 27,
+        "estado": "postura",
+        "aves": 1922,
+        "pct_postura": 96.0,
+        "peso_huevo_g": 59.0,
+        "huevos_dia": 1845,
+        "huevos_semana": 12916
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 3749,
+        "huevos_dia": 3261,
+        "huevos_semana": 22827
+      }
+    },
+    {
+      "semana_cal": 76,
+      "fecha_lunes": "2026-12-21",
+      "anio": 2026,
+      "mes": 12,
+      "G1": {
+        "sem_vida": 75,
+        "estado": "postura",
+        "aves": 1825,
+        "pct_postura": 77.0,
+        "peso_huevo_g": 66.6,
+        "huevos_dia": 1405,
+        "huevos_semana": 9837
+      },
+      "G2": {
+        "sem_vida": 28,
+        "estado": "postura",
+        "aves": 1920,
+        "pct_postura": 96.5,
+        "peso_huevo_g": 59.8,
+        "huevos_dia": 1853,
+        "huevos_semana": 12970
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 3745,
+        "huevos_dia": 3258,
+        "huevos_semana": 22806
+      }
+    },
+    {
+      "semana_cal": 77,
+      "fecha_lunes": "2026-12-28",
+      "anio": 2026,
+      "mes": 12,
+      "G1": {
+        "sem_vida": 76,
+        "estado": "postura",
+        "aves": 1823,
+        "pct_postura": 76.5,
+        "peso_huevo_g": 66.7,
+        "huevos_dia": 1395,
+        "huevos_semana": 9762
+      },
+      "G2": {
+        "sem_vida": 29,
+        "estado": "postura",
+        "aves": 1918,
+        "pct_postura": 96.5,
+        "peso_huevo_g": 60.4,
+        "huevos_dia": 1851,
+        "huevos_semana": 12956
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 3741,
+        "huevos_dia": 3245,
+        "huevos_semana": 22718
+      }
+    },
+    {
+      "semana_cal": 78,
+      "fecha_lunes": "2027-01-04",
+      "anio": 2027,
+      "mes": 1,
+      "G1": {
+        "sem_vida": 77,
+        "estado": "postura",
+        "aves": 1821,
+        "pct_postura": 76.0,
+        "peso_huevo_g": 66.7,
+        "huevos_dia": 1384,
+        "huevos_semana": 9688
+      },
+      "G2": {
+        "sem_vida": 30,
+        "estado": "postura",
+        "aves": 1916,
+        "pct_postura": 96.0,
+        "peso_huevo_g": 60.9,
+        "huevos_dia": 1839,
+        "huevos_semana": 12876
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 3737,
+        "huevos_dia": 3223,
+        "huevos_semana": 22563
+      }
+    },
+    {
+      "semana_cal": 79,
+      "fecha_lunes": "2027-01-11",
+      "anio": 2027,
+      "mes": 1,
+      "G1": {
+        "sem_vida": 78,
+        "estado": "postura",
+        "aves": 1819,
+        "pct_postura": 75.5,
+        "peso_huevo_g": 66.8,
+        "huevos_dia": 1373,
+        "huevos_semana": 9613
+      },
+      "G2": {
+        "sem_vida": 31,
+        "estado": "postura",
+        "aves": 1914,
+        "pct_postura": 95.8,
+        "peso_huevo_g": 61.3,
+        "huevos_dia": 1834,
+        "huevos_semana": 12835
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 3733,
+        "huevos_dia": 3207,
+        "huevos_semana": 22449
+      }
+    },
+    {
+      "semana_cal": 80,
+      "fecha_lunes": "2027-01-18",
+      "anio": 2027,
+      "mes": 1,
+      "G1": {
+        "sem_vida": 79,
+        "estado": "postura",
+        "aves": 1818,
+        "pct_postura": 75.0,
+        "peso_huevo_g": 66.8,
+        "huevos_dia": 1364,
+        "huevos_semana": 9544
+      },
+      "G2": {
+        "sem_vida": 32,
+        "estado": "postura",
+        "aves": 1912,
+        "pct_postura": 95.5,
+        "peso_huevo_g": 61.7,
+        "huevos_dia": 1826,
+        "huevos_semana": 12782
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 3730,
+        "huevos_dia": 3189,
+        "huevos_semana": 22326
+      }
+    },
+    {
+      "semana_cal": 81,
+      "fecha_lunes": "2027-01-25",
+      "anio": 2027,
+      "mes": 1,
+      "G1": {
+        "sem_vida": 80,
+        "estado": "postura",
+        "aves": 1815,
+        "pct_postura": 74.5,
+        "peso_huevo_g": 66.9,
+        "huevos_dia": 1352,
+        "huevos_semana": 9465
+      },
+      "G2": {
+        "sem_vida": 33,
+        "estado": "postura",
+        "aves": 1910,
+        "pct_postura": 95.2,
+        "peso_huevo_g": 62.0,
+        "huevos_dia": 1818,
+        "huevos_semana": 12728
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 3725,
+        "huevos_dia": 3170,
+        "huevos_semana": 22193
+      }
+    },
+    {
+      "semana_cal": 82,
+      "fecha_lunes": "2027-02-01",
+      "anio": 2027,
+      "mes": 2,
+      "G1": {
+        "sem_vida": 81,
+        "estado": "postura",
+        "aves": 1814,
+        "pct_postura": 74.0,
+        "peso_huevo_g": 66.9,
+        "huevos_dia": 1342,
+        "huevos_semana": 9397
+      },
+      "G2": {
+        "sem_vida": 34,
+        "estado": "postura",
+        "aves": 1908,
+        "pct_postura": 94.8,
+        "peso_huevo_g": 62.3,
+        "huevos_dia": 1809,
+        "huevos_semana": 12661
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 3722,
+        "huevos_dia": 3151,
+        "huevos_semana": 22058
+      }
+    },
+    {
+      "semana_cal": 83,
+      "fecha_lunes": "2027-02-08",
+      "anio": 2027,
+      "mes": 2,
+      "G1": {
+        "sem_vida": 82,
+        "estado": "postura",
+        "aves": 1811,
+        "pct_postura": 73.5,
+        "peso_huevo_g": 67.0,
+        "huevos_dia": 1331,
+        "huevos_semana": 9318
+      },
+      "G2": {
+        "sem_vida": 35,
+        "estado": "postura",
+        "aves": 1906,
+        "pct_postura": 94.5,
+        "peso_huevo_g": 62.6,
+        "huevos_dia": 1801,
+        "huevos_semana": 12608
+      },
+      "G3": {
+        "sem_vida": 0,
+        "estado": "no nacido",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 3717,
+        "huevos_dia": 3132,
+        "huevos_semana": 21926
+      }
+    },
+    {
+      "semana_cal": 84,
+      "fecha_lunes": "2027-02-15",
+      "anio": 2027,
+      "mes": 2,
+      "G1": {
+        "sem_vida": 83,
+        "estado": "postura",
+        "aves": 1810,
+        "pct_postura": 73.0,
+        "peso_huevo_g": 67.0,
+        "huevos_dia": 1321,
+        "huevos_semana": 9249
+      },
+      "G2": {
+        "sem_vida": 36,
+        "estado": "postura",
+        "aves": 1904,
+        "pct_postura": 94.2,
+        "peso_huevo_g": 62.8,
+        "huevos_dia": 1794,
+        "huevos_semana": 12555
+      },
+      "G3": {
+        "sem_vida": 1,
+        "estado": "crianza",
+        "aves": 1996,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 3714,
+        "huevos_dia": 3115,
+        "huevos_semana": 21804
+      }
+    },
+    {
+      "semana_cal": 85,
+      "fecha_lunes": "2027-02-22",
+      "anio": 2027,
+      "mes": 2,
+      "G1": {
+        "sem_vida": 84,
+        "estado": "postura",
+        "aves": 1807,
+        "pct_postura": 72.5,
+        "peso_huevo_g": 67.0,
+        "huevos_dia": 1310,
+        "huevos_semana": 9171
+      },
+      "G2": {
+        "sem_vida": 37,
+        "estado": "postura",
+        "aves": 1902,
+        "pct_postura": 93.8,
+        "peso_huevo_g": 63.0,
+        "huevos_dia": 1784,
+        "huevos_semana": 12489
+      },
+      "G3": {
+        "sem_vida": 2,
+        "estado": "crianza",
+        "aves": 1993,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 3709,
+        "huevos_dia": 3094,
+        "huevos_semana": 21659
+      }
+    },
+    {
+      "semana_cal": 86,
+      "fecha_lunes": "2027-03-01",
+      "anio": 2027,
+      "mes": 3,
+      "G1": {
+        "sem_vida": 85,
+        "estado": "postura",
+        "aves": 1806,
+        "pct_postura": 72.0,
+        "peso_huevo_g": 67.1,
+        "huevos_dia": 1300,
+        "huevos_semana": 9102
+      },
+      "G2": {
+        "sem_vida": 38,
+        "estado": "postura",
+        "aves": 1900,
+        "pct_postura": 93.5,
+        "peso_huevo_g": 63.2,
+        "huevos_dia": 1776,
+        "huevos_semana": 12436
+      },
+      "G3": {
+        "sem_vida": 3,
+        "estado": "crianza",
+        "aves": 1990,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 3706,
+        "huevos_dia": 3077,
+        "huevos_semana": 21538
+      }
+    },
+    {
+      "semana_cal": 87,
+      "fecha_lunes": "2027-03-08",
+      "anio": 2027,
+      "mes": 3,
+      "G1": {
+        "sem_vida": 86,
+        "estado": "postura",
+        "aves": 1803,
+        "pct_postura": 71.5,
+        "peso_huevo_g": 67.1,
+        "huevos_dia": 1289,
+        "huevos_semana": 9024
+      },
+      "G2": {
+        "sem_vida": 39,
+        "estado": "postura",
+        "aves": 1898,
+        "pct_postura": 93.2,
+        "peso_huevo_g": 63.4,
+        "huevos_dia": 1769,
+        "huevos_semana": 12383
+      },
+      "G3": {
+        "sem_vida": 4,
+        "estado": "crianza",
+        "aves": 1986,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 3701,
+        "huevos_dia": 3058,
+        "huevos_semana": 21407
+      }
+    },
+    {
+      "semana_cal": 88,
+      "fecha_lunes": "2027-03-15",
+      "anio": 2027,
+      "mes": 3,
+      "G1": {
+        "sem_vida": 87,
+        "estado": "postura",
+        "aves": 1802,
+        "pct_postura": 71.0,
+        "peso_huevo_g": 67.2,
+        "huevos_dia": 1279,
+        "huevos_semana": 8956
+      },
+      "G2": {
+        "sem_vida": 40,
+        "estado": "postura",
+        "aves": 1896,
+        "pct_postura": 92.8,
+        "peso_huevo_g": 63.5,
+        "huevos_dia": 1759,
+        "huevos_semana": 12316
+      },
+      "G3": {
+        "sem_vida": 5,
+        "estado": "crianza",
+        "aves": 1983,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 3698,
+        "huevos_dia": 3039,
+        "huevos_semana": 21272
+      }
+    },
+    {
+      "semana_cal": 89,
+      "fecha_lunes": "2027-03-22",
+      "anio": 2027,
+      "mes": 3,
+      "G1": {
+        "sem_vida": 88,
+        "estado": "postura",
+        "aves": 1799,
+        "pct_postura": 70.5,
+        "peso_huevo_g": 67.2,
+        "huevos_dia": 1268,
+        "huevos_semana": 8878
+      },
+      "G2": {
+        "sem_vida": 41,
+        "estado": "postura",
+        "aves": 1894,
+        "pct_postura": 92.5,
+        "peso_huevo_g": 63.7,
+        "huevos_dia": 1752,
+        "huevos_semana": 12264
+      },
+      "G3": {
+        "sem_vida": 6,
+        "estado": "crianza",
+        "aves": 1980,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 3693,
+        "huevos_dia": 3020,
+        "huevos_semana": 21142
+      }
+    },
+    {
+      "semana_cal": 90,
+      "fecha_lunes": "2027-03-29",
+      "anio": 2027,
+      "mes": 3,
+      "G1": {
+        "sem_vida": 89,
+        "estado": "postura",
+        "aves": 1798,
+        "pct_postura": 70.0,
+        "peso_huevo_g": 67.2,
+        "huevos_dia": 1259,
+        "huevos_semana": 8810
+      },
+      "G2": {
+        "sem_vida": 42,
+        "estado": "postura",
+        "aves": 1892,
+        "pct_postura": 92.1,
+        "peso_huevo_g": 63.8,
+        "huevos_dia": 1743,
+        "huevos_semana": 12198
+      },
+      "G3": {
+        "sem_vida": 7,
+        "estado": "crianza",
+        "aves": 1976,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 3690,
+        "huevos_dia": 3001,
+        "huevos_semana": 21008
+      }
+    },
+    {
+      "semana_cal": 91,
+      "fecha_lunes": "2027-04-05",
+      "anio": 2027,
+      "mes": 4,
+      "G1": {
+        "sem_vida": 90,
+        "estado": "postura",
+        "aves": 1795,
+        "pct_postura": 69.5,
+        "peso_huevo_g": 67.3,
+        "huevos_dia": 1248,
+        "huevos_semana": 8733
+      },
+      "G2": {
+        "sem_vida": 43,
+        "estado": "postura",
+        "aves": 1890,
+        "pct_postura": 91.8,
+        "peso_huevo_g": 63.9,
+        "huevos_dia": 1735,
+        "huevos_semana": 12145
+      },
+      "G3": {
+        "sem_vida": 8,
+        "estado": "crianza",
+        "aves": 1973,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 3685,
+        "huevos_dia": 2983,
+        "huevos_semana": 20878
+      }
+    },
+    {
+      "semana_cal": 92,
+      "fecha_lunes": "2027-04-12",
+      "anio": 2027,
+      "mes": 4,
+      "G1": {
+        "sem_vida": 91,
+        "estado": "postura",
+        "aves": 1794,
+        "pct_postura": 69.0,
+        "peso_huevo_g": 67.3,
+        "huevos_dia": 1238,
+        "huevos_semana": 8665
+      },
+      "G2": {
+        "sem_vida": 44,
+        "estado": "postura",
+        "aves": 1888,
+        "pct_postura": 91.4,
+        "peso_huevo_g": 64.0,
+        "huevos_dia": 1726,
+        "huevos_semana": 12079
+      },
+      "G3": {
+        "sem_vida": 9,
+        "estado": "crianza",
+        "aves": 1970,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 3682,
+        "huevos_dia": 2963,
+        "huevos_semana": 20744
+      }
+    },
+    {
+      "semana_cal": 93,
+      "fecha_lunes": "2027-04-19",
+      "anio": 2027,
+      "mes": 4,
+      "G1": {
+        "sem_vida": 92,
+        "estado": "postura",
+        "aves": 1792,
+        "pct_postura": 68.5,
+        "peso_huevo_g": 67.3,
+        "huevos_dia": 1228,
+        "huevos_semana": 8593
+      },
+      "G2": {
+        "sem_vida": 45,
+        "estado": "postura",
+        "aves": 1886,
+        "pct_postura": 91.0,
+        "peso_huevo_g": 64.1,
+        "huevos_dia": 1716,
+        "huevos_semana": 12014
+      },
+      "G3": {
+        "sem_vida": 10,
+        "estado": "crianza",
+        "aves": 1966,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 3678,
+        "huevos_dia": 2944,
+        "huevos_semana": 20606
+      }
+    },
+    {
+      "semana_cal": 94,
+      "fecha_lunes": "2027-04-26",
+      "anio": 2027,
+      "mes": 4,
+      "G1": {
+        "sem_vida": 93,
+        "estado": "postura",
+        "aves": 1790,
+        "pct_postura": 68.0,
+        "peso_huevo_g": 67.4,
+        "huevos_dia": 1217,
+        "huevos_semana": 8520
+      },
+      "G2": {
+        "sem_vida": 46,
+        "estado": "postura",
+        "aves": 1884,
+        "pct_postura": 90.6,
+        "peso_huevo_g": 64.2,
+        "huevos_dia": 1707,
+        "huevos_semana": 11948
+      },
+      "G3": {
+        "sem_vida": 11,
+        "estado": "crianza",
+        "aves": 1963,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 3674,
+        "huevos_dia": 2924,
+        "huevos_semana": 20469
+      }
+    },
+    {
+      "semana_cal": 95,
+      "fecha_lunes": "2027-05-03",
+      "anio": 2027,
+      "mes": 5,
+      "G1": {
+        "sem_vida": 94,
+        "estado": "postura",
+        "aves": 1788,
+        "pct_postura": 67.5,
+        "peso_huevo_g": 67.4,
+        "huevos_dia": 1207,
+        "huevos_semana": 8448
+      },
+      "G2": {
+        "sem_vida": 47,
+        "estado": "postura",
+        "aves": 1882,
+        "pct_postura": 90.2,
+        "peso_huevo_g": 64.3,
+        "huevos_dia": 1698,
+        "huevos_semana": 11883
+      },
+      "G3": {
+        "sem_vida": 12,
+        "estado": "crianza",
+        "aves": 1960,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 3670,
+        "huevos_dia": 2904,
+        "huevos_semana": 20331
+      }
+    },
+    {
+      "semana_cal": 96,
+      "fecha_lunes": "2027-05-10",
+      "anio": 2027,
+      "mes": 5,
+      "G1": {
+        "sem_vida": 95,
+        "estado": "postura",
+        "aves": 1786,
+        "pct_postura": 67.0,
+        "peso_huevo_g": 67.4,
+        "huevos_dia": 1197,
+        "huevos_semana": 8376
+      },
+      "G2": {
+        "sem_vida": 48,
+        "estado": "postura",
+        "aves": 1880,
+        "pct_postura": 89.8,
+        "peso_huevo_g": 64.4,
+        "huevos_dia": 1688,
+        "huevos_semana": 11818
+      },
+      "G3": {
+        "sem_vida": 13,
+        "estado": "crianza",
+        "aves": 1956,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 3666,
+        "huevos_dia": 2885,
+        "huevos_semana": 20194
+      }
+    },
+    {
+      "semana_cal": 97,
+      "fecha_lunes": "2027-05-17",
+      "anio": 2027,
+      "mes": 5,
+      "G1": {
+        "sem_vida": 96,
+        "estado": "postura",
+        "aves": 1784,
+        "pct_postura": 66.5,
+        "peso_huevo_g": 67.5,
+        "huevos_dia": 1186,
+        "huevos_semana": 8305
+      },
+      "G2": {
+        "sem_vida": 49,
+        "estado": "postura",
+        "aves": 1878,
+        "pct_postura": 89.4,
+        "peso_huevo_g": 64.5,
+        "huevos_dia": 1679,
+        "huevos_semana": 11753
+      },
+      "G3": {
+        "sem_vida": 14,
+        "estado": "crianza",
+        "aves": 1953,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 3662,
+        "huevos_dia": 2865,
+        "huevos_semana": 20057
+      }
+    },
+    {
+      "semana_cal": 98,
+      "fecha_lunes": "2027-05-24",
+      "anio": 2027,
+      "mes": 5,
+      "G1": {
+        "sem_vida": 97,
+        "estado": "postura",
+        "aves": 1782,
+        "pct_postura": 66.0,
+        "peso_huevo_g": 67.5,
+        "huevos_dia": 1176,
+        "huevos_semana": 8233
+      },
+      "G2": {
+        "sem_vida": 50,
+        "estado": "postura",
+        "aves": 1876,
+        "pct_postura": 89.0,
+        "peso_huevo_g": 64.6,
+        "huevos_dia": 1670,
+        "huevos_semana": 11687
+      },
+      "G3": {
+        "sem_vida": 15,
+        "estado": "crianza",
+        "aves": 1950,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 3658,
+        "huevos_dia": 2846,
+        "huevos_semana": 19920
+      }
+    },
+    {
+      "semana_cal": 99,
+      "fecha_lunes": "2027-05-31",
+      "anio": 2027,
+      "mes": 5,
+      "G1": {
+        "sem_vida": 98,
+        "estado": "postura",
+        "aves": 1780,
+        "pct_postura": 65.5,
+        "peso_huevo_g": 67.5,
+        "huevos_dia": 1166,
+        "huevos_semana": 8161
+      },
+      "G2": {
+        "sem_vida": 51,
+        "estado": "postura",
+        "aves": 1874,
+        "pct_postura": 88.6,
+        "peso_huevo_g": 64.7,
+        "huevos_dia": 1660,
+        "huevos_semana": 11623
+      },
+      "G3": {
+        "sem_vida": 16,
+        "estado": "crianza",
+        "aves": 1946,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 3654,
+        "huevos_dia": 2826,
+        "huevos_semana": 19784
+      }
+    },
+    {
+      "semana_cal": 100,
+      "fecha_lunes": "2027-06-07",
+      "anio": 2027,
+      "mes": 6,
+      "G1": {
+        "sem_vida": 99,
+        "estado": "postura",
+        "aves": 1778,
+        "pct_postura": 65.0,
+        "peso_huevo_g": 67.6,
+        "huevos_dia": 1156,
+        "huevos_semana": 8090
+      },
+      "G2": {
+        "sem_vida": 52,
+        "estado": "postura",
+        "aves": 1872,
+        "pct_postura": 88.2,
+        "peso_huevo_g": 64.8,
+        "huevos_dia": 1651,
+        "huevos_semana": 11558
+      },
+      "G3": {
+        "sem_vida": 17,
+        "estado": "traspaso",
+        "aves": 1943,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 3650,
+        "huevos_dia": 2807,
+        "huevos_semana": 19648
+      }
+    },
+    {
+      "semana_cal": 101,
+      "fecha_lunes": "2027-06-14",
+      "anio": 2027,
+      "mes": 6,
+      "G1": {
+        "sem_vida": 100,
+        "estado": "postura",
+        "aves": 1776,
+        "pct_postura": 64.5,
+        "peso_huevo_g": 67.6,
+        "huevos_dia": 1146,
+        "huevos_semana": 8019
+      },
+      "G2": {
+        "sem_vida": 53,
+        "estado": "postura",
+        "aves": 1869,
+        "pct_postura": 87.8,
+        "peso_huevo_g": 64.9,
+        "huevos_dia": 1641,
+        "huevos_semana": 11487
+      },
+      "G3": {
+        "sem_vida": 18,
+        "estado": "traspaso",
+        "aves": 1940,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "total": {
+        "aves_en_postura": 3645,
+        "huevos_dia": 2787,
+        "huevos_semana": 19506
+      }
+    },
+    {
+      "semana_cal": 102,
+      "fecha_lunes": "2027-06-21",
+      "anio": 2027,
+      "mes": 6,
+      "G1": {
+        "sem_vida": 101,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 54,
+        "estado": "postura",
+        "aves": 1867,
+        "pct_postura": 87.4,
+        "peso_huevo_g": 65.0,
+        "huevos_dia": 1632,
+        "huevos_semana": 11422
+      },
+      "G3": {
+        "sem_vida": 19,
+        "estado": "postura",
+        "aves": 1938,
+        "pct_postura": 5.0,
+        "peso_huevo_g": 45.0,
+        "huevos_dia": 97,
+        "huevos_semana": 678
+      },
+      "total": {
+        "aves_en_postura": 3805,
+        "huevos_dia": 1729,
+        "huevos_semana": 12101
+      }
+    },
+    {
+      "semana_cal": 103,
+      "fecha_lunes": "2027-06-28",
+      "anio": 2027,
+      "mes": 6,
+      "G1": {
+        "sem_vida": 102,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 55,
+        "estado": "postura",
+        "aves": 1865,
+        "pct_postura": 87.0,
+        "peso_huevo_g": 65.1,
+        "huevos_dia": 1623,
+        "huevos_semana": 11358
+      },
+      "G3": {
+        "sem_vida": 20,
+        "estado": "postura",
+        "aves": 1936,
+        "pct_postura": 25.0,
+        "peso_huevo_g": 47.0,
+        "huevos_dia": 484,
+        "huevos_semana": 3388
+      },
+      "total": {
+        "aves_en_postura": 3801,
+        "huevos_dia": 2107,
+        "huevos_semana": 14746
+      }
+    },
+    {
+      "semana_cal": 104,
+      "fecha_lunes": "2027-07-05",
+      "anio": 2027,
+      "mes": 7,
+      "G1": {
+        "sem_vida": 103,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 56,
+        "estado": "postura",
+        "aves": 1863,
+        "pct_postura": 86.5,
+        "peso_huevo_g": 65.2,
+        "huevos_dia": 1611,
+        "huevos_semana": 11280
+      },
+      "G3": {
+        "sem_vida": 21,
+        "estado": "postura",
+        "aves": 1934,
+        "pct_postura": 55.0,
+        "peso_huevo_g": 49.0,
+        "huevos_dia": 1064,
+        "huevos_semana": 7446
+      },
+      "total": {
+        "aves_en_postura": 3797,
+        "huevos_dia": 2675,
+        "huevos_semana": 18726
+      }
+    },
+    {
+      "semana_cal": 105,
+      "fecha_lunes": "2027-07-12",
+      "anio": 2027,
+      "mes": 7,
+      "G1": {
+        "sem_vida": 104,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 57,
+        "estado": "postura",
+        "aves": 1861,
+        "pct_postura": 86.0,
+        "peso_huevo_g": 65.3,
+        "huevos_dia": 1600,
+        "huevos_semana": 11203
+      },
+      "G3": {
+        "sem_vida": 22,
+        "estado": "postura",
+        "aves": 1932,
+        "pct_postura": 78.0,
+        "peso_huevo_g": 51.0,
+        "huevos_dia": 1507,
+        "huevos_semana": 10549
+      },
+      "total": {
+        "aves_en_postura": 3793,
+        "huevos_dia": 3107,
+        "huevos_semana": 21752
+      }
+    },
+    {
+      "semana_cal": 106,
+      "fecha_lunes": "2027-07-19",
+      "anio": 2027,
+      "mes": 7,
+      "G1": {
+        "sem_vida": 105,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 58,
+        "estado": "postura",
+        "aves": 1859,
+        "pct_postura": 85.5,
+        "peso_huevo_g": 65.4,
+        "huevos_dia": 1589,
+        "huevos_semana": 11126
+      },
+      "G3": {
+        "sem_vida": 23,
+        "estado": "postura",
+        "aves": 1930,
+        "pct_postura": 88.0,
+        "peso_huevo_g": 53.0,
+        "huevos_dia": 1698,
+        "huevos_semana": 11889
+      },
+      "total": {
+        "aves_en_postura": 3789,
+        "huevos_dia": 3288,
+        "huevos_semana": 23015
+      }
+    },
+    {
+      "semana_cal": 107,
+      "fecha_lunes": "2027-07-26",
+      "anio": 2027,
+      "mes": 7,
+      "G1": {
+        "sem_vida": 106,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 59,
+        "estado": "postura",
+        "aves": 1857,
+        "pct_postura": 85.0,
+        "peso_huevo_g": 65.5,
+        "huevos_dia": 1578,
+        "huevos_semana": 11049
+      },
+      "G3": {
+        "sem_vida": 24,
+        "estado": "postura",
+        "aves": 1928,
+        "pct_postura": 92.0,
+        "peso_huevo_g": 55.0,
+        "huevos_dia": 1774,
+        "huevos_semana": 12416
+      },
+      "total": {
+        "aves_en_postura": 3785,
+        "huevos_dia": 3352,
+        "huevos_semana": 23465
+      }
+    },
+    {
+      "semana_cal": 108,
+      "fecha_lunes": "2027-08-02",
+      "anio": 2027,
+      "mes": 8,
+      "G1": {
+        "sem_vida": 107,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 60,
+        "estado": "postura",
+        "aves": 1855,
+        "pct_postura": 84.5,
+        "peso_huevo_g": 65.6,
+        "huevos_dia": 1567,
+        "huevos_semana": 10972
+      },
+      "G3": {
+        "sem_vida": 25,
+        "estado": "postura",
+        "aves": 1926,
+        "pct_postura": 94.0,
+        "peso_huevo_g": 56.5,
+        "huevos_dia": 1810,
+        "huevos_semana": 12673
+      },
+      "total": {
+        "aves_en_postura": 3781,
+        "huevos_dia": 3378,
+        "huevos_semana": 23645
+      }
+    },
+    {
+      "semana_cal": 109,
+      "fecha_lunes": "2027-08-09",
+      "anio": 2027,
+      "mes": 8,
+      "G1": {
+        "sem_vida": 108,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 61,
+        "estado": "postura",
+        "aves": 1853,
+        "pct_postura": 84.0,
+        "peso_huevo_g": 65.7,
+        "huevos_dia": 1557,
+        "huevos_semana": 10896
+      },
+      "G3": {
+        "sem_vida": 26,
+        "estado": "postura",
+        "aves": 1924,
+        "pct_postura": 95.5,
+        "peso_huevo_g": 58.0,
+        "huevos_dia": 1837,
+        "huevos_semana": 12862
+      },
+      "total": {
+        "aves_en_postura": 3777,
+        "huevos_dia": 3394,
+        "huevos_semana": 23758
+      }
+    },
+    {
+      "semana_cal": 110,
+      "fecha_lunes": "2027-08-16",
+      "anio": 2027,
+      "mes": 8,
+      "G1": {
+        "sem_vida": 109,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 62,
+        "estado": "postura",
+        "aves": 1851,
+        "pct_postura": 83.5,
+        "peso_huevo_g": 65.8,
+        "huevos_dia": 1546,
+        "huevos_semana": 10819
+      },
+      "G3": {
+        "sem_vida": 27,
+        "estado": "postura",
+        "aves": 1922,
+        "pct_postura": 96.0,
+        "peso_huevo_g": 59.0,
+        "huevos_dia": 1845,
+        "huevos_semana": 12916
+      },
+      "total": {
+        "aves_en_postura": 3773,
+        "huevos_dia": 3391,
+        "huevos_semana": 23735
+      }
+    },
+    {
+      "semana_cal": 111,
+      "fecha_lunes": "2027-08-23",
+      "anio": 2027,
+      "mes": 8,
+      "G1": {
+        "sem_vida": 110,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 63,
+        "estado": "postura",
+        "aves": 1849,
+        "pct_postura": 83.0,
+        "peso_huevo_g": 65.9,
+        "huevos_dia": 1535,
+        "huevos_semana": 10743
+      },
+      "G3": {
+        "sem_vida": 28,
+        "estado": "postura",
+        "aves": 1920,
+        "pct_postura": 96.5,
+        "peso_huevo_g": 59.8,
+        "huevos_dia": 1853,
+        "huevos_semana": 12970
+      },
+      "total": {
+        "aves_en_postura": 3769,
+        "huevos_dia": 3387,
+        "huevos_semana": 23712
+      }
+    },
+    {
+      "semana_cal": 112,
+      "fecha_lunes": "2027-08-30",
+      "anio": 2027,
+      "mes": 8,
+      "G1": {
+        "sem_vida": 111,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 64,
+        "estado": "postura",
+        "aves": 1847,
+        "pct_postura": 82.5,
+        "peso_huevo_g": 66.0,
+        "huevos_dia": 1524,
+        "huevos_semana": 10666
+      },
+      "G3": {
+        "sem_vida": 29,
+        "estado": "postura",
+        "aves": 1918,
+        "pct_postura": 96.5,
+        "peso_huevo_g": 60.4,
+        "huevos_dia": 1851,
+        "huevos_semana": 12956
+      },
+      "total": {
+        "aves_en_postura": 3765,
+        "huevos_dia": 3375,
+        "huevos_semana": 23623
+      }
+    },
+    {
+      "semana_cal": 113,
+      "fecha_lunes": "2027-09-06",
+      "anio": 2027,
+      "mes": 9,
+      "G1": {
+        "sem_vida": 112,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 65,
+        "estado": "postura",
+        "aves": 1845,
+        "pct_postura": 82.0,
+        "peso_huevo_g": 66.0,
+        "huevos_dia": 1513,
+        "huevos_semana": 10590
+      },
+      "G3": {
+        "sem_vida": 30,
+        "estado": "postura",
+        "aves": 1916,
+        "pct_postura": 96.0,
+        "peso_huevo_g": 60.9,
+        "huevos_dia": 1839,
+        "huevos_semana": 12876
+      },
+      "total": {
+        "aves_en_postura": 3761,
+        "huevos_dia": 3352,
+        "huevos_semana": 23466
+      }
+    },
+    {
+      "semana_cal": 114,
+      "fecha_lunes": "2027-09-13",
+      "anio": 2027,
+      "mes": 9,
+      "G1": {
+        "sem_vida": 113,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 66,
+        "estado": "postura",
+        "aves": 1843,
+        "pct_postura": 81.5,
+        "peso_huevo_g": 66.1,
+        "huevos_dia": 1502,
+        "huevos_semana": 10514
+      },
+      "G3": {
+        "sem_vida": 31,
+        "estado": "postura",
+        "aves": 1914,
+        "pct_postura": 95.8,
+        "peso_huevo_g": 61.3,
+        "huevos_dia": 1834,
+        "huevos_semana": 12835
+      },
+      "total": {
+        "aves_en_postura": 3757,
+        "huevos_dia": 3336,
+        "huevos_semana": 23350
+      }
+    },
+    {
+      "semana_cal": 115,
+      "fecha_lunes": "2027-09-20",
+      "anio": 2027,
+      "mes": 9,
+      "G1": {
+        "sem_vida": 114,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 67,
+        "estado": "postura",
+        "aves": 1841,
+        "pct_postura": 81.0,
+        "peso_huevo_g": 66.2,
+        "huevos_dia": 1491,
+        "huevos_semana": 10438
+      },
+      "G3": {
+        "sem_vida": 32,
+        "estado": "postura",
+        "aves": 1912,
+        "pct_postura": 95.5,
+        "peso_huevo_g": 61.7,
+        "huevos_dia": 1826,
+        "huevos_semana": 12782
+      },
+      "total": {
+        "aves_en_postura": 3753,
+        "huevos_dia": 3317,
+        "huevos_semana": 23220
+      }
+    },
+    {
+      "semana_cal": 116,
+      "fecha_lunes": "2027-09-27",
+      "anio": 2027,
+      "mes": 9,
+      "G1": {
+        "sem_vida": 115,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 68,
+        "estado": "postura",
+        "aves": 1839,
+        "pct_postura": 80.5,
+        "peso_huevo_g": 66.2,
+        "huevos_dia": 1480,
+        "huevos_semana": 10363
+      },
+      "G3": {
+        "sem_vida": 33,
+        "estado": "postura",
+        "aves": 1910,
+        "pct_postura": 95.2,
+        "peso_huevo_g": 62.0,
+        "huevos_dia": 1818,
+        "huevos_semana": 12728
+      },
+      "total": {
+        "aves_en_postura": 3749,
+        "huevos_dia": 3299,
+        "huevos_semana": 23091
+      }
+    },
+    {
+      "semana_cal": 117,
+      "fecha_lunes": "2027-10-04",
+      "anio": 2027,
+      "mes": 10,
+      "G1": {
+        "sem_vida": 116,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 69,
+        "estado": "postura",
+        "aves": 1837,
+        "pct_postura": 80.0,
+        "peso_huevo_g": 66.3,
+        "huevos_dia": 1470,
+        "huevos_semana": 10287
+      },
+      "G3": {
+        "sem_vida": 34,
+        "estado": "postura",
+        "aves": 1908,
+        "pct_postura": 94.8,
+        "peso_huevo_g": 62.3,
+        "huevos_dia": 1809,
+        "huevos_semana": 12661
+      },
+      "total": {
+        "aves_en_postura": 3745,
+        "huevos_dia": 3278,
+        "huevos_semana": 22949
+      }
+    },
+    {
+      "semana_cal": 118,
+      "fecha_lunes": "2027-10-11",
+      "anio": 2027,
+      "mes": 10,
+      "G1": {
+        "sem_vida": 117,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 70,
+        "estado": "postura",
+        "aves": 1835,
+        "pct_postura": 79.5,
+        "peso_huevo_g": 66.4,
+        "huevos_dia": 1459,
+        "huevos_semana": 10212
+      },
+      "G3": {
+        "sem_vida": 35,
+        "estado": "postura",
+        "aves": 1906,
+        "pct_postura": 94.5,
+        "peso_huevo_g": 62.6,
+        "huevos_dia": 1801,
+        "huevos_semana": 12608
+      },
+      "total": {
+        "aves_en_postura": 3741,
+        "huevos_dia": 3260,
+        "huevos_semana": 22820
+      }
+    },
+    {
+      "semana_cal": 119,
+      "fecha_lunes": "2027-10-18",
+      "anio": 2027,
+      "mes": 10,
+      "G1": {
+        "sem_vida": 118,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 71,
+        "estado": "postura",
+        "aves": 1833,
+        "pct_postura": 79.0,
+        "peso_huevo_g": 66.4,
+        "huevos_dia": 1448,
+        "huevos_semana": 10136
+      },
+      "G3": {
+        "sem_vida": 36,
+        "estado": "postura",
+        "aves": 1904,
+        "pct_postura": 94.2,
+        "peso_huevo_g": 62.8,
+        "huevos_dia": 1794,
+        "huevos_semana": 12555
+      },
+      "total": {
+        "aves_en_postura": 3737,
+        "huevos_dia": 3242,
+        "huevos_semana": 22691
+      }
+    },
+    {
+      "semana_cal": 120,
+      "fecha_lunes": "2027-10-25",
+      "anio": 2027,
+      "mes": 10,
+      "G1": {
+        "sem_vida": 119,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 72,
+        "estado": "postura",
+        "aves": 1831,
+        "pct_postura": 78.5,
+        "peso_huevo_g": 66.5,
+        "huevos_dia": 1437,
+        "huevos_semana": 10061
+      },
+      "G3": {
+        "sem_vida": 37,
+        "estado": "postura",
+        "aves": 1902,
+        "pct_postura": 93.8,
+        "peso_huevo_g": 63.0,
+        "huevos_dia": 1784,
+        "huevos_semana": 12489
+      },
+      "total": {
+        "aves_en_postura": 3733,
+        "huevos_dia": 3221,
+        "huevos_semana": 22550
+      }
+    },
+    {
+      "semana_cal": 121,
+      "fecha_lunes": "2027-11-01",
+      "anio": 2027,
+      "mes": 11,
+      "G1": {
+        "sem_vida": 120,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 73,
+        "estado": "postura",
+        "aves": 1829,
+        "pct_postura": 78.0,
+        "peso_huevo_g": 66.5,
+        "huevos_dia": 1427,
+        "huevos_semana": 9986
+      },
+      "G3": {
+        "sem_vida": 38,
+        "estado": "postura",
+        "aves": 1900,
+        "pct_postura": 93.5,
+        "peso_huevo_g": 63.2,
+        "huevos_dia": 1776,
+        "huevos_semana": 12436
+      },
+      "total": {
+        "aves_en_postura": 3729,
+        "huevos_dia": 3203,
+        "huevos_semana": 22422
+      }
+    },
+    {
+      "semana_cal": 122,
+      "fecha_lunes": "2027-11-08",
+      "anio": 2027,
+      "mes": 11,
+      "G1": {
+        "sem_vida": 121,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 74,
+        "estado": "postura",
+        "aves": 1827,
+        "pct_postura": 77.5,
+        "peso_huevo_g": 66.6,
+        "huevos_dia": 1416,
+        "huevos_semana": 9911
+      },
+      "G3": {
+        "sem_vida": 39,
+        "estado": "postura",
+        "aves": 1898,
+        "pct_postura": 93.2,
+        "peso_huevo_g": 63.4,
+        "huevos_dia": 1769,
+        "huevos_semana": 12383
+      },
+      "total": {
+        "aves_en_postura": 3725,
+        "huevos_dia": 3185,
+        "huevos_semana": 22294
+      }
+    },
+    {
+      "semana_cal": 123,
+      "fecha_lunes": "2027-11-15",
+      "anio": 2027,
+      "mes": 11,
+      "G1": {
+        "sem_vida": 122,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 75,
+        "estado": "postura",
+        "aves": 1825,
+        "pct_postura": 77.0,
+        "peso_huevo_g": 66.6,
+        "huevos_dia": 1405,
+        "huevos_semana": 9837
+      },
+      "G3": {
+        "sem_vida": 40,
+        "estado": "postura",
+        "aves": 1896,
+        "pct_postura": 92.8,
+        "peso_huevo_g": 63.5,
+        "huevos_dia": 1759,
+        "huevos_semana": 12316
+      },
+      "total": {
+        "aves_en_postura": 3721,
+        "huevos_dia": 3165,
+        "huevos_semana": 22153
+      }
+    },
+    {
+      "semana_cal": 124,
+      "fecha_lunes": "2027-11-22",
+      "anio": 2027,
+      "mes": 11,
+      "G1": {
+        "sem_vida": 123,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 76,
+        "estado": "postura",
+        "aves": 1823,
+        "pct_postura": 76.5,
+        "peso_huevo_g": 66.7,
+        "huevos_dia": 1395,
+        "huevos_semana": 9762
+      },
+      "G3": {
+        "sem_vida": 41,
+        "estado": "postura",
+        "aves": 1894,
+        "pct_postura": 92.5,
+        "peso_huevo_g": 63.7,
+        "huevos_dia": 1752,
+        "huevos_semana": 12264
+      },
+      "total": {
+        "aves_en_postura": 3717,
+        "huevos_dia": 3147,
+        "huevos_semana": 22026
+      }
+    },
+    {
+      "semana_cal": 125,
+      "fecha_lunes": "2027-11-29",
+      "anio": 2027,
+      "mes": 11,
+      "G1": {
+        "sem_vida": 124,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 77,
+        "estado": "postura",
+        "aves": 1821,
+        "pct_postura": 76.0,
+        "peso_huevo_g": 66.7,
+        "huevos_dia": 1384,
+        "huevos_semana": 9688
+      },
+      "G3": {
+        "sem_vida": 42,
+        "estado": "postura",
+        "aves": 1892,
+        "pct_postura": 92.1,
+        "peso_huevo_g": 63.8,
+        "huevos_dia": 1743,
+        "huevos_semana": 12198
+      },
+      "total": {
+        "aves_en_postura": 3713,
+        "huevos_dia": 3126,
+        "huevos_semana": 21885
+      }
+    },
+    {
+      "semana_cal": 126,
+      "fecha_lunes": "2027-12-06",
+      "anio": 2027,
+      "mes": 12,
+      "G1": {
+        "sem_vida": 125,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 78,
+        "estado": "postura",
+        "aves": 1819,
+        "pct_postura": 75.5,
+        "peso_huevo_g": 66.8,
+        "huevos_dia": 1373,
+        "huevos_semana": 9613
+      },
+      "G3": {
+        "sem_vida": 43,
+        "estado": "postura",
+        "aves": 1890,
+        "pct_postura": 91.8,
+        "peso_huevo_g": 63.9,
+        "huevos_dia": 1735,
+        "huevos_semana": 12145
+      },
+      "total": {
+        "aves_en_postura": 3709,
+        "huevos_dia": 3108,
+        "huevos_semana": 21759
+      }
+    },
+    {
+      "semana_cal": 127,
+      "fecha_lunes": "2027-12-13",
+      "anio": 2027,
+      "mes": 12,
+      "G1": {
+        "sem_vida": 126,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 79,
+        "estado": "postura",
+        "aves": 1818,
+        "pct_postura": 75.0,
+        "peso_huevo_g": 66.8,
+        "huevos_dia": 1364,
+        "huevos_semana": 9544
+      },
+      "G3": {
+        "sem_vida": 44,
+        "estado": "postura",
+        "aves": 1888,
+        "pct_postura": 91.4,
+        "peso_huevo_g": 64.0,
+        "huevos_dia": 1726,
+        "huevos_semana": 12079
+      },
+      "total": {
+        "aves_en_postura": 3706,
+        "huevos_dia": 3089,
+        "huevos_semana": 21624
+      }
+    },
+    {
+      "semana_cal": 128,
+      "fecha_lunes": "2027-12-20",
+      "anio": 2027,
+      "mes": 12,
+      "G1": {
+        "sem_vida": 127,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 80,
+        "estado": "postura",
+        "aves": 1815,
+        "pct_postura": 74.5,
+        "peso_huevo_g": 66.9,
+        "huevos_dia": 1352,
+        "huevos_semana": 9465
+      },
+      "G3": {
+        "sem_vida": 45,
+        "estado": "postura",
+        "aves": 1886,
+        "pct_postura": 91.0,
+        "peso_huevo_g": 64.1,
+        "huevos_dia": 1716,
+        "huevos_semana": 12014
+      },
+      "total": {
+        "aves_en_postura": 3701,
+        "huevos_dia": 3068,
+        "huevos_semana": 21479
+      }
+    },
+    {
+      "semana_cal": 129,
+      "fecha_lunes": "2027-12-27",
+      "anio": 2027,
+      "mes": 12,
+      "G1": {
+        "sem_vida": 128,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 81,
+        "estado": "postura",
+        "aves": 1814,
+        "pct_postura": 74.0,
+        "peso_huevo_g": 66.9,
+        "huevos_dia": 1342,
+        "huevos_semana": 9397
+      },
+      "G3": {
+        "sem_vida": 46,
+        "estado": "postura",
+        "aves": 1884,
+        "pct_postura": 90.6,
+        "peso_huevo_g": 64.2,
+        "huevos_dia": 1707,
+        "huevos_semana": 11948
+      },
+      "total": {
+        "aves_en_postura": 3698,
+        "huevos_dia": 3049,
+        "huevos_semana": 21345
+      }
+    },
+    {
+      "semana_cal": 130,
+      "fecha_lunes": "2028-01-03",
+      "anio": 2028,
+      "mes": 1,
+      "G1": {
+        "sem_vida": 129,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 82,
+        "estado": "postura",
+        "aves": 1811,
+        "pct_postura": 73.5,
+        "peso_huevo_g": 67.0,
+        "huevos_dia": 1331,
+        "huevos_semana": 9318
+      },
+      "G3": {
+        "sem_vida": 47,
+        "estado": "postura",
+        "aves": 1882,
+        "pct_postura": 90.2,
+        "peso_huevo_g": 64.3,
+        "huevos_dia": 1698,
+        "huevos_semana": 11883
+      },
+      "total": {
+        "aves_en_postura": 3693,
+        "huevos_dia": 3029,
+        "huevos_semana": 21201
+      }
+    },
+    {
+      "semana_cal": 131,
+      "fecha_lunes": "2028-01-10",
+      "anio": 2028,
+      "mes": 1,
+      "G1": {
+        "sem_vida": 130,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 83,
+        "estado": "postura",
+        "aves": 1810,
+        "pct_postura": 73.0,
+        "peso_huevo_g": 67.0,
+        "huevos_dia": 1321,
+        "huevos_semana": 9249
+      },
+      "G3": {
+        "sem_vida": 48,
+        "estado": "postura",
+        "aves": 1880,
+        "pct_postura": 89.8,
+        "peso_huevo_g": 64.4,
+        "huevos_dia": 1688,
+        "huevos_semana": 11818
+      },
+      "total": {
+        "aves_en_postura": 3690,
+        "huevos_dia": 3010,
+        "huevos_semana": 21067
+      }
+    },
+    {
+      "semana_cal": 132,
+      "fecha_lunes": "2028-01-17",
+      "anio": 2028,
+      "mes": 1,
+      "G1": {
+        "sem_vida": 131,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 84,
+        "estado": "postura",
+        "aves": 1807,
+        "pct_postura": 72.5,
+        "peso_huevo_g": 67.0,
+        "huevos_dia": 1310,
+        "huevos_semana": 9171
+      },
+      "G3": {
+        "sem_vida": 49,
+        "estado": "postura",
+        "aves": 1878,
+        "pct_postura": 89.4,
+        "peso_huevo_g": 64.5,
+        "huevos_dia": 1679,
+        "huevos_semana": 11753
+      },
+      "total": {
+        "aves_en_postura": 3685,
+        "huevos_dia": 2989,
+        "huevos_semana": 20923
+      }
+    },
+    {
+      "semana_cal": 133,
+      "fecha_lunes": "2028-01-24",
+      "anio": 2028,
+      "mes": 1,
+      "G1": {
+        "sem_vida": 132,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 85,
+        "estado": "postura",
+        "aves": 1806,
+        "pct_postura": 72.0,
+        "peso_huevo_g": 67.1,
+        "huevos_dia": 1300,
+        "huevos_semana": 9102
+      },
+      "G3": {
+        "sem_vida": 50,
+        "estado": "postura",
+        "aves": 1876,
+        "pct_postura": 89.0,
+        "peso_huevo_g": 64.6,
+        "huevos_dia": 1670,
+        "huevos_semana": 11687
+      },
+      "total": {
+        "aves_en_postura": 3682,
+        "huevos_dia": 2970,
+        "huevos_semana": 20790
+      }
+    },
+    {
+      "semana_cal": 134,
+      "fecha_lunes": "2028-01-31",
+      "anio": 2028,
+      "mes": 1,
+      "G1": {
+        "sem_vida": 133,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 86,
+        "estado": "postura",
+        "aves": 1803,
+        "pct_postura": 71.5,
+        "peso_huevo_g": 67.1,
+        "huevos_dia": 1289,
+        "huevos_semana": 9024
+      },
+      "G3": {
+        "sem_vida": 51,
+        "estado": "postura",
+        "aves": 1874,
+        "pct_postura": 88.6,
+        "peso_huevo_g": 64.7,
+        "huevos_dia": 1660,
+        "huevos_semana": 11623
+      },
+      "total": {
+        "aves_en_postura": 3677,
+        "huevos_dia": 2950,
+        "huevos_semana": 20647
+      }
+    },
+    {
+      "semana_cal": 135,
+      "fecha_lunes": "2028-02-07",
+      "anio": 2028,
+      "mes": 2,
+      "G1": {
+        "sem_vida": 134,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 87,
+        "estado": "postura",
+        "aves": 1802,
+        "pct_postura": 71.0,
+        "peso_huevo_g": 67.2,
+        "huevos_dia": 1279,
+        "huevos_semana": 8956
+      },
+      "G3": {
+        "sem_vida": 52,
+        "estado": "postura",
+        "aves": 1872,
+        "pct_postura": 88.2,
+        "peso_huevo_g": 64.8,
+        "huevos_dia": 1651,
+        "huevos_semana": 11558
+      },
+      "total": {
+        "aves_en_postura": 3674,
+        "huevos_dia": 2931,
+        "huevos_semana": 20514
+      }
+    },
+    {
+      "semana_cal": 136,
+      "fecha_lunes": "2028-02-14",
+      "anio": 2028,
+      "mes": 2,
+      "G1": {
+        "sem_vida": 135,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 88,
+        "estado": "postura",
+        "aves": 1799,
+        "pct_postura": 70.5,
+        "peso_huevo_g": 67.2,
+        "huevos_dia": 1268,
+        "huevos_semana": 8878
+      },
+      "G3": {
+        "sem_vida": 53,
+        "estado": "postura",
+        "aves": 1869,
+        "pct_postura": 87.8,
+        "peso_huevo_g": 64.9,
+        "huevos_dia": 1641,
+        "huevos_semana": 11487
+      },
+      "total": {
+        "aves_en_postura": 3668,
+        "huevos_dia": 2909,
+        "huevos_semana": 20365
+      }
+    },
+    {
+      "semana_cal": 137,
+      "fecha_lunes": "2028-02-21",
+      "anio": 2028,
+      "mes": 2,
+      "G1": {
+        "sem_vida": 136,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 89,
+        "estado": "postura",
+        "aves": 1798,
+        "pct_postura": 70.0,
+        "peso_huevo_g": 67.2,
+        "huevos_dia": 1259,
+        "huevos_semana": 8810
+      },
+      "G3": {
+        "sem_vida": 54,
+        "estado": "postura",
+        "aves": 1867,
+        "pct_postura": 87.4,
+        "peso_huevo_g": 65.0,
+        "huevos_dia": 1632,
+        "huevos_semana": 11422
+      },
+      "total": {
+        "aves_en_postura": 3665,
+        "huevos_dia": 2890,
+        "huevos_semana": 20233
+      }
+    },
+    {
+      "semana_cal": 138,
+      "fecha_lunes": "2028-02-28",
+      "anio": 2028,
+      "mes": 2,
+      "G1": {
+        "sem_vida": 137,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 90,
+        "estado": "postura",
+        "aves": 1795,
+        "pct_postura": 69.5,
+        "peso_huevo_g": 67.3,
+        "huevos_dia": 1248,
+        "huevos_semana": 8733
+      },
+      "G3": {
+        "sem_vida": 55,
+        "estado": "postura",
+        "aves": 1865,
+        "pct_postura": 87.0,
+        "peso_huevo_g": 65.1,
+        "huevos_dia": 1623,
+        "huevos_semana": 11358
+      },
+      "total": {
+        "aves_en_postura": 3660,
+        "huevos_dia": 2870,
+        "huevos_semana": 20091
+      }
+    },
+    {
+      "semana_cal": 139,
+      "fecha_lunes": "2028-03-06",
+      "anio": 2028,
+      "mes": 3,
+      "G1": {
+        "sem_vida": 138,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 91,
+        "estado": "postura",
+        "aves": 1794,
+        "pct_postura": 69.0,
+        "peso_huevo_g": 67.3,
+        "huevos_dia": 1238,
+        "huevos_semana": 8665
+      },
+      "G3": {
+        "sem_vida": 56,
+        "estado": "postura",
+        "aves": 1863,
+        "pct_postura": 86.5,
+        "peso_huevo_g": 65.2,
+        "huevos_dia": 1611,
+        "huevos_semana": 11280
+      },
+      "total": {
+        "aves_en_postura": 3657,
+        "huevos_dia": 2849,
+        "huevos_semana": 19945
+      }
+    },
+    {
+      "semana_cal": 140,
+      "fecha_lunes": "2028-03-13",
+      "anio": 2028,
+      "mes": 3,
+      "G1": {
+        "sem_vida": 139,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 92,
+        "estado": "postura",
+        "aves": 1792,
+        "pct_postura": 68.5,
+        "peso_huevo_g": 67.3,
+        "huevos_dia": 1228,
+        "huevos_semana": 8593
+      },
+      "G3": {
+        "sem_vida": 57,
+        "estado": "postura",
+        "aves": 1861,
+        "pct_postura": 86.0,
+        "peso_huevo_g": 65.3,
+        "huevos_dia": 1600,
+        "huevos_semana": 11203
+      },
+      "total": {
+        "aves_en_postura": 3653,
+        "huevos_dia": 2828,
+        "huevos_semana": 19796
+      }
+    },
+    {
+      "semana_cal": 141,
+      "fecha_lunes": "2028-03-20",
+      "anio": 2028,
+      "mes": 3,
+      "G1": {
+        "sem_vida": 140,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 93,
+        "estado": "postura",
+        "aves": 1790,
+        "pct_postura": 68.0,
+        "peso_huevo_g": 67.4,
+        "huevos_dia": 1217,
+        "huevos_semana": 8520
+      },
+      "G3": {
+        "sem_vida": 58,
+        "estado": "postura",
+        "aves": 1859,
+        "pct_postura": 85.5,
+        "peso_huevo_g": 65.4,
+        "huevos_dia": 1589,
+        "huevos_semana": 11126
+      },
+      "total": {
+        "aves_en_postura": 3649,
+        "huevos_dia": 2807,
+        "huevos_semana": 19647
+      }
+    },
+    {
+      "semana_cal": 142,
+      "fecha_lunes": "2028-03-27",
+      "anio": 2028,
+      "mes": 3,
+      "G1": {
+        "sem_vida": 141,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 94,
+        "estado": "postura",
+        "aves": 1788,
+        "pct_postura": 67.5,
+        "peso_huevo_g": 67.4,
+        "huevos_dia": 1207,
+        "huevos_semana": 8448
+      },
+      "G3": {
+        "sem_vida": 59,
+        "estado": "postura",
+        "aves": 1857,
+        "pct_postura": 85.0,
+        "peso_huevo_g": 65.5,
+        "huevos_dia": 1578,
+        "huevos_semana": 11049
+      },
+      "total": {
+        "aves_en_postura": 3645,
+        "huevos_dia": 2785,
+        "huevos_semana": 19497
+      }
+    },
+    {
+      "semana_cal": 143,
+      "fecha_lunes": "2028-04-03",
+      "anio": 2028,
+      "mes": 4,
+      "G1": {
+        "sem_vida": 142,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 95,
+        "estado": "postura",
+        "aves": 1786,
+        "pct_postura": 67.0,
+        "peso_huevo_g": 67.4,
+        "huevos_dia": 1197,
+        "huevos_semana": 8376
+      },
+      "G3": {
+        "sem_vida": 60,
+        "estado": "postura",
+        "aves": 1855,
+        "pct_postura": 84.5,
+        "peso_huevo_g": 65.6,
+        "huevos_dia": 1567,
+        "huevos_semana": 10972
+      },
+      "total": {
+        "aves_en_postura": 3641,
+        "huevos_dia": 2764,
+        "huevos_semana": 19349
+      }
+    },
+    {
+      "semana_cal": 144,
+      "fecha_lunes": "2028-04-10",
+      "anio": 2028,
+      "mes": 4,
+      "G1": {
+        "sem_vida": 143,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 96,
+        "estado": "postura",
+        "aves": 1784,
+        "pct_postura": 66.5,
+        "peso_huevo_g": 67.5,
+        "huevos_dia": 1186,
+        "huevos_semana": 8305
+      },
+      "G3": {
+        "sem_vida": 61,
+        "estado": "postura",
+        "aves": 1853,
+        "pct_postura": 84.0,
+        "peso_huevo_g": 65.7,
+        "huevos_dia": 1557,
+        "huevos_semana": 10896
+      },
+      "total": {
+        "aves_en_postura": 3637,
+        "huevos_dia": 2743,
+        "huevos_semana": 19200
+      }
+    },
+    {
+      "semana_cal": 145,
+      "fecha_lunes": "2028-04-17",
+      "anio": 2028,
+      "mes": 4,
+      "G1": {
+        "sem_vida": 144,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 97,
+        "estado": "postura",
+        "aves": 1782,
+        "pct_postura": 66.0,
+        "peso_huevo_g": 67.5,
+        "huevos_dia": 1176,
+        "huevos_semana": 8233
+      },
+      "G3": {
+        "sem_vida": 62,
+        "estado": "postura",
+        "aves": 1851,
+        "pct_postura": 83.5,
+        "peso_huevo_g": 65.8,
+        "huevos_dia": 1546,
+        "huevos_semana": 10819
+      },
+      "total": {
+        "aves_en_postura": 3633,
+        "huevos_dia": 2722,
+        "huevos_semana": 19052
+      }
+    },
+    {
+      "semana_cal": 146,
+      "fecha_lunes": "2028-04-24",
+      "anio": 2028,
+      "mes": 4,
+      "G1": {
+        "sem_vida": 145,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 98,
+        "estado": "postura",
+        "aves": 1780,
+        "pct_postura": 65.5,
+        "peso_huevo_g": 67.5,
+        "huevos_dia": 1166,
+        "huevos_semana": 8161
+      },
+      "G3": {
+        "sem_vida": 63,
+        "estado": "postura",
+        "aves": 1849,
+        "pct_postura": 83.0,
+        "peso_huevo_g": 65.9,
+        "huevos_dia": 1535,
+        "huevos_semana": 10743
+      },
+      "total": {
+        "aves_en_postura": 3629,
+        "huevos_dia": 2701,
+        "huevos_semana": 18904
+      }
+    },
+    {
+      "semana_cal": 147,
+      "fecha_lunes": "2028-05-01",
+      "anio": 2028,
+      "mes": 5,
+      "G1": {
+        "sem_vida": 146,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 99,
+        "estado": "postura",
+        "aves": 1778,
+        "pct_postura": 65.0,
+        "peso_huevo_g": 67.6,
+        "huevos_dia": 1156,
+        "huevos_semana": 8090
+      },
+      "G3": {
+        "sem_vida": 64,
+        "estado": "postura",
+        "aves": 1847,
+        "pct_postura": 82.5,
+        "peso_huevo_g": 66.0,
+        "huevos_dia": 1524,
+        "huevos_semana": 10666
+      },
+      "total": {
+        "aves_en_postura": 3625,
+        "huevos_dia": 2679,
+        "huevos_semana": 18756
+      }
+    },
+    {
+      "semana_cal": 148,
+      "fecha_lunes": "2028-05-08",
+      "anio": 2028,
+      "mes": 5,
+      "G1": {
+        "sem_vida": 147,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 100,
+        "estado": "postura",
+        "aves": 1776,
+        "pct_postura": 64.5,
+        "peso_huevo_g": 67.6,
+        "huevos_dia": 1146,
+        "huevos_semana": 8019
+      },
+      "G3": {
+        "sem_vida": 65,
+        "estado": "postura",
+        "aves": 1845,
+        "pct_postura": 82.0,
+        "peso_huevo_g": 66.0,
+        "huevos_dia": 1513,
+        "huevos_semana": 10590
+      },
+      "total": {
+        "aves_en_postura": 3621,
+        "huevos_dia": 2658,
+        "huevos_semana": 18609
+      }
+    },
+    {
+      "semana_cal": 149,
+      "fecha_lunes": "2028-05-15",
+      "anio": 2028,
+      "mes": 5,
+      "G1": {
+        "sem_vida": 148,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 101,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 66,
+        "estado": "postura",
+        "aves": 1843,
+        "pct_postura": 81.5,
+        "peso_huevo_g": 66.1,
+        "huevos_dia": 1502,
+        "huevos_semana": 10514
+      },
+      "total": {
+        "aves_en_postura": 1843,
+        "huevos_dia": 1502,
+        "huevos_semana": 10514
+      }
+    },
+    {
+      "semana_cal": 150,
+      "fecha_lunes": "2028-05-22",
+      "anio": 2028,
+      "mes": 5,
+      "G1": {
+        "sem_vida": 149,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 102,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 67,
+        "estado": "postura",
+        "aves": 1841,
+        "pct_postura": 81.0,
+        "peso_huevo_g": 66.2,
+        "huevos_dia": 1491,
+        "huevos_semana": 10438
+      },
+      "total": {
+        "aves_en_postura": 1841,
+        "huevos_dia": 1491,
+        "huevos_semana": 10438
+      }
+    },
+    {
+      "semana_cal": 151,
+      "fecha_lunes": "2028-05-29",
+      "anio": 2028,
+      "mes": 5,
+      "G1": {
+        "sem_vida": 150,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 103,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 68,
+        "estado": "postura",
+        "aves": 1839,
+        "pct_postura": 80.5,
+        "peso_huevo_g": 66.2,
+        "huevos_dia": 1480,
+        "huevos_semana": 10363
+      },
+      "total": {
+        "aves_en_postura": 1839,
+        "huevos_dia": 1480,
+        "huevos_semana": 10363
+      }
+    },
+    {
+      "semana_cal": 152,
+      "fecha_lunes": "2028-06-05",
+      "anio": 2028,
+      "mes": 6,
+      "G1": {
+        "sem_vida": 151,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 104,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 69,
+        "estado": "postura",
+        "aves": 1837,
+        "pct_postura": 80.0,
+        "peso_huevo_g": 66.3,
+        "huevos_dia": 1470,
+        "huevos_semana": 10287
+      },
+      "total": {
+        "aves_en_postura": 1837,
+        "huevos_dia": 1470,
+        "huevos_semana": 10287
+      }
+    },
+    {
+      "semana_cal": 153,
+      "fecha_lunes": "2028-06-12",
+      "anio": 2028,
+      "mes": 6,
+      "G1": {
+        "sem_vida": 152,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 105,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 70,
+        "estado": "postura",
+        "aves": 1835,
+        "pct_postura": 79.5,
+        "peso_huevo_g": 66.4,
+        "huevos_dia": 1459,
+        "huevos_semana": 10212
+      },
+      "total": {
+        "aves_en_postura": 1835,
+        "huevos_dia": 1459,
+        "huevos_semana": 10212
+      }
+    },
+    {
+      "semana_cal": 154,
+      "fecha_lunes": "2028-06-19",
+      "anio": 2028,
+      "mes": 6,
+      "G1": {
+        "sem_vida": 153,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 106,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 71,
+        "estado": "postura",
+        "aves": 1833,
+        "pct_postura": 79.0,
+        "peso_huevo_g": 66.4,
+        "huevos_dia": 1448,
+        "huevos_semana": 10136
+      },
+      "total": {
+        "aves_en_postura": 1833,
+        "huevos_dia": 1448,
+        "huevos_semana": 10136
+      }
+    },
+    {
+      "semana_cal": 155,
+      "fecha_lunes": "2028-06-26",
+      "anio": 2028,
+      "mes": 6,
+      "G1": {
+        "sem_vida": 154,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 107,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 72,
+        "estado": "postura",
+        "aves": 1831,
+        "pct_postura": 78.5,
+        "peso_huevo_g": 66.5,
+        "huevos_dia": 1437,
+        "huevos_semana": 10061
+      },
+      "total": {
+        "aves_en_postura": 1831,
+        "huevos_dia": 1437,
+        "huevos_semana": 10061
+      }
+    },
+    {
+      "semana_cal": 156,
+      "fecha_lunes": "2028-07-03",
+      "anio": 2028,
+      "mes": 7,
+      "G1": {
+        "sem_vida": 155,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 108,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 73,
+        "estado": "postura",
+        "aves": 1829,
+        "pct_postura": 78.0,
+        "peso_huevo_g": 66.5,
+        "huevos_dia": 1427,
+        "huevos_semana": 9986
+      },
+      "total": {
+        "aves_en_postura": 1829,
+        "huevos_dia": 1427,
+        "huevos_semana": 9986
+      }
+    },
+    {
+      "semana_cal": 157,
+      "fecha_lunes": "2028-07-10",
+      "anio": 2028,
+      "mes": 7,
+      "G1": {
+        "sem_vida": 156,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 109,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 74,
+        "estado": "postura",
+        "aves": 1827,
+        "pct_postura": 77.5,
+        "peso_huevo_g": 66.6,
+        "huevos_dia": 1416,
+        "huevos_semana": 9911
+      },
+      "total": {
+        "aves_en_postura": 1827,
+        "huevos_dia": 1416,
+        "huevos_semana": 9911
+      }
+    },
+    {
+      "semana_cal": 158,
+      "fecha_lunes": "2028-07-17",
+      "anio": 2028,
+      "mes": 7,
+      "G1": {
+        "sem_vida": 157,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 110,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 75,
+        "estado": "postura",
+        "aves": 1825,
+        "pct_postura": 77.0,
+        "peso_huevo_g": 66.6,
+        "huevos_dia": 1405,
+        "huevos_semana": 9837
+      },
+      "total": {
+        "aves_en_postura": 1825,
+        "huevos_dia": 1405,
+        "huevos_semana": 9837
+      }
+    },
+    {
+      "semana_cal": 159,
+      "fecha_lunes": "2028-07-24",
+      "anio": 2028,
+      "mes": 7,
+      "G1": {
+        "sem_vida": 158,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 111,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 76,
+        "estado": "postura",
+        "aves": 1823,
+        "pct_postura": 76.5,
+        "peso_huevo_g": 66.7,
+        "huevos_dia": 1395,
+        "huevos_semana": 9762
+      },
+      "total": {
+        "aves_en_postura": 1823,
+        "huevos_dia": 1395,
+        "huevos_semana": 9762
+      }
+    },
+    {
+      "semana_cal": 160,
+      "fecha_lunes": "2028-07-31",
+      "anio": 2028,
+      "mes": 7,
+      "G1": {
+        "sem_vida": 159,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 112,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 77,
+        "estado": "postura",
+        "aves": 1821,
+        "pct_postura": 76.0,
+        "peso_huevo_g": 66.7,
+        "huevos_dia": 1384,
+        "huevos_semana": 9688
+      },
+      "total": {
+        "aves_en_postura": 1821,
+        "huevos_dia": 1384,
+        "huevos_semana": 9688
+      }
+    },
+    {
+      "semana_cal": 161,
+      "fecha_lunes": "2028-08-07",
+      "anio": 2028,
+      "mes": 8,
+      "G1": {
+        "sem_vida": 160,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 113,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 78,
+        "estado": "postura",
+        "aves": 1819,
+        "pct_postura": 75.5,
+        "peso_huevo_g": 66.8,
+        "huevos_dia": 1373,
+        "huevos_semana": 9613
+      },
+      "total": {
+        "aves_en_postura": 1819,
+        "huevos_dia": 1373,
+        "huevos_semana": 9613
+      }
+    },
+    {
+      "semana_cal": 162,
+      "fecha_lunes": "2028-08-14",
+      "anio": 2028,
+      "mes": 8,
+      "G1": {
+        "sem_vida": 161,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 114,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 79,
+        "estado": "postura",
+        "aves": 1818,
+        "pct_postura": 75.0,
+        "peso_huevo_g": 66.8,
+        "huevos_dia": 1364,
+        "huevos_semana": 9544
+      },
+      "total": {
+        "aves_en_postura": 1818,
+        "huevos_dia": 1364,
+        "huevos_semana": 9544
+      }
+    },
+    {
+      "semana_cal": 163,
+      "fecha_lunes": "2028-08-21",
+      "anio": 2028,
+      "mes": 8,
+      "G1": {
+        "sem_vida": 162,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 115,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 80,
+        "estado": "postura",
+        "aves": 1815,
+        "pct_postura": 74.5,
+        "peso_huevo_g": 66.9,
+        "huevos_dia": 1352,
+        "huevos_semana": 9465
+      },
+      "total": {
+        "aves_en_postura": 1815,
+        "huevos_dia": 1352,
+        "huevos_semana": 9465
+      }
+    },
+    {
+      "semana_cal": 164,
+      "fecha_lunes": "2028-08-28",
+      "anio": 2028,
+      "mes": 8,
+      "G1": {
+        "sem_vida": 163,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 116,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 81,
+        "estado": "postura",
+        "aves": 1814,
+        "pct_postura": 74.0,
+        "peso_huevo_g": 66.9,
+        "huevos_dia": 1342,
+        "huevos_semana": 9397
+      },
+      "total": {
+        "aves_en_postura": 1814,
+        "huevos_dia": 1342,
+        "huevos_semana": 9397
+      }
+    },
+    {
+      "semana_cal": 165,
+      "fecha_lunes": "2028-09-04",
+      "anio": 2028,
+      "mes": 9,
+      "G1": {
+        "sem_vida": 164,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 117,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 82,
+        "estado": "postura",
+        "aves": 1811,
+        "pct_postura": 73.5,
+        "peso_huevo_g": 67.0,
+        "huevos_dia": 1331,
+        "huevos_semana": 9318
+      },
+      "total": {
+        "aves_en_postura": 1811,
+        "huevos_dia": 1331,
+        "huevos_semana": 9318
+      }
+    },
+    {
+      "semana_cal": 166,
+      "fecha_lunes": "2028-09-11",
+      "anio": 2028,
+      "mes": 9,
+      "G1": {
+        "sem_vida": 165,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 118,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 83,
+        "estado": "postura",
+        "aves": 1810,
+        "pct_postura": 73.0,
+        "peso_huevo_g": 67.0,
+        "huevos_dia": 1321,
+        "huevos_semana": 9249
+      },
+      "total": {
+        "aves_en_postura": 1810,
+        "huevos_dia": 1321,
+        "huevos_semana": 9249
+      }
+    },
+    {
+      "semana_cal": 167,
+      "fecha_lunes": "2028-09-18",
+      "anio": 2028,
+      "mes": 9,
+      "G1": {
+        "sem_vida": 166,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 119,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 84,
+        "estado": "postura",
+        "aves": 1807,
+        "pct_postura": 72.5,
+        "peso_huevo_g": 67.0,
+        "huevos_dia": 1310,
+        "huevos_semana": 9171
+      },
+      "total": {
+        "aves_en_postura": 1807,
+        "huevos_dia": 1310,
+        "huevos_semana": 9171
+      }
+    },
+    {
+      "semana_cal": 168,
+      "fecha_lunes": "2028-09-25",
+      "anio": 2028,
+      "mes": 9,
+      "G1": {
+        "sem_vida": 167,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 120,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 85,
+        "estado": "postura",
+        "aves": 1806,
+        "pct_postura": 72.0,
+        "peso_huevo_g": 67.1,
+        "huevos_dia": 1300,
+        "huevos_semana": 9102
+      },
+      "total": {
+        "aves_en_postura": 1806,
+        "huevos_dia": 1300,
+        "huevos_semana": 9102
+      }
+    },
+    {
+      "semana_cal": 169,
+      "fecha_lunes": "2028-10-02",
+      "anio": 2028,
+      "mes": 10,
+      "G1": {
+        "sem_vida": 168,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 121,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 86,
+        "estado": "postura",
+        "aves": 1803,
+        "pct_postura": 71.5,
+        "peso_huevo_g": 67.1,
+        "huevos_dia": 1289,
+        "huevos_semana": 9024
+      },
+      "total": {
+        "aves_en_postura": 1803,
+        "huevos_dia": 1289,
+        "huevos_semana": 9024
+      }
+    },
+    {
+      "semana_cal": 170,
+      "fecha_lunes": "2028-10-09",
+      "anio": 2028,
+      "mes": 10,
+      "G1": {
+        "sem_vida": 169,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 122,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 87,
+        "estado": "postura",
+        "aves": 1802,
+        "pct_postura": 71.0,
+        "peso_huevo_g": 67.2,
+        "huevos_dia": 1279,
+        "huevos_semana": 8956
+      },
+      "total": {
+        "aves_en_postura": 1802,
+        "huevos_dia": 1279,
+        "huevos_semana": 8956
+      }
+    },
+    {
+      "semana_cal": 171,
+      "fecha_lunes": "2028-10-16",
+      "anio": 2028,
+      "mes": 10,
+      "G1": {
+        "sem_vida": 170,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 123,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 88,
+        "estado": "postura",
+        "aves": 1799,
+        "pct_postura": 70.5,
+        "peso_huevo_g": 67.2,
+        "huevos_dia": 1268,
+        "huevos_semana": 8878
+      },
+      "total": {
+        "aves_en_postura": 1799,
+        "huevos_dia": 1268,
+        "huevos_semana": 8878
+      }
+    },
+    {
+      "semana_cal": 172,
+      "fecha_lunes": "2028-10-23",
+      "anio": 2028,
+      "mes": 10,
+      "G1": {
+        "sem_vida": 171,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 124,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 89,
+        "estado": "postura",
+        "aves": 1798,
+        "pct_postura": 70.0,
+        "peso_huevo_g": 67.2,
+        "huevos_dia": 1259,
+        "huevos_semana": 8810
+      },
+      "total": {
+        "aves_en_postura": 1798,
+        "huevos_dia": 1259,
+        "huevos_semana": 8810
+      }
+    },
+    {
+      "semana_cal": 173,
+      "fecha_lunes": "2028-10-30",
+      "anio": 2028,
+      "mes": 10,
+      "G1": {
+        "sem_vida": 172,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 125,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 90,
+        "estado": "postura",
+        "aves": 1795,
+        "pct_postura": 69.5,
+        "peso_huevo_g": 67.3,
+        "huevos_dia": 1248,
+        "huevos_semana": 8733
+      },
+      "total": {
+        "aves_en_postura": 1795,
+        "huevos_dia": 1248,
+        "huevos_semana": 8733
+      }
+    },
+    {
+      "semana_cal": 174,
+      "fecha_lunes": "2028-11-06",
+      "anio": 2028,
+      "mes": 11,
+      "G1": {
+        "sem_vida": 173,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 126,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 91,
+        "estado": "postura",
+        "aves": 1794,
+        "pct_postura": 69.0,
+        "peso_huevo_g": 67.3,
+        "huevos_dia": 1238,
+        "huevos_semana": 8665
+      },
+      "total": {
+        "aves_en_postura": 1794,
+        "huevos_dia": 1238,
+        "huevos_semana": 8665
+      }
+    },
+    {
+      "semana_cal": 175,
+      "fecha_lunes": "2028-11-13",
+      "anio": 2028,
+      "mes": 11,
+      "G1": {
+        "sem_vida": 174,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 127,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 92,
+        "estado": "postura",
+        "aves": 1792,
+        "pct_postura": 68.5,
+        "peso_huevo_g": 67.3,
+        "huevos_dia": 1228,
+        "huevos_semana": 8593
+      },
+      "total": {
+        "aves_en_postura": 1792,
+        "huevos_dia": 1228,
+        "huevos_semana": 8593
+      }
+    },
+    {
+      "semana_cal": 176,
+      "fecha_lunes": "2028-11-20",
+      "anio": 2028,
+      "mes": 11,
+      "G1": {
+        "sem_vida": 175,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 128,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 93,
+        "estado": "postura",
+        "aves": 1790,
+        "pct_postura": 68.0,
+        "peso_huevo_g": 67.4,
+        "huevos_dia": 1217,
+        "huevos_semana": 8520
+      },
+      "total": {
+        "aves_en_postura": 1790,
+        "huevos_dia": 1217,
+        "huevos_semana": 8520
+      }
+    },
+    {
+      "semana_cal": 177,
+      "fecha_lunes": "2028-11-27",
+      "anio": 2028,
+      "mes": 11,
+      "G1": {
+        "sem_vida": 176,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 129,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 94,
+        "estado": "postura",
+        "aves": 1788,
+        "pct_postura": 67.5,
+        "peso_huevo_g": 67.4,
+        "huevos_dia": 1207,
+        "huevos_semana": 8448
+      },
+      "total": {
+        "aves_en_postura": 1788,
+        "huevos_dia": 1207,
+        "huevos_semana": 8448
+      }
+    },
+    {
+      "semana_cal": 178,
+      "fecha_lunes": "2028-12-04",
+      "anio": 2028,
+      "mes": 12,
+      "G1": {
+        "sem_vida": 177,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 130,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 95,
+        "estado": "postura",
+        "aves": 1786,
+        "pct_postura": 67.0,
+        "peso_huevo_g": 67.4,
+        "huevos_dia": 1197,
+        "huevos_semana": 8376
+      },
+      "total": {
+        "aves_en_postura": 1786,
+        "huevos_dia": 1197,
+        "huevos_semana": 8376
+      }
+    },
+    {
+      "semana_cal": 179,
+      "fecha_lunes": "2028-12-11",
+      "anio": 2028,
+      "mes": 12,
+      "G1": {
+        "sem_vida": 178,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 131,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 96,
+        "estado": "postura",
+        "aves": 1784,
+        "pct_postura": 66.5,
+        "peso_huevo_g": 67.5,
+        "huevos_dia": 1186,
+        "huevos_semana": 8305
+      },
+      "total": {
+        "aves_en_postura": 1784,
+        "huevos_dia": 1186,
+        "huevos_semana": 8305
+      }
+    },
+    {
+      "semana_cal": 180,
+      "fecha_lunes": "2028-12-18",
+      "anio": 2028,
+      "mes": 12,
+      "G1": {
+        "sem_vida": 179,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 132,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 97,
+        "estado": "postura",
+        "aves": 1782,
+        "pct_postura": 66.0,
+        "peso_huevo_g": 67.5,
+        "huevos_dia": 1176,
+        "huevos_semana": 8233
+      },
+      "total": {
+        "aves_en_postura": 1782,
+        "huevos_dia": 1176,
+        "huevos_semana": 8233
+      }
+    },
+    {
+      "semana_cal": 181,
+      "fecha_lunes": "2028-12-25",
+      "anio": 2028,
+      "mes": 12,
+      "G1": {
+        "sem_vida": 180,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G2": {
+        "sem_vida": 133,
+        "estado": "descartado",
+        "aves": 0,
+        "pct_postura": 0.0,
+        "peso_huevo_g": 0.0,
+        "huevos_dia": 0,
+        "huevos_semana": 0
+      },
+      "G3": {
+        "sem_vida": 98,
+        "estado": "postura",
+        "aves": 1780,
+        "pct_postura": 65.5,
+        "peso_huevo_g": 67.5,
+        "huevos_dia": 1166,
+        "huevos_semana": 8161
+      },
+      "total": {
+        "aves_en_postura": 1780,
+        "huevos_dia": 1166,
+        "huevos_semana": 8161
+      }
+    }
+  ]
+}
