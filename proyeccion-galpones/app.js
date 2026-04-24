@@ -46,7 +46,8 @@ async function cargar() {
     document.getElementById('kpi-galpones').textContent = D.metadata.galpones_construidos ?? 1;
     document.getElementById('kpi-aves').textContent     = NUM(D.metadata.aves_por_galpon);
     document.getElementById('kpi-horizonte').textContent= D.metadata.horizonte.total_semanas;
-    document.getElementById('kpi-lotes').textContent    = D.galpones.length;
+    const elLotes = document.getElementById('kpi-lotes') || document.getElementById('kpi-ciclo');
+    if (elLotes) elLotes.textContent = D.galpones.length;
 
     pintarLotes();
     pintarCronograma();
