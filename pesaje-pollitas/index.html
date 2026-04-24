@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Pesaje Pollitas</title>
+<style>
+:root {
+  --verde:   #2e7d32;
+  --verde-c: #4caf50;
+  --amarillo:#f9a825;
+  --rojo:    #c62828;
+  --azul:    #1565c0;
+  --gris-f:  #f5f5f5;
+  --gris-b:  #e0e0e0;
+  --texto:   #212121;
+  --radio:   10px;
+}
+* { box-sizing:border-box; margin:0; padding:0; }
+body { font-family: system-ui, sans-serif; background:#f0f4f8; color:var(--texto); }
+
+/* NAV */
+.nav { background:var(--verde); color:#fff; padding:14px 16px; display:flex; align-items:center; gap:12px; position:sticky; top:0; z-index:100; }
+.nav h1 { font-size:1.05rem; font-weight:600; }
+.nav .back-btn { background:none; border:none; color:#fff; font-size:1.3rem; cursor:pointer; padding:0 4px; }
+
+/* TABS */
+.tabs { display:flex; background:#fff; border-bottom:2px solid var(--gris-b); position:sticky; top:52px; z-index:99; }
+.tab { flex:1; padding:12px 4px; text-align:center; font-size:0.78rem; font-weight:600; color:#666; cursor:pointer; border-bottom:3px solid transparent; transition:.2s; }
+.tab.active { color:var(--verde); border-bottom-color:var(--verde); }
+
+/* PAGES */
+.page { display:none; padding:16px; }
+.page.active { display:block; }
+
+/* CARD */
+.card { background:#fff; border-radius:var(--radio); padding:16px; margin-bottom:14px; box-shadow:0 1px 4px rgba(0,0,0,.08); }
+.card h3 { font-size:.9rem; color:#555; margin-bottom:10px; }
+
+/* FORM */
+select, input[type=text], input[type=number], input[type=date] {
+  width:100%; padding:11px 12px; border:1.5px solid var(--gris-b); border-radius:8px;
+  font-size:1rem; margin-top:6px; background:#fff; -webkit-appearance:none;
+}
+select:focus, input:focus { outline:none; border-color:var(--verde-c); }
+label { font-size:.85rem; color:#666; font-weight:500; }
+
+/* BOTONES */
+.btn { width:100%; padding:13px; border:none; border-radius:8px; font-size:1rem; font-weight:600; cursor:pointer; margin-top:8px; transition:.15s; }
+.btn-verde  { background:var(--verde); color:#fff; }
+.btn-verde:active  { background:#1b5e20; }
+.btn-azul   { background:var(--azul); color:#fff; }
+.btn-gris   { background:var(--gris-b); color:var(--texto); }
+.btn-rojo   { background:var(--rojo); color:#fff; }
+.btn-amarillo { background:var(--amarillo); color:#fff; }
+.btn:disabled { opacity:.5; cursor:not-allowed; }
+
+/* INPUTS MODE */
+.modos { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:8px; }
+.modo-btn { padding:14px 4px; border:2px solid var(--gris-b); border-radius:8px; background:#fff;
+  text-align:center; cursor:pointer; font-size:.75rem; font-weight:600; color:#666; transition:.15s; }
+.modo-btn.active { border-color:var(--verde); color:var(--verde); background:#e8f5e9; }
+.modo-btn .icon { font-size:1.6rem; display:block; margin-bottom:4px; }
+
+/* LISTA PESOS */
+.pesos-area { min-height:80px; max-height:200px; overflow-y:auto; padding:10px; background:var(--gris-f);
+  border-radius:8px; margin-top:8px; font-size:.9rem; }
+.peso-chip { display:inline-block; background:#e8f5e9; border:1px solid #a5d6a7; border-radius:16px;
+  padding:4px 10px; margin:3px; font-size:.85rem; cursor:pointer; }
+.peso-chip.fuera { background:#ffebee; border-color:#ef9a9a; }
+.peso-chip:hover::after { content:'✕'; margin-left:4px; color:#c62828; }
+
+/* INPUT MANUAL */
+#peso-input-wrap { display:flex; gap:8px; margin-top:8px; }
+#peso-input-wrap input { flex:1; }
+#peso-input-wrap button { width:auto; padding:11px 16px; margin:0; }
+
+/* VOZ */
+.voz-estado { text-align:center; padding:16px; font-size:.9rem; color:#666; }
+.voz-btn-big { width:80px; height:80px; border-radius:50%; border:none; font-size:2rem; margin:8px auto; display:block; cursor:pointer; transition:.2s; }
+.voz-btn-big.grabando { background:#c62828; color:#fff; animation:pulso .8s infinite; }
+.voz-btn-big.idle { background:var(--gris-b); color:#555; }
+@keyframes pulso { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
+
+/* FOTO */
+.foto-wrap { display:flex; flex-direction:column; align-items:center; gap:10px; margin-top:8px; }
+#foto-preview { max-width:100%; border-radius:8px; display:none; max-height:200px; object-fit:contain; }
+#foto-input { display:none; }
+
+/* STATS BADGE */
+.stats-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-top:12px; }
+.stat-box { background:var(--gris-f); border-radius:8px; padding:12px; text-align:center; }
+.stat-box .val { font-size:1.4rem; font-weight:700; }
+.stat-box .lbl { font-size:.72rem; color:#777; margin-top:2px; }
+.stat-box.verde .val { color:var(--verde); }
+.stat-box.amarillo .val { color:var(--amarillo); }
+.stat-box.rojo .val { color:var(--rojo); }
+
+/* SEMÁFORO */
+.semaforo { display:inline-block; width:12px; height:12px; border-radius:50%; margin-right:6px; }
+.sem-verde  { background:var(--verde-c); }
+.sem-amarillo { background:var(--amarillo); }
+.sem-rojo   { background:var(--rojo); }
+
+/* TABLA RESUMEN */
+.tabla-resumen { width:100%; border-collapse:collapse; font-size:.82rem; }
+.tabla-resumen th { background:var(--verde); color:#fff; padding:8px 6px; text-align:center; }
+.tabla-resumen td { padding:7px 6px; text-align:center; border-bottom:1px solid var(--gris-b); }
+.tabla-resumen tr:nth-child(even) td { background:var(--gris-f); }
+
+/* GRÁFICO */
+#grafico-canvas { width:100%; border-radius:8px; }
+
+/* SPINNER */
+.spinner { display:inline-block; width:20px; height:20px; border:3px solid rgba(255,255,255,.3); border-top-color:#fff; border-radius:50%; animation:spin .7s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
+
+/* TOAST */
+#toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:#323232; color:#fff;
+  padding:10px 20px; border-radius:20px; font-size:.9rem; z-index:999; opacity:0; transition:.3s; pointer-events:none; }
+#toast.show { opacity:1; }
+
+/* ALERTA */
+.alerta { padding:10px 14px; border-radius:8px; font-size:.85rem; margin-top:10px; }
+.alerta-info    { background:#e3f2fd; color:#1565c0; }
+.alerta-ok      { background:#e8f5e9; color:#2e7d32; }
+.alerta-warning { background:#fff8e1; color:#f57f17; }
+.alerta-error   { background:#ffebee; color:#c62828; }
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <span id="nav-back" class="back-btn" onclick="irAtras()" style="display:none">&#8592;</span>
+  <h1 id="nav-titulo">Pesaje Pollitas</h1>
+</div>
+
+<div class="tabs" id="tabs">
+  <div class="tab active" onclick="irTab('registro')">📋 Registro</div>
+  <div class="tab" onclick="irTab('resumen')">📊 Historial</div>
+</div>
+
+<!-- ══ TAB REGISTRO ════════════════════════════════════ -->
+<div class="page active" id="page-registro">
+
+  <!-- SELECCIÓN LOTE + SEMANA -->
+  <div class="card">
+    <h3>Lote y semana</h3>
+    <label>Lote
+      <select id="sel-lote" onchange="onLoteChange()">
+        <option value="">— cargando —</option>
+      </select>
+    </label>
+    <label style="margin-top:10px">Semana de vida
+      <select id="sel-semana">
+        <option value="">— seleccionar —</option>
+      </select>
+    </label>
+    <label style="margin-top:10px">Fecha de pesaje
+      <input type="date" id="fecha-pesaje">
+    </label>
+  </div>
+
+  <!-- MODO INGRESO -->
+  <div class="card">
+    <h3>Método de ingreso</h3>
+    <div class="modos">
+      <div class="modo-btn active" id="modo-manual" onclick="setModo('manual')">
+        <span class="icon">⌨️</span>Manual
+      </div>
+      <div class="modo-btn" id="modo-voz" onclick="setModo('voz')">
+        <span class="icon">🎤</span>Voz
+      </div>
+      <div class="modo-btn" id="modo-foto" onclick="setModo('foto')">
+        <span class="icon">📷</span>Foto
+      </div>
+    </div>
+
+    <!-- MANUAL -->
+    <div id="panel-manual">
+      <div id="peso-input-wrap">
+        <input type="number" id="peso-input" placeholder="Ej: 1.250 (kg)" step="0.001" min="0.01" max="5"
+          onkeydown="if(event.key==='Enter')agregarPeso()">
+        <button class="btn btn-verde" onclick="agregarPeso()" style="width:auto;padding:0 18px;margin:0">+</button>
+      </div>
+      <p style="font-size:.75rem;color:#999;margin-top:4px">Ingresa en kg (ej: 1.25) o en gramos (ej: 1250 → se convierte)</p>
+    </div>
+
+    <!-- VOZ -->
+    <div id="panel-voz" style="display:none">
+      <div class="voz-estado">
+        <button class="voz-btn-big idle" id="voz-btn" onclick="toggleVoz()">🎤</button>
+        <p id="voz-texto">Pulsa para dictar pesos</p>
+        <p style="font-size:.75rem;color:#aaa;margin-top:4px">Di números uno por uno: "uno punto dos cinco"</p>
+      </div>
+    </div>
+
+    <!-- FOTO -->
+    <div id="panel-foto" style="display:none">
+      <div class="foto-wrap">
+        <img id="foto-preview" alt="Vista previa">
+        <input type="file" id="foto-input" accept="image/*" capture="environment" onchange="onFotoSelected()">
+        <button class="btn btn-azul" onclick="document.getElementById('foto-input').click()">📷 Tomar / elegir foto</button>
+        <button class="btn btn-verde" id="btn-procesar-foto" onclick="procesarFoto()" style="display:none">
+          🔍 Extraer pesos con IA
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LISTA PESOS -->
+  <div class="card" id="card-pesos" style="display:none">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <h3>Pesos ingresados (<span id="n-pesos">0</span> aves)</h3>
+      <button class="btn btn-rojo" onclick="limpiarPesos()" style="width:auto;padding:6px 12px;margin:0;font-size:.8rem">Limpiar</button>
+    </div>
+    <div class="pesos-area" id="pesos-area"></div>
+
+    <!-- PREVIEW STATS -->
+    <div id="preview-stats" style="display:none">
+      <div class="stats-grid">
+        <div class="stat-box" id="sb-prom">
+          <div class="val" id="stat-prom">—</div>
+          <div class="lbl">Promedio kg</div>
+        </div>
+        <div class="stat-box" id="sb-unif">
+          <div class="val" id="stat-unif">—</div>
+          <div class="lbl">Uniformidad</div>
+        </div>
+        <div class="stat-box" id="sb-cv">
+          <div class="val" id="stat-cv">—</div>
+          <div class="lbl">CV%</div>
+        </div>
+        <div class="stat-box" id="sb-fuera">
+          <div class="val" id="stat-fuera">—</div>
+          <div class="lbl">Fuera de rango</div>
+        </div>
+      </div>
+      <div id="alerta-curva" class="alerta" style="display:none"></div>
+    </div>
+  </div>
+
+  <!-- GUARDAR -->
+  <button class="btn btn-verde" id="btn-guardar" onclick="guardarPesaje()" disabled>
+    💾 Guardar pesaje
+  </button>
+  <div style="height:24px"></div>
+</div>
+
+<!-- ══ TAB HISTORIAL ══════════════════════════════════ -->
+<div class="page" id="page-resumen">
+  <div class="card">
+    <h3>Lote</h3>
+    <select id="sel-lote-hist" onchange="cargarResumen()">
+      <option value="">— seleccionar —</option>
+    </select>
+  </div>
+
+  <div id="resumen-contenido">
+    <div class="alerta alerta-info">Selecciona un lote para ver el historial</div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ══ ESTADO ════════════════════════════════════════════════════
+const WEB_APP_URL = '<?= ScriptApp.getService().getUrl() ?>';
+let pesos = [];
+let modoActual = 'manual';
+let lotes = [];
+let curva = {};
+let reconocimiento = null;
+let grabando = false;
+
+// ══ INIT ══════════════════════════════════════════════════════
+window.onload = async () => {
+  document.getElementById('fecha-pesaje').valueAsDate = new Date();
+  for (let i=1; i<=19; i++) {
+    const o = document.createElement('option');
+    o.value = i; o.textContent = `Semana ${i}`;
+    document.getElementById('sel-semana').appendChild(o);
+  }
+  await cargarLotes();
+  iniciarVoz();
+};
+
+async function cargarLotes() {
+  try {
+    const r = await jsonpGet({ action:'getLotes' });
+    lotes = r.ok ? r.data : [];
+    curva = (await jsonpGet({ action:'getCurva' })).data || {};
+    poblarSelectLotes();
+  } catch(e) { toast('Error cargando lotes'); }
+}
+
+function poblarSelectLotes() {
+  ['sel-lote','sel-lote-hist'].forEach(id => {
+    const s = document.getElementById(id);
+    s.innerHTML = '<option value="">— seleccionar —</option>';
+    lotes.filter(l=>l.activo).forEach(l => {
+      const o = document.createElement('option');
+      o.value = l.id; o.textContent = `${l.id} – ${l.nombre}`;
+      s.appendChild(o);
+    });
+  });
+}
+
+function onLoteChange() {
+  const id = document.getElementById('sel-lote').value;
+  const lote = lotes.find(l => l.id === id);
+  if (lote && lote.fechaNac) {
+    const fn = new Date(lote.fechaNac);
+    const hoy = new Date();
+    const sem = Math.floor((hoy - fn) / (7*24*3600*1000));
+    const s = document.getElementById('sel-semana');
+    for (let o of s.options) if (o.value == sem) { s.value = sem; break; }
+  }
+}
+
+// ══ TABS ══════════════════════════════════════════════════════
+function irTab(tab) {
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', ['registro','resumen'][i]===tab));
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-'+tab).classList.add('active');
+  if (tab === 'resumen') cargarResumen();
+}
+
+function irAtras() { /* reservado */ }
+
+// ══ MODO INGRESO ══════════════════════════════════════════════
+function setModo(m) {
+  modoActual = m;
+  ['manual','voz','foto'].forEach(x => {
+    document.getElementById('modo-'+x).classList.toggle('active', x===m);
+    document.getElementById('panel-'+x).style.display = x===m ? 'block' : 'none';
+  });
+}
+
+// ══ PESOS – MANUAL ════════════════════════════════════════════
+function agregarPeso() {
+  let v = parseFloat(document.getElementById('peso-input').value);
+  if (!v || v <= 0) return;
+  if (v > 10) v = v / 1000; // gramos → kg
+  agregarPesoVal(v);
+  document.getElementById('peso-input').value = '';
+  document.getElementById('peso-input').focus();
+}
+
+function agregarPesoVal(v) {
+  pesos.push(Math.round(v * 1000) / 1000);
+  renderPesos();
+}
+
+function eliminarPeso(i) {
+  pesos.splice(i,1);
+  renderPesos();
+}
+
+function limpiarPesos() {
+  if (!pesos.length) return;
+  if (confirm(`¿Eliminar los ${pesos.length} pesos ingresados?`)) {
+    pesos = [];
+    renderPesos();
+  }
+}
+
+function renderPesos() {
+  const n = pesos.length;
+  document.getElementById('card-pesos').style.display = n ? 'block' : 'none';
+  document.getElementById('btn-guardar').disabled = !n || !document.getElementById('sel-lote').value;
+  document.getElementById('n-pesos').textContent = n;
+
+  // calcular stats para semáforo
+  const sem = parseInt(document.getElementById('sel-semana').value) || 0;
+  const refCurva = curva[sem] || {};
+  const prom = n ? pesos.reduce((a,b)=>a+b,0)/n : 0;
+  const rangoMin = prom * 0.9, rangoMax = prom * 1.1;
+  const fuera = pesos.filter(v => v < rangoMin || v > rangoMax).length;
+
+  const area = document.getElementById('pesos-area');
+  area.innerHTML = pesos.map((v,i) => {
+    const out = v < rangoMin || v > rangoMax;
+    return `<span class="peso-chip${out?' fuera':''}" onclick="eliminarPeso(${i})">${v.toFixed(3)}</span>`;
+  }).join('');
+
+  if (n >= 3) {
+    const sd = Math.sqrt(pesos.map(v=>Math.pow(v-prom,2)).reduce((a,b)=>a+b,0)/n);
+    const cv = prom > 0 ? sd/prom : 0;
+    const unif = (n-fuera)/n;
+
+    document.getElementById('preview-stats').style.display = 'block';
+    document.getElementById('stat-prom').textContent = prom.toFixed(3);
+    document.getElementById('stat-unif').textContent = (unif*100).toFixed(1)+'%';
+    document.getElementById('stat-cv').textContent   = (cv*100).toFixed(1)+'%';
+    document.getElementById('stat-fuera').textContent = fuera;
+
+    // color uniformidad
+    const unifMin = refCurva.unif || 0.85;
+    setSemColor('sb-unif', unif >= unifMin ? 'verde' : unif >= unifMin-0.1 ? 'amarillo' : 'rojo');
+    setSemColor('sb-cv',   cv <= 0.10 ? 'verde' : cv <= 0.15 ? 'amarillo' : 'rojo');
+
+    // alerta vs curva
+    if (refCurva.prom) {
+      const diff = ((prom - refCurva.prom) / refCurva.prom * 100);
+      const alertaEl = document.getElementById('alerta-curva');
+      alertaEl.style.display = 'block';
+      if (Math.abs(diff) <= 5) {
+        alertaEl.className = 'alerta alerta-ok';
+        alertaEl.textContent = `✅ Peso dentro de curva (esperado: ${refCurva.prom.toFixed(3)} kg)`;
+      } else if (diff < 0) {
+        alertaEl.className = 'alerta alerta-warning';
+        alertaEl.textContent = `⚠️ Peso ${Math.abs(diff).toFixed(1)}% bajo curva (esperado: ${refCurva.prom.toFixed(3)} kg)`;
+      } else {
+        alertaEl.className = 'alerta alerta-info';
+        alertaEl.textContent = `📈 Peso ${diff.toFixed(1)}% sobre curva (esperado: ${refCurva.prom.toFixed(3)} kg)`;
+      }
+    }
+  } else {
+    document.getElementById('preview-stats').style.display = 'none';
+  }
+}
+
+function setSemColor(id, color) {
+  const el = document.getElementById(id);
+  el.className = `stat-box ${color}`;
+}
+
+// ══ VOZ ═══════════════════════════════════════════════════════
+function iniciarVoz() {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    document.getElementById('voz-texto').textContent = '⚠️ Reconocimiento de voz no disponible en este navegador';
+    document.getElementById('voz-btn').disabled = true;
+    return;
+  }
+  reconocimiento = new SpeechRecognition();
+  reconocimiento.lang = 'es-CL';
+  reconocimiento.continuous = true;
+  reconocimiento.interimResults = false;
+
+  reconocimiento.onresult = (e) => {
+    const texto = e.results[e.results.length-1][0].transcript.trim();
+    document.getElementById('voz-texto').textContent = `"${texto}"`;
+    // convertir texto → número (maneja "uno punto dos cinco", "1.25", "1,25", "1250")
+    const num = textoANumero(texto);
+    if (num) {
+      agregarPesoVal(num);
+      toast(`✅ ${num.toFixed(3)} kg agregado`);
+    } else {
+      toast(`No reconocí un peso en: "${texto}"`);
+    }
+  };
+
+  reconocimiento.onerror = (e) => {
+    if (e.error !== 'aborted') toast('Error de micrófono: ' + e.error);
+    grabando = false;
+    actualizarUIVoz();
+  };
+
+  reconocimiento.onend = () => {
+    if (grabando) reconocimiento.start(); // continuar hasta que el usuario detenga
+  };
+}
+
+function toggleVoz() {
+  if (!reconocimiento) return;
+  grabando = !grabando;
+  if (grabando) {
+    reconocimiento.start();
+    document.getElementById('voz-texto').textContent = '🔴 Escuchando… di un peso';
+  } else {
+    reconocimiento.abort();
+    document.getElementById('voz-texto').textContent = 'Pulsa para dictar pesos';
+  }
+  actualizarUIVoz();
+}
+
+function actualizarUIVoz() {
+  const btn = document.getElementById('voz-btn');
+  btn.className = `voz-btn-big ${grabando ? 'grabando' : 'idle'}`;
+  btn.textContent = grabando ? '⏹' : '🎤';
+}
+
+function textoANumero(texto) {
+  // limpiar y normalizar
+  let t = texto.toLowerCase()
+    .replace(/\bcoma\b/g,'.').replace(/,/g,'.')
+    .replace(/\bpunto\b/g,'.').replace(/\by\b/g,'.')
+    .replace(/\bun\b/,'1').replace(/\buno\b/,'1').replace(/\bdos\b/,'2')
+    .replace(/\btres\b/,'3').replace(/\bcuatro\b/,'4').replace(/\bcinco\b/,'5')
+    .replace(/\bseis\b/,'6').replace(/\bsiete\b/,'7').replace(/\bocho\b/,'8')
+    .replace(/\bnueve\b/,'9').replace(/\bcero\b/,'0');
+  // intentar parsear número
+  const match = t.replace(/[^\d.]/g,'').match(/\d+\.?\d*/);
+  if (!match) return null;
+  let v = parseFloat(match[0]);
+  if (isNaN(v) || v <= 0) return null;
+  if (v > 10) v = v / 1000; // gramos
+  if (v < 0.05 || v > 5) return null;
+  return Math.round(v * 1000) / 1000;
+}
+
+// ══ FOTO / OCR ════════════════════════════════════════════════
+function onFotoSelected() {
+  const file = document.getElementById('foto-input').files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = document.getElementById('foto-preview');
+    img.src = e.target.result;
+    img.style.display = 'block';
+    document.getElementById('btn-procesar-foto').style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+}
+
+async function procesarFoto() {
+  const btn = document.getElementById('btn-procesar-foto');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Analizando…';
+
+  try {
+    const src = document.getElementById('foto-preview').src;
+    const base64 = src.split(',')[1];
+
+    const resp = await fetch(WEB_APP_URL, {
+      method: 'POST',
+      body: JSON.stringify({ action:'ocr', imagen: base64 })
+    });
+    const data = await resp.json();
+
+    if (data.ok && data.pesos && data.pesos.length) {
+      data.pesos.forEach(v => agregarPesoVal(v));
+      toast(`✅ ${data.pesos.length} pesos extraídos de la foto`);
+    } else {
+      toast('No se encontraron pesos en la foto');
+    }
+  } catch(e) {
+    toast('Error procesando foto: ' + e.message);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '🔍 Extraer pesos con IA';
+  }
+}
+
+// ══ GUARDAR ═══════════════════════════════════════════════════
+async function guardarPesaje() {
+  const lote   = document.getElementById('sel-lote').value;
+  const semana = document.getElementById('sel-semana').value;
+  const fecha  = document.getElementById('fecha-pesaje').value;
+
+  if (!lote || !semana || !fecha) { toast('Completa lote, semana y fecha'); return; }
+  if (!pesos.length) { toast('Ingresa al menos un peso'); return; }
+
+  const btn = document.getElementById('btn-guardar');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Guardando…';
+
+  try {
+    const resp = await fetch(WEB_APP_URL, {
+      method: 'POST',
+      body: JSON.stringify({ action:'guardarPesaje', lote, semana:parseInt(semana), fecha, pesos, metodo:modoActual })
+    });
+    const data = await resp.json();
+
+    if (data.ok) {
+      toast(`✅ Pesaje guardado — ${pesos.length} aves`);
+      mostrarResultadoGuardado(data.stats, data.curva, parseInt(semana));
+      pesos = [];
+      renderPesos();
+    } else {
+      toast('Error: ' + data.error);
+    }
+  } catch(e) {
+    toast('Error de conexión');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '💾 Guardar pesaje';
+  }
+}
+
+function mostrarResultadoGuardado(stats, curvaRef, sem) {
+  const unif  = (stats.uniformidad * 100).toFixed(1);
+  const cv    = (stats.cv * 100).toFixed(1);
+  const diff  = curvaRef && curvaRef.prom ? ((stats.promedio - curvaRef.prom) / curvaRef.prom * 100).toFixed(1) : null;
+  const unifMin = curvaRef && curvaRef.unif ? (curvaRef.unif * 100).toFixed(0) : 85;
+
+  const tipo = parseFloat(unif) >= parseFloat(unifMin) ? 'alerta-ok' : parseFloat(unif) >= parseFloat(unifMin)-10 ? 'alerta-warning' : 'alerta-error';
+  const msj  = `Semana ${sem}: ${stats.n} aves — Promedio: ${stats.promedio} kg — Unif: ${unif}% — CV: ${cv}%${diff ? ` — Curva: ${diff>0?'+':''}${diff}%` : ''}`;
+
+  const d = document.createElement('div');
+  d.className = `alerta ${tipo}`;
+  d.textContent = msj;
+  document.getElementById('page-registro').prepend(d);
+  setTimeout(() => d.remove(), 8000);
+}
+
+// ══ HISTORIAL ═════════════════════════════════════════════════
+async function cargarResumen() {
+  const lote = document.getElementById('sel-lote-hist').value;
+  if (!lote) return;
+
+  document.getElementById('resumen-contenido').innerHTML = '<div class="alerta alerta-info">Cargando…</div>';
+
+  try {
+    const data = await jsonpGet({ action:'getResumen', lote });
+    if (!data.ok || !data.data.length) {
+      document.getElementById('resumen-contenido').innerHTML = '<div class="alerta alerta-info">Sin registros para este lote</div>';
+      return;
+    }
+    renderResumen(data.data, data.curva);
+  } catch(e) {
+    document.getElementById('resumen-contenido').innerHTML = '<div class="alerta alerta-error">Error cargando datos</div>';
+  }
+}
+
+function renderResumen(registros, curvaRef) {
+  const filas = registros.map(r => {
+    const unif  = (r.uniformidad * 100).toFixed(1);
+    const cv    = (r.cv * 100).toFixed(1);
+    const ref   = curvaRef[r.semana];
+    const diff  = ref ? ((r.promedio - ref.prom) / ref.prom * 100).toFixed(1) : '—';
+    const unifMin = ref ? ref.unif * 100 : 85;
+    const color = parseFloat(unif) >= unifMin ? 'sem-verde' : parseFloat(unif) >= unifMin-10 ? 'sem-amarillo' : 'sem-rojo';
+
+    return `<tr>
+      <td>${r.semana}</td>
+      <td>${r.promedio.toFixed(3)}</td>
+      <td>${ref ? ref.prom.toFixed(3) : '—'}</td>
+      <td>${diff !== '—' ? (parseFloat(diff)>=0?'+':'')+diff+'%' : '—'}</td>
+      <td><span class="semaforo ${color}"></span>${unif}%</td>
+      <td>${cv}%</td>
+      <td>${r.nAves}</td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('resumen-contenido').innerHTML = `
+    <div class="card">
+      <h3>Historial de pesajes</h3>
+      <div style="overflow-x:auto">
+        <table class="tabla-resumen">
+          <thead><tr>
+            <th>Sem</th><th>Prom kg</th><th>Curva</th><th>Dif</th><th>Unif</th><th>CV%</th><th>N</th>
+          </tr></thead>
+          <tbody>${filas}</tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Uniformidad vs curva esperada</h3>
+      <canvas id="grafico-canvas" height="220"></canvas>
+    </div>`;
+
+  renderGrafico(registros, curvaRef);
+}
+
+function renderGrafico(registros, curvaRef) {
+  const canvas = document.getElementById('grafico-canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = canvas.offsetWidth * window.devicePixelRatio;
+  canvas.height = 220 * window.devicePixelRatio;
+  ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+  const W = canvas.offsetWidth, H = 220;
+
+  const pad = { t:20, r:10, b:40, l:52 };
+  const iW = W - pad.l - pad.r;
+  const iH = H - pad.t - pad.b;
+
+  const semanas = registros.map(r => r.semana);
+  const minS = Math.min(...semanas) - 0.5;
+  const maxS = Math.max(...semanas) + 0.5;
+
+  const xP = s => pad.l + (s - minS) / (maxS - minS) * iW;
+  const yP = v => pad.t + (1 - (v - 0.5) / 0.6) * iH; // 50% a 110%
+
+  // fondo
+  ctx.fillStyle = '#fafafa';
+  ctx.fillRect(0, 0, W, H);
+
+  // grids
+  ctx.strokeStyle = '#e0e0e0'; ctx.lineWidth = 1;
+  [60, 70, 80, 90, 100].forEach(v => {
+    const y = yP(v/100);
+    ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(W-pad.r, y); ctx.stroke();
+    ctx.fillStyle = '#999'; ctx.font = '10px system-ui';
+    ctx.fillText(v+'%', 4, y+4);
+  });
+
+  // curva esperada (línea punteada)
+  const semsCurva = Object.keys(curvaRef).map(Number).filter(s => s >= minS && s <= maxS).sort((a,b)=>a-b);
+  if (semsCurva.length) {
+    ctx.strokeStyle = '#aaa'; ctx.lineWidth = 1.5; ctx.setLineDash([4,4]);
+    ctx.beginPath();
+    semsCurva.forEach((s,i) => {
+      const y = yP(curvaRef[s].unif);
+      i===0 ? ctx.moveTo(xP(s),y) : ctx.lineTo(xP(s),y);
+    });
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  // uniformidad real
+  ctx.strokeStyle = '#2e7d32'; ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  registros.forEach((r,i) => {
+    const x = xP(r.semana), y = yP(r.uniformidad);
+    i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+  });
+  ctx.stroke();
+
+  // puntos
+  registros.forEach(r => {
+    const x = xP(r.semana), y = yP(r.uniformidad);
+    const ref = curvaRef[r.semana];
+    const ok  = !ref || r.uniformidad >= ref.unif;
+    ctx.fillStyle = ok ? '#2e7d32' : '#c62828';
+    ctx.beginPath(); ctx.arc(x, y, 4, 0, Math.PI*2); ctx.fill();
+  });
+
+  // eje X
+  ctx.fillStyle = '#555'; ctx.font = '10px system-ui'; ctx.textAlign = 'center';
+  semanas.forEach(s => {
+    ctx.fillText('S'+s, xP(s), H - pad.b + 16);
+  });
+  ctx.fillStyle = '#888'; ctx.font = '9px system-ui';
+  ctx.fillText('— Esperada', W-80, pad.t+10);
+  ctx.fillStyle = '#2e7d32';
+  ctx.fillText('— Real', W-30, pad.t+10);
+}
+
+// ══ HELPERS ═══════════════════════════════════════════════════
+async function jsonpGet(params) {
+  const qs = Object.entries(params).map(([k,v])=>`${k}=${encodeURIComponent(v)}`).join('&');
+  const r = await fetch(`${WEB_APP_URL}?${qs}`);
+  return r.json();
+}
+
+function toast(msg, dur=2800) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), dur);
+}
+</script>
+</body>
+</html>

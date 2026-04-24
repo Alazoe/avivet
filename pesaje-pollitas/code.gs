@@ -1,0 +1,228 @@
+// ── CONFIGURACIÓN ──────────────────────────────────────────────
+const SHEET_ID = ''; // Completar con ID del Google Sheet
+const ANTHROPIC_API_KEY = ''; // Completar con API key de Anthropic
+
+// Curva estándar Hy-Line Brown (semana → { min, max, promedio, uniformidad_min })
+const CURVA_HYLINE = {
+  1:  { min:0.060, max:0.070, prom:0.065, unif:0.85 },
+  2:  { min:0.120, max:0.130, prom:0.125, unif:0.85 },
+  3:  { min:0.180, max:0.200, prom:0.190, unif:0.85 },
+  4:  { min:0.260, max:0.290, prom:0.275, unif:0.80 },
+  5:  { min:0.350, max:0.380, prom:0.365, unif:0.80 },
+  6:  { min:0.460, max:0.480, prom:0.470, unif:0.80 },
+  7:  { min:0.550, max:0.590, prom:0.570, unif:0.85 },
+  8:  { min:0.660, max:0.710, prom:0.685, unif:0.85 },
+  9:  { min:0.770, max:0.820, prom:0.795, unif:0.85 },
+  10: { min:0.870, max:0.930, prom:0.900, unif:0.85 },
+  11: { min:0.980, max:1.040, prom:1.010, unif:0.85 },
+  12: { min:1.070, max:1.130, prom:1.100, unif:0.85 },
+  13: { min:1.150, max:1.220, prom:1.185, unif:0.85 },
+  14: { min:1.220, max:1.290, prom:1.255, unif:0.85 },
+  15: { min:1.290, max:1.360, prom:1.325, unif:0.85 },
+  16: { min:1.360, max:1.430, prom:1.395, unif:0.85 },
+  17: { min:1.420, max:1.500, prom:1.460, unif:0.80 },
+  18: { min:1.480, max:1.560, prom:1.520, unif:0.80 },
+  19: { min:1.530, max:1.620, prom:1.575, unif:0.80 },
+};
+
+// ── ROUTER ─────────────────────────────────────────────────────
+function doGet(e) {
+  const action = e && e.parameter && e.parameter.action;
+  if (action === 'getLotes')       return jsonResp(getLotes());
+  if (action === 'getResumen')     return jsonResp(getResumen(e.parameter.lote));
+  if (action === 'getCurva')       return jsonResp({ ok:true, data: CURVA_HYLINE });
+  const html = HtmlService.createHtmlOutputFromFile('index')
+    .setTitle('Pesaje Pollitas')
+    .addMetaTag('viewport','width=device-width, initial-scale=1');
+  return html;
+}
+
+function doPost(e) {
+  try {
+    const body = JSON.parse(e.postData.contents);
+    if (body.action === 'guardarPesaje')  return jsonResp(guardarPesaje(body));
+    if (body.action === 'ocr')            return jsonResp(ocr(body.imagen));
+    return jsonResp({ ok:false, error:'Acción desconocida' });
+  } catch(err) {
+    return jsonResp({ ok:false, error: err.toString() });
+  }
+}
+
+function jsonResp(obj) {
+  return ContentService
+    .createTextOutput(JSON.stringify(obj))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+// ── LOTES ──────────────────────────────────────────────────────
+function getLotes() {
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  const ws = ss.getSheetByName('CONFIGURACIÓN');
+  if (!ws) return { ok:false, error:'Hoja CONFIGURACIÓN no encontrada' };
+  const rows = ws.getDataRange().getValues().slice(1); // salta encabezado
+  const lotes = rows
+    .filter(r => r[0] && r[1]) // lote, fecha_nacimiento
+    .map(r => ({
+      id:    String(r[0]).trim(),
+      nombre: String(r[1]).trim(),
+      fechaNac: r[2] ? Utilities.formatDate(new Date(r[2]), 'America/Santiago', 'yyyy-MM-dd') : '',
+      nAves: r[3] || '',
+      activo: r[4] !== false
+    }));
+  return { ok:true, data: lotes };
+}
+
+// ── GUARDAR PESAJE ─────────────────────────────────────────────
+function guardarPesaje(body) {
+  const { lote, semana, fecha, pesos, metodo } = body;
+  if (!lote || !semana || !pesos || !pesos.length)
+    return { ok:false, error:'Datos incompletos' };
+
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  let ws = ss.getSheetByName('PESAJES');
+  if (!ws) {
+    ws = ss.insertSheet('PESAJES');
+    ws.appendRow(['lote','semana','fecha','n_aves','promedio_kg','cv_pct','uniformidad_pct','rango_min','rango_max','fuera_rango','metodo','pesos_raw','timestamp']);
+    ws.setFrozenRows(1);
+  }
+
+  // Calcular estadísticas
+  const stats = calcularStats(pesos);
+  const curva = CURVA_HYLINE[semana] || {};
+
+  ws.appendRow([
+    lote,
+    semana,
+    fecha,
+    stats.n,
+    stats.promedio,
+    stats.cv,
+    stats.uniformidad,
+    curva.min || '',
+    curva.max || '',
+    stats.fueraRango,
+    metodo || 'manual',
+    pesos.join(','),
+    new Date()
+  ]);
+
+  return { ok:true, stats, curva };
+}
+
+// ── RESUMEN POR LOTE ───────────────────────────────────────────
+function getResumen(lote) {
+  if (!lote) return { ok:false, error:'Lote requerido' };
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  const ws = ss.getSheetByName('PESAJES');
+  if (!ws) return { ok:true, data: [] };
+  const rows = ws.getDataRange().getValues().slice(1);
+  const data = rows
+    .filter(r => String(r[0]) === String(lote))
+    .map(r => ({
+      semana:       r[1],
+      fecha:        r[2] ? Utilities.formatDate(new Date(r[2]), 'America/Santiago', 'yyyy-MM-dd') : '',
+      nAves:        r[3],
+      promedio:     r[4],
+      cv:           r[5],
+      uniformidad:  r[6],
+      rangoMin:     r[7],
+      rangoMax:     r[8],
+      fueraRango:   r[9],
+      metodo:       r[10]
+    }))
+    .sort((a,b) => a.semana - b.semana);
+  return { ok:true, data, curva: CURVA_HYLINE };
+}
+
+// ── OCR CON CLAUDE VISION ──────────────────────────────────────
+function ocr(base64Image) {
+  if (!ANTHROPIC_API_KEY) return { ok:false, error:'API key no configurada' };
+  const payload = {
+    model: 'claude-haiku-4-5-20251001',
+    max_tokens: 512,
+    messages: [{
+      role: 'user',
+      content: [
+        {
+          type: 'image',
+          source: { type: 'base64', media_type: 'image/jpeg', data: base64Image }
+        },
+        {
+          type: 'text',
+          text: 'Esta es una foto de un papel con pesos de aves anotados a mano. Extrae todos los valores numéricos que correspondan a pesos (en gramos o kg). Devuelve SOLO un array JSON con los números, sin texto adicional. Si los valores están en gramos (>100), conviértelos a kg dividiendo por 1000. Ejemplo de respuesta: [1.23, 1.45, 0.98]'
+        }
+      ]
+    }]
+  };
+
+  const resp = UrlFetchApp.fetch('https://api.anthropic.com/v1/messages', {
+    method: 'post',
+    headers: {
+      'x-api-key': ANTHROPIC_API_KEY,
+      'anthropic-version': '2023-06-01',
+      'content-type': 'application/json'
+    },
+    payload: JSON.stringify(payload),
+    muteHttpExceptions: true
+  });
+
+  const result = JSON.parse(resp.getContentText());
+  if (result.error) return { ok:false, error: result.error.message };
+
+  try {
+    const text = result.content[0].text.trim();
+    const pesos = JSON.parse(text);
+    if (!Array.isArray(pesos)) throw new Error('No es array');
+    return { ok:true, pesos };
+  } catch(e) {
+    return { ok:false, error:'No se pudo extraer pesos de la imagen' };
+  }
+}
+
+// ── ESTADÍSTICAS ───────────────────────────────────────────────
+function calcularStats(pesos) {
+  const vals = pesos.map(Number).filter(v => v > 0);
+  const n = vals.length;
+  if (!n) return { n:0, promedio:0, cv:0, uniformidad:0, fueraRango:0 };
+
+  const prom = vals.reduce((a,b) => a+b, 0) / n;
+  const sd   = Math.sqrt(vals.map(v => Math.pow(v-prom,2)).reduce((a,b)=>a+b,0) / n);
+  const cv   = prom > 0 ? sd / prom : 0;
+
+  const rangoMin = prom * 0.9;
+  const rangoMax = prom * 1.1;
+  const fuera    = vals.filter(v => v < rangoMin || v > rangoMax).length;
+  const unif     = (n - fuera) / n;
+
+  return {
+    n,
+    promedio: Math.round(prom * 1000) / 1000,
+    cv:       Math.round(cv * 10000) / 10000,
+    uniformidad: Math.round(unif * 10000) / 10000,
+    fueraRango: fuera
+  };
+}
+
+// ── INICIALIZAR SHEET ──────────────────────────────────────────
+function inicializarSheet() {
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+
+  // CONFIGURACIÓN
+  let cfg = ss.getSheetByName('CONFIGURACIÓN');
+  if (!cfg) {
+    cfg = ss.insertSheet('CONFIGURACIÓN');
+    cfg.appendRow(['id_lote','nombre_lote','fecha_nacimiento','n_aves_total','activo']);
+    cfg.appendRow(['L01','Lote 01','2026-01-01',10000,true]);
+    cfg.setFrozenRows(1);
+  }
+
+  // PESAJES
+  let pes = ss.getSheetByName('PESAJES');
+  if (!pes) {
+    pes = ss.insertSheet('PESAJES');
+    pes.appendRow(['lote','semana','fecha','n_aves','promedio_kg','cv_pct','uniformidad_pct','rango_min','rango_max','fuera_rango','metodo','pesos_raw','timestamp']);
+    pes.setFrozenRows(1);
+  }
+
+  return { ok:true, msg:'Sheet inicializado' };
+}
