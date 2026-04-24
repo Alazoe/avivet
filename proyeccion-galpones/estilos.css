@@ -384,6 +384,50 @@ body {
 }
 
 /* ============================================================
+   Infraestructura
+   ============================================================ */
+.infra-fichas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.infra-ficha {
+  background: var(--color-papel);
+  border: 1px solid var(--color-linea);
+  border-radius: 8px;
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+}
+.infra-ficha.destac {
+  border-color: var(--color-primario);
+  background: #fffbf0;
+}
+.infra-num {
+  font-family: var(--fuente-mono);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-texto);
+}
+.infra-num.ok    { color: #2d6a2d; }
+.infra-num.alerta { color: #b05000; }
+.infra-lbl {
+  font-size: 12px;
+  color: var(--color-tenue);
+  line-height: 1.4;
+}
+.infra-detalle {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--color-texto);
+}
+.infra-detalle p { margin: 0 0 10px; }
+
+/* ============================================================
    Producción anual
    ============================================================ */
 .anual-grid {

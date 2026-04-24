@@ -53,6 +53,7 @@ async function cargar() {
     pintarCronograma();
     pintarProduccion();
     pintarTransiciones();
+    pintarInfraestructura();
     pintarAnual();
     pintarTabla();
     poblarFiltros();
@@ -301,6 +302,82 @@ function pintarTransiciones() {
 
 function addWeeks(iso, w) {
   const d = new Date(iso); d.setDate(d.getDate()+w*7); return d.toISOString().slice(0,10);
+}
+
+// ============================================================
+// INFRAESTRUCTURA — cuántos galpones se necesitan para flujo continuo
+// ============================================================
+function pintarInfraestructura() {
+  const el = document.getElementById('infra-grid');
+  if (!el) return;
+
+  const filas = D.proyeccion_semanal;
+
+  // Eficiencia productiva real
+  const semsTotal = filas.length;
+  const semsProd  = filas.filter(f => f.total.huevos_dia > 0).length;
+  const semsVacio = semsTotal - semsProd;
+  const pctEfic   = Math.round(semsProd / semsTotal * 100);
+
+  // Parámetros del ciclo
+  const CRIANZA  = 18;
+  const POSTURA  = 82;
+  const LIMPIEZA = 2;
+  const CICLO    = CRIANZA + POSTURA + LIMPIEZA;  // 102
+  const BRECHA   = CRIANZA + LIMPIEZA;            // 20
+
+  // Detectar brechas reales en la proyección
+  const brechas = [];
+  let ini = null;
+  filas.forEach(f => {
+    const enBrecha = f.total.huevos_semana === 0 && IDS.some(id => ['crianza','no nacido'].includes(f[id].estado));
+    if (enBrecha && !ini) ini = f.fecha_lunes;
+    else if (!enBrecha && ini) { brechas.push({ini, fin: f.fecha_lunes}); ini = null; }
+  });
+  const nBrechas  = brechas.length;
+  const durMediaBrecha = nBrechas ? Math.round(semsVacio / nBrechas) : 0;
+
+  // Galpones adicionales mínimos: ceil(BRECHA / POSTURA) = 1
+  const galpAdic  = Math.ceil(BRECHA / POSTURA);
+  const galpTotal = 1 + galpAdic;
+
+  // Desfase óptimo: centro del rango válido [BRECHA, POSTURA]
+  const desfaseOpt = Math.round((BRECHA + POSTURA) / 2); // ~51 semanas
+  const L1         = D.galpones[0];
+  const fechaG2    = addWeeks(L1.fecha_nacimiento, desfaseOpt);
+
+  // Producción promedio en semanas productivas
+  const promDia = Math.round(
+    filas.filter(f => f.total.huevos_dia > 0).reduce((s,f) => s + f.total.huevos_dia, 0) / semsProd
+  );
+
+  el.innerHTML = `
+    <div class="infra-fichas">
+      <div class="infra-ficha">
+        <span class="infra-num ${pctEfic >= 85 ? 'ok' : 'alerta'}">${pctEfic}%</span>
+        <span class="infra-lbl">eficiencia productiva<br>1 galpón actual</span>
+      </div>
+      <div class="infra-ficha">
+        <span class="infra-num">${durMediaBrecha}</span>
+        <span class="infra-lbl">semanas sin producción<br>por cada transición</span>
+      </div>
+      <div class="infra-ficha">
+        <span class="infra-num">${nBrechas}</span>
+        <span class="infra-lbl">brechas detectadas<br>en 10 años</span>
+      </div>
+      <div class="infra-ficha destac">
+        <span class="infra-num" style="color:${COLOR_ACENTO}">+${galpAdic}</span>
+        <span class="infra-lbl">galpón adicional<br>para flujo continuo</span>
+      </div>
+    </div>
+    <div class="infra-detalle">
+      <p>Con <strong>1 galpón en régimen secuencial</strong>, la operación produce durante el ${pctEfic}% de las semanas del horizonte. Cada ${CICLO} semanas (≈ 2 años) hay una brecha de ~${BRECHA} semanas sin huevos: ${LIMPIEZA} de limpieza + ${CRIANZA} de crianza.</p>
+      <p>Para <strong>eliminar las brechas por completo</strong>, se necesita <strong>1 galpón adicional (${galpTotal} en total)</strong>. El segundo galpón ingresa pollitas con un desfase de <strong>~${desfaseOpt} semanas</strong> respecto al inicio del ciclo vigente. Con esa sincronización, cuando el primer galpón entra en crianza, el segundo está en plena postura.</p>
+      <p>Con 2 galpones desfasados, la producción oscila entre <strong>${NUM(promDia)} y ${NUM(promDia * 2)} huevos/día</strong> — nunca cae a cero.</p>
+    </div>
+    <div class="recomendacion">
+      <strong>Fecha ideal de entrada del segundo galpón:</strong> semana del ${FORMATO_FECHA(fechaG2)} — ${desfaseOpt} semanas (≈ ${Math.round(desfaseOpt/4.33)} meses) después del ingreso del primer lote (${L1.nombre}). En esa configuración, cuando L1 entre en descarte y L2 comience crianza, el segundo galpón cubre la producción sin interrupción.
+    </div>`;
 }
 
 // ============================================================

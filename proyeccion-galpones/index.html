@@ -84,28 +84,31 @@
   </section>
 
   <section id="valle" class="bloque alerta">
-    <div class="alerta-marca">⚠ Hallazgo crítico</div>
-    <h2>El valle de transición de junio–julio 2027</h2>
+    <div class="alerta-marca">⚠ Brechas de transición</div>
+    <h2>Períodos sin producción entre lotes</h2>
     <p class="bloque-desc">
-      Con ciclo de 100 semanas y desfases reales (G1↔G2 = 48 sem, G2↔G3 = 35 sem),
-      G1 y G3 nunca coinciden en postura: G1 descarta antes de que G3 inicie producción.
-      Esto genera un valle inevitable de 3–4 semanas durante la transición.
+      Con un solo galpón en régimen secuencial, cada ciclo de 102 semanas incluye
+      ~20 semanas sin huevos: 2 de limpieza post-descarte y 18 de crianza del lote siguiente.
+      A continuación se detallan todas las brechas del horizonte de 10 años.
     </p>
     <div class="grafico-wrap valle-detalle" id="valle-svg"></div>
     <div class="valle-stats" id="valle-stats"></div>
-    <div class="recomendacion">
-      <strong>Mitigación posible:</strong> adelantar 4–5 semanas la entrada del Galpón 3
-      (febrero → enero 2027) si se quiere reducir el valle. Eliminarlo por completo
-      requeriría un cuarto galpón con desfases de ~25 semanas — decisión de inversión,
-      no de cronograma.
-    </div>
+  </section>
+
+  <section id="infraestructura" class="bloque">
+    <h2>Infraestructura para flujo continuo</h2>
+    <p class="bloque-desc">
+      Análisis de cuántos galpones adicionales se necesitan para eliminar las brechas
+      y mantener producción ininterrumpida, con el desfase de entrada óptimo.
+    </p>
+    <div id="infra-grid"></div>
   </section>
 
   <section id="anual" class="bloque">
     <h2>Producción anual estimada</h2>
     <p class="bloque-desc">
-      Acumulado por año, expresado en huevos y docenas. A partir de 2028 la operación
-      entra en régimen estable con dos galpones siempre en postura.
+      Acumulado por año, expresado en huevos y docenas. Los años con brecha de transición
+      muestran producción reducida respecto al año plenamente productivo.
     </p>
     <div class="anual-grid" id="anual-grid"></div>
   </section>
