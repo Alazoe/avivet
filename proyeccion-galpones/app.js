@@ -334,7 +334,7 @@ function pintarInfraestructura() {
     if (enBrecha && !ini) ini = f.fecha_lunes;
     else if (!enBrecha && ini) { brechas.push({ini, fin: f.fecha_lunes}); ini = null; }
   });
-  const nBrechas  = brechas.length;
+  const nBrechas       = brechas.length;
   const durMediaBrecha = nBrechas ? Math.round(semsVacio / nBrechas) : 0;
 
   // Galpones adicionales mínimos: ceil(BRECHA / POSTURA) = 1
@@ -346,7 +346,7 @@ function pintarInfraestructura() {
   const L1         = D.galpones[0];
   const fechaG2    = addWeeks(L1.fecha_nacimiento, desfaseOpt);
 
-  // Producción promedio en semanas productivas
+  // Producción promedio en semanas productivas (G1 solo)
   const promDia = Math.round(
     filas.filter(f => f.total.huevos_dia > 0).reduce((s,f) => s + f.total.huevos_dia, 0) / semsProd
   );
@@ -372,12 +372,110 @@ function pintarInfraestructura() {
     </div>
     <div class="infra-detalle">
       <p>Con <strong>1 galpón en régimen secuencial</strong>, la operación produce durante el ${pctEfic}% de las semanas del horizonte. Cada ${CICLO} semanas (≈ 2 años) hay una brecha de ~${BRECHA} semanas sin huevos: ${LIMPIEZA} de limpieza + ${CRIANZA} de crianza.</p>
-      <p>Para <strong>eliminar las brechas por completo</strong>, se necesita <strong>1 galpón adicional (${galpTotal} en total)</strong>. El segundo galpón ingresa pollitas con un desfase de <strong>~${desfaseOpt} semanas</strong> respecto al inicio del ciclo vigente. Con esa sincronización, cuando el primer galpón entra en crianza, el segundo está en plena postura.</p>
+      <p>Para <strong>eliminar las brechas por completo</strong>, se necesita <strong>1 galpón adicional (${galpTotal} en total)</strong>, ingresando su primer lote ~${desfaseOpt} semanas (≈ ${Math.round(desfaseOpt/4.33)} meses) después del primer lote del Galpón 1. Con esa sincronización, cuando un galpón entra en crianza el otro está en plena postura.</p>
       <p>Con 2 galpones desfasados, la producción oscila entre <strong>${NUM(promDia)} y ${NUM(promDia * 2)} huevos/día</strong> — nunca cae a cero.</p>
     </div>
     <div class="recomendacion">
-      <strong>Fecha ideal de entrada del segundo galpón:</strong> semana del ${FORMATO_FECHA(fechaG2)} — ${desfaseOpt} semanas (≈ ${Math.round(desfaseOpt/4.33)} meses) después del ingreso del primer lote (${L1.nombre}). En esa configuración, cuando L1 entre en descarte y L2 comience crianza, el segundo galpón cubre la producción sin interrupción.
+      <strong>Fecha ideal de entrada del segundo galpón:</strong> semana del ${FORMATO_FECHA(fechaG2)} — ${desfaseOpt} semanas después del ingreso del primer lote (${L1.nombre}).
     </div>`;
+
+  // ── Gráfico comparativo: G1 solo vs G1+G2 combinado ──────────────
+  const svgEl = document.getElementById('infra-svg');
+  if (!svgEl) return;
+
+  // Curva Hy-Line por semana de vida (1-indexada)
+  const curvaMap = {};
+  D.curva_hyline_brown.forEach(c => { curvaMap[c.semana] = c.postura_pct; });
+
+  const avesIni  = D.galpones[0].aves_iniciales;
+  const MORT_C   = 0.002;
+  const MORT_P   = 0.001;
+  const g2Origen = new Date(fechaG2);
+
+  function g2HuevosDia(fechaLunes) {
+    const semVida = Math.round((new Date(fechaLunes) - g2Origen) / (7 * 86400000));
+    if (semVida < 0) return 0;
+    const semCiclo = semVida % CICLO;
+    if (semCiclo < CRIANZA || semCiclo >= CRIANZA + POSTURA) return 0;
+    const avesCrianzaFin = Math.round(avesIni * Math.pow(1 - MORT_C, CRIANZA));
+    const aves = Math.round(avesCrianzaFin * Math.pow(1 - MORT_P, semCiclo - CRIANZA));
+    return Math.round(aves * (curvaMap[semCiclo + 1] || 0) / 100);
+  }
+
+  const series = filas.map(f => {
+    const g1 = f.total.huevos_dia;
+    const g2 = g2HuevosDia(f.fecha_lunes);
+    return { fecha: f.fecha_lunes, g1, g2, tot: g1 + g2 };
+  });
+
+  const W=900, H=300, PL=72, PR=30, PT=40, PB=50;
+  const iW=W-PL-PR, iH=H-PT-PB;
+  const maxV = Math.max(...series.map(s => s.tot)) * 1.12;
+  const yV = v => PT + iH - (v / maxV) * iH;
+  const xI = i => PL + (i / (series.length - 1)) * iW;
+
+  let svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">`;
+
+  // Bandas de año
+  const aniosPresentes = [...new Set(series.map(s => s.fecha.slice(0,4)))];
+  aniosPresentes.forEach((a, ai) => {
+    const idx0 = series.findIndex(s => s.fecha.startsWith(a));
+    const idx1 = series.findLastIndex(s => s.fecha.startsWith(a));
+    if (ai % 2 === 0) svg += `<rect x="${xI(idx0)}" y="${PT}" width="${xI(idx1)-xI(idx0)}" height="${iH}" fill="#f5f3ee" opacity="0.6"/>`;
+    svg += `<text x="${(xI(idx0)+xI(idx1))/2}" y="${PT+iH+18}" text-anchor="middle" font-size="11" fill="${COLOR_TENUE}">${a}</text>`;
+  });
+
+  // Grid horizontal
+  for (let i=0; i<=4; i++) {
+    const v = (maxV/4)*i, y = yV(v);
+    svg += `<line x1="${PL}" y1="${y}" x2="${W-PR}" y2="${y}" stroke="${COLOR_GRID}"/>`;
+    svg += `<text x="${PL-6}" y="${y+4}" text-anchor="end" font-size="10" fill="${COLOR_TENUE}">${NUM(v)}</text>`;
+  }
+  svg += `<text x="14" y="${PT+iH/2}" text-anchor="middle" font-size="10" fill="${COLOR_TEXTO}" transform="rotate(-90 14 ${PT+iH/2})">huevos/día</text>`;
+
+  // Área G2 (galpón propuesto) — base: 0 → g2
+  const ptsG2top = series.map((s,i) => `${i===0?'M':'L'}${xI(i).toFixed(1)},${yV(s.g2).toFixed(1)}`).join(' ');
+  const ptsG2bot = series.map((_,i) => `L${xI(series.length-1-i).toFixed(1)},${PT+iH}`).join(' ');
+  svg += `<path d="${ptsG2top} L${xI(series.length-1)},${PT+iH} L${xI(0)},${PT+iH} Z" fill="#4a90a4" opacity="0.40"/>`;
+
+  // Área G1 (galpón actual) — apilada: g2 → g2+g1
+  const ptsG1top = series.map((s,i) => `${i===0?'M':'L'}${xI(i).toFixed(1)},${yV(s.tot).toFixed(1)}`).join(' ');
+  const ptsG1bot = series.map((_,i) => {
+    const s = series[series.length-1-i];
+    return `L${xI(series.length-1-i).toFixed(1)},${yV(s.g2).toFixed(1)}`;
+  }).join(' ');
+  svg += `<path d="${ptsG1top} ${ptsG1bot} Z" fill="${COLOR_ACENTO}" opacity="0.45"/>`;
+
+  // Línea total combinado
+  const pathTot = series.map((s,i) => `${i===0?'M':'L'}${xI(i).toFixed(1)},${yV(s.tot).toFixed(1)}`).join(' ');
+  svg += `<path d="${pathTot}" stroke="${COLOR_TOTAL}" stroke-width="2.5" fill="none"/>`;
+
+  // Línea G1 solo (referencia)
+  const pathG1 = series.map((s,i) => `${i===0?'M':'L'}${xI(i).toFixed(1)},${yV(s.g1).toFixed(1)}`).join(' ');
+  svg += `<path d="${pathG1}" stroke="${COLOR_ACENTO}" stroke-width="1.5" fill="none" stroke-dasharray="5,3"/>`;
+
+  // Ejes
+  svg += `<line x1="${PL}" y1="${PT+iH}" x2="${W-PR}" y2="${PT+iH}" stroke="${COLOR_TENUE}"/>`;
+  svg += `<line x1="${PL}" y1="${PT}" x2="${PL}" y2="${PT+iH}" stroke="${COLOR_TENUE}"/>`;
+
+  // Leyenda
+  const leyenda = [
+    { color:'#4a90a4', op:'0.5', label:'Galpón 2 (propuesto)', x: PL },
+    { color: COLOR_ACENTO, op:'0.6', label:'Galpón 1 (actual)', x: PL+190 },
+    { color: COLOR_TOTAL, op:'1',  label:'Total combinado',   x: PL+370, linea: true },
+    { color: COLOR_ACENTO, op:'1', label:'G1 solo (referencia)', x: PL+530, dash: true },
+  ];
+  leyenda.forEach(l => {
+    if (l.linea || l.dash) {
+      svg += `<line x1="${l.x}" y1="${PT-14}" x2="${l.x+22}" y2="${PT-14}" stroke="${l.color}" stroke-width="2.5" ${l.dash?'stroke-dasharray="5,3"':''}/>`;
+    } else {
+      svg += `<rect x="${l.x}" y="${PT-22}" width="16" height="12" fill="${l.color}" opacity="${l.op}" rx="2"/>`;
+    }
+    svg += `<text x="${l.x+26}" y="${PT-10}" font-size="10" fill="${COLOR_TEXTO}">${l.label}</text>`;
+  });
+
+  svg += '</svg>';
+  svgEl.innerHTML = svg;
 }
 
 // ============================================================
