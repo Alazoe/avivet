@@ -208,7 +208,15 @@ function ocr(base64Data, mediaType) {
         bloque,
         {
           type: 'text',
-          text: 'Este documento contiene pesos de aves (planilla, papel escrito a mano o tabla). Extrae todos los valores numéricos que correspondan a pesos corporales. Devuelve SOLO un array JSON con los números en kg. Si están en gramos (>100), divídelos por 1000. Ejemplo: [1.23, 1.45, 0.98]'
+          text: `Este documento contiene registros de pesaje de aves. Puede venir en distintos formatos:
+- "N-PESO": número de ave seguido de guion y peso (ej: "1-245", "2-225"). Extrae SOLO el peso (número después del guion).
+- Lista de pesos directos (ej: "245", "1.245", "1,245").
+- Tabla con columnas de número y peso.
+
+Los pesos pueden estar en gramos (valores >100) o en kg (valores <10).
+Si están en gramos, divídelos por 1000 para convertir a kg.
+Devuelve SOLO un array JSON con los pesos en kg. Ejemplo: [0.245, 0.225, 0.260]
+No incluyas los números de identificación de las aves, solo los pesos.`
         }
       ]
     }]
