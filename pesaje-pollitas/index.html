@@ -923,7 +923,13 @@ async function apiPost(body) {
   if (perfilActual) body.productor = perfilActual.nombre;
   const r = await fetch(WEB_APP_URL, { method:'POST', body: JSON.stringify(body) });
   const text = await r.text();
-  try { return JSON.parse(text); } catch(e) { throw new Error('Respuesta inválida del servidor'); }
+  try {
+    return JSON.parse(text);
+  } catch(e) {
+    // Mostrar los primeros 300 chars para diagnóstico
+    const preview = text.slice(0, 300).replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+    throw new Error('GAS no devolvió JSON. Respuesta: ' + preview);
+  }
 }
 
 function toast(msg, dur=2800) {
