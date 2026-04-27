@@ -19,10 +19,27 @@
 * { box-sizing:border-box; margin:0; padding:0; }
 body { font-family: system-ui, sans-serif; background:#f0f4f8; color:var(--texto); }
 
-/* NAV */
-.nav { background:var(--verde); color:#fff; padding:14px 16px; display:flex; align-items:center; gap:12px; position:sticky; top:0; z-index:100; }
-.nav h1 { font-size:1.05rem; font-weight:600; }
-.nav .back-btn { background:none; border:none; color:#fff; font-size:1.3rem; cursor:pointer; padding:0 4px; }
+/* ── PANTALLA PERFIL ── */
+#pantalla-perfil {
+  position:fixed; inset:0; background:#1b5e20;
+  display:flex; align-items:center; justify-content:center;
+  z-index:200; padding:24px;
+}
+.perfil-card {
+  background:#fff; border-radius:16px; padding:32px 24px;
+  width:100%; max-width:380px; text-align:center;
+}
+.perfil-logo { font-size:3.5rem; margin-bottom:12px; }
+.perfil-card h2 { font-size:1.4rem; color:var(--verde); margin-bottom:6px; }
+.perfil-card p { font-size:.9rem; color:#666; margin-bottom:20px; }
+.perfil-card label { text-align:left; display:block; font-size:.85rem; color:#555; font-weight:500; }
+.perfil-card input { margin-top:6px; margin-bottom:16px; }
+
+/* ── NAV ── */
+.nav { background:var(--verde); color:#fff; padding:14px 16px; display:flex; align-items:center; gap:10px; position:sticky; top:0; z-index:100; }
+.nav h1 { font-size:1.05rem; font-weight:600; flex:1; }
+.nav-productor { font-size:.72rem; opacity:.85; white-space:nowrap; cursor:pointer; background:rgba(255,255,255,.15); padding:4px 8px; border-radius:12px; }
+.nav-productor:hover { background:rgba(255,255,255,.25); }
 
 /* TABS */
 .tabs { display:flex; background:#fff; border-bottom:2px solid var(--gris-b); position:sticky; top:52px; z-index:99; }
@@ -130,9 +147,26 @@ label { font-size:.85rem; color:#666; font-weight:500; }
 </head>
 <body>
 
+<!-- ══ PANTALLA PERFIL ═══════════════════════════════════════ -->
+<div id="pantalla-perfil">
+  <div class="perfil-card">
+    <div class="perfil-logo">🐔</div>
+    <h2>Pesaje Pollitas</h2>
+    <p>Ingresa tu nombre o el nombre de tu predio para ver solo tus datos</p>
+    <label>Tu nombre / predio
+      <input type="text" id="perfil-nombre" placeholder="Ej: Juan Pérez · Los Robles"
+        onkeydown="if(event.key==='Enter')guardarPerfil()">
+    </label>
+    <button class="btn btn-verde" onclick="guardarPerfil()">Continuar →</button>
+  </div>
+</div>
+
+<!-- ══ APP ════════════════════════════════════════════════════ -->
+<div id="app" style="display:none">
+
 <div class="nav">
-  <span id="nav-back" class="back-btn" onclick="irAtras()" style="display:none">&#8592;</span>
   <h1 id="nav-titulo">Pesaje Pollitas</h1>
+  <span class="nav-productor" id="nav-productor" onclick="cambiarPerfil()" title="Cambiar perfil"></span>
 </div>
 
 <div class="tabs" id="tabs">
@@ -144,7 +178,6 @@ label { font-size:.85rem; color:#666; font-weight:500; }
 <!-- ══ TAB REGISTRO ════════════════════════════════════ -->
 <div class="page active" id="page-registro">
 
-  <!-- SELECCIÓN LOTE + SEMANA -->
   <div class="card">
     <h3>Lote y semana</h3>
     <label>Lote
@@ -162,7 +195,6 @@ label { font-size:.85rem; color:#666; font-weight:500; }
     </label>
   </div>
 
-  <!-- MODO INGRESO -->
   <div class="card">
     <h3>Método de ingreso</h3>
     <div class="modos">
@@ -222,7 +254,6 @@ label { font-size:.85rem; color:#666; font-weight:500; }
     </div>
     <div class="pesos-area" id="pesos-area"></div>
 
-    <!-- PREVIEW STATS -->
     <div id="preview-stats" style="display:none">
       <div class="stats-grid">
         <div class="stat-box" id="sb-prom">
@@ -246,7 +277,6 @@ label { font-size:.85rem; color:#666; font-weight:500; }
     </div>
   </div>
 
-  <!-- GUARDAR -->
   <button class="btn btn-verde" id="btn-guardar" onclick="guardarPesaje()" disabled>
     💾 Guardar pesaje
   </button>
@@ -256,7 +286,6 @@ label { font-size:.85rem; color:#666; font-weight:500; }
 <!-- ══ TAB LOTES ════════════════════════════════════ -->
 <div class="page" id="page-lotes">
 
-  <!-- NUEVO LOTE -->
   <div class="card">
     <h3>Nuevo lote</h3>
     <label>Nombre del lote
@@ -273,7 +302,6 @@ label { font-size:.85rem; color:#666; font-weight:500; }
     </button>
   </div>
 
-  <!-- LISTA LOTES -->
   <div id="lista-lotes">
     <div class="alerta alerta-info">Cargando lotes…</div>
   </div>
@@ -294,6 +322,8 @@ label { font-size:.85rem; color:#666; font-weight:500; }
   </div>
 </div>
 
+</div><!-- /#app -->
+
 <div id="toast"></div>
 
 <script>
@@ -305,33 +335,72 @@ let lotes = [];
 let curva = {};
 let reconocimiento = null;
 let grabando = false;
+let perfilActual = null; // { nombre }
+
+// ══ PERFIL ════════════════════════════════════════════════════
+function guardarPerfil() {
+  const nombre = document.getElementById('perfil-nombre').value.trim();
+  if (!nombre) { toast('Ingresa tu nombre para continuar'); return; }
+  perfilActual = { nombre };
+  localStorage.setItem('perfil', JSON.stringify(perfilActual));
+  mostrarApp();
+}
+
+function mostrarApp() {
+  document.getElementById('pantalla-perfil').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  document.getElementById('nav-productor').textContent = '👤 ' + perfilActual.nombre;
+  inicializarApp();
+}
+
+function cambiarPerfil() {
+  if (!confirm(`¿Cambiar de perfil?\nActual: "${perfilActual.nombre}"`)) return;
+  localStorage.removeItem('perfil');
+  perfilActual = null;
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('pantalla-perfil').style.display = 'flex';
+  document.getElementById('perfil-nombre').value = '';
+}
 
 // ══ INIT ══════════════════════════════════════════════════════
-window.onload = async () => {
+window.onload = () => {
+  const perfilStr = localStorage.getItem('perfil');
+  if (perfilStr) {
+    try {
+      perfilActual = JSON.parse(perfilStr);
+      mostrarApp();
+    } catch(e) {
+      localStorage.removeItem('perfil');
+    }
+  }
+};
+
+async function inicializarApp() {
   document.getElementById('fecha-pesaje').valueAsDate = new Date();
-  for (let i=1; i<=19; i++) {
+  const sel = document.getElementById('sel-semana');
+  for (let i = 1; i <= 19; i++) {
     const o = document.createElement('option');
     o.value = i; o.textContent = `Semana ${i}`;
-    document.getElementById('sel-semana').appendChild(o);
+    sel.appendChild(o);
   }
   await cargarLotes();
   iniciarVoz();
-};
+}
 
 async function cargarLotes() {
   try {
-    const r = await jsonpGet({ action:'getLotes' });
+    const r = await apiGet({ action:'getLotes' });
     lotes = r.ok ? r.data : [];
-    curva = (await jsonpGet({ action:'getCurva' })).data || {};
+    curva = (await apiGet({ action:'getCurva' })).data || {};
     poblarSelectLotes();
-  } catch(e) { toast('Error cargando lotes'); }
+  } catch(e) { toast('Error cargando lotes: ' + e.message); }
 }
 
 function poblarSelectLotes() {
   ['sel-lote','sel-lote-hist'].forEach(id => {
     const s = document.getElementById(id);
     s.innerHTML = '<option value="">— seleccionar —</option>';
-    lotes.filter(l=>l.activo).forEach(l => {
+    lotes.filter(l => l.activo).forEach(l => {
       const o = document.createElement('option');
       o.value = l.id; o.textContent = `${l.id} – ${l.nombre}`;
       s.appendChild(o);
@@ -360,8 +429,6 @@ function irTab(tab) {
   if (tab === 'lotes')   renderListaLotes();
 }
 
-function irAtras() { /* reservado */ }
-
 // ══ MODO INGRESO ══════════════════════════════════════════════
 function setModo(m) {
   modoActual = m;
@@ -375,7 +442,7 @@ function setModo(m) {
 function agregarPeso() {
   let v = parseFloat(document.getElementById('peso-input').value);
   if (!v || v <= 0) return;
-  if (v > 10) v = v / 1000; // gramos → kg
+  if (v > 10) v = v / 1000;
   agregarPesoVal(v);
   document.getElementById('peso-input').value = '';
   document.getElementById('peso-input').focus();
@@ -393,10 +460,7 @@ function eliminarPeso(i) {
 
 function limpiarPesos() {
   if (!pesos.length) return;
-  if (confirm(`¿Eliminar los ${pesos.length} pesos ingresados?`)) {
-    pesos = [];
-    renderPesos();
-  }
+  if (confirm(`¿Eliminar los ${pesos.length} pesos ingresados?`)) { pesos = []; renderPesos(); }
 }
 
 function renderPesos() {
@@ -405,7 +469,6 @@ function renderPesos() {
   document.getElementById('btn-guardar').disabled = !n || !document.getElementById('sel-lote').value;
   document.getElementById('n-pesos').textContent = n;
 
-  // calcular stats para semáforo
   const sem = parseInt(document.getElementById('sel-semana').value) || 0;
   const refCurva = curva[sem] || {};
   const prom = n ? pesos.reduce((a,b)=>a+b,0)/n : 0;
@@ -429,12 +492,10 @@ function renderPesos() {
     document.getElementById('stat-cv').textContent   = (cv*100).toFixed(1)+'%';
     document.getElementById('stat-fuera').textContent = fuera;
 
-    // color uniformidad
     const unifMin = refCurva.unif || 0.85;
     setSemColor('sb-unif', unif >= unifMin ? 'verde' : unif >= unifMin-0.1 ? 'amarillo' : 'rojo');
     setSemColor('sb-cv',   cv <= 0.10 ? 'verde' : cv <= 0.15 ? 'amarillo' : 'rojo');
 
-    // alerta vs curva
     if (refCurva.prom) {
       const diff = ((prom - refCurva.prom) / refCurva.prom * 100);
       const alertaEl = document.getElementById('alerta-curva');
@@ -456,8 +517,7 @@ function renderPesos() {
 }
 
 function setSemColor(id, color) {
-  const el = document.getElementById(id);
-  el.className = `stat-box ${color}`;
+  document.getElementById(id).className = `stat-box ${color}`;
 }
 
 // ══ VOZ ═══════════════════════════════════════════════════════
@@ -476,37 +536,24 @@ function iniciarVoz() {
   reconocimiento.onresult = (e) => {
     const texto = e.results[e.results.length-1][0].transcript.trim();
     document.getElementById('voz-texto').textContent = `"${texto}"`;
-    // convertir texto → número (maneja "uno punto dos cinco", "1.25", "1,25", "1250")
     const num = textoANumero(texto);
-    if (num) {
-      agregarPesoVal(num);
-      toast(`✅ ${num.toFixed(3)} kg agregado`);
-    } else {
-      toast(`No reconocí un peso en: "${texto}"`);
-    }
+    if (num) { agregarPesoVal(num); toast(`✅ ${num.toFixed(3)} kg agregado`); }
+    else toast(`No reconocí un peso en: "${texto}"`);
   };
 
   reconocimiento.onerror = (e) => {
     if (e.error !== 'aborted') toast('Error de micrófono: ' + e.error);
-    grabando = false;
-    actualizarUIVoz();
+    grabando = false; actualizarUIVoz();
   };
 
-  reconocimiento.onend = () => {
-    if (grabando) reconocimiento.start(); // continuar hasta que el usuario detenga
-  };
+  reconocimiento.onend = () => { if (grabando) reconocimiento.start(); };
 }
 
 function toggleVoz() {
   if (!reconocimiento) return;
   grabando = !grabando;
-  if (grabando) {
-    reconocimiento.start();
-    document.getElementById('voz-texto').textContent = '🔴 Escuchando… di un peso';
-  } else {
-    reconocimiento.abort();
-    document.getElementById('voz-texto').textContent = 'Pulsa para dictar pesos';
-  }
+  if (grabando) { reconocimiento.start(); document.getElementById('voz-texto').textContent = '🔴 Escuchando… di un peso'; }
+  else { reconocimiento.abort(); document.getElementById('voz-texto').textContent = 'Pulsa para dictar pesos'; }
   actualizarUIVoz();
 }
 
@@ -517,7 +564,6 @@ function actualizarUIVoz() {
 }
 
 function textoANumero(texto) {
-  // limpiar y normalizar
   let t = texto.toLowerCase()
     .replace(/\bcoma\b/g,'.').replace(/,/g,'.')
     .replace(/\bpunto\b/g,'.').replace(/\by\b/g,'.')
@@ -525,21 +571,20 @@ function textoANumero(texto) {
     .replace(/\btres\b/,'3').replace(/\bcuatro\b/,'4').replace(/\bcinco\b/,'5')
     .replace(/\bseis\b/,'6').replace(/\bsiete\b/,'7').replace(/\bocho\b/,'8')
     .replace(/\bnueve\b/,'9').replace(/\bcero\b/,'0');
-  // intentar parsear número
   const match = t.replace(/[^\d.]/g,'').match(/\d+\.?\d*/);
   if (!match) return null;
   let v = parseFloat(match[0]);
   if (isNaN(v) || v <= 0) return null;
-  if (v > 10) v = v / 1000; // gramos
+  if (v > 10) v = v / 1000;
   if (v < 0.05 || v > 5) return null;
   return Math.round(v * 1000) / 1000;
 }
 
 // ══ LOTES ═════════════════════════════════════════════════════
 async function crearLote() {
-  const nombre  = document.getElementById('lote-nombre').value.trim();
+  const nombre   = document.getElementById('lote-nombre').value.trim();
   const fechaNac = document.getElementById('lote-fecha').value;
-  const nAves   = document.getElementById('lote-naves').value;
+  const nAves    = document.getElementById('lote-naves').value;
 
   if (!nombre || !fechaNac) { toast('Completa nombre y fecha de nacimiento'); return; }
 
@@ -548,19 +593,19 @@ async function crearLote() {
   btn.innerHTML = '<span class="spinner"></span> Guardando…';
 
   try {
-    const data = await jsonPost({ action:'crearLote', nombre, fechaNac, nAves });
+    const data = await apiPost({ action:'crearLote', nombre, fechaNac, nAves });
     if (data.ok) {
       toast(`✅ Lote ${data.id} creado`);
-      document.getElementById('lote-nombre').value  = '';
-      document.getElementById('lote-fecha').value   = '';
-      document.getElementById('lote-naves').value   = '';
+      document.getElementById('lote-nombre').value = '';
+      document.getElementById('lote-fecha').value  = '';
+      document.getElementById('lote-naves').value  = '';
       await cargarLotes();
       renderListaLotes();
     } else {
       toast('Error: ' + data.error);
     }
   } catch(e) {
-    toast('Error de conexión');
+    toast('Error: ' + e.message);
   } finally {
     btn.disabled = false;
     btn.textContent = '+ Crear lote';
@@ -589,8 +634,10 @@ function renderListaLotes() {
             </div>
             <div style="font-size:.82rem;color:var(--verde);margin-top:2px">${semTxt}</div>
           </div>
-          ${l.activo ? `<button class="btn btn-rojo" style="width:auto;padding:6px 10px;margin:0;font-size:.78rem"
-            onclick="desactivarLote('${l.id}')">Archivar</button>` : '<span style="font-size:.75rem;color:#aaa">Archivado</span>'}
+          ${l.activo
+            ? `<button class="btn btn-rojo" style="width:auto;padding:6px 10px;margin:0;font-size:.78rem"
+                onclick="desactivarLote('${l.id}')">Archivar</button>`
+            : '<span style="font-size:.75rem;color:#aaa">Archivado</span>'}
         </div>
       </div>`;
   }).join('');
@@ -599,30 +646,25 @@ function renderListaLotes() {
 async function desactivarLote(id) {
   if (!confirm(`¿Archivar el lote ${id}? No aparecerá más en el registro.`)) return;
   try {
-    const data = await jsonPost({ action:'desactivarLote', id });
+    const data = await apiPost({ action:'desactivarLote', id });
     if (data.ok) { toast('Lote archivado'); await cargarLotes(); renderListaLotes(); }
     else toast('Error: ' + data.error);
-  } catch(e) { toast('Error de conexión'); }
+  } catch(e) { toast('Error: ' + e.message); }
 }
 
 // ══ FOTO / ARCHIVO / OCR ══════════════════════════════════════
-let archivoActual = null; // { dataUrl, mediaType, nombre }
+let archivoActual = null;
 
 function onArchivoSelected(input) {
   const file = input.files[0];
   if (!file) return;
   archivoActual = null;
-
   const reader = new FileReader();
   reader.onload = e => {
     archivoActual = { dataUrl: e.target.result, mediaType: file.type, nombre: file.name };
     const img = document.getElementById('foto-preview');
-    if (file.type.startsWith('image/')) {
-      img.src = e.target.result;
-      img.style.display = 'block';
-    } else {
-      img.style.display = 'none';
-    }
+    if (file.type.startsWith('image/')) { img.src = e.target.result; img.style.display = 'block'; }
+    else img.style.display = 'none';
     document.getElementById('foto-nombre').textContent = `📄 ${file.name}`;
     document.getElementById('btn-procesar-foto').style.display = 'block';
   };
@@ -634,11 +676,9 @@ async function procesarFoto() {
   const btn = document.getElementById('btn-procesar-foto');
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner"></span> Analizando…';
-
   try {
     const base64 = archivoActual.dataUrl.split(',')[1];
-    const data   = await jsonPost({ action:'ocr', imagen: base64, mediaType: archivoActual.mediaType });
-
+    const data   = await apiPost({ action:'ocr', imagen: base64, mediaType: archivoActual.mediaType });
     if (data.ok && data.pesos && data.pesos.length) {
       data.pesos.forEach(v => agregarPesoVal(v));
       toast(`✅ ${data.pesos.length} pesos extraídos`);
@@ -667,12 +707,7 @@ async function guardarPesaje() {
   btn.innerHTML = '<span class="spinner"></span> Guardando…';
 
   try {
-    const resp = await fetch(WEB_APP_URL, {
-      method: 'POST',
-      body: JSON.stringify({ action:'guardarPesaje', lote, semana:parseInt(semana), fecha, pesos, metodo:modoActual })
-    });
-    const data = await resp.json();
-
+    const data = await apiPost({ action:'guardarPesaje', lote, semana:parseInt(semana), fecha, pesos, metodo:modoActual });
     if (data.ok) {
       toast(`✅ Pesaje guardado — ${pesos.length} aves`);
       mostrarResultadoGuardado(data.stats, data.curva, parseInt(semana));
@@ -682,7 +717,7 @@ async function guardarPesaje() {
       toast('Error: ' + data.error);
     }
   } catch(e) {
-    toast('Error de conexión');
+    toast('Error: ' + e.message);
   } finally {
     btn.disabled = false;
     btn.textContent = '💾 Guardar pesaje';
@@ -690,14 +725,12 @@ async function guardarPesaje() {
 }
 
 function mostrarResultadoGuardado(stats, curvaRef, sem) {
-  const unif  = (stats.uniformidad * 100).toFixed(1);
-  const cv    = (stats.cv * 100).toFixed(1);
-  const diff  = curvaRef && curvaRef.prom ? ((stats.promedio - curvaRef.prom) / curvaRef.prom * 100).toFixed(1) : null;
+  const unif    = (stats.uniformidad * 100).toFixed(1);
+  const cv      = (stats.cv * 100).toFixed(1);
+  const diff    = curvaRef && curvaRef.prom ? ((stats.promedio - curvaRef.prom) / curvaRef.prom * 100).toFixed(1) : null;
   const unifMin = curvaRef && curvaRef.unif ? (curvaRef.unif * 100).toFixed(0) : 85;
-
-  const tipo = parseFloat(unif) >= parseFloat(unifMin) ? 'alerta-ok' : parseFloat(unif) >= parseFloat(unifMin)-10 ? 'alerta-warning' : 'alerta-error';
-  const msj  = `Semana ${sem}: ${stats.n} aves — Promedio: ${stats.promedio} kg — Unif: ${unif}% — CV: ${cv}%${diff ? ` — Curva: ${diff>0?'+':''}${diff}%` : ''}`;
-
+  const tipo    = parseFloat(unif) >= parseFloat(unifMin) ? 'alerta-ok' : parseFloat(unif) >= parseFloat(unifMin)-10 ? 'alerta-warning' : 'alerta-error';
+  const msj     = `Semana ${sem}: ${stats.n} aves — Promedio: ${stats.promedio} kg — Unif: ${unif}% — CV: ${cv}%${diff ? ` — Curva: ${diff>0?'+':''}${diff}%` : ''}`;
   const d = document.createElement('div');
   d.className = `alerta ${tipo}`;
   d.textContent = msj;
@@ -709,11 +742,9 @@ function mostrarResultadoGuardado(stats, curvaRef, sem) {
 async function cargarResumen() {
   const lote = document.getElementById('sel-lote-hist').value;
   if (!lote) return;
-
   document.getElementById('resumen-contenido').innerHTML = '<div class="alerta alerta-info">Cargando…</div>';
-
   try {
-    const data = await jsonpGet({ action:'getResumen', lote });
+    const data = await apiGet({ action:'getResumen', lote });
     if (!data.ok || !data.data.length) {
       document.getElementById('resumen-contenido').innerHTML = '<div class="alerta alerta-info">Sin registros para este lote</div>';
       return;
@@ -732,7 +763,6 @@ function renderResumen(registros, curvaRef) {
     const diff  = ref ? ((r.promedio - ref.prom) / ref.prom * 100).toFixed(1) : '—';
     const unifMin = ref ? ref.unif * 100 : 85;
     const color = parseFloat(unif) >= unifMin ? 'sem-verde' : parseFloat(unif) >= unifMin-10 ? 'sem-amarillo' : 'sem-rojo';
-
     return `<tr>
       <td>${r.semana}</td>
       <td>${r.promedio.toFixed(3)}</td>
@@ -771,23 +801,18 @@ function renderGrafico(registros, curvaRef) {
   canvas.height = 220 * window.devicePixelRatio;
   ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
   const W = canvas.offsetWidth, H = 220;
-
   const pad = { t:20, r:10, b:40, l:52 };
-  const iW = W - pad.l - pad.r;
-  const iH = H - pad.t - pad.b;
+  const iW = W - pad.l - pad.r, iH = H - pad.t - pad.b;
 
   const semanas = registros.map(r => r.semana);
   const minS = Math.min(...semanas) - 0.5;
   const maxS = Math.max(...semanas) + 0.5;
-
   const xP = s => pad.l + (s - minS) / (maxS - minS) * iW;
-  const yP = v => pad.t + (1 - (v - 0.5) / 0.6) * iH; // 50% a 110%
+  const yP = v => pad.t + (1 - (v - 0.5) / 0.6) * iH;
 
-  // fondo
   ctx.fillStyle = '#fafafa';
   ctx.fillRect(0, 0, W, H);
 
-  // grids
   ctx.strokeStyle = '#e0e0e0'; ctx.lineWidth = 1;
   [60, 70, 80, 90, 100].forEach(v => {
     const y = yP(v/100);
@@ -796,7 +821,6 @@ function renderGrafico(registros, curvaRef) {
     ctx.fillText(v+'%', 4, y+4);
   });
 
-  // curva esperada (línea punteada)
   const semsCurva = Object.keys(curvaRef).map(Number).filter(s => s >= minS && s <= maxS).sort((a,b)=>a-b);
   if (semsCurva.length) {
     ctx.strokeStyle = '#aaa'; ctx.lineWidth = 1.5; ctx.setLineDash([4,4]);
@@ -805,11 +829,9 @@ function renderGrafico(registros, curvaRef) {
       const y = yP(curvaRef[s].unif);
       i===0 ? ctx.moveTo(xP(s),y) : ctx.lineTo(xP(s),y);
     });
-    ctx.stroke();
-    ctx.setLineDash([]);
+    ctx.stroke(); ctx.setLineDash([]);
   }
 
-  // uniformidad real
   ctx.strokeStyle = '#2e7d32'; ctx.lineWidth = 2.5;
   ctx.beginPath();
   registros.forEach((r,i) => {
@@ -818,7 +840,6 @@ function renderGrafico(registros, curvaRef) {
   });
   ctx.stroke();
 
-  // puntos
   registros.forEach(r => {
     const x = xP(r.semana), y = yP(r.uniformidad);
     const ref = curvaRef[r.semana];
@@ -827,27 +848,29 @@ function renderGrafico(registros, curvaRef) {
     ctx.beginPath(); ctx.arc(x, y, 4, 0, Math.PI*2); ctx.fill();
   });
 
-  // eje X
   ctx.fillStyle = '#555'; ctx.font = '10px system-ui'; ctx.textAlign = 'center';
-  semanas.forEach(s => {
-    ctx.fillText('S'+s, xP(s), H - pad.b + 16);
-  });
+  semanas.forEach(s => ctx.fillText('S'+s, xP(s), H - pad.b + 16));
   ctx.fillStyle = '#888'; ctx.font = '9px system-ui';
   ctx.fillText('— Esperada', W-80, pad.t+10);
   ctx.fillStyle = '#2e7d32';
   ctx.fillText('— Real', W-30, pad.t+10);
 }
 
-// ══ HELPERS ═══════════════════════════════════════════════════
-async function jsonpGet(params) {
-  const qs = Object.entries(params).map(([k,v])=>`${k}=${encodeURIComponent(v)}`).join('&');
+// ══ HELPERS API ═══════════════════════════════════════════════
+// Inyecta `productor` automáticamente en todos los llamados
+async function apiGet(params) {
+  if (perfilActual) params.productor = perfilActual.nombre;
+  const qs = Object.entries(params).map(([k,v]) => `${k}=${encodeURIComponent(v)}`).join('&');
   const r = await fetch(`${WEB_APP_URL}?${qs}`);
-  return r.json();
+  const text = await r.text();
+  try { return JSON.parse(text); } catch(e) { throw new Error('Respuesta inválida del servidor'); }
 }
 
-async function jsonPost(body) {
+async function apiPost(body) {
+  if (perfilActual) body.productor = perfilActual.nombre;
   const r = await fetch(WEB_APP_URL, { method:'POST', body: JSON.stringify(body) });
-  return r.json();
+  const text = await r.text();
+  try { return JSON.parse(text); } catch(e) { throw new Error('Respuesta inválida del servidor'); }
 }
 
 function toast(msg, dur=2800) {

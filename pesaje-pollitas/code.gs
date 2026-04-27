@@ -30,10 +30,11 @@ const CURVA_HYLINE = {
 
 // ── ROUTER ─────────────────────────────────────────────────────
 function doGet(e) {
-  const action = e && e.parameter && e.parameter.action;
-  if (action === 'getLotes')       return jsonResp(getLotes());
-  if (action === 'getResumen')     return jsonResp(getResumen(e.parameter.lote));
-  if (action === 'getCurva')       return jsonResp({ ok:true, data: CURVA_HYLINE });
+  const action    = e && e.parameter && e.parameter.action;
+  const productor = e && e.parameter && e.parameter.productor ? e.parameter.productor.trim() : '';
+  if (action === 'getLotes')   return jsonResp(getLotes(productor));
+  if (action === 'getResumen') return jsonResp(getResumen(e.parameter.lote, productor));
+  if (action === 'getCurva')   return jsonResp({ ok:true, data: CURVA_HYLINE });
   const html = HtmlService.createHtmlOutputFromFile('index')
     .setTitle('Pesaje Pollitas')
     .addMetaTag('viewport','width=device-width, initial-scale=1');
@@ -60,26 +61,29 @@ function jsonResp(obj) {
 }
 
 // ── LOTES ──────────────────────────────────────────────────────
-function getLotes() {
+// CONFIGURACIÓN columns: id_lote(0), nombre_lote(1), fecha_nacimiento(2), n_aves_total(3), activo(4), productor(5)
+function getLotes(productor) {
   const ss = SpreadsheetApp.openById(SHEET_ID);
   const ws = ss.getSheetByName('CONFIGURACIÓN');
   if (!ws) return { ok:false, error:'Hoja CONFIGURACIÓN no encontrada' };
-  const rows = ws.getDataRange().getValues().slice(1); // salta encabezado
+  const rows = ws.getDataRange().getValues().slice(1);
   const lotes = rows
-    .filter(r => r[0] && r[1]) // lote, fecha_nacimiento
+    .filter(r => r[0] && r[1] && (!productor || String(r[5]).trim() === productor))
     .map(r => ({
-      id:    String(r[0]).trim(),
-      nombre: String(r[1]).trim(),
+      id:       String(r[0]).trim(),
+      nombre:   String(r[1]).trim(),
       fechaNac: r[2] ? Utilities.formatDate(new Date(r[2]), 'America/Santiago', 'yyyy-MM-dd') : '',
-      nAves: r[3] || '',
-      activo: r[4] !== false
+      nAves:    r[3] || '',
+      activo:   r[4] !== false
     }));
   return { ok:true, data: lotes };
 }
 
 // ── GUARDAR PESAJE ─────────────────────────────────────────────
+// PESAJES columns: lote(0),semana(1),fecha(2),n_aves(3),promedio_kg(4),cv_pct(5),uniformidad_pct(6),
+//                 rango_min(7),rango_max(8),fuera_rango(9),metodo(10),pesos_raw(11),timestamp(12),productor(13)
 function guardarPesaje(body) {
-  const { lote, semana, fecha, pesos, metodo } = body;
+  const { lote, semana, fecha, pesos, metodo, productor } = body;
   if (!lote || !semana || !pesos || !pesos.length)
     return { ok:false, error:'Datos incompletos' };
 
@@ -87,11 +91,10 @@ function guardarPesaje(body) {
   let ws = ss.getSheetByName('PESAJES');
   if (!ws) {
     ws = ss.insertSheet('PESAJES');
-    ws.appendRow(['lote','semana','fecha','n_aves','promedio_kg','cv_pct','uniformidad_pct','rango_min','rango_max','fuera_rango','metodo','pesos_raw','timestamp']);
+    ws.appendRow(['lote','semana','fecha','n_aves','promedio_kg','cv_pct','uniformidad_pct','rango_min','rango_max','fuera_rango','metodo','pesos_raw','timestamp','productor']);
     ws.setFrozenRows(1);
   }
 
-  // Calcular estadísticas
   const stats = calcularStats(pesos);
   const curva = CURVA_HYLINE[semana] || {};
 
@@ -108,21 +111,22 @@ function guardarPesaje(body) {
     stats.fueraRango,
     metodo || 'manual',
     pesos.join(','),
-    new Date()
+    new Date(),
+    productor || ''
   ]);
 
   return { ok:true, stats, curva };
 }
 
 // ── RESUMEN POR LOTE ───────────────────────────────────────────
-function getResumen(lote) {
+function getResumen(lote, productor) {
   if (!lote) return { ok:false, error:'Lote requerido' };
   const ss = SpreadsheetApp.openById(SHEET_ID);
   const ws = ss.getSheetByName('PESAJES');
   if (!ws) return { ok:true, data: [] };
   const rows = ws.getDataRange().getValues().slice(1);
   const data = rows
-    .filter(r => String(r[0]) === String(lote))
+    .filter(r => String(r[0]) === String(lote) && (!productor || String(r[13]).trim() === productor))
     .map(r => ({
       semana:       r[1],
       fecha:        r[2] ? Utilities.formatDate(new Date(r[2]), 'America/Santiago', 'yyyy-MM-dd') : '',
@@ -141,32 +145,36 @@ function getResumen(lote) {
 
 // ── CREAR LOTE ─────────────────────────────────────────────────
 function crearLote(body) {
-  const { nombre, fechaNac, nAves } = body;
+  const { nombre, fechaNac, nAves, productor } = body;
   if (!nombre || !fechaNac) return { ok:false, error:'Nombre y fecha requeridos' };
 
   const ss = SpreadsheetApp.openById(SHEET_ID);
   let ws   = ss.getSheetByName('CONFIGURACIÓN');
   if (!ws) {
     ws = ss.insertSheet('CONFIGURACIÓN');
-    ws.appendRow(['id_lote','nombre_lote','fecha_nacimiento','n_aves_total','activo']);
+    ws.appendRow(['id_lote','nombre_lote','fecha_nacimiento','n_aves_total','activo','productor']);
     ws.setFrozenRows(1);
   }
 
+  // ID único global (todos los productores comparten secuencia)
   const rows = ws.getDataRange().getValues().slice(1).filter(r => r[0]);
   const id   = 'L' + String(rows.length + 1).padStart(2,'0');
-  ws.appendRow([id, nombre.trim(), fechaNac, parseInt(nAves) || 0, true]);
+  ws.appendRow([id, nombre.trim(), fechaNac, parseInt(nAves) || 0, true, productor || '']);
   return { ok:true, id, nombre: nombre.trim() };
 }
 
 // ── DESACTIVAR LOTE ────────────────────────────────────────────
 function desactivarLote(body) {
-  const { id } = body;
+  const { id, productor } = body;
   const ss  = SpreadsheetApp.openById(SHEET_ID);
   const ws  = ss.getSheetByName('CONFIGURACIÓN');
   if (!ws) return { ok:false, error:'Hoja no encontrada' };
   const rows = ws.getDataRange().getValues();
   for (let i = 1; i < rows.length; i++) {
     if (String(rows[i][0]).trim() === String(id).trim()) {
+      // Solo puede archivar el propio productor
+      if (productor && String(rows[i][5]).trim() !== productor)
+        return { ok:false, error:'Sin permiso para archivar este lote' };
       ws.getRange(i + 1, 5).setValue(false);
       return { ok:true };
     }
@@ -251,20 +259,18 @@ function calcularStats(pesos) {
 function inicializarSheet() {
   const ss = SpreadsheetApp.openById(SHEET_ID);
 
-  // CONFIGURACIÓN
   let cfg = ss.getSheetByName('CONFIGURACIÓN');
   if (!cfg) {
     cfg = ss.insertSheet('CONFIGURACIÓN');
-    cfg.appendRow(['id_lote','nombre_lote','fecha_nacimiento','n_aves_total','activo']);
-    cfg.appendRow(['L01','Lote 01','2026-01-01',10000,true]);
+    cfg.appendRow(['id_lote','nombre_lote','fecha_nacimiento','n_aves_total','activo','productor']);
+    cfg.appendRow(['L01','Lote 01','2026-01-01',10000,true,'demo']);
     cfg.setFrozenRows(1);
   }
 
-  // PESAJES
   let pes = ss.getSheetByName('PESAJES');
   if (!pes) {
     pes = ss.insertSheet('PESAJES');
-    pes.appendRow(['lote','semana','fecha','n_aves','promedio_kg','cv_pct','uniformidad_pct','rango_min','rango_max','fuera_rango','metodo','pesos_raw','timestamp']);
+    pes.appendRow(['lote','semana','fecha','n_aves','promedio_kg','cv_pct','uniformidad_pct','rango_min','rango_max','fuera_rango','metodo','pesos_raw','timestamp','productor']);
     pes.setFrozenRows(1);
   }
 
