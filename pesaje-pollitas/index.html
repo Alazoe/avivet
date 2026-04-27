@@ -26,14 +26,32 @@ body { font-family: system-ui, sans-serif; background:#f0f4f8; color:var(--texto
   z-index:200; padding:24px;
 }
 .perfil-card {
-  background:#fff; border-radius:16px; padding:32px 24px;
+  background:#fff; border-radius:16px; padding:28px 24px;
   width:100%; max-width:380px; text-align:center;
 }
 .perfil-logo { font-size:3.5rem; margin-bottom:12px; }
 .perfil-card h2 { font-size:1.4rem; color:var(--verde); margin-bottom:6px; }
-.perfil-card p { font-size:.9rem; color:#666; margin-bottom:20px; }
-.perfil-card label { text-align:left; display:block; font-size:.85rem; color:#555; font-weight:500; }
-.perfil-card input { margin-top:6px; margin-bottom:16px; }
+.perfil-card > p { font-size:.9rem; color:#666; margin-bottom:16px; }
+
+/* lista de perfiles guardados */
+.perfil-lista { display:flex; flex-direction:column; gap:8px; margin-bottom:16px; }
+.perfil-item {
+  display:flex; align-items:center; gap:12px;
+  padding:12px 14px; border:2px solid var(--gris-b); border-radius:10px;
+  cursor:pointer; text-align:left; background:#fff; transition:.15s;
+}
+.perfil-item:hover { border-color:var(--verde-c); background:#f1f8e9; }
+.perfil-item .pi-avatar {
+  width:36px; height:36px; border-radius:50%; background:var(--verde);
+  color:#fff; display:flex; align-items:center; justify-content:center;
+  font-weight:700; font-size:1rem; flex-shrink:0;
+}
+.perfil-item .pi-nombre { font-weight:600; font-size:.95rem; color:var(--texto); }
+
+/* formulario nuevo perfil */
+.perfil-nuevo { border-top:1px solid var(--gris-b); padding-top:14px; margin-top:4px; }
+.perfil-nuevo label { text-align:left; display:block; font-size:.85rem; color:#555; font-weight:500; }
+.perfil-nuevo input { margin-top:6px; margin-bottom:0; }
 
 /* ── NAV ── */
 .nav { background:var(--verde); color:#fff; padding:14px 16px; display:flex; align-items:center; gap:10px; position:sticky; top:0; z-index:100; }
@@ -152,12 +170,19 @@ label { font-size:.85rem; color:#666; font-weight:500; }
   <div class="perfil-card">
     <div class="perfil-logo">🐔</div>
     <h2>Pesaje Pollitas</h2>
-    <p>Ingresa tu nombre o el nombre de tu predio para ver solo tus datos</p>
-    <label>Tu nombre / predio
-      <input type="text" id="perfil-nombre" placeholder="Ej: Juan Pérez · Los Robles"
-        onkeydown="if(event.key==='Enter')guardarPerfil()">
-    </label>
-    <button class="btn btn-verde" onclick="guardarPerfil()">Continuar →</button>
+    <p>¿Quién registra hoy?</p>
+
+    <!-- perfiles guardados (se rellena con JS) -->
+    <div class="perfil-lista" id="perfil-lista"></div>
+
+    <!-- nuevo productor -->
+    <div class="perfil-nuevo">
+      <label>Nuevo productor / predio
+        <input type="text" id="perfil-nombre" placeholder="Ej: Juan Pérez · Los Robles"
+          onkeydown="if(event.key==='Enter')guardarPerfil()">
+      </label>
+      <button class="btn btn-verde" onclick="guardarPerfil()" style="margin-top:10px">+ Ingresar</button>
+    </div>
   </div>
 </div>
 
@@ -338,11 +363,45 @@ let grabando = false;
 let perfilActual = null; // { nombre }
 
 // ══ PERFIL ════════════════════════════════════════════════════
+// localStorage guarda el array de productores conocidos (historial)
+// NO guarda sesión activa → cada carga de página pide quién eres
+
+function getPerfilesGuardados() {
+  try { return JSON.parse(localStorage.getItem('perfiles') || '[]'); } catch(e) { return []; }
+}
+
+function agregarPerfilAHistorial(nombre) {
+  const lista = getPerfilesGuardados();
+  if (!lista.includes(nombre)) {
+    lista.unshift(nombre); // más reciente primero
+    if (lista.length > 8) lista.pop(); // máximo 8
+    localStorage.setItem('perfiles', JSON.stringify(lista));
+  }
+}
+
+function renderPantallaPerfiles() {
+  const lista = getPerfilesGuardados();
+  const cont  = document.getElementById('perfil-lista');
+  if (!lista.length) { cont.innerHTML = ''; return; }
+  cont.innerHTML = lista.map(nombre => {
+    const inicial = nombre.charAt(0).toUpperCase();
+    return `<button class="perfil-item" onclick="seleccionarPerfil('${nombre.replace(/'/g,"\\'")}')">
+      <div class="pi-avatar">${inicial}</div>
+      <span class="pi-nombre">${nombre}</span>
+    </button>`;
+  }).join('');
+}
+
+function seleccionarPerfil(nombre) {
+  perfilActual = { nombre };
+  mostrarApp();
+}
+
 function guardarPerfil() {
   const nombre = document.getElementById('perfil-nombre').value.trim();
   if (!nombre) { toast('Ingresa tu nombre para continuar'); return; }
+  agregarPerfilAHistorial(nombre);
   perfilActual = { nombre };
-  localStorage.setItem('perfil', JSON.stringify(perfilActual));
   mostrarApp();
 }
 
@@ -354,25 +413,19 @@ function mostrarApp() {
 }
 
 function cambiarPerfil() {
-  if (!confirm(`¿Cambiar de perfil?\nActual: "${perfilActual.nombre}"`)) return;
-  localStorage.removeItem('perfil');
   perfilActual = null;
+  // resetear app
+  lotes = []; curva = {}; pesos = [];
   document.getElementById('app').style.display = 'none';
-  document.getElementById('pantalla-perfil').style.display = 'flex';
   document.getElementById('perfil-nombre').value = '';
+  renderPantallaPerfiles();
+  document.getElementById('pantalla-perfil').style.display = 'flex';
 }
 
 // ══ INIT ══════════════════════════════════════════════════════
 window.onload = () => {
-  const perfilStr = localStorage.getItem('perfil');
-  if (perfilStr) {
-    try {
-      perfilActual = JSON.parse(perfilStr);
-      mostrarApp();
-    } catch(e) {
-      localStorage.removeItem('perfil');
-    }
-  }
+  // Nunca auto-login: siempre mostrar el selector de perfil
+  renderPantallaPerfiles();
 };
 
 async function inicializarApp() {
