@@ -577,8 +577,7 @@ function setSemColor(id, color) {
 function iniciarVoz() {
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SpeechRecognition) {
-    document.getElementById('voz-texto').textContent = '⚠️ Reconocimiento de voz no disponible en este navegador';
-    document.getElementById('voz-btn').disabled = true;
+    setVozDeshabilitada('Voz no disponible en este navegador. Usa Chrome.');
     return;
   }
   reconocimiento = new SpeechRecognition();
@@ -591,22 +590,41 @@ function iniciarVoz() {
     document.getElementById('voz-texto').textContent = `"${texto}"`;
     const num = textoANumero(texto);
     if (num) { agregarPesoVal(num); toast(`✅ ${num.toFixed(3)} kg agregado`); }
-    else toast(`No reconocí un peso en: "${texto}"`);
+    else toast(`No reconocí un peso: "${texto}"`);
   };
 
   reconocimiento.onerror = (e) => {
-    if (e.error !== 'aborted') toast('Error de micrófono: ' + e.error);
-    grabando = false; actualizarUIVoz();
+    grabando = false;
+    actualizarUIVoz();
+    if (e.error === 'not-allowed') {
+      setVozDeshabilitada('Permiso de micrófono denegado. Toca el ícono 🔒 en la barra del navegador y permite el micrófono, luego recarga.');
+    } else if (e.error === 'network') {
+      document.getElementById('voz-texto').textContent = 'Error de red. Verifica tu conexión.';
+    } else if (e.error !== 'aborted') {
+      document.getElementById('voz-texto').textContent = 'Error: ' + e.error + '. Intenta de nuevo.';
+    }
   };
 
   reconocimiento.onend = () => { if (grabando) reconocimiento.start(); };
 }
 
+function setVozDeshabilitada(msg) {
+  document.getElementById('voz-texto').textContent = '⚠️ ' + msg;
+  document.getElementById('voz-btn').disabled = true;
+  document.getElementById('voz-btn').className = 'voz-btn-big idle';
+  document.getElementById('voz-btn').textContent = '🚫';
+}
+
 function toggleVoz() {
   if (!reconocimiento) return;
   grabando = !grabando;
-  if (grabando) { reconocimiento.start(); document.getElementById('voz-texto').textContent = '🔴 Escuchando… di un peso'; }
-  else { reconocimiento.abort(); document.getElementById('voz-texto').textContent = 'Pulsa para dictar pesos'; }
+  if (grabando) {
+    document.getElementById('voz-texto').textContent = '🔴 Escuchando… di un peso';
+    reconocimiento.start();
+  } else {
+    reconocimiento.abort();
+    document.getElementById('voz-texto').textContent = 'Pulsa para dictar pesos';
+  }
   actualizarUIVoz();
 }
 
