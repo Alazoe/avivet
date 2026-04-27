@@ -110,12 +110,6 @@ label { font-size:.85rem; color:#666; font-weight:500; }
 #peso-input-wrap input { flex:1; }
 #peso-input-wrap button { width:auto; padding:11px 16px; margin:0; }
 
-/* VOZ */
-.voz-estado { text-align:center; padding:16px; font-size:.9rem; color:#666; }
-.voz-btn-big { width:80px; height:80px; border-radius:50%; border:none; font-size:2rem; margin:8px auto; display:block; cursor:pointer; transition:.2s; }
-.voz-btn-big.grabando { background:#c62828; color:#fff; animation:pulso .8s infinite; }
-.voz-btn-big.idle { background:var(--gris-b); color:#555; }
-@keyframes pulso { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
 
 /* FOTO */
 .foto-wrap { display:flex; flex-direction:column; align-items:center; gap:10px; margin-top:8px; }
@@ -222,15 +216,12 @@ label { font-size:.85rem; color:#666; font-weight:500; }
 
   <div class="card">
     <h3>Método de ingreso</h3>
-    <div class="modos">
+    <div class="modos" style="grid-template-columns:1fr 1fr">
       <div class="modo-btn active" id="modo-manual" onclick="setModo('manual')">
         <span class="icon">⌨️</span>Manual
       </div>
-      <div class="modo-btn" id="modo-voz" onclick="setModo('voz')">
-        <span class="icon">🎤</span>Voz
-      </div>
       <div class="modo-btn" id="modo-foto" onclick="setModo('foto')">
-        <span class="icon">📷</span>Foto
+        <span class="icon">📷</span>Foto / PDF
       </div>
     </div>
 
@@ -242,15 +233,6 @@ label { font-size:.85rem; color:#666; font-weight:500; }
         <button class="btn btn-verde" onclick="agregarPeso()" style="width:auto;padding:0 18px;margin:0">+</button>
       </div>
       <p style="font-size:.75rem;color:#999;margin-top:4px">Ingresa en kg (ej: 1.25) o en gramos (ej: 1250 → se convierte)</p>
-    </div>
-
-    <!-- VOZ -->
-    <div id="panel-voz" style="display:none">
-      <div class="voz-estado">
-        <button class="voz-btn-big idle" id="voz-btn" onclick="toggleVoz()">🎤</button>
-        <p id="voz-texto">Pulsa para dictar pesos</p>
-        <p style="font-size:.75rem;color:#aaa;margin-top:4px">Di números uno por uno: "uno punto dos cinco"</p>
-      </div>
     </div>
 
     <!-- FOTO / ARCHIVO -->
@@ -358,8 +340,6 @@ let pesos = [];
 let modoActual = 'manual';
 let lotes = [];
 let curva = {};
-let reconocimiento = null;
-let grabando = false;
 let perfilActual = null; // { nombre }
 
 // ══ PERFIL ════════════════════════════════════════════════════
@@ -437,7 +417,6 @@ async function inicializarApp() {
     sel.appendChild(o);
   }
   await cargarLotes();
-  iniciarVoz();
 }
 
 async function cargarLotes() {
@@ -485,7 +464,7 @@ function irTab(tab) {
 // ══ MODO INGRESO ══════════════════════════════════════════════
 function setModo(m) {
   modoActual = m;
-  ['manual','voz','foto'].forEach(x => {
+  ['manual','foto'].forEach(x => {
     document.getElementById('modo-'+x).classList.toggle('active', x===m);
     document.getElementById('panel-'+x).style.display = x===m ? 'block' : 'none';
   });
@@ -571,71 +550,6 @@ function renderPesos() {
 
 function setSemColor(id, color) {
   document.getElementById(id).className = `stat-box ${color}`;
-}
-
-// ══ VOZ ═══════════════════════════════════════════════════════
-function iniciarVoz() {
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SpeechRecognition) {
-    setVozDeshabilitada('Voz no disponible en este navegador. Usa Chrome.');
-    return;
-  }
-  reconocimiento = new SpeechRecognition();
-  reconocimiento.lang = 'es-CL';
-  reconocimiento.continuous = true;
-  reconocimiento.interimResults = false;
-
-  reconocimiento.onresult = (e) => {
-    const texto = e.results[e.results.length-1][0].transcript.trim();
-    document.getElementById('voz-texto').textContent = `"${texto}"`;
-    const num = textoANumero(texto);
-    if (num) { agregarPesoVal(num); toast(`✅ ${num.toFixed(3)} kg agregado`); }
-    else toast(`No reconocí un peso: "${texto}"`);
-  };
-
-  reconocimiento.onerror = (e) => {
-    grabando = false;
-    actualizarUIVoz();
-    if (e.error === 'not-allowed') {
-      const esMobile = /Android|iPhone|iPad/i.test(navigator.userAgent);
-      const msg = esMobile
-        ? 'Micrófono bloqueado. En Chrome Android: Configuración → Privacidad → Configuración del sitio → Micrófono → busca esta URL y permite. Luego recarga.'
-        : 'Micrófono bloqueado. Clic en el ícono 🔒 junto a la URL → Permisos → Micrófono → Permitir. Luego recarga.';
-      setVozDeshabilitada(msg);
-    } else if (e.error === 'network') {
-      document.getElementById('voz-texto').textContent = 'Error de red. Verifica tu conexión.';
-    } else if (e.error !== 'aborted') {
-      document.getElementById('voz-texto').textContent = 'Error: ' + e.error + '. Intenta de nuevo.';
-    }
-  };
-
-  reconocimiento.onend = () => { if (grabando) reconocimiento.start(); };
-}
-
-function setVozDeshabilitada(msg) {
-  document.getElementById('voz-texto').textContent = '⚠️ ' + msg;
-  document.getElementById('voz-btn').disabled = true;
-  document.getElementById('voz-btn').className = 'voz-btn-big idle';
-  document.getElementById('voz-btn').textContent = '🚫';
-}
-
-function toggleVoz() {
-  if (!reconocimiento) return;
-  grabando = !grabando;
-  if (grabando) {
-    document.getElementById('voz-texto').textContent = '🔴 Escuchando… di un peso';
-    reconocimiento.start();
-  } else {
-    reconocimiento.abort();
-    document.getElementById('voz-texto').textContent = 'Pulsa para dictar pesos';
-  }
-  actualizarUIVoz();
-}
-
-function actualizarUIVoz() {
-  const btn = document.getElementById('voz-btn');
-  btn.className = `voz-btn-big ${grabando ? 'grabando' : 'idle'}`;
-  btn.textContent = grabando ? '⏹' : '🎤';
 }
 
 function textoANumero(texto) {
