@@ -43,12 +43,18 @@ function doGet(e) {
 
 function doPost(e) {
   try {
+    if (!e || !e.postData || !e.postData.contents)
+      return jsonResp({ ok:false, error:'POST vacío — no se recibió body' });
+
     const body = JSON.parse(e.postData.contents);
+    if (!body || typeof body !== 'object')
+      return jsonResp({ ok:false, error:'Body inválido: ' + typeof body });
+
     if (body.action === 'guardarPesaje')   return jsonResp(guardarPesaje(body));
     if (body.action === 'ocr')             return jsonResp(ocr(body.imagen, body.mediaType));
     if (body.action === 'crearLote')       return jsonResp(crearLote(body));
     if (body.action === 'desactivarLote')  return jsonResp(desactivarLote(body));
-    return jsonResp({ ok:false, error:'Acción desconocida' });
+    return jsonResp({ ok:false, error:'Acción desconocida: ' + body.action });
   } catch(err) {
     return jsonResp({ ok:false, error: err.toString() });
   }
@@ -145,6 +151,7 @@ function getResumen(lote, productor) {
 
 // ── CREAR LOTE ─────────────────────────────────────────────────
 function crearLote(body) {
+  if (!body) return { ok:false, error:'crearLote: body no recibido' };
   const { nombre, fechaNac, nAves, productor } = body;
   if (!nombre || !fechaNac) return { ok:false, error:'Nombre y fecha requeridos' };
 
