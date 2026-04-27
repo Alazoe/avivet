@@ -646,7 +646,7 @@ async function crearLote() {
   btn.innerHTML = '<span class="spinner"></span> Guardando…';
 
   try {
-    const data = await apiPost({ action:'crearLote', nombre, fechaNac, nAves });
+    const data = await apiGet({ action:'crearLote', nombre, fechaNac, nAves });
     if (data.ok) {
       toast(`✅ Lote ${data.id} creado`);
       document.getElementById('lote-nombre').value = '';
@@ -699,7 +699,7 @@ function renderListaLotes() {
 async function desactivarLote(id) {
   if (!confirm(`¿Archivar el lote ${id}? No aparecerá más en el registro.`)) return;
   try {
-    const data = await apiPost({ action:'desactivarLote', id });
+    const data = await apiGet({ action:'desactivarLote', id });
     if (data.ok) { toast('Lote archivado'); await cargarLotes(); renderListaLotes(); }
     else toast('Error: ' + data.error);
   } catch(e) { toast('Error: ' + e.message); }
@@ -760,7 +760,7 @@ async function guardarPesaje() {
   btn.innerHTML = '<span class="spinner"></span> Guardando…';
 
   try {
-    const data = await apiPost({ action:'guardarPesaje', lote, semana:parseInt(semana), fecha, pesos, metodo:modoActual });
+    const data = await apiGet({ action:'guardarPesaje', lote, semana:parseInt(semana), fecha, pesos: JSON.stringify(pesos), metodo:modoActual });
     if (data.ok) {
       toast(`✅ Pesaje guardado — ${pesos.length} aves`);
       mostrarResultadoGuardado(data.stats, data.curva, parseInt(semana));
