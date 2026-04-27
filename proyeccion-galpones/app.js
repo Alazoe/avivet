@@ -30,21 +30,45 @@ const COLOR_TENUE  = '#888';
 const COLOR_ACENTO = '#f0a500';
 const PALETA = ['#f0a500','#4a90a4','#e05c5c','#5cae5c','#9b6bb5','#e08c3c','#5c7db5'];
 
-// Parámetros del ciclo (Hy-Line Brown)
-const CICLO   = 102; // semanas por ciclo (100 postura + 2 limpieza)
-const CRIANZA = 18;  // semanas de crianza (sem 1–18)
-const POSTURA = 82;  // semanas productivas (sem 19–100)
-const MORT_C  = 0.002; // mortalidad semanal crianza
-const MORT_P  = 0.001; // mortalidad semanal postura
+// Parámetros fijos del ciclo
+const CICLO   = 102;
+const CRIANZA = 18;
+const POSTURA = 82;
+
+// Presets por sistema productivo
+const SISTEMAS = {
+  jaula: {
+    label:      'Jaula enriquecida',
+    mort_c:     0.002,   // 0.20 %/sem crianza  → ~3.5 % total
+    mort_p:     0.0008,  // 0.08 %/sem postura  → ~6.4 % total
+    factor_pos: 1.00,    // 100 % de la curva genética
+    desc:       'Menor mortalidad, máximo aprovechamiento de la curva.'
+  },
+  piso_conv: {
+    label:      'Piso convencional',
+    mort_c:     0.003,   // 0.30 %/sem crianza  → ~5.2 % total
+    mort_p:     0.0013,  // 0.13 %/sem postura  → ~10 % total
+    factor_pos: 0.95,    // 95 % de la curva
+    desc:       'Sistema de piso con manejo tecnificado.'
+  },
+  piso_ext: {
+    label:      'Piso no convencional (sur de Chile)',
+    mort_c:     0.004,   // 0.40 %/sem crianza  → ~7 % total
+    mort_p:     0.002,   // 0.20 %/sem postura  → ~15 % total
+    factor_pos: 0.88,    // 88 % de la curva
+    desc:       'Manejo extensivo o semi-intensivo, menor postura y mayor mortalidad.'
+  }
+};
 
 // ── Estado global ──────────────────────────────────────────
-let D      = null;  // datos en memoria (reconstruido en buildD)
-let IDS    = [];    // ['G1','G2',...]
-let COLMAP = {};    // { G1: '#f0a500', ... }
-let CURVA  = {};    // { 19: { pct: 5.0, peso: 45.0 }, ... }
+let D      = null;
+let IDS    = [];
+let COLMAP = {};
+let CURVA  = {};
 
 let CONFIG = {
   horizonte_anios: 4,
+  sistema: 'piso_conv',
   galpones: []
 };
 
@@ -147,14 +171,15 @@ function generarProyeccion() {
       const semCiclo = semVida % CICLO;
       let estado, aves = 0, pct = 0, peso = 0, huevos_dia = 0;
 
+      const sys = SISTEMAS[CONFIG.sistema];
       if (semCiclo < CRIANZA) {
         estado = 'crianza';
-        aves   = Math.round(g.aves * Math.pow(1 - MORT_C, semCiclo));
+        aves   = Math.round(g.aves * Math.pow(1 - sys.mort_c, semCiclo));
       } else if (semCiclo < CRIANZA + POSTURA) {
         estado = 'postura';
-        const avesCrianzaFin = Math.round(g.aves * Math.pow(1 - MORT_C, CRIANZA));
-        aves   = Math.round(avesCrianzaFin * Math.pow(1 - MORT_P, semCiclo - CRIANZA));
-        pct    = CURVA[semCiclo + 1]?.pct  || 0;
+        const avesCrianzaFin = Math.round(g.aves * Math.pow(1 - sys.mort_c, CRIANZA));
+        aves   = Math.round(avesCrianzaFin * Math.pow(1 - sys.mort_p, semCiclo - CRIANZA));
+        pct    = (CURVA[semCiclo + 1]?.pct  || 0) * sys.factor_pos;
         peso   = CURVA[semCiclo + 1]?.peso || 0;
         huevos_dia = Math.round(aves * pct / 100);
       } else {
@@ -214,6 +239,15 @@ function renderConfig() {
           <div class="numb-btns">${botones}</div>
         </label>
         <label class="config-field">
+          <span>Sistema productivo</span>
+          <select id="cfg-sistema" style="margin-top:4px;padding:6px 10px;border:1.5px solid #d4cfc5;border-radius:6px;font-size:.9rem;background:#fff;width:100%">
+            ${Object.entries(SISTEMAS).map(([k, s]) =>
+              `<option value="${k}"${CONFIG.sistema === k ? ' selected' : ''}>${s.label}</option>`
+            ).join('')}
+          </select>
+          <span id="cfg-sistema-desc" style="font-size:.78rem;color:#888;margin-top:4px;display:block">${SISTEMAS[CONFIG.sistema].desc}</span>
+        </label>
+        <label class="config-field">
           <span>Horizonte</span>
           <div style="display:flex;align-items:center;gap:6px">
             <input type="number" id="cfg-horizonte" min="1" max="15" value="${CONFIG.horizonte_anios}" style="width:64px"> años
@@ -256,14 +290,23 @@ function setNGalpones(n) {
 
 function recalcular() {
   CONFIG.horizonte_anios = Math.max(1, parseInt(document.getElementById('cfg-horizonte').value) || 4);
+  CONFIG.sistema = document.getElementById('cfg-sistema').value;
   document.querySelectorAll('.config-galpon-row').forEach((row, i) => {
-    CONFIG.galpones[i].nombre          = row.querySelector('.cfg-nombre').value.trim() || `Galpón ${i+1}`;
-    CONFIG.galpones[i].aves            = Math.max(100, parseInt(row.querySelector('.cfg-aves').value) || 2000);
+    CONFIG.galpones[i].nombre           = row.querySelector('.cfg-nombre').value.trim() || `Galpón ${i+1}`;
+    CONFIG.galpones[i].aves             = Math.max(100, parseInt(row.querySelector('.cfg-aves').value) || 2000);
     CONFIG.galpones[i].fecha_nacimiento = row.querySelector('.cfg-fecha').value;
   });
   buildD();
   renderTodo();
 }
+
+// Actualizar descripción del sistema en tiempo real sin recalcular
+document.addEventListener('change', e => {
+  if (e.target.id === 'cfg-sistema') {
+    const desc = document.getElementById('cfg-sistema-desc');
+    if (desc) desc.textContent = SISTEMAS[e.target.value]?.desc || '';
+  }
+});
 
 function renderTodo() {
   // KPIs
@@ -280,13 +323,13 @@ function renderTodo() {
   if (bajada) {
     const g0 = CONFIG.galpones[0];
     const n  = CONFIG.galpones.length;
-    bajada.textContent = `Proyección de ${n} galpón${n > 1 ? 'es' : ''} con ${NUM(g0.aves)} aves Hy-Line Brown, horizonte de ${CONFIG.horizonte_anios} años desde ${FORMATO_FECHA(g0.fecha_nacimiento)}. Ciclo de 100 semanas productivas, mortalidad ~10% acumulada.`;
+    const sys = SISTEMAS[CONFIG.sistema];
+    bajada.textContent = `Proyección de ${n} galpón${n > 1 ? 'es' : ''} con ${NUM(g0.aves)} aves Hy-Line Brown · ${sys.label} · horizonte ${CONFIG.horizonte_anios} años desde ${FORMATO_FECHA(g0.fecha_nacimiento)}. Mortalidad crianza ~${Math.round((1-Math.pow(1-sys.mort_c,CRIANZA))*100)}%, postura ~${Math.round((1-Math.pow(1-sys.mort_p,POSTURA))*100)}% acumulada.`;
   }
 
   pintarLotes();
   pintarCronograma();
   pintarProduccion();
-  pintarTransiciones();
   pintarInfraestructura();
   pintarAnual();
 
