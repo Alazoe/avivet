@@ -35,7 +35,7 @@ function doGet(e) {
   if (action === 'getLotes')   return jsonResp(getLotes(productor));
   if (action === 'getResumen') return jsonResp(getResumen(e.parameter.lote, productor));
   if (action === 'getCurva')   return jsonResp({ ok:true, data: CURVA_HYLINE });
-  const html = HtmlService.createHtmlOutputFromFile('index')
+  const html = HtmlService.createTemplateFromFile('index').evaluate()
     .setTitle('Pesaje Pollitas')
     .addMetaTag('viewport','width=device-width, initial-scale=1');
   return html;
