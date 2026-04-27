@@ -23,7 +23,7 @@ Si avivet.cl está hospedado desde un repo tipo `alazoe.github.io` o `avivet`:
 1. En el repo de GitHub, crear la carpeta `proyeccion-galpones/`
 2. Subir los 4 archivos (index.html, estilos.css, app.js, datos.json)
 3. Hacer commit y push
-4. Acceder en: `https://avivet.cl/proyeccion-galpones/`
+4. Acceder en: `https://avivet.cl/avivet/proyeccion-galpones/`
 
 ### Opción B — Repositorio independiente
 
