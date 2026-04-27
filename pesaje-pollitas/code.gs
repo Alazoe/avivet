@@ -29,55 +29,32 @@ const CURVA_HYLINE = {
 };
 
 // ── ROUTER ─────────────────────────────────────────────────────
-// Todas las operaciones van por GET para evitar el problema de redirect de GAS con POST.
-// Solo OCR usa POST (base64 de imágenes es demasiado grande para URL).
 function doGet(e) {
-  const p          = (e && e.parameter) || {};
-  const action     = p.action || '';
-  const productor  = (p.productor || '').trim();
-
-  if (action === 'getLotes')       return jsonResp(getLotes(productor));
-  if (action === 'getResumen')     return jsonResp(getResumen(p.lote, productor));
-  if (action === 'getCurva')       return jsonResp({ ok:true, data: CURVA_HYLINE });
-  if (action === 'crearLote')      return jsonResp(crearLote({
-    nombre:    p.nombre,
-    fechaNac:  p.fechaNac,
-    nAves:     p.nAves,
-    productor: productor
-  }));
-  if (action === 'desactivarLote') return jsonResp(desactivarLote({
-    id:        p.id,
-    productor: productor
-  }));
-  if (action === 'guardarPesaje')  {
-    try {
-      return jsonResp(guardarPesaje({
-        lote:      p.lote,
-        semana:    parseInt(p.semana),
-        fecha:     p.fecha,
-        pesos:     JSON.parse(p.pesos || '[]'),
-        metodo:    p.metodo || 'manual',
-        productor: productor
-      }));
-    } catch(err) {
-      return jsonResp({ ok:false, error: 'guardarPesaje: ' + err.toString() });
-    }
-  }
-
+  const action    = e && e.parameter && e.parameter.action;
+  const productor = e && e.parameter && e.parameter.productor ? e.parameter.productor.trim() : '';
+  if (action === 'getLotes')   return jsonResp(getLotes(productor));
+  if (action === 'getResumen') return jsonResp(getResumen(e.parameter.lote, productor));
+  if (action === 'getCurva')   return jsonResp({ ok:true, data: CURVA_HYLINE });
   const html = HtmlService.createHtmlOutputFromFile('index')
     .setTitle('Pesaje Pollitas')
     .addMetaTag('viewport','width=device-width, initial-scale=1');
   return html;
 }
 
-// Solo OCR usa POST (imágenes base64 no caben en URL)
 function doPost(e) {
   try {
     if (!e || !e.postData || !e.postData.contents)
-      return jsonResp({ ok:false, error:'POST vacío' });
+      return jsonResp({ ok:false, error:'POST vacío — no se recibió body' });
+
     const body = JSON.parse(e.postData.contents);
-    if (body.action === 'ocr') return jsonResp(ocr(body.imagen, body.mediaType));
-    return jsonResp({ ok:false, error:'Acción POST desconocida: ' + body.action });
+    if (!body || typeof body !== 'object')
+      return jsonResp({ ok:false, error:'Body inválido: ' + typeof body });
+
+    if (body.action === 'guardarPesaje')   return jsonResp(guardarPesaje(body));
+    if (body.action === 'ocr')             return jsonResp(ocr(body.imagen, body.mediaType));
+    if (body.action === 'crearLote')       return jsonResp(crearLote(body));
+    if (body.action === 'desactivarLote')  return jsonResp(desactivarLote(body));
+    return jsonResp({ ok:false, error:'Acción desconocida: ' + body.action });
   } catch(err) {
     return jsonResp({ ok:false, error: err.toString() });
   }
