@@ -597,7 +597,11 @@ function iniciarVoz() {
     grabando = false;
     actualizarUIVoz();
     if (e.error === 'not-allowed') {
-      setVozDeshabilitada('Permiso de micrófono denegado. Toca el ícono 🔒 en la barra del navegador y permite el micrófono, luego recarga.');
+      const esMobile = /Android|iPhone|iPad/i.test(navigator.userAgent);
+      const msg = esMobile
+        ? 'Micrófono bloqueado. En Chrome Android: Configuración → Privacidad → Configuración del sitio → Micrófono → busca esta URL y permite. Luego recarga.'
+        : 'Micrófono bloqueado. Clic en el ícono 🔒 junto a la URL → Permisos → Micrófono → Permitir. Luego recarga.';
+      setVozDeshabilitada(msg);
     } else if (e.error === 'network') {
       document.getElementById('voz-texto').textContent = 'Error de red. Verifica tu conexión.';
     } else if (e.error !== 'aborted') {

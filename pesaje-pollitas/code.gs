@@ -222,13 +222,17 @@ No incluyas los números de identificación de las aves, solo los pesos.`
     }]
   };
 
+  const headers = {
+    'x-api-key': ANTHROPIC_API_KEY,
+    'anthropic-version': '2023-06-01',
+    'content-type': 'application/json'
+  };
+  // PDF support requiere cabecera beta
+  if (isPdf) headers['anthropic-beta'] = 'pdfs-2024-09-25';
+
   const resp = UrlFetchApp.fetch('https://api.anthropic.com/v1/messages', {
     method: 'post',
-    headers: {
-      'x-api-key': ANTHROPIC_API_KEY,
-      'anthropic-version': '2023-06-01',
-      'content-type': 'application/json'
-    },
+    headers: headers,
     payload: JSON.stringify(payload),
     muteHttpExceptions: true
   });
@@ -237,12 +241,15 @@ No incluyas los números de identificación de las aves, solo los pesos.`
   if (result.error) return { ok:false, error: result.error.message };
 
   try {
-    const text = result.content[0].text.trim();
-    const pesos = JSON.parse(text);
-    if (!Array.isArray(pesos)) throw new Error('No es array');
+    const raw = result.content[0].text.trim();
+    // Extraer el array JSON aunque Claude añada texto extra alrededor
+    const match = raw.match(/\[[\d.,\s]+\]/);
+    if (!match) return { ok:false, error:'Claude respondió pero sin array de pesos. Respuesta: ' + raw.slice(0, 200) };
+    const pesos = JSON.parse(match[0]);
+    if (!Array.isArray(pesos) || !pesos.length) throw new Error('Array vacío');
     return { ok:true, pesos };
   } catch(e) {
-    return { ok:false, error:'No se pudo extraer pesos de la imagen' };
+    return { ok:false, error:'No se pudo extraer pesos: ' + e.message };
   }
 }
 
