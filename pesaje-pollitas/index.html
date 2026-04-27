@@ -138,6 +138,7 @@ label { font-size:.85rem; color:#666; font-weight:500; }
 <div class="tabs" id="tabs">
   <div class="tab active" onclick="irTab('registro')">📋 Registro</div>
   <div class="tab" onclick="irTab('resumen')">📊 Historial</div>
+  <div class="tab" onclick="irTab('lotes')">🐔 Lotes</div>
 </div>
 
 <!-- ══ TAB REGISTRO ════════════════════════════════════ -->
@@ -195,12 +196,17 @@ label { font-size:.85rem; color:#666; font-weight:500; }
       </div>
     </div>
 
-    <!-- FOTO -->
+    <!-- FOTO / ARCHIVO -->
     <div id="panel-foto" style="display:none">
       <div class="foto-wrap">
         <img id="foto-preview" alt="Vista previa">
-        <input type="file" id="foto-input" accept="image/*" capture="environment" onchange="onFotoSelected()">
-        <button class="btn btn-azul" onclick="document.getElementById('foto-input').click()">📷 Tomar / elegir foto</button>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%">
+          <input type="file" id="foto-camara" accept="image/*" capture="environment" onchange="onArchivoSelected(this)" style="display:none">
+          <input type="file" id="foto-archivo" accept="image/*,application/pdf" onchange="onArchivoSelected(this)" style="display:none">
+          <button class="btn btn-azul" onclick="document.getElementById('foto-camara').click()">📷 Cámara</button>
+          <button class="btn btn-gris" style="color:#333" onclick="document.getElementById('foto-archivo').click()">📁 Subir archivo</button>
+        </div>
+        <p id="foto-nombre" style="font-size:.78rem;color:#888;margin-top:2px"></p>
         <button class="btn btn-verde" id="btn-procesar-foto" onclick="procesarFoto()" style="display:none">
           🔍 Extraer pesos con IA
         </button>
@@ -245,6 +251,33 @@ label { font-size:.85rem; color:#666; font-weight:500; }
     💾 Guardar pesaje
   </button>
   <div style="height:24px"></div>
+</div>
+
+<!-- ══ TAB LOTES ════════════════════════════════════ -->
+<div class="page" id="page-lotes">
+
+  <!-- NUEVO LOTE -->
+  <div class="card">
+    <h3>Nuevo lote</h3>
+    <label>Nombre del lote
+      <input type="text" id="lote-nombre" placeholder="Ej: Lote Reinhard Marzo 2026" style="margin-top:6px">
+    </label>
+    <label style="margin-top:10px">Fecha de nacimiento (BB)
+      <input type="date" id="lote-fecha" style="margin-top:6px">
+    </label>
+    <label style="margin-top:10px">N° de aves
+      <input type="number" id="lote-naves" placeholder="Ej: 10000" min="1" style="margin-top:6px">
+    </label>
+    <button class="btn btn-verde" onclick="crearLote()" style="margin-top:14px" id="btn-crear-lote">
+      + Crear lote
+    </button>
+  </div>
+
+  <!-- LISTA LOTES -->
+  <div id="lista-lotes">
+    <div class="alerta alerta-info">Cargando lotes…</div>
+  </div>
+
 </div>
 
 <!-- ══ TAB HISTORIAL ══════════════════════════════════ -->
@@ -320,10 +353,11 @@ function onLoteChange() {
 
 // ══ TABS ══════════════════════════════════════════════════════
 function irTab(tab) {
-  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', ['registro','resumen'][i]===tab));
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', ['registro','resumen','lotes'][i]===tab));
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-'+tab).classList.add('active');
   if (tab === 'resumen') cargarResumen();
+  if (tab === 'lotes')   renderListaLotes();
 }
 
 function irAtras() { /* reservado */ }
@@ -501,43 +535,118 @@ function textoANumero(texto) {
   return Math.round(v * 1000) / 1000;
 }
 
-// ══ FOTO / OCR ════════════════════════════════════════════════
-function onFotoSelected() {
-  const file = document.getElementById('foto-input').files[0];
+// ══ LOTES ═════════════════════════════════════════════════════
+async function crearLote() {
+  const nombre  = document.getElementById('lote-nombre').value.trim();
+  const fechaNac = document.getElementById('lote-fecha').value;
+  const nAves   = document.getElementById('lote-naves').value;
+
+  if (!nombre || !fechaNac) { toast('Completa nombre y fecha de nacimiento'); return; }
+
+  const btn = document.getElementById('btn-crear-lote');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Guardando…';
+
+  try {
+    const data = await jsonPost({ action:'crearLote', nombre, fechaNac, nAves });
+    if (data.ok) {
+      toast(`✅ Lote ${data.id} creado`);
+      document.getElementById('lote-nombre').value  = '';
+      document.getElementById('lote-fecha').value   = '';
+      document.getElementById('lote-naves').value   = '';
+      await cargarLotes();
+      renderListaLotes();
+    } else {
+      toast('Error: ' + data.error);
+    }
+  } catch(e) {
+    toast('Error de conexión');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '+ Crear lote';
+  }
+}
+
+function renderListaLotes() {
+  const cont = document.getElementById('lista-lotes');
+  if (!lotes.length) {
+    cont.innerHTML = '<div class="alerta alerta-info">No hay lotes. Crea el primero arriba.</div>';
+    return;
+  }
+  const hoy = new Date();
+  cont.innerHTML = lotes.map(l => {
+    const fn   = l.fechaNac ? new Date(l.fechaNac) : null;
+    const sem  = fn ? Math.max(1, Math.floor((hoy - fn) / (7*24*3600*1000)) + 1) : '—';
+    const semTxt = fn ? `Semana ${sem} de vida` : 'Sin fecha de nacimiento';
+    return `
+      <div class="card" style="border-left:4px solid ${l.activo ? 'var(--verde)' : 'var(--gris-b)'}">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div>
+            <div style="font-weight:700;font-size:1rem">${l.id} — ${l.nombre}</div>
+            <div style="font-size:.82rem;color:#666;margin-top:4px">
+              ${fn ? `Nacimiento: ${l.fechaNac}` : 'Sin fecha'}
+              ${l.nAves ? ` · ${Number(l.nAves).toLocaleString('es-CL')} aves` : ''}
+            </div>
+            <div style="font-size:.82rem;color:var(--verde);margin-top:2px">${semTxt}</div>
+          </div>
+          ${l.activo ? `<button class="btn btn-rojo" style="width:auto;padding:6px 10px;margin:0;font-size:.78rem"
+            onclick="desactivarLote('${l.id}')">Archivar</button>` : '<span style="font-size:.75rem;color:#aaa">Archivado</span>'}
+        </div>
+      </div>`;
+  }).join('');
+}
+
+async function desactivarLote(id) {
+  if (!confirm(`¿Archivar el lote ${id}? No aparecerá más en el registro.`)) return;
+  try {
+    const data = await jsonPost({ action:'desactivarLote', id });
+    if (data.ok) { toast('Lote archivado'); await cargarLotes(); renderListaLotes(); }
+    else toast('Error: ' + data.error);
+  } catch(e) { toast('Error de conexión'); }
+}
+
+// ══ FOTO / ARCHIVO / OCR ══════════════════════════════════════
+let archivoActual = null; // { dataUrl, mediaType, nombre }
+
+function onArchivoSelected(input) {
+  const file = input.files[0];
   if (!file) return;
+  archivoActual = null;
+
   const reader = new FileReader();
   reader.onload = e => {
+    archivoActual = { dataUrl: e.target.result, mediaType: file.type, nombre: file.name };
     const img = document.getElementById('foto-preview');
-    img.src = e.target.result;
-    img.style.display = 'block';
+    if (file.type.startsWith('image/')) {
+      img.src = e.target.result;
+      img.style.display = 'block';
+    } else {
+      img.style.display = 'none';
+    }
+    document.getElementById('foto-nombre').textContent = `📄 ${file.name}`;
     document.getElementById('btn-procesar-foto').style.display = 'block';
   };
   reader.readAsDataURL(file);
 }
 
 async function procesarFoto() {
+  if (!archivoActual) { toast('Selecciona una foto o archivo primero'); return; }
   const btn = document.getElementById('btn-procesar-foto');
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner"></span> Analizando…';
 
   try {
-    const src = document.getElementById('foto-preview').src;
-    const base64 = src.split(',')[1];
-
-    const resp = await fetch(WEB_APP_URL, {
-      method: 'POST',
-      body: JSON.stringify({ action:'ocr', imagen: base64 })
-    });
-    const data = await resp.json();
+    const base64 = archivoActual.dataUrl.split(',')[1];
+    const data   = await jsonPost({ action:'ocr', imagen: base64, mediaType: archivoActual.mediaType });
 
     if (data.ok && data.pesos && data.pesos.length) {
       data.pesos.forEach(v => agregarPesoVal(v));
-      toast(`✅ ${data.pesos.length} pesos extraídos de la foto`);
+      toast(`✅ ${data.pesos.length} pesos extraídos`);
     } else {
-      toast('No se encontraron pesos en la foto');
+      toast(data.error || 'No se encontraron pesos');
     }
   } catch(e) {
-    toast('Error procesando foto: ' + e.message);
+    toast('Error: ' + e.message);
   } finally {
     btn.disabled = false;
     btn.innerHTML = '🔍 Extraer pesos con IA';
@@ -733,6 +842,11 @@ function renderGrafico(registros, curvaRef) {
 async function jsonpGet(params) {
   const qs = Object.entries(params).map(([k,v])=>`${k}=${encodeURIComponent(v)}`).join('&');
   const r = await fetch(`${WEB_APP_URL}?${qs}`);
+  return r.json();
+}
+
+async function jsonPost(body) {
+  const r = await fetch(WEB_APP_URL, { method:'POST', body: JSON.stringify(body) });
   return r.json();
 }
 

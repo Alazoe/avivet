@@ -1,6 +1,9 @@
 // ── CONFIGURACIÓN ──────────────────────────────────────────────
-const SHEET_ID = ''; // Completar con ID del Google Sheet
-const ANTHROPIC_API_KEY = ''; // Completar con API key de Anthropic
+// Valores configurados en GAS → Configuración del proyecto → Propiedades de script
+// SHEET_ID          → ID del Google Sheet (URL entre /d/ y /edit)
+// ANTHROPIC_API_KEY → API key de Anthropic (console.anthropic.com)
+const SHEET_ID         = PropertiesService.getScriptProperties().getProperty('SHEET_ID')         || '';
+const ANTHROPIC_API_KEY = PropertiesService.getScriptProperties().getProperty('ANTHROPIC_API_KEY') || '';
 
 // Curva estándar Hy-Line Brown (semana → { min, max, promedio, uniformidad_min })
 const CURVA_HYLINE = {
@@ -40,8 +43,10 @@ function doGet(e) {
 function doPost(e) {
   try {
     const body = JSON.parse(e.postData.contents);
-    if (body.action === 'guardarPesaje')  return jsonResp(guardarPesaje(body));
-    if (body.action === 'ocr')            return jsonResp(ocr(body.imagen));
+    if (body.action === 'guardarPesaje')   return jsonResp(guardarPesaje(body));
+    if (body.action === 'ocr')             return jsonResp(ocr(body.imagen, body.mediaType));
+    if (body.action === 'crearLote')       return jsonResp(crearLote(body));
+    if (body.action === 'desactivarLote')  return jsonResp(desactivarLote(body));
     return jsonResp({ ok:false, error:'Acción desconocida' });
   } catch(err) {
     return jsonResp({ ok:false, error: err.toString() });
@@ -134,22 +139,61 @@ function getResumen(lote) {
   return { ok:true, data, curva: CURVA_HYLINE };
 }
 
+// ── CREAR LOTE ─────────────────────────────────────────────────
+function crearLote(body) {
+  const { nombre, fechaNac, nAves } = body;
+  if (!nombre || !fechaNac) return { ok:false, error:'Nombre y fecha requeridos' };
+
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  let ws   = ss.getSheetByName('CONFIGURACIÓN');
+  if (!ws) {
+    ws = ss.insertSheet('CONFIGURACIÓN');
+    ws.appendRow(['id_lote','nombre_lote','fecha_nacimiento','n_aves_total','activo']);
+    ws.setFrozenRows(1);
+  }
+
+  const rows = ws.getDataRange().getValues().slice(1).filter(r => r[0]);
+  const id   = 'L' + String(rows.length + 1).padStart(2,'0');
+  ws.appendRow([id, nombre.trim(), fechaNac, parseInt(nAves) || 0, true]);
+  return { ok:true, id, nombre: nombre.trim() };
+}
+
+// ── DESACTIVAR LOTE ────────────────────────────────────────────
+function desactivarLote(body) {
+  const { id } = body;
+  const ss  = SpreadsheetApp.openById(SHEET_ID);
+  const ws  = ss.getSheetByName('CONFIGURACIÓN');
+  if (!ws) return { ok:false, error:'Hoja no encontrada' };
+  const rows = ws.getDataRange().getValues();
+  for (let i = 1; i < rows.length; i++) {
+    if (String(rows[i][0]).trim() === String(id).trim()) {
+      ws.getRange(i + 1, 5).setValue(false);
+      return { ok:true };
+    }
+  }
+  return { ok:false, error:'Lote no encontrado' };
+}
+
 // ── OCR CON CLAUDE VISION ──────────────────────────────────────
-function ocr(base64Image) {
+function ocr(base64Data, mediaType) {
   if (!ANTHROPIC_API_KEY) return { ok:false, error:'API key no configurada' };
+  mediaType = mediaType || 'image/jpeg';
+  const isPdf = mediaType === 'application/pdf';
+
+  const bloque = isPdf
+    ? { type:'document', source:{ type:'base64', media_type:'application/pdf', data: base64Data } }
+    : { type:'image',    source:{ type:'base64', media_type: mediaType,         data: base64Data } };
+
   const payload = {
     model: 'claude-haiku-4-5-20251001',
     max_tokens: 512,
     messages: [{
       role: 'user',
       content: [
-        {
-          type: 'image',
-          source: { type: 'base64', media_type: 'image/jpeg', data: base64Image }
-        },
+        bloque,
         {
           type: 'text',
-          text: 'Esta es una foto de un papel con pesos de aves anotados a mano. Extrae todos los valores numéricos que correspondan a pesos (en gramos o kg). Devuelve SOLO un array JSON con los números, sin texto adicional. Si los valores están en gramos (>100), conviértelos a kg dividiendo por 1000. Ejemplo de respuesta: [1.23, 1.45, 0.98]'
+          text: 'Este documento contiene pesos de aves (planilla, papel escrito a mano o tabla). Extrae todos los valores numéricos que correspondan a pesos corporales. Devuelve SOLO un array JSON con los números en kg. Si están en gramos (>100), divídelos por 1000. Ejemplo: [1.23, 1.45, 0.98]'
         }
       ]
     }]
