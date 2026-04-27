@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Proyección 3 Galpones · Hy-Line Brown · avivet.cl</title>
+<title>Proyección Galpones · Hy-Line Brown · avivet.cl</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -18,10 +18,11 @@
       <span class="marca-sub">medicina aviar · sur de Chile</span>
     </div>
     <nav class="nav-anclas">
-      <a href="#resumen">Resumen</a>
+      <a href="#config">Configurar</a>
+      <a href="#resumen">Galpones</a>
       <a href="#cronograma">Cronograma</a>
       <a href="#produccion">Producción</a>
-      <a href="#valle">Valle</a>
+      <a href="#valle">Brechas</a>
       <a href="#anual">Anual</a>
       <a href="#tabla">Detalle</a>
     </nav>
@@ -32,99 +33,90 @@
 
   <section class="hero">
     <div class="hero-meta">Informe técnico · <span id="fecha-hoy"></span></div>
-    <h1>Proyección de tres galpones desfasados</h1>
-    <p class="hero-bajada">
-      Plan de crecimiento y reposición para una operación que parte con un único galpón
-      de 2.000 aves Hy-Line Brown nacidas el 17 de julio de 2025. Modelo basado en curva
-      Hy-Line Brown adaptada a sistemas no convencionales del sur de Chile, ciclo
-      productivo de 100 semanas, mortalidad acumulada estimada del 10%.
+    <h1>Proyección de producción · configuración personalizable</h1>
+    <p class="hero-bajada" id="hero-bajada">
+      Modelo basado en curva Hy-Line Brown adaptada a sistemas no convencionales del sur de Chile.
     </p>
     <div class="hero-fichas">
       <div class="ficha"><span class="ficha-num" id="kpi-galpones">—</span><span class="ficha-lbl">galpones</span></div>
-      <div class="ficha"><span class="ficha-num" id="kpi-aves">—</span><span class="ficha-lbl">aves totales</span></div>
-      <div class="ficha"><span class="ficha-num" id="kpi-ciclo">100</span><span class="ficha-lbl">semanas/ciclo</span></div>
+      <div class="ficha"><span class="ficha-num" id="kpi-aves">—</span><span class="ficha-lbl">aves/galpón</span></div>
+      <div class="ficha"><span class="ficha-num" id="kpi-ciclo">—</span><span class="ficha-lbl">horizonte</span></div>
       <div class="ficha"><span class="ficha-num" id="kpi-horizonte">—</span><span class="ficha-lbl">semanas modeladas</span></div>
     </div>
   </section>
 
+  <!-- ░░ CONFIG ░░ -->
+  <section id="config" class="bloque config-section">
+    <div id="config-panel"></div>
+  </section>
+
+  <!-- ░░ GALPONES ░░ -->
   <section id="resumen" class="bloque">
     <h2>Galpones del modelo</h2>
     <div class="galpones-grid" id="galpones-grid"></div>
   </section>
 
+  <!-- ░░ CRONOGRAMA ░░ -->
   <section id="cronograma" class="bloque">
-    <h2>Cronograma de los tres lotes</h2>
+    <h2>Cronograma de lotes</h2>
     <p class="bloque-desc">
-      Cada barra representa el ciclo de vida completo de un lote: crianza, traspaso,
-      postura y descarte. Los desfases entre galpones permiten que siempre haya al
-      menos un lote en producción.
+      Cada barra es el ciclo completo de un lote: crianza (gris), postura (color) y descarte.
+      El círculo blanco marca el pico de producción estimado.
     </p>
     <div class="grafico-wrap" id="cronograma-svg"></div>
-    <div class="leyenda">
-      <span class="leyenda-item"><span class="cuad" style="background:#cfcfcf"></span> Crianza (sem 1–17)</span>
-      <span class="leyenda-item"><span class="cuad" style="background:#9aa0a6"></span> Traspaso (sem 17–19)</span>
-      <span class="leyenda-item"><span class="cuad estado-postura"></span> Postura (sem 19–100)</span>
-      <span class="leyenda-item"><span class="cuad" style="background:#d6d3d1; border:1px dashed #888"></span> Descartado</span>
-    </div>
+    <div class="leyenda" id="prod-leyenda"></div>
   </section>
 
+  <!-- ░░ PRODUCCIÓN ░░ -->
   <section id="produccion" class="bloque">
     <h2>Producción semanal proyectada</h2>
     <p class="bloque-desc">
-      Huevos por semana de cada galpón y total agregado. La línea oscura (total)
-      muestra cómo se aplana la curva al sumar lotes desfasados.
+      Huevos por semana de cada galpón y total agregado. Las zonas grises son períodos sin
+      producción (crianza entre lotes). La línea oscura es el total combinado.
     </p>
     <div class="grafico-wrap" id="produccion-svg"></div>
-    <div class="leyenda">
-      <span class="leyenda-item"><span class="cuad" style="background:#f0a500"></span> Galpón 1</span>
-      <span class="leyenda-item"><span class="cuad" style="background:#1b4332"></span> Galpón 2</span>
-      <span class="leyenda-item"><span class="cuad" style="background:#58a6ff"></span> Galpón 3</span>
-      <span class="leyenda-item"><span class="cuad" style="background:#2d4a2b"></span> <strong>Total agregado</strong></span>
-    </div>
   </section>
 
+  <!-- ░░ BRECHAS ░░ -->
   <section id="valle" class="bloque alerta">
     <div class="alerta-marca">⚠ Brechas de transición</div>
-    <h2>Períodos sin producción entre lotes</h2>
-    <p class="bloque-desc">
-      Con un solo galpón en régimen secuencial, cada ciclo de 102 semanas incluye
-      ~20 semanas sin huevos: 2 de limpieza post-descarte y 18 de crianza del lote siguiente.
-      A continuación se detallan todas las brechas del horizonte de 10 años.
-    </p>
+    <h2>Períodos sin producción</h2>
+    <p class="bloque-desc" id="valle-desc"></p>
     <div class="grafico-wrap valle-detalle" id="valle-svg"></div>
     <div class="valle-stats" id="valle-stats"></div>
   </section>
 
+  <!-- ░░ INFRAESTRUCTURA ░░ -->
   <section id="infraestructura" class="bloque">
     <h2>Infraestructura para flujo continuo</h2>
     <p class="bloque-desc">
-      Análisis de cuántos galpones adicionales se necesitan para eliminar las brechas
-      y mantener producción ininterrumpida, con el desfase de entrada óptimo.
+      Análisis de eficiencia con la configuración actual y cuántos galpones adicionales
+      se necesitarían para eliminar todas las brechas.
     </p>
     <div id="infra-grid"></div>
     <div class="grafico-wrap" id="infra-svg" style="margin-top:24px"></div>
   </section>
 
+  <!-- ░░ ANUAL ░░ -->
   <section id="anual" class="bloque">
     <h2>Producción anual estimada</h2>
     <p class="bloque-desc">
-      Acumulado por año, expresado en huevos y docenas. Los años con brecha de transición
-      muestran producción reducida respecto al año plenamente productivo.
+      Acumulado por año en huevos y docenas. Los años parciales (inicio/fin del horizonte)
+      están marcados con *.
     </p>
     <div class="anual-grid" id="anual-grid"></div>
   </section>
 
+  <!-- ░░ TABLA ░░ -->
   <section id="tabla" class="bloque">
     <h2>Detalle semanal</h2>
     <div class="tabla-controles">
       <label class="filtro">
         <span>Filtrar año</span>
-        <select id="filtro-anio">
-          <option value="todos">Todos</option>
-        </select>
+        <select id="filtro-anio"><option value="todos">Todos</option></select>
       </label>
       <label class="filtro">
-        <span>Mostrar solo semanas con producción</span>
+        <span>Solo semanas con producción</span>
         <input type="checkbox" id="filtro-produccion" checked>
       </label>
       <span class="conteo" id="tabla-conteo"></span>
@@ -137,15 +129,15 @@
     </div>
   </section>
 
+  <!-- ░░ METODOLOGÍA ░░ -->
   <section class="bloque metodo">
     <h2>Metodología y supuestos</h2>
     <ul class="metodo-lista">
-      <li><strong>Curva genética:</strong> Hy-Line Brown según Commercial Management Guide, ajustada ligeramente a la baja para condiciones de manejo no convencional del sur de Chile.</li>
-      <li><strong>Mortalidad:</strong> 3% acumulada en crianza (sem 1–18) más 0,1%/semana en postura, totalizando ~10% a las 100 semanas.</li>
-      <li><strong>Desfases reales:</strong> Galpón 1 → 17/07/2025; Galpón 2 → 15/06/2026 (48 semanas después); Galpón 3 → 15/02/2027 (35 semanas después de G2).</li>
-      <li><strong>Ciclo por lote:</strong> Crianza (sem 1–17) → Traspaso al galpón de postura (sem 17–19) → Postura (sem 19–100) → Descarte.</li>
-      <li><strong>Galpón de crianza:</strong> Existente. No requiere inversión adicional pero opera en cuello de botella entre lotes (vacío sanitario mínimo de 2–3 semanas obligatorio).</li>
-      <li><strong>Las cifras son proyecciones</strong>: el manejo real (sanidad, alimentación, fotoperiodo, estrés) puede modificar resultados ±10–15%.</li>
+      <li><strong>Curva genética:</strong> Hy-Line Brown según Commercial Management Guide, ajustada a condiciones de manejo no convencional del sur de Chile.</li>
+      <li><strong>Mortalidad:</strong> 0,2%/semana en crianza (sem 1–18) + 0,1%/semana en postura, totalizando ~10% a las 100 semanas productivas.</li>
+      <li><strong>Ciclo por lote:</strong> 18 sem. crianza → 82 sem. postura (sem 19–100) → 2 sem. limpieza. Total: 102 semanas por ciclo.</li>
+      <li><strong>Datos personalizables:</strong> número de galpones (1–7), aves por galpón, fecha de ingreso del primer lote, y horizonte de proyección.</li>
+      <li><strong>Las cifras son proyecciones:</strong> el manejo real (sanidad, alimentación, fotoperiodo, estrés) puede modificar los resultados ±10–15%.</li>
     </ul>
   </section>
 
