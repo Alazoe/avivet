@@ -11,7 +11,7 @@ App móvil para registro de pesos individuales y control de uniformidad de lotes
 ### 1. Crear el Google Sheet
 
 1. Crea un Google Sheet nuevo para el productor
-2. Copia el ID de la URL: `https://docs.google.com/spreadsheets/d/**ID_AQUÍ**/edit`
+2. Copia el ID de la URL: `https://docs.google.com/spreadsheets/d/1Yl6jQtUoqP1iIO9yqYxXST_AzZ6pNEgd9OtbFiBc62o/edit` 
 
 ### 2. Configurar Apps Script
 
