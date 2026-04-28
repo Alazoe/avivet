@@ -24,7 +24,7 @@ Herramienta de referencia técnica para las cuatro líneas genéticas ponedoras 
 
 Es una página estática sin dependencias externas (fuera de Google Fonts).  
 Para usarla localmente, basta abrir `index.html` en un navegador.  
-Está publicada en GitHub Pages bajo el repositorio `avivet`.
+Está publicada en GitHub Pages: **http://avivet.cl/avivet/curvas-geneticas/**
 
 ## Estructura
 
