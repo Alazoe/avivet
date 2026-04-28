@@ -561,11 +561,13 @@ function renderPostura() {
   const L = LINEAS[lineaSel];
   const datos = L.postura;
 
+  // Postura array: [sem, pesoMin, pesoMax, pct, pesoHuevo, alMin, alMax, aguaMin, aguaMax]
+  //                  0     1        2      3     4          5      6      7        8
   renderLinea('svg-p-peso',    datos, 1, 2, 'Peso corporal (kg)',         0, null, L.color);
-  renderLinea('svg-p-pct',     datos, 4, 4, '% postura',                  0, 100,  L.color, true);
-  renderLinea('svg-p-huevo',   datos, 5, 5, 'Peso huevo (g)',             40, null, L.color, true);
-  renderLinea('svg-p-alim',    datos, 6, 7, 'Alimento (g/ave/día)',       0, null, L.color);
-  renderLinea('svg-p-agua',    datos, 8, 9, 'Agua (ml/ave/día)',          0, null, L.color);
+  renderLinea('svg-p-pct',     datos, 3, 3, '% postura',                  0, 100,  L.color, true);
+  renderLinea('svg-p-huevo',   datos, 4, 4, 'Peso huevo (g)',             40, null, L.color, true);
+  renderLinea('svg-p-alim',    datos, 5, 6, 'Alimento (g/ave/día)',       0, null, L.color);
+  renderLinea('svg-p-agua',    datos, 7, 8, 'Agua (ml/ave/día)',          0, null, L.color);
 
   const th = `<tr><th>Sem</th><th>Peso mín (kg)</th><th>Peso máx (kg)</th>
     <th>% Postura</th><th>Peso huevo (g)</th>
@@ -634,7 +636,7 @@ function renderLinea(svgId, datos, iMin, iMax, titulo, yMin, yMax, color, single
   wrap.innerHTML = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
     <text x="${PL}" y="16" font-size="11" fill="#555" font-weight="600">${titulo}</text>
     ${grids}
-    <text x="${PL}" y="${H-PB+28}" text-anchor="middle" font-size="9" fill="#bbb">Semana</text>
+    <text x="${PL + CW/2}" y="${H-PB+28}" text-anchor="middle" font-size="9" fill="#bbb">Semana</text>
     ${xlabels}
     ${band}${lineMin}${lineMax}
   </svg>`;
