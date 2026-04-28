@@ -137,6 +137,11 @@ label { font-size:.85rem; color:#666; font-weight:500; }
 .tabla-resumen td { padding:7px 6px; text-align:center; border-bottom:1px solid var(--gris-b); }
 .tabla-resumen tr:nth-child(even) td { background:var(--gris-f); }
 
+/* HISTOGRAMA – filas de tabla clickeables */
+.hist-row-click { cursor:pointer; }
+.hist-row-click:hover td { background:#e8f5e9 !important; }
+.hist-row-sel td { background:#c8e6c9 !important; font-weight:600; }
+
 /* GRÁFICO */
 #grafico-canvas { width:100%; border-radius:8px; }
 
@@ -746,13 +751,16 @@ async function cargarResumen() {
 
 function renderResumen(registros, curvaRef) {
   const filas = registros.map(r => {
-    const unif  = (r.uniformidad * 100).toFixed(1);
-    const cv    = (r.cv * 100).toFixed(1);
-    const ref   = curvaRef[r.semana];
-    const diff  = ref ? ((r.promedio - ref.prom) / ref.prom * 100).toFixed(1) : '—';
-    const unifMin = ref ? ref.unif * 100 : 85;
-    const color = parseFloat(unif) >= unifMin ? 'sem-verde' : parseFloat(unif) >= unifMin-10 ? 'sem-amarillo' : 'sem-rojo';
-    return `<tr>
+    const unif     = (r.uniformidad * 100).toFixed(1);
+    const cv       = (r.cv * 100).toFixed(1);
+    const ref      = curvaRef[r.semana];
+    const diff     = ref ? ((r.promedio - ref.prom) / ref.prom * 100).toFixed(1) : '—';
+    const unifMin  = ref ? ref.unif * 100 : 85;
+    const color    = parseFloat(unif) >= unifMin ? 'sem-verde' : parseFloat(unif) >= unifMin-10 ? 'sem-amarillo' : 'sem-rojo';
+    const hasPesos = r.pesosRaw && r.pesosRaw.length > 0;
+    return `<tr class="hist-row${hasPesos?' hist-row-click':''}" data-sem="${r.semana}"
+        ${hasPesos ? `onclick="mostrarHistograma(${r.semana})"` : ''}
+        title="${hasPesos ? 'Toca para ver histograma' : 'Sin datos individuales'}">
       <td>${r.semana}</td>
       <td>${r.promedio.toFixed(3)}</td>
       <td>${ref ? ref.prom.toFixed(3) : '—'}</td>
@@ -760,27 +768,40 @@ function renderResumen(registros, curvaRef) {
       <td><span class="semaforo ${color}"></span>${unif}%</td>
       <td>${cv}%</td>
       <td>${r.nAves}</td>
+      <td style="font-size:.9rem">${hasPesos ? '📊' : ''}</td>
     </tr>`;
   }).join('');
 
   document.getElementById('resumen-contenido').innerHTML = `
     <div class="card">
       <h3>Historial de pesajes</h3>
+      <p style="font-size:.75rem;color:#888;margin-bottom:8px">Toca una fila 📊 para ver el histograma de esa semana</p>
       <div style="overflow-x:auto">
         <table class="tabla-resumen">
           <thead><tr>
-            <th>Sem</th><th>Prom kg</th><th>Curva</th><th>Dif</th><th>Unif</th><th>CV%</th><th>N</th>
+            <th>Sem</th><th>Prom kg</th><th>Curva</th><th>Dif</th><th>Unif</th><th>CV%</th><th>N</th><th></th>
           </tr></thead>
           <tbody>${filas}</tbody>
         </table>
       </div>
+    </div>
+    <div class="card" id="hist-card" style="display:none">
+      <h3 id="hist-titulo">Distribución de pesos</h3>
+      <div id="hist-container"></div>
     </div>
     <div class="card">
       <h3>Uniformidad vs curva esperada</h3>
       <canvas id="grafico-canvas" height="220"></canvas>
     </div>`;
 
+  window._histRegistros = registros;
+  window._histCurva     = curvaRef;
+
   renderGrafico(registros, curvaRef);
+
+  // Auto-mostrar histograma del primer registro con datos individuales
+  const primero = registros.find(r => r.pesosRaw && r.pesosRaw.length > 0);
+  if (primero) mostrarHistograma(primero.semana);
 }
 
 function renderGrafico(registros, curvaRef) {
@@ -843,6 +864,129 @@ function renderGrafico(registros, curvaRef) {
   ctx.fillText('— Esperada', W-80, pad.t+10);
   ctx.fillStyle = '#2e7d32';
   ctx.fillText('— Real', W-30, pad.t+10);
+}
+
+// ══ HISTOGRAMA ════════════════════════════════════════════════
+function mostrarHistograma(semana) {
+  const registros = window._histRegistros || [];
+  const curvaRef  = window._histCurva     || {};
+  const r = registros.find(x => x.semana === semana);
+  if (!r || !r.pesosRaw || !r.pesosRaw.length) return;
+
+  document.getElementById('hist-card').style.display = 'block';
+  document.getElementById('hist-titulo').textContent =
+    `Distribución Semana ${semana} · ${r.pesosRaw.length} aves`;
+  document.getElementById('hist-container').innerHTML =
+    renderHistogramaSVG(r.pesosRaw, curvaRef[semana]);
+
+  document.querySelectorAll('.hist-row').forEach(row => row.classList.remove('hist-row-sel'));
+  const sel = document.querySelector(`.hist-row[data-sem="${semana}"]`);
+  if (sel) sel.classList.add('hist-row-sel');
+}
+
+function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
+function renderHistogramaSVG(pesos, ref) {
+  const BIN  = 0.025; // 25 g por bin
+  const n    = pesos.length;
+  const mean = pesos.reduce((a, b) => a + b, 0) / n;
+  const rMin = mean * 0.9;
+  const rMax = mean * 1.1;
+
+  const loV   = Math.floor(Math.min(...pesos) / BIN) * BIN;
+  const hiV   = Math.ceil(Math.max(...pesos)  / BIN) * BIN;
+  const span  = hiV - loV || BIN;
+  const nBins = Math.max(1, Math.round(span / BIN));
+
+  const counts = new Array(nBins).fill(0);
+  pesos.forEach(v => {
+    const i = Math.min(Math.floor((v - loV) / BIN), nBins - 1);
+    counts[i]++;
+  });
+  const maxCnt = Math.max(...counts, 1);
+
+  const W = 320, H = 200;
+  const p = { t:22, r:14, b:54, l:34 };
+  const iW = W - p.l - p.r;
+  const iH = H - p.t - p.b;
+
+  const xOf = i => p.l + (i / nBins) * iW;
+  const yOf = v => p.t + iH - (v / maxCnt) * iH;
+
+  // Banda ±10%
+  const bx1 = clamp(p.l + ((rMin - loV) / span) * iW, p.l, p.l + iW);
+  const bx2 = clamp(p.l + ((rMax - loV) / span) * iW, p.l, p.l + iW);
+  const band = `<rect x="${bx1.toFixed(1)}" y="${p.t}" width="${(bx2-bx1).toFixed(1)}" height="${iH}" fill="rgba(76,175,80,0.10)" rx="2"/>`;
+
+  // Grid Y
+  const yStep = maxCnt <= 5 ? 1 : maxCnt <= 15 ? 2 : maxCnt <= 30 ? 5 : 10;
+  let grid = '', yLabels = '';
+  for (let v = 0; v <= maxCnt; v += yStep) {
+    const y = yOf(v);
+    grid    += `<line x1="${p.l}" y1="${y.toFixed(1)}" x2="${W-p.r}" y2="${y.toFixed(1)}" stroke="#eee"/>`;
+    yLabels += `<text x="${p.l-4}" y="${(y+3).toFixed(1)}" text-anchor="end" font-size="9" fill="#aaa">${v}</text>`;
+  }
+
+  // Barras
+  const bw = iW / nBins;
+  let bars = '';
+  counts.forEach((cnt, i) => {
+    if (!cnt) return;
+    const binC  = loV + (i + 0.5) * BIN;
+    const isOut = binC < rMin || binC > rMax;
+    const x = xOf(i) + 1, w = bw - 2;
+    const y = yOf(cnt), h = p.t + iH - y;
+    bars += `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}"
+      fill="${isOut?'#ef9a9a':'#a5d6a7'}" stroke="${isOut?'#c62828':'#388e3c'}" stroke-width="0.5" rx="1"/>`;
+    const textY = h > 14 ? y + 11 : y - 3;
+    bars += `<text x="${(x+w/2).toFixed(1)}" y="${textY.toFixed(1)}" text-anchor="middle" font-size="9"
+      fill="${h>14?(isOut?'#b71c1c':'#1b5e20'):'#555'}">${cnt}</text>`;
+  });
+
+  // Eje X
+  const every = nBins <= 6 ? 1 : nBins <= 12 ? 2 : nBins <= 20 ? 3 : 4;
+  let xLabels = '';
+  for (let i = 0; i <= nBins; i += every) {
+    const v = (loV + i * BIN).toFixed(2);
+    const x = xOf(i);
+    xLabels += `<line x1="${x.toFixed(1)}" y1="${p.t+iH}" x2="${x.toFixed(1)}" y2="${p.t+iH+4}" stroke="#ccc"/>`;
+    xLabels += `<text x="${x.toFixed(1)}" y="${p.t+iH+14}" text-anchor="middle" font-size="8.5" fill="#888">${v}</text>`;
+  }
+
+  // Ejes
+  const axes = `<line x1="${p.l}" y1="${p.t}" x2="${p.l}" y2="${p.t+iH}" stroke="#ccc"/>
+    <line x1="${p.l}" y1="${p.t+iH}" x2="${W-p.r}" y2="${p.t+iH}" stroke="#ccc"/>`;
+
+  // Línea media real
+  const mx = clamp(p.l + ((mean - loV) / span) * iW, p.l, p.l + iW);
+  const meanLine = `<line x1="${mx.toFixed(1)}" y1="${p.t}" x2="${mx.toFixed(1)}" y2="${p.t+iH}" stroke="#2e7d32" stroke-width="1.5"/>
+    <text x="${mx.toFixed(1)}" y="${p.t-5}" text-anchor="middle" font-size="8.5" fill="#2e7d32">x̄ ${mean.toFixed(3)}</text>`;
+
+  // Línea curva referencia
+  let refLine = '';
+  if (ref && ref.prom) {
+    const rx = clamp(p.l + ((ref.prom - loV) / span) * iW, p.l, p.l + iW);
+    const labelOffset = Math.abs(rx - mx) < 30 ? 10 : 0; // evitar solapamiento
+    refLine = `<line x1="${rx.toFixed(1)}" y1="${p.t}" x2="${rx.toFixed(1)}" y2="${p.t+iH}" stroke="#1565c0" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="${rx.toFixed(1)}" y="${p.t-5+labelOffset}" text-anchor="middle" font-size="8.5" fill="#1565c0">★ ${ref.prom.toFixed(3)}</text>`;
+  }
+
+  // Leyenda
+  const ly = H - 14;
+  const legend = `
+    <rect x="${p.l}" y="${ly-8}" width="9" height="9" fill="#a5d6a7" stroke="#388e3c" stroke-width="0.5"/>
+    <text x="${p.l+12}" y="${ly}" font-size="8.5" fill="#666">Dentro ±10%</text>
+    <rect x="${p.l+82}" y="${ly-8}" width="9" height="9" fill="#ef9a9a" stroke="#c62828" stroke-width="0.5"/>
+    <text x="${p.l+94}" y="${ly}" font-size="8.5" fill="#666">Fuera</text>
+    <line x1="${p.l+140}" y1="${ly-4}" x2="${p.l+153}" y2="${ly-4}" stroke="#2e7d32" stroke-width="1.5"/>
+    <text x="${p.l+156}" y="${ly}" font-size="8.5" fill="#2e7d32">Media</text>
+    ${ref && ref.prom ? `<line x1="${p.l+198}" y1="${ly-4}" x2="${p.l+211}" y2="${ly-4}" stroke="#1565c0" stroke-width="1.5" stroke-dasharray="4,3"/><text x="${p.l+214}" y="${ly}" font-size="8.5" fill="#1565c0">Curva</text>` : ''}
+    <text x="${W/2}" y="${H-29}" text-anchor="middle" font-size="8" fill="#bbb">peso (kg)</text>`;
+
+  return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;display:block" xmlns="http://www.w3.org/2000/svg">
+    <rect width="${W}" height="${H}" fill="#fafafa" rx="4"/>
+    ${band}${grid}${bars}${axes}${xLabels}${yLabels}${meanLine}${refLine}${legend}
+  </svg>`;
 }
 
 // ══ HELPERS API ═══════════════════════════════════════════════

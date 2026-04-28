@@ -143,7 +143,8 @@ function getResumen(lote, productor) {
       rangoMin:     r[7],
       rangoMax:     r[8],
       fueraRango:   r[9],
-      metodo:       r[10]
+      metodo:       r[10],
+      pesosRaw:     r[11] ? String(r[11]).split(',').map(Number).filter(v => v > 0) : []
     }))
     .sort((a,b) => a.semana - b.semana);
   return { ok:true, data, curva: CURVA_HYLINE };
