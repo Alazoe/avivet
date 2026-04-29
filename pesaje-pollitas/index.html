@@ -82,7 +82,8 @@ label { font-size:.85rem; color:#666; font-weight:500; }
   border-radius:8px; margin-top:8px; font-size:.9rem; }
 .peso-chip { display:inline-block; background:#e8f5e9; border:1px solid #a5d6a7; border-radius:16px;
   padding:4px 10px; margin:3px; font-size:.85rem; cursor:pointer; }
-.peso-chip.fuera { background:#ffebee; border-color:#ef9a9a; }
+.peso-chip.fuera     { background:#fff8e1; border-color:#ffd54f; color:#7b5e00; }
+.peso-chip.muy-fuera { background:#ffebee; border-color:#ef9a9a; color:#b71c1c; font-weight:700; }
 .peso-chip:hover::after { content:'✕'; margin-left:4px; color:#c62828; }
 
 /* INPUT MANUAL */
@@ -233,6 +234,7 @@ label { font-size:.85rem; color:#666; font-weight:500; }
       <button class="btn btn-rojo" onclick="limpiarPesos()" style="width:auto;padding:6px 12px;margin:0;font-size:.8rem">Limpiar</button>
     </div>
     <div class="pesos-area" id="pesos-area"></div>
+    <div id="alerta-outlier" class="alerta alerta-error" style="display:none;margin-top:8px"></div>
     <div id="preview-stats" style="display:none">
       <div class="stats-grid">
         <div class="stat-box" id="sb-prom"><div class="val" id="stat-prom">—</div><div class="lbl">Promedio kg</div></div>
@@ -517,7 +519,13 @@ function agregarPeso() {
 }
 
 function agregarPesoVal(v) {
-  pesos.push(Math.round(v * 1000) / 1000);
+  const val = Math.round(v * 1000) / 1000;
+  if (pesos.length >= 3) {
+    const prom = pesos.reduce((a,b)=>a+b,0)/pesos.length;
+    const diff = Math.abs(val - prom) / prom;
+    if (diff > 0.20) toast(`⚠️ ${val.toFixed(3)} kg está ${(diff*100).toFixed(0)}% fuera del promedio — ¿es correcto?`, 4000);
+  }
+  pesos.push(val);
   renderPesos();
 }
 
@@ -537,17 +545,31 @@ function renderPesos() {
   const sem      = parseInt(document.getElementById('sel-semana').value) || 0;
   const refCurva = CURVA_HYLINE[sem] || {};
   const prom     = n ? pesos.reduce((a,b)=>a+b,0)/n : 0;
-  const rMin = prom*0.9, rMax = prom*1.1;
+  const rMin10 = prom*0.9,  rMax10 = prom*1.1;
+  const rMin20 = prom*0.8,  rMax20 = prom*1.2;
+
+  const muyFuera20 = pesos.filter(v => v < rMin20 || v > rMax20);
 
   document.getElementById('pesos-area').innerHTML = pesos.map((v,i) => {
-    const out = v < rMin || v > rMax;
-    return `<span class="peso-chip${out?' fuera':''}" onclick="eliminarPeso(${i})">${v.toFixed(3)}</span>`;
+    const out10 = v < rMin10 || v > rMax10;
+    const out20 = v < rMin20 || v > rMax20;
+    const cls   = out20 ? ' muy-fuera' : out10 ? ' fuera' : '';
+    return `<span class="peso-chip${cls}" onclick="eliminarPeso(${i})">${v.toFixed(3)}</span>`;
   }).join('');
+
+  // Alerta de outliers extremos (>20%)
+  const alertaOutlier = document.getElementById('alerta-outlier');
+  if (n >= 3 && muyFuera20.length) {
+    alertaOutlier.style.display = 'block';
+    alertaOutlier.textContent = `⚠️ ${muyFuera20.length} peso${muyFuera20.length>1?'s':''} fuera del ±20% del promedio (${muyFuera20.map(v=>v.toFixed(3)).join(', ')} kg) — verifica si son errores`;
+  } else {
+    alertaOutlier.style.display = 'none';
+  }
 
   if (n >= 3) {
     const sd   = Math.sqrt(pesos.map(v=>Math.pow(v-prom,2)).reduce((a,b)=>a+b,0)/n);
     const cv   = prom > 0 ? sd/prom : 0;
-    const fuera= pesos.filter(v => v < rMin || v > rMax).length;
+    const fuera= pesos.filter(v => v < rMin10 || v > rMax10).length;
     const unif = (n-fuera)/n;
 
     document.getElementById('preview-stats').style.display = 'block';
@@ -708,7 +730,8 @@ function renderResumen(registros, curvaRef) {
       <td>${r.semana}</td><td>${r.promedio.toFixed(3)}</td><td>${ref ? ref.prom.toFixed(3) : '—'}</td>
       <td>${diff !== '—' ? (parseFloat(diff)>=0?'+':'')+diff+'%' : '—'}</td>
       <td><span class="semaforo ${color}"></span>${unif}%</td>
-      <td>${cv}%</td><td>${r.nAves}</td><td>${hasPesos ? '📊' : ''}</td>
+      <td>${cv}%</td><td>${r.nAves}</td>
+      <td>${hasPesos ? `<button onclick="event.stopPropagation();mostrarHistograma(${r.semana})" style="background:var(--verde);color:#fff;border:none;border-radius:6px;padding:3px 8px;font-size:.75rem;cursor:pointer">📊</button>` : ''}</td>
     </tr>`;
   }).join('');
 
@@ -723,8 +746,9 @@ function renderResumen(registros, curvaRef) {
         </table>
       </div>
     </div>
-    <div class="card" id="hist-card" style="display:none">
+    <div class="card" id="hist-card" style="display:none;border-left:4px solid var(--verde)">
       <h3 id="hist-titulo">Distribución de pesos</h3>
+      <p style="font-size:.75rem;color:#888;margin-bottom:8px">Verde = dentro ±10% · Amarillo = ±10–20% · Rojo = fuera ±20%</p>
       <div id="hist-container"></div>
     </div>
     <div class="card">
@@ -817,9 +841,13 @@ function renderHistogramaSVG(pesos, ref) {
   const xOf=i=>p.l+(i/nBins)*iW;
   const yOf=v=>p.t+iH-(v/maxCnt)*iH;
 
-  const bx1=clamp(p.l+((rMin-loV)/span)*iW,p.l,p.l+iW);
-  const bx2=clamp(p.l+((rMax-loV)/span)*iW,p.l,p.l+iW);
-  const band=`<rect x="${bx1.toFixed(1)}" y="${p.t}" width="${(bx2-bx1).toFixed(1)}" height="${iH}" fill="rgba(76,175,80,0.10)" rx="2"/>`;
+  const rMin10 = mean*0.9, rMax10 = mean*1.1;
+  const rMin20 = mean*0.8, rMax20 = mean*1.2;
+  const bx1=clamp(p.l+((rMin10-loV)/span)*iW,p.l,p.l+iW);
+  const bx2=clamp(p.l+((rMax10-loV)/span)*iW,p.l,p.l+iW);
+  const bx120=clamp(p.l+((rMin20-loV)/span)*iW,p.l,p.l+iW);
+  const bx220=clamp(p.l+((rMax20-loV)/span)*iW,p.l,p.l+iW);
+  const band=`<rect x="${bx120.toFixed(1)}" y="${p.t}" width="${(bx220-bx120).toFixed(1)}" height="${iH}" fill="rgba(255,213,79,0.15)" rx="2"/><rect x="${bx1.toFixed(1)}" y="${p.t}" width="${(bx2-bx1).toFixed(1)}" height="${iH}" fill="rgba(76,175,80,0.15)" rx="2"/>`;
 
   const yStep=maxCnt<=5?1:maxCnt<=15?2:maxCnt<=30?5:10;
   let grid='',yLabels='';
@@ -829,10 +857,14 @@ function renderHistogramaSVG(pesos, ref) {
   let bars='';
   counts.forEach((cnt,i)=>{
     if(!cnt) return;
-    const binC=loV+(i+0.5)*BIN, isOut=binC<rMin||binC>rMax;
+    const binC=loV+(i+0.5)*BIN;
+    const out20=binC<rMin20||binC>rMax20, out10=binC<rMin10||binC>rMax10;
+    const fill  = out20?'#ef9a9a':out10?'#ffe082':'#a5d6a7';
+    const stroke= out20?'#c62828':out10?'#f9a825':'#388e3c';
+    const tFill = out20?'#b71c1c':out10?'#7b5e00':'#1b5e20';
     const x=xOf(i)+1,w=bw-2,y=yOf(cnt),h=p.t+iH-y;
-    bars+=`<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" fill="${isOut?'#ef9a9a':'#a5d6a7'}" stroke="${isOut?'#c62828':'#388e3c'}" stroke-width="0.5" rx="1"/>`;
-    bars+=`<text x="${(x+w/2).toFixed(1)}" y="${(h>14?y+11:y-3).toFixed(1)}" text-anchor="middle" font-size="9" fill="${h>14?(isOut?'#b71c1c':'#1b5e20'):'#555'}">${cnt}</text>`;
+    bars+=`<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" fill="${fill}" stroke="${stroke}" stroke-width="0.5" rx="1"/>`;
+    bars+=`<text x="${(x+w/2).toFixed(1)}" y="${(h>14?y+11:y-3).toFixed(1)}" text-anchor="middle" font-size="9" fill="${h>14?tFill:'#555'}">${cnt}</text>`;
   });
 
   const every=nBins<=6?1:nBins<=12?2:nBins<=20?3:4;
