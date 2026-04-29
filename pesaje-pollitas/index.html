@@ -263,6 +263,15 @@ label { font-size:.85rem; color:#666; font-weight:500; }
     <label style="margin-top:10px">N° de aves
       <input type="number" id="lote-naves" placeholder="Ej: 10000" min="1" style="margin-top:6px">
     </label>
+    <label style="margin-top:10px">Línea genética
+      <select id="lote-linea" style="margin-top:6px">
+        <option>Hy-line Brown</option>
+        <option>Hy-line W-80</option>
+        <option>Lohmann Brown</option>
+        <option>Lohmann White</option>
+        <option>Hy-line Brown Jaula</option>
+      </select>
+    </label>
     <button class="btn btn-verde" onclick="crearLote()" style="margin-top:14px" id="btn-crear-lote">+ Crear lote</button>
   </div>
   <div id="lista-lotes"><div class="alerta alerta-info">Cargando lotes…</div></div>
@@ -392,11 +401,12 @@ async function cargarLotes() {
   const { data, error } = await sb.from('lotes').select('*').order('created_at');
   if (!error) {
     lotes = data.map(r => ({
-      id:      r.id,
-      nombre:  r.nombre,
-      fechaNac:r.fecha_nac,
-      nAves:   r.n_aves,
-      activo:  r.activo,
+      id:           r.id,
+      nombre:       r.nombre,
+      fechaNac:     r.fecha_nac,
+      nAves:        r.n_aves,
+      lineaGenetica:r.linea_genetica,
+      activo:       r.activo,
     }));
   }
   poblarSelectLotes();
@@ -428,6 +438,7 @@ async function crearLote() {
   const nombre   = document.getElementById('lote-nombre').value.trim();
   const fechaNac = document.getElementById('lote-fecha').value;
   const nAves    = document.getElementById('lote-naves').value;
+  const linea    = document.getElementById('lote-linea').value;
   if (!nombre || !fechaNac) { toast('Completa nombre y fecha de nacimiento'); return; }
 
   const btn = document.getElementById('btn-crear-lote');
@@ -439,6 +450,7 @@ async function crearLote() {
     const { error } = await sb.from('lotes').insert({
       id, nombre, fecha_nac: fechaNac,
       n_aves: parseInt(nAves) || 0,
+      linea_genetica: linea,
       user_id: currentUser.id,
     });
     if (!error) {
@@ -471,6 +483,7 @@ function renderListaLotes() {
             <div style="font-size:.82rem;color:#666;margin-top:4px">
               ${fn ? `Nacimiento: ${l.fechaNac}` : 'Sin fecha'}
               ${l.nAves ? ` · ${Number(l.nAves).toLocaleString('es-CL')} aves` : ''}
+              ${l.lineaGenetica ? ` · ${l.lineaGenetica}` : ''}
             </div>
             <div style="font-size:.82rem;color:var(--verde);margin-top:2px">${fn ? `Semana ${sem} de vida` : ''}</div>
           </div>
