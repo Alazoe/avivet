@@ -601,10 +601,10 @@ async function procesarFoto() {
   try {
     const base64 = archivoActual.dataUrl.split(',')[1];
     const { data: { session } } = await sb.auth.getSession();
-    const resp = await fetch(`${SUPABASE_URL}/functions/v1/ocr-pesaje`, {
+    const resp = await fetch(`${SUPABASE_URL}/functions/v1/ocr-pesaje-ts`, {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${session.access_token}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ imagen: base64, mediaType: archivoActual.mediaType }),
+      body: JSON.stringify({ imagen: base64, mediaType: archivoActual.mediaType ?? 'image/jpeg' }),
     });
     const data = await resp.json();
     if (data.ok && data.pesos?.length) {
