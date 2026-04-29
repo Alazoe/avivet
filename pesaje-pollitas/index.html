@@ -418,7 +418,7 @@ function poblarSelectLotes() {
     s.innerHTML = '<option value="">— seleccionar —</option>';
     lotes.filter(l => l.activo).forEach(l => {
       const o = document.createElement('option');
-      o.value = l.id; o.textContent = `${l.id} – ${l.nombre}`;
+      o.value = l.id; o.textContent = l.nombre;
       s.appendChild(o);
     });
   });
@@ -445,19 +445,14 @@ async function crearLote() {
   btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Guardando…';
 
   try {
-    const { data: existentes } = await sb.from('lotes').select('id');
-    const usados = new Set(existentes?.map(l => l.id) || []);
-    let num = 1;
-    while (usados.has('L' + String(num).padStart(2,'0'))) num++;
-    const id = 'L' + String(num).padStart(2,'0');
     const { error } = await sb.from('lotes').insert({
-      id, nombre, fecha_nac: fechaNac,
+      nombre, fecha_nac: fechaNac,
       n_aves: parseInt(nAves) || 0,
       linea_genetica: linea,
       user_id: currentUser.id,
     });
     if (!error) {
-      toast(`✅ Lote ${id} creado`);
+      toast('✅ Lote creado');
       document.getElementById('lote-nombre').value = '';
       document.getElementById('lote-fecha').value  = '';
       document.getElementById('lote-naves').value  = '';
@@ -482,7 +477,7 @@ function renderListaLotes() {
       <div class="card" style="border-left:4px solid ${l.activo ? 'var(--verde)' : 'var(--gris-b)'}">
         <div style="display:flex;justify-content:space-between;align-items:flex-start">
           <div>
-            <div style="font-weight:700;font-size:1rem">${l.id} — ${l.nombre}</div>
+            <div style="font-weight:700;font-size:1rem">${l.nombre}</div>
             <div style="font-size:.82rem;color:#666;margin-top:4px">
               ${fn ? `Nacimiento: ${l.fechaNac}` : 'Sin fecha'}
               ${l.nAves ? ` · ${Number(l.nAves).toLocaleString('es-CL')} aves` : ''}
