@@ -270,6 +270,7 @@ label { font-size:.85rem; color:#666; font-weight:500; }
         <option>Lohmann Brown</option>
         <option>Lohmann White</option>
         <option>Hy-line Brown Jaula</option>
+        <option>Dekalb Brown</option>
       </select>
     </label>
     <button class="btn btn-verde" onclick="crearLote()" style="margin-top:14px" id="btn-crear-lote">+ Crear lote</button>
@@ -299,7 +300,7 @@ const SUPABASE_URL = 'https://xewujmpycclqjhlmiica.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_v5_FU1w-7P7oeNrW6FYRBQ_cuX-pa9_';
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// ══ CURVA HYLINE BROWN ════════════════════════════════════════
+// ══ CURVAS DE PESO POR LÍNEA GENÉTICA ════════════════════════
 const CURVA_HYLINE = {
   1:  { min:0.060, max:0.070, prom:0.065, unif:0.85 },
   2:  { min:0.120, max:0.130, prom:0.125, unif:0.85 },
@@ -321,6 +322,33 @@ const CURVA_HYLINE = {
   18: { min:1.480, max:1.560, prom:1.520, unif:0.80 },
   19: { min:1.530, max:1.620, prom:1.575, unif:0.80 },
 };
+
+// Fuente: Dekalb Brown Product Guide — Tabla de cría (Jaulas) — Hendrix Genetics 2022
+const CURVA_DEKALB = {
+  1:  { min:0.059, max:0.062, prom:0.0605, unif:0.80 },
+  2:  { min:0.112, max:0.118, prom:0.115,  unif:0.80 },
+  3:  { min:0.166, max:0.174, prom:0.170,  unif:0.80 },
+  4:  { min:0.234, max:0.246, prom:0.240,  unif:0.80 },
+  5:  { min:0.322, max:0.338, prom:0.330,  unif:0.80 },
+  6:  { min:0.419, max:0.441, prom:0.430,  unif:0.80 },
+  7:  { min:0.517, max:0.543, prom:0.530,  unif:0.80 },
+  8:  { min:0.605, max:0.636, prom:0.620,  unif:0.80 },
+  9:  { min:0.692, max:0.728, prom:0.710,  unif:0.80 },
+  10: { min:0.780, max:0.820, prom:0.800,  unif:0.80 },
+  11: { min:0.868, max:0.912, prom:0.890,  unif:0.80 },
+  12: { min:0.960, max:1.010, prom:0.985,  unif:0.80 },
+  13: { min:1.053, max:1.107, prom:1.080,  unif:0.80 },
+  14: { min:1.136, max:1.194, prom:1.165,  unif:0.80 },
+  15: { min:1.219, max:1.281, prom:1.250,  unif:0.80 },
+  16: { min:1.302, max:1.368, prom:1.335,  unif:0.80 },
+  17: { min:1.375, max:1.445, prom:1.410,  unif:0.80 },
+  18: { min:1.424, max:1.497, prom:1.460,  unif:0.80 },
+};
+
+function getCurva(linea) {
+  if (linea && linea.toLowerCase().includes('dekalb')) return CURVA_DEKALB;
+  return CURVA_HYLINE;
+}
 
 // ══ ESTADO ════════════════════════════════════════════════════
 let pesos      = [];
@@ -554,7 +582,8 @@ function renderPesos() {
   document.getElementById('n-pesos').textContent         = n;
 
   const sem      = parseInt(document.getElementById('sel-semana').value) || 0;
-  const refCurva = CURVA_HYLINE[sem] || {};
+  const loteObj  = lotes.find(l => l.id === document.getElementById('sel-lote').value);
+  const refCurva = getCurva(loteObj?.lineaGenetica)[sem] || {};
   const prom     = n ? pesos.reduce((a,b)=>a+b,0)/n : 0;
   const rMin10 = prom*0.9,  rMax10 = prom*1.1;
   const rMin20 = prom*0.8,  rMax20 = prom*1.2;
@@ -661,7 +690,8 @@ async function guardarPesaje() {
 
   try {
     const stats    = calcularStats(pesos);
-    const curvaRef = CURVA_HYLINE[semana] || {};
+    const loteObj  = lotes.find(l => l.id === lote);
+    const curvaRef = getCurva(loteObj?.lineaGenetica)[semana] || {};
     const { error } = await sb.from('pesajes').insert({
       lote_id:     lote,
       semana,
@@ -721,7 +751,8 @@ async function cargarResumen() {
       metodo:      r.metodo,
       pesosRaw:    r.pesos_raw ? r.pesos_raw.split(',').map(Number).filter(v=>v>0) : [],
     }));
-    renderResumen(registros, CURVA_HYLINE);
+    const loteHistObj = lotes.find(l => l.id === lote);
+    renderResumen(registros, getCurva(loteHistObj?.lineaGenetica));
   } catch(e) {
     document.getElementById('resumen-contenido').innerHTML = '<div class="alerta alerta-error">Error cargando datos</div>';
   }
