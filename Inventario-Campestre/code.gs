@@ -848,11 +848,11 @@ function guardarPlanificacion(body) {
   let ws    = ss.getSheetByName("PLANIFICACION");
   if (!ws) { crearHojaPlanificacion(ss); ws = ss.getSheetByName("PLANIFICACION"); }
 
-  const dias = body.dias || [];
-  if (!dias.length) return { ok: false, error: "Sin datos" };
+  const dias   = body.dias   || [];
+  const fechas = body.fechas || [...new Set(dias.map(d => d.fecha))];
+  if (!fechas.length) return { ok: false, error: "Sin datos" };
 
-  const ahora  = Utilities.formatDate(new Date(), "America/Santiago", "yyyy-MM-dd HH:mm");
-  const fechas = [...new Set(dias.map(d => d.fecha))];
+  const ahora = Utilities.formatDate(new Date(), "America/Santiago", "yyyy-MM-dd HH:mm");
 
   const last = ws.getLastRow();
   if (last > 2) {
