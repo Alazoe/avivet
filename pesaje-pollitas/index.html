@@ -90,6 +90,9 @@ label { font-size:.85rem; color:#666; font-weight:500; }
 #peso-input-wrap { display:flex; gap:8px; margin-top:8px; }
 #peso-input-wrap input { flex:1; }
 #peso-input-wrap button { width:auto; padding:11px 16px; margin:0; }
+.btn-mic { width:44px;height:44px;border:2px solid #cfd8dc;border-radius:10px;background:#fff;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s;flex-shrink:0;padding:0 }
+.btn-mic.activo { background:var(--rojo);border-color:var(--rojo);animation:pulse-mic .8s ease-in-out infinite }
+@keyframes pulse-mic { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.75;transform:scale(1.08)} }
 
 /* FOTO */
 .foto-wrap { display:flex; flex-direction:column; align-items:center; gap:10px; margin-top:8px; }
@@ -208,8 +211,9 @@ label { font-size:.85rem; color:#666; font-weight:500; }
         <input type="number" id="peso-input" placeholder="Ej: 1.250 (kg)" step="0.001" min="0.01" max="5"
           onkeydown="if(event.key==='Enter')agregarPeso()">
         <button class="btn btn-verde" onclick="agregarPeso()" style="width:auto;padding:0 18px;margin:0">+</button>
+        <button class="btn-mic" id="btn-mic" onclick="toggleVoz()" title="Ingreso por voz">🎤</button>
       </div>
-      <p style="font-size:.75rem;color:#999;margin-top:4px">En kg (ej: 1.25) o gramos (ej: 1250 → se convierte)</p>
+      <p style="font-size:.75rem;color:#999;margin-top:4px">En kg (ej: 1.25) o gramos (ej: 1250 → se convierte) · 🎤 voz disponible</p>
     </div>
     <div id="panel-foto" style="display:none">
       <div class="foto-wrap">
@@ -513,19 +517,33 @@ function renderListaLotes() {
             </div>
             <div style="font-size:.82rem;color:var(--verde);margin-top:2px">${fn ? `Semana ${sem} de vida` : ''}</div>
           </div>
-          ${l.activo
-            ? `<button class="btn btn-rojo" style="width:auto;padding:6px 10px;margin:0;font-size:.78rem"
-                onclick="desactivarLote('${l.id}')">Archivar</button>`
-            : '<span style="font-size:.75rem;color:#aaa">Archivado</span>'}
+          <div style="display:flex;flex-direction:column;gap:5px;align-items:flex-end">
+            ${l.activo
+              ? `<button class="btn btn-rojo" style="width:auto;padding:6px 10px;margin:0;font-size:.78rem"
+                  onclick="desactivarLote('${l.id}')">Archivar</button>`
+              : '<span style="font-size:.75rem;color:#aaa">Archivado</span>'}
+            <button class="btn" style="width:auto;padding:5px 10px;margin:0;font-size:.75rem;background:#ffebee;color:var(--rojo);border:1px solid #ffcdd2;border-radius:8px"
+              onclick="eliminarLote('${l.id}','${l.nombre.replace(/'/g,"\\'")}')">🗑️ Eliminar</button>
+          </div>
         </div>
       </div>`;
   }).join('');
 }
 
 async function desactivarLote(id) {
-  if (!confirm(`¿Archivar el lote ${id}?`)) return;
+  const l = lotes.find(x => x.id === id);
+  if (!confirm(`¿Archivar "${l?.nombre}"?`)) return;
   const { error } = await sb.from('lotes').update({ activo:false }).eq('id', id);
   if (!error) { toast('Lote archivado'); await cargarLotes(); renderListaLotes(); }
+  else toast('Error: ' + error.message);
+}
+
+async function eliminarLote(id, nombre) {
+  const confirmado = prompt(`⚠️ Esto eliminará "${nombre}" y TODOS sus pesajes permanentemente.\n\nEscribe el nombre exacto del lote para confirmar:`);
+  if (confirmado === null) return;
+  if (confirmado !== nombre) { toast('Nombre incorrecto — no se eliminó'); return; }
+  const { error } = await sb.from('lotes').delete().eq('id', id);
+  if (!error) { toast('🗑️ Lote eliminado'); await cargarLotes(); renderListaLotes(); }
   else toast('Error: ' + error.message);
 }
 
@@ -946,6 +964,68 @@ function calcularStats(pesos) {
 }
 
 // ══ TOAST ═════════════════════════════════════════════════════
+// ══ VOZ ═══════════════════════════════════════════════════════
+let reconocimiento = null;
+
+function toggleVoz() {
+  if (reconocimiento) { detenerVoz(); return; }
+  iniciarVoz();
+}
+
+function iniciarVoz() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) { toast('Tu navegador no soporta voz — usa Chrome o Safari'); return; }
+
+  reconocimiento = new SR();
+  reconocimiento.lang = 'es-CL';
+  reconocimiento.continuous = true;
+  reconocimiento.interimResults = false;
+
+  reconocimiento.onresult = e => {
+    const texto = e.results[e.results.length - 1][0].transcript.trim();
+    const peso  = parsearPesoVoz(texto);
+    if (peso) {
+      pesos.push(peso);
+      renderPesos();
+      toast(`🎤 ${peso.toFixed(3)} kg`);
+    }
+  };
+
+  reconocimiento.onerror = () => detenerVoz();
+  reconocimiento.onend   = () => { reconocimiento = null; actualizarBtnMic(); };
+
+  reconocimiento.start();
+  actualizarBtnMic();
+  toast('🎤 Escuchando… di el peso en kg o gramos', 2000);
+}
+
+function detenerVoz() {
+  if (reconocimiento) { reconocimiento.stop(); reconocimiento = null; }
+  actualizarBtnMic();
+}
+
+function actualizarBtnMic() {
+  const btn = document.getElementById('btn-mic');
+  if (!btn) return;
+  btn.classList.toggle('activo', !!reconocimiento);
+  btn.title = reconocimiento ? 'Detener voz' : 'Ingreso por voz';
+}
+
+function parsearPesoVoz(texto) {
+  let t = texto.toLowerCase()
+    .replace(/\bcoma\b/g, '.').replace(/\bpunto\b/g, '.')
+    .replace(/\bkilogramos?\b|\bkilos?\b/g, '')
+    .replace(/\bgramos?\b/g, '').replace(/\by\b/g, '')
+    .replace(/\s+/g, '');
+  const m = t.match(/(\d+\.?\d*)/);
+  if (!m) return null;
+  let n = parseFloat(m[1]);
+  if (isNaN(n) || n <= 0) return null;
+  if (n > 5) n = n / 1000;       // gramos → kg
+  if (n < 0.05 || n > 4) return null;
+  return Math.round(n * 1000) / 1000;
+}
+
 function toast(msg, dur=2800) {
   const el = document.getElementById('toast');
   el.textContent = msg; el.classList.add('show');
