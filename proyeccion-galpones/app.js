@@ -22,7 +22,7 @@ function addWeeks(iso, w) {
 }
 
 // ── Constantes visuales ────────────────────────────────────
-const PALETA_ESTADO = { 'no nacido': 'transparent', 'crianza': '#cfcfcf', 'postura': null, 'descartado': '#e8e5e1' };
+const PALETA_ESTADO = { 'no nacido': 'transparent', 'crianza_ext': '#c5cae9', 'crianza': '#cfcfcf', 'postura': null, 'descartado': '#e8e5e1' };
 const COLOR_TOTAL  = '#2d4a2b';
 const COLOR_GRID   = '#e0ddd5';
 const COLOR_TEXTO  = '#555';
@@ -69,6 +69,7 @@ let CURVA  = {};
 let CONFIG = {
   horizonte_anios: 4,
   sistema: 'piso_conv',
+  galpon_crianza: { activo: true, nombre: 'Galpón de Crianza', semana_salida: 16 },
   galpones: []
 };
 
@@ -157,7 +158,7 @@ function generarProyeccion() {
       fecha_lunes: isoLunes,
       anio: cur.getFullYear(),
       mes:  cur.getMonth() + 1,
-      total: { aves_en_postura: 0, huevos_dia: 0, huevos_semana: 0 }
+      total: { aves_en_postura: 0, huevos_dia: 0, huevos_semana: 0, crianza_ext_ids: [] }
     };
 
     CONFIG.galpones.forEach(g => {
@@ -171,8 +172,12 @@ function generarProyeccion() {
       const semCiclo = semVida % CICLO;
       let estado, aves = 0, pct = 0, peso = 0, huevos_dia = 0;
 
-      const sys = SISTEMAS[CONFIG.sistema];
-      if (semCiclo < CRIANZA) {
+      const sys    = SISTEMAS[CONFIG.sistema];
+      const salida = CONFIG.galpon_crianza?.activo ? CONFIG.galpon_crianza.semana_salida : 0;
+      if (semCiclo < salida) {
+        estado = 'crianza_ext';
+        aves   = Math.round(g.aves * Math.pow(1 - sys.mort_c, semCiclo));
+      } else if (semCiclo < CRIANZA) {
         estado = 'crianza';
         aves   = Math.round(g.aves * Math.pow(1 - sys.mort_c, semCiclo));
       } else if (semCiclo < CRIANZA + POSTURA) {
@@ -187,6 +192,7 @@ function generarProyeccion() {
       }
 
       fila[g.id] = { sem_vida: semVida, estado, aves, pct_postura: pct, peso_huevo_g: peso, huevos_dia, huevos_semana: huevos_dia * 7 };
+      if (estado === 'crianza_ext') fila.total.crianza_ext_ids.push(g.id);
       if (estado === 'postura') {
         fila.total.aves_en_postura += aves;
         fila.total.huevos_dia      += huevos_dia;
@@ -253,6 +259,19 @@ function renderConfig() {
             <input type="number" id="cfg-horizonte" min="1" max="15" value="${CONFIG.horizonte_anios}" style="width:64px"> años
           </div>
         </label>
+        <label class="config-field">
+          <span>Galpón de crianza externo</span>
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <label style="display:flex;align-items:center;gap:5px;font-weight:400">
+              <input type="checkbox" id="cfg-crianza-activo"${CONFIG.galpon_crianza.activo ? ' checked' : ''}> Activo
+            </label>
+            <label style="display:flex;align-items:center;gap:5px;font-weight:400">
+              Salida sem.
+              <input type="number" id="cfg-crianza-salida" min="1" max="17" value="${CONFIG.galpon_crianza.semana_salida}" style="width:56px;padding:4px 6px;border:1.5px solid #d4cfc5;border-radius:5px;font-size:.9rem">
+            </label>
+          </div>
+          <span style="font-size:.78rem;color:#888;margin-top:4px;display:block">Crianza en galpón propio: sem ${CONFIG.galpon_crianza.semana_salida}–${CRIANZA} (${CRIANZA - CONFIG.galpon_crianza.semana_salida} sem)</span>
+        </label>
       </div>
       <div id="cfg-galpones">${filas}</div>
       <div class="config-footer">
@@ -291,6 +310,8 @@ function setNGalpones(n) {
 function recalcular() {
   CONFIG.horizonte_anios = Math.max(1, parseInt(document.getElementById('cfg-horizonte').value) || 4);
   CONFIG.sistema = document.getElementById('cfg-sistema').value;
+  CONFIG.galpon_crianza.activo        = document.getElementById('cfg-crianza-activo').checked;
+  CONFIG.galpon_crianza.semana_salida = Math.max(0, Math.min(17, parseInt(document.getElementById('cfg-crianza-salida').value) || 16));
   document.querySelectorAll('.config-galpon-row').forEach((row, i) => {
     CONFIG.galpones[i].nombre           = row.querySelector('.cfg-nombre').value.trim() || `Galpón ${i+1}`;
     CONFIG.galpones[i].aves             = Math.max(100, parseInt(row.querySelector('.cfg-aves').value) || 2000);
@@ -343,7 +364,19 @@ function renderTodo() {
 // ── Tarjetas de galpones ───────────────────────────────────
 function pintarLotes() {
   const grid = document.getElementById('galpones-grid');
-  grid.innerHTML = D.galpones.map(g => `
+  const gc   = CONFIG.galpon_crianza;
+  const salida = gc.activo ? gc.semana_salida : 0;
+  const gcCard = gc.activo ? `
+    <article class="galpon-card" style="border-top:4px solid #78909c">
+      <div class="galpon-id" style="color:#78909c">GC</div>
+      <h3 class="galpon-nombre">${gc.nombre}</h3>
+      <dl class="galpon-fechas">
+        <dt>Función</dt>              <dd>Crianza externa</dd>
+        <dt>Semana de salida</dt>     <dd>Semana ${salida}</dd>
+        <dt>Crianza en producción</dt><dd>Sem ${salida}–${CRIANZA} (${CRIANZA - salida} sem)</dd>
+      </dl>
+    </article>` : '';
+  grid.innerHTML = gcCard + D.galpones.map(g => `
     <article class="galpon-card" style="border-top:4px solid ${COLMAP[g.id]}">
       <div class="galpon-id" style="color:${COLMAP[g.id]}">${g.id}</div>
       <h3 class="galpon-nombre">${g.nombre}</h3>
@@ -359,12 +392,14 @@ function pintarLotes() {
 
 // ── Cronograma Gantt ───────────────────────────────────────
 function pintarCronograma() {
-  const filas = D.proyeccion_semanal;
-  const n  = D.galpones.length;
+  const filas  = D.proyeccion_semanal;
+  const n      = D.galpones.length;
+  const gcActivo = CONFIG.galpon_crianza?.activo;
+  const filas_total = n + (gcActivo ? 1 : 0);
   const W  = 1100, PAD_L = 60, PAD_R = 30, PAD_T = 30, PAD_B = 50;
-  const H  = PAD_T + PAD_B + n * 38;
+  const H  = PAD_T + PAD_B + filas_total * 38;
   const iW = W - PAD_L - PAD_R, iH = H - PAD_T - PAD_B;
-  const barH = iH / n - 12;
+  const barH = iH / filas_total - 12;
 
   const t0 = new Date(filas[0].fecha_lunes).getTime();
   const t1 = new Date(filas[filas.length - 1].fecha_lunes).getTime();
@@ -392,9 +427,35 @@ function pintarCronograma() {
     svg += `<text x="${xH}" y="${PAD_T-10}" text-anchor="middle" font-size="10" fill="${COLOR_ACENTO}" font-weight="600">hoy</text>`;
   }
 
+  // Fila galpón de crianza
+  if (gcActivo) {
+    const yB = PAD_T + 6;
+    svg += `<text x="${PAD_L-8}" y="${yB+barH/2+4}" text-anchor="end" font-size="11" fill="#78909c" font-weight="600">GC</text>`;
+    let prev = null, prevIso = null;
+    filas.forEach((f, idx) => {
+      const ids = f.total.crianza_ext_ids;
+      const clave = ids.length === 0 ? '' : ids.length > 1 ? 'conflicto' : ids[0];
+      if (clave !== prev) {
+        if (prev && prev !== '') {
+          const x1 = xT(prevIso), x2 = xT(f.fecha_lunes), w = Math.max(2, x2 - x1);
+          const fill = prev === 'conflicto' ? '#e05c5c' : COLMAP[prev];
+          svg += `<rect x="${x1}" y="${yB}" width="${w}" height="${barH}" fill="${fill}" opacity="0.65"/>`;
+          if (prev === 'conflicto') svg += `<text x="${(x1+x1+w)/2}" y="${yB+barH/2+3}" text-anchor="middle" font-size="8" fill="#fff">!</text>`;
+        }
+        prev = clave; prevIso = f.fecha_lunes;
+      }
+      if (idx === filas.length - 1 && prev && prev !== '') {
+        const x1 = xT(prevIso), x2 = xT(f.fecha_lunes), w = Math.max(2, x2 - x1);
+        const fill = prev === 'conflicto' ? '#e05c5c' : COLMAP[prev];
+        svg += `<rect x="${x1}" y="${yB}" width="${w}" height="${barH}" fill="${fill}" opacity="0.65"/>`;
+      }
+    });
+  }
+
   // Barras por galpón
   D.galpones.forEach((g, i) => {
-    const yB  = PAD_T + i * (iH / n) + 6;
+    const rowIdx = i + (gcActivo ? 1 : 0);
+    const yB  = PAD_T + rowIdx * (iH / filas_total) + 6;
     const col = COLMAP[g.id];
     svg += `<text x="${PAD_L-8}" y="${yB+barH/2+4}" text-anchor="end" font-size="11" fill="${col}" font-weight="600">${g.id}</text>`;
 
@@ -507,7 +568,7 @@ function pintarTransiciones() {
   let ini = null;
   filas.forEach(f => {
     if (f.total.huevos_semana === 0 && f.total.aves_en_postura === 0) {
-      if (IDS.some(id => f[id].estado === 'crianza') && !ini) ini = f.fecha_lunes;
+      if (IDS.some(id => f[id].estado === 'crianza' || f[id].estado === 'crianza_ext') && !ini) ini = f.fecha_lunes;
     } else {
       if (ini) { gaps.push({ ini, fin: f.fecha_lunes }); ini = null; }
     }
@@ -538,7 +599,12 @@ function pintarTransiciones() {
       desc.textContent = `Con ${IDS.length} galpón${IDS.length>1?'es':''} desfasados, no hay semanas sin producción en el horizonte de ${CONFIG.horizonte_anios} años.`;
     } else {
       const durMed = Math.round(gaps.reduce((s,g) => s + Math.round((new Date(g.fin)-new Date(g.ini))/(7*86400000)), 0) / gaps.length);
-      desc.textContent = `Con ${IDS.length} galpón${IDS.length>1?'es':''}, hay ${gaps.length} brecha${gaps.length>1?'s':''} de ~${durMed} semanas sin producción en ${CONFIG.horizonte_anios} años (2 limpieza + 18 crianza por transición).`;
+      const gcActivo2 = CONFIG.galpon_crianza?.activo;
+      const salida2   = gcActivo2 ? CONFIG.galpon_crianza.semana_salida : 0;
+      const desglose  = gcActivo2 && salida2 > 0
+        ? `2 limpieza + ${salida2} crianza exterior + ${CRIANZA - salida2} crianza en producción`
+        : `2 limpieza + ${CRIANZA} crianza`;
+      desc.textContent = `Con ${IDS.length} galpón${IDS.length>1?'es':''}, hay ${gaps.length} brecha${gaps.length>1?'s':''} de ~${durMed} semanas sin producción en ${CONFIG.horizonte_anios} años (${desglose} por transición).`;
     }
   }
 
@@ -549,7 +615,7 @@ function pintarTransiciones() {
   if (ventana.length < 3) return;
 
   // Detectar qué galpón está en crianza durante este gap
-  const enCrianza = IDS.find(id => ventana.some(f => f.fecha_lunes >= g0.ini && f.fecha_lunes < g0.fin && f[id].estado === 'crianza'));
+  const enCrianza = IDS.find(id => ventana.some(f => f.fecha_lunes >= g0.ini && f.fecha_lunes < g0.fin && (f[id].estado === 'crianza' || f[id].estado === 'crianza_ext')));
 
   const W = 900, H = 280, PAD_L = 70, PAD_R = 30, PAD_T = 30, PAD_B = 50;
   const iW = W-PAD_L-PAD_R, iH = H-PAD_T-PAD_B;
@@ -636,7 +702,12 @@ function pintarInfraestructura() {
   if (nBrechas === 0) {
     texto = `<p>Con <strong>${N} galpones desfasados</strong>, la operación no presenta brechas en los ${CONFIG.horizonte_anios} años proyectados. La producción es continua.</p>`;
   } else {
-    texto = `<p>Con <strong>${N} galpón${N>1?'es':''}</strong>, hay ${nBrechas} brecha${nBrechas>1?'s':''} de ~${durMedia} semanas (${2} limpieza + ${CRIANZA} crianza) en ${CONFIG.horizonte_anios} años.</p>`;
+    const gcActivo2 = CONFIG.galpon_crianza?.activo;
+    const salida2   = gcActivo2 ? CONFIG.galpon_crianza.semana_salida : 0;
+    const desgloseI = gcActivo2 && salida2 > 0
+      ? `2 limpieza + ${salida2} crianza exterior + ${CRIANZA - salida2} crianza en producción`
+      : `2 limpieza + ${CRIANZA} crianza`;
+    texto = `<p>Con <strong>${N} galpón${N>1?'es':''}</strong>, hay ${nBrechas} brecha${nBrechas>1?'s':''} de ~${durMedia} semanas (${desgloseI}) en ${CONFIG.horizonte_anios} años.</p>`;
     if (galpFaltantes > 0) {
       texto += `<p>Para <strong>eliminar las brechas</strong> se necesita${galpFaltantes>1?'n':''} <strong>${galpFaltantes} galpón${galpFaltantes>1?'es':''} adicional${galpFaltantes>1?'es':''} (${N+galpFaltantes} en total)</strong>, con desfase de ~${desfaseOpt} semanas (≈ ${Math.round(desfaseOpt/4.33)} meses) entre galpones. Puedes configurarlo en el panel de arriba.</p>`;
     }
@@ -790,7 +861,7 @@ function renderTabla() {
   tbody.innerHTML = filas.map(f => {
     const celdas = IDS.map(id => {
       const r = f[id], est = r.estado;
-      const cls = est === 'postura' ? 'estado-postura' : est === 'crianza' ? 'estado-crianza' : '';
+      const cls = est === 'postura' ? 'estado-postura' : est === 'crianza' ? 'estado-crianza' : est === 'crianza_ext' ? 'estado-crianza-ext' : '';
       return `<td>${r.sem_vida || '—'}</td><td class="estado ${cls}">${est}</td><td>${r.huevos_dia > 0 ? NUM(r.huevos_dia) : '—'}</td>`;
     }).join('');
     return `<tr>

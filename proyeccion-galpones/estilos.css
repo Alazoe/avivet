@@ -743,6 +743,10 @@ tbody td.estado-postura {
   color: var(--color-primario);
   font-weight: 500;
 }
+tbody td.estado-crianza-ext {
+  color: #5c6bc0;
+  font-weight: 500;
+}
 tbody td.fecha {
   font-family: var(--fuente-mono);
   font-size: 12px;
