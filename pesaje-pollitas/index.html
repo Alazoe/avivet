@@ -275,6 +275,7 @@ label { font-size:.85rem; color:#666; font-weight:500; }
         <option>Lohmann White</option>
         <option>Hy-line Brown Jaula</option>
         <option>Dekalb Brown</option>
+        <option>ISA Brown</option>
       </select>
     </label>
     <button class="btn btn-verde" onclick="crearLote()" style="margin-top:14px" id="btn-crear-lote">+ Crear lote</button>
@@ -327,7 +328,7 @@ const CURVA_HYLINE = {
   19: { min:1.530, max:1.620, prom:1.575, unif:0.80 },
 };
 
-// Fuente: Dekalb Brown Product Guide — Tabla de cría (Jaulas) — Hendrix Genetics 2022
+// Fuente: Dekalb Brown Product Guide — Tabla de cría (Jaulas) — Hendrix Genetics
 const CURVA_DEKALB = {
   1:  { min:0.059, max:0.062, prom:0.0605, unif:0.80 },
   2:  { min:0.112, max:0.118, prom:0.115,  unif:0.80 },
@@ -349,8 +350,31 @@ const CURVA_DEKALB = {
   18: { min:1.424, max:1.497, prom:1.460,  unif:0.80 },
 };
 
+// Fuente: ISA Brown Product Guide — Tabla de cría (Sistemas Alternativos) — Hendrix Genetics / ISA BV
+const CURVA_ISA = {
+  1:  { min:0.059, max:0.062, prom:0.0605, unif:0.80 },
+  2:  { min:0.117, max:0.123, prom:0.120,  unif:0.80 },
+  3:  { min:0.171, max:0.179, prom:0.175,  unif:0.80 },
+  4:  { min:0.239, max:0.251, prom:0.245,  unif:0.80 },
+  5:  { min:0.332, max:0.349, prom:0.340,  unif:0.80 },
+  6:  { min:0.429, max:0.451, prom:0.440,  unif:0.80 },
+  7:  { min:0.527, max:0.554, prom:0.540,  unif:0.80 },
+  8:  { min:0.614, max:0.646, prom:0.630,  unif:0.80 },
+  9:  { min:0.702, max:0.738, prom:0.720,  unif:0.80 },
+  10: { min:0.790, max:0.830, prom:0.810,  unif:0.80 },
+  11: { min:0.878, max:0.923, prom:0.900,  unif:0.80 },
+  12: { min:0.975, max:1.025, prom:1.000,  unif:0.80 },
+  13: { min:1.068, max:1.122, prom:1.095,  unif:0.80 },
+  14: { min:1.136, max:1.210, prom:1.173,  unif:0.80 },
+  15: { min:1.233, max:1.297, prom:1.265,  unif:0.80 },
+  16: { min:1.316, max:1.384, prom:1.350,  unif:0.80 },
+  17: { min:1.389, max:1.461, prom:1.425,  unif:0.80 },
+  18: { min:1.438, max:1.512, prom:1.475,  unif:0.80 },
+};
+
 function getCurva(linea) {
   if (linea && linea.toLowerCase().includes('dekalb')) return CURVA_DEKALB;
+  if (linea && linea.toLowerCase().includes('isa'))   return CURVA_ISA;
   return CURVA_HYLINE;
 }
 
