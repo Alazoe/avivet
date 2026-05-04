@@ -1189,11 +1189,10 @@ function limpiarPlan() {
 // ── STOCK DEL DÍA ──
 function calcularConsumoDia(fk) {
   const cons={};
-  MPS_PRINCIPALES.forEach(({cod})=>{cons[cod]=0;});
   Object.entries(RECETAS_DATA).forEach(([dieta,rec])=>{
     const kg=parseFloat(planData[fk]?.[dieta]||0);
     Object.entries(rec.insumos||{}).forEach(([cod,prop])=>{
-      if(cons[cod]!==undefined) cons[cod]+=kg*(prop/1000);
+      cons[cod]=(cons[cod]||0)+kg*(prop/1000);
     });
   });
   return cons;
@@ -1208,9 +1207,9 @@ function renderStockDia() {
   document.getElementById("stockdia-fecha").textContent=
     hoy.toLocaleDateString("es-CL",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
 
-  // Construir array de 5 días: hoy + 4 siguientes
+  // Construir array: hoy + 13 días siguientes (2 semanas)
   const diasVentana=[];
-  for(let i=0;i<7;i++){
+  for(let i=0;i<14;i++){
     const d=new Date(hoy); d.setDate(hoy.getDate()+i);
     diasVentana.push(d);
   }
@@ -1244,21 +1243,22 @@ function renderStockDia() {
     return;
   }
 
-  // Stock inicial desde último conteo
+  // Stock inicial desde último conteo — todas las materias primas
+  const todosLasMP=dashData.stock.map(s=>({cod:s.codigo, nombre:s.nombre}));
   const stockBase={};
   dashData.stock.forEach(s=>{stockBase[s.codigo]=parseFloat(s.stock)||0;});
 
   // Calcular stock proyectado día a día acumulado
   // proyStock[i][cod] = stock al INICIO del día i (antes de producir)
   const proyStock=[{}];
-  MPS_PRINCIPALES.forEach(({cod})=>{proyStock[0][cod]=stockBase[cod]||0;});
+  todosLasMP.forEach(({cod})=>{proyStock[0][cod]=stockBase[cod]||0;});
 
   diasVentana.forEach((d,i)=>{
     const fk=fechaStr(d);
     const cons=calcularConsumoDia(fk);
     const next={};
-    MPS_PRINCIPALES.forEach(({cod})=>{
-      next[cod]=Math.max(0, proyStock[i][cod]-cons[cod]);
+    todosLasMP.forEach(({cod})=>{
+      next[cod]=Math.max(0, proyStock[i][cod]-(cons[cod]||0));
     });
     proyStock.push(next);
   });
@@ -1288,8 +1288,8 @@ function renderStockDia() {
     }).join("")}
   </tr>`;
 
-  // Filas por MP
-  MPS_PRINCIPALES.forEach(({cod,nombre})=>{
+  // Filas por MP — todas las materias primas
+  todosLasMP.forEach(({cod,nombre})=>{
     html+=`<tr><td>${nombre}</td>`;
     diasVentana.forEach((d,i)=>{
       const fk=fechaStr(d);
