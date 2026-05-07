@@ -363,8 +363,34 @@ body { font-family: 'DM Sans', sans-serif; color: var(--texto); overflow-x: hidd
 <div class="toast" id="toast"></div>
 
 <script>
-const BACKEND = "https://script.google.com/macros/s/AKfycby8dfFibuDyDeRRK3J44Vqw9pJA1F3sMFKuYPHoC_1OHB-GIeeOlAYCdMDklE8o7b7u/exec";
-const RESPONSABLE = "Verónica Gangas";
+let BACKEND = "";
+let RESPONSABLE = "";
+let CLIENT_ID = "campestre";
+let CLIENT_NAME = "La Campestre";
+let CLIENT_FULL_NAME = "Huevos La Campestre";
+let CLIENT_WEBSITE = "huevoslacampestre.cl";
+
+async function initConfig() {
+  const c = new URLSearchParams(window.location.search).get("c") || "campestre";
+  try {
+    const cfg = await fetch(`config/${c}.json`).then(r => r.json());
+    BACKEND          = cfg.backendUrl;
+    RESPONSABLE      = cfg.responsable;
+    CLIENT_ID        = cfg.clientId;
+    CLIENT_NAME      = cfg.clientName;
+    CLIENT_FULL_NAME = cfg.clientFullName;
+    CLIENT_WEBSITE   = cfg.website;
+  } catch(e) {
+    console.warn("Config no encontrada, usando campestre por defecto");
+    BACKEND     = "https://script.google.com/macros/s/AKfycby8dfFibuDyDeRRK3J44Vqw9pJA1F3sMFKuYPHoC_1OHB-GIeeOlAYCdMDklE8o7b7u/exec";
+    RESPONSABLE = "Verónica Gangas";
+  }
+  offlineQueue = JSON.parse(localStorage.getItem(`${CLIENT_ID}_queue`) || "[]");
+  historial    = JSON.parse(localStorage.getItem(`${CLIENT_ID}_historial`) || "[]");
+  document.title = `Inventario — ${CLIENT_NAME}`;
+  const logoEl = document.querySelector(".logo");
+  if (logoEl) logoEl.textContent = CLIENT_NAME;
+}
 
 const ICONOS = {
   "Energéticos": "🌽", "Proteínas": "🫘", "Minerales": "🪨",
@@ -386,12 +412,13 @@ const COLORES = {
 
 let mps = [];
 let stockMap = {};
-let offlineQueue = JSON.parse(localStorage.getItem("campestre_queue") || "[]");
-let historial = JSON.parse(localStorage.getItem("campestre_historial") || "[]");
+let offlineQueue = [];
+let historial = [];
 let cardAbierta = null;
 
 // ── INIT ──
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+  await initConfig();
   const hoy = new Date();
   document.getElementById("fechaHoy").textContent =
     hoy.toLocaleDateString("es-CL", { day: "2-digit", month: "short" }).toUpperCase();
@@ -419,7 +446,7 @@ async function cargarDatos() {
       dataStock.data.forEach(s => { stockMap[s.codigo] = s; });
     }
 
-    document.getElementById("headerSub").textContent = `${mps.length} materias primas · Verónica Gangas`;
+    document.getElementById("headerSub").textContent = `${mps.length} materias primas · ${RESPONSABLE}`;
     construirFiltros();
     renderLista();
   } catch(e) {
@@ -723,7 +750,7 @@ async function guardarConteo(codigo, nombre, unidad) {
 // ── OFFLINE QUEUE ──
 function guardarOffline(registro) {
   offlineQueue.push(registro);
-  localStorage.setItem("campestre_queue", JSON.stringify(offlineQueue));
+  localStorage.setItem(`${CLIENT_ID}_queue`, JSON.stringify(offlineQueue));
   guardarEnHistorial(registro);
   actualizarQueueBadge();
 }
@@ -731,14 +758,14 @@ function guardarOffline(registro) {
 function guardarEnHistorial(registro) {
   historial.unshift({ ...registro, ts: new Date().toISOString() });
   if (historial.length > 100) historial = historial.slice(0, 100);
-  localStorage.setItem("campestre_historial", JSON.stringify(historial));
+  localStorage.setItem(`${CLIENT_ID}_historial`, JSON.stringify(historial));
 }
 
 async function sincronizarQueue() {
   if (!offlineQueue.length) return;
   const pendientes = [...offlineQueue];
   offlineQueue = [];
-  localStorage.setItem("campestre_queue", JSON.stringify(offlineQueue));
+  localStorage.setItem(`${CLIENT_ID}_queue`, JSON.stringify(offlineQueue));
   actualizarQueueBadge();
   let ok = 0;
   for (const reg of pendientes) {
@@ -748,7 +775,7 @@ async function sincronizarQueue() {
       else offlineQueue.push(reg);
     } catch(e) { offlineQueue.push(reg); }
   }
-  if (offlineQueue.length) localStorage.setItem("campestre_queue", JSON.stringify(offlineQueue));
+  if (offlineQueue.length) localStorage.setItem(`${CLIENT_ID}_queue`, JSON.stringify(offlineQueue));
   if (ok > 0) { mostrarToast(`${ok} conteo${ok>1?"s":""} sincronizado${ok>1?"s":""}`, "exito"); cargarDatos(); }
   actualizarQueueBadge();
 }
@@ -923,11 +950,11 @@ function exportarPDF() {
   <div class="header">
     <div>
       <h1>Informe de Inventario — Cierre del Día</h1>
-      <div class="sub">Planta de Alimentos · Huevos La Campestre</div>
+      <div class="sub">Planta de Alimentos · ${CLIENT_FULL_NAME}</div>
       <div class="sub" style="margin-top:4px;text-transform:capitalize">${fechaStr}</div>
     </div>
     <div class="meta">
-      <div><strong>Responsable:</strong> Verónica Gangas</div>
+      <div><strong>Responsable:</strong> ${RESPONSABLE}</div>
       <div style="margin-top:3px"><strong>Generado:</strong> ${hoy.toLocaleTimeString("es-CL",{hour:"2-digit",minute:"2-digit"})}</div>
     </div>
   </div>
@@ -945,11 +972,11 @@ function exportarPDF() {
       '<tr><td style="font-family:monospace;font-size:10px">'+s.codigo+'</td><td>'+s.nombre+'</td><td class="num"><strong>'+(s.stock||0)+'</strong></td><td class="num">'+(s.stock_min||0)+'</td><td class="num">'+(s.dias_stock||'N/D')+'</td><td>'+badgePDF(s.estado)+'</td><td style="font-size:10px;color:#666">'+(s.ultimo_conteo||'Sin conteo')+'</td></tr>'
     ).join("")}</tbody></table>` : '<div class="vacio">Sin datos de stock disponibles</div>'}
   <div class="firma" style="margin-top:40px">
-    <div class="firma-linea">Verónica Gangas · Encargada Bodega</div>
+    <div class="firma-linea">${RESPONSABLE} · Encargada Bodega</div>
     <div class="firma-linea" style="margin-left:80px">Médico Veterinario</div>
   </div>
   <div class="footer">
-    <span>Sistema Inventario · Huevos La Campestre · huevoslacampestre.cl</span>
+    <span>Sistema Inventario · ${CLIENT_FULL_NAME}${CLIENT_WEBSITE ? ' · ' + CLIENT_WEBSITE : ''}</span>
     <span>Documento generado automáticamente · ${fechaCorta}</span>
   </div>
   <script>window.onload = () => window.print();<\/script>

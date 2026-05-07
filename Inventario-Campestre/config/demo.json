@@ -1,0 +1,9 @@
+{
+  "clientId": "demo",
+  "clientName": "Planta Demo",
+  "clientFullName": "Demo — Sistema de Inventario",
+  "website": "avivet.cl",
+  "backendUrl": "https://script.google.com/macros/s/AKfycby8dfFibuDyDeRRK3J44Vqw9pJA1F3sMFKuYPHoC_1OHB-GIeeOlAYCdMDklE8o7b7u/exec",
+  "responsable": "Encargado de Bodega",
+  "admin": "Andrés Lazo"
+}

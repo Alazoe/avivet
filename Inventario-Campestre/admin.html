@@ -457,7 +457,25 @@ td { padding:11px 14px; }
 </div>
 
 <script>
-const BACKEND = "https://script.google.com/macros/s/AKfycby8dfFibuDyDeRRK3J44Vqw9pJA1F3sMFKuYPHoC_1OHB-GIeeOlAYCdMDklE8o7b7u/exec";
+let BACKEND = "";
+let CLIENT_ID = "campestre";
+let CLIENT_NAME = "La Campestre";
+
+async function initConfig() {
+  const c = new URLSearchParams(window.location.search).get("c") || "campestre";
+  try {
+    const cfg = await fetch(`config/${c}.json`).then(r => r.json());
+    BACKEND     = cfg.backendUrl;
+    CLIENT_ID   = cfg.clientId;
+    CLIENT_NAME = cfg.clientName;
+  } catch(e) {
+    console.warn("Config no encontrada, usando campestre por defecto");
+    BACKEND = "https://script.google.com/macros/s/AKfycby8dfFibuDyDeRRK3J44Vqw9pJA1F3sMFKuYPHoC_1OHB-GIeeOlAYCdMDklE8o7b7u/exec";
+  }
+  document.title = `Admin — Inventario ${CLIENT_NAME}`;
+  const brandEl = document.querySelector(".brand");
+  if (brandEl) brandEl.textContent = CLIENT_NAME;
+}
 
 let RECETAS_DATA = {}; // cargado desde GAS al iniciar y al navegar a Recetas
 
@@ -499,12 +517,14 @@ function getDias() {
   return dias;
 }
 
-// ── INICIO DIRECTO ──
-document.getElementById("app").style.display="block";
-cargarPlanLocal();
-cargarDashboard();
-cargarMPsParaOC();
-cargarRecetasDesdeGAS();
+// ── INICIO ──
+initConfig().then(() => {
+  document.getElementById("app").style.display="block";
+  cargarPlanLocal();
+  cargarDashboard();
+  cargarMPsParaOC();
+  cargarRecetasDesdeGAS();
+});
 
 // ── NAVEGACIÓN ──
 function irA(pagina, btn) {
@@ -846,10 +866,10 @@ function jsonpGet(params) {
 }
 
 function cargarPlanLocal() {
-  const s=localStorage.getItem("campestre_plan");
+  const s=localStorage.getItem(`${CLIENT_ID}_plan`);
   if(s) planData=JSON.parse(s);
 }
-function guardarPlanLocal() { localStorage.setItem("campestre_plan",JSON.stringify(planData)); }
+function guardarPlanLocal() { localStorage.setItem(`${CLIENT_ID}_plan`,JSON.stringify(planData)); }
 
 async function cargarPlanDesdeSheet() {
   try {
