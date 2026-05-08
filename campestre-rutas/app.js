@@ -1,6 +1,6 @@
 // ── Configuración ─────────────────────────────────────────────────────────────
 // Reemplaza con la URL de tu Apps Script desplegado
-const GAS_URL = "REEMPLAZAR_CON_URL_DE_APPS_SCRIPT";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbyn1Ac4QWN7IL8GIKmINLMO9qGWk4SPvC6F1Cby2-bi4vdycpMBAPmNAbL_nM0BTHmFmQ/exec";
 
 // ── Constantes ────────────────────────────────────────────────────────────────
 const BASE = { lat: -34.47776, lon: -70.98126 };
