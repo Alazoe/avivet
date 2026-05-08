@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>La Campestre — Gestión de Rutas</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="app.css" />
+</head>
+<body>
+
+<nav class="navbar navbar-dark bg-success px-3 d-flex justify-content-between">
+  <span class="navbar-brand fw-bold mb-0">🐓 La Campestre — Rutas</span>
+  <span id="nav-semana" class="text-white-50 small"></span>
+</nav>
+
+<!-- Banner de configuración (visible hasta que se configure GAS_URL) -->
+<div id="banner-config" class="alert alert-warning alert-dismissible m-2 mb-0 d-none" role="alert">
+  <strong>Configuración requerida:</strong> Abre <code>app.js</code> y reemplaza <code>GAS_URL</code> con la URL de tu Apps Script.
+</div>
+
+<div class="container-fluid mt-2">
+  <div class="row g-3">
+
+    <!-- Panel izquierdo -->
+    <div class="col-lg-4 col-md-5">
+
+      <ul class="nav nav-tabs mb-3">
+        <li class="nav-item">
+          <a class="nav-link active" data-bs-toggle="tab" href="#tab-plan">Plan Semanal</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-bs-toggle="tab" href="#tab-rutas">Rutas</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-bs-toggle="tab" href="#tab-productores">Productores</a>
+        </li>
+      </ul>
+
+      <div class="tab-content">
+
+        <!-- TAB: Plan Semanal -->
+        <div class="tab-pane fade show active" id="tab-plan">
+
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <input type="date" id="fecha-semana" class="form-control form-control-sm" style="max-width:155px" onchange="cargarPlan()" />
+            <button class="btn btn-sm btn-danger" onclick="inicializarAltas()" title="Agrega ALTA a Lunes y Jueves">⭐ Fijar ALTA</button>
+            <button class="btn btn-sm btn-outline-secondary" onclick="irSemanaActual()">Hoy</button>
+          </div>
+
+          <div id="resumen-semana" class="mb-2"></div>
+          <div id="plan-por-dia" style="max-height:calc(100vh - 220px); overflow-y:auto"></div>
+        </div>
+
+        <!-- TAB: Rutas -->
+        <div class="tab-pane fade" id="tab-rutas">
+
+          <div class="card border-danger mb-3">
+            <div class="card-header bg-danger text-white fw-bold d-flex justify-content-between">
+              <span>⭐ Retiro Fijo — ALTA</span>
+              <span class="badge bg-light text-danger" id="badge-altas">0</span>
+            </div>
+            <div class="card-body p-2">
+              <p class="text-muted small mb-2">Lunes y Jueves — siempre incluidos</p>
+              <div id="lista-altas" class="small mb-2"></div>
+              <div class="d-flex gap-2">
+                <button class="btn btn-sm btn-outline-danger w-50" onclick="generarRuta('Lunes')">📍 Ruta Lunes</button>
+                <button class="btn btn-sm btn-outline-danger w-50" onclick="generarRuta('Jueves')">📍 Ruta Jueves</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card mb-3">
+            <div class="card-header fw-bold d-flex justify-content-between">
+              <span>📋 Seleccionar productores</span>
+              <span class="badge bg-secondary" id="badge-sel">0 sel.</span>
+            </div>
+            <div class="card-body p-2">
+              <input type="text" id="filtro-prod" class="form-control form-control-sm mb-2" placeholder="Buscar..." oninput="filtrarProductores()" />
+              <div id="lista-productores" style="max-height:240px;overflow-y:auto" class="small"></div>
+            </div>
+          </div>
+
+          <div class="card mb-3">
+            <div class="card-header fw-bold">🚚 Vehículos</div>
+            <div class="card-body p-2" id="lista-vehiculos"></div>
+          </div>
+
+          <button class="btn btn-success w-100 fw-bold mb-3" onclick="optimizarRutas()">🗺️ Optimizar Rutas</button>
+          <div id="resultado-rutas"></div>
+        </div>
+
+        <!-- TAB: Productores -->
+        <div class="tab-pane fade" id="tab-productores">
+          <input type="text" id="filtro-all" class="form-control form-control-sm mb-2" placeholder="Buscar..." oninput="filtrarTodos()" />
+          <div id="tabla-productores" style="max-height:75vh;overflow-y:auto"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Mapa -->
+    <div class="col-lg-8 col-md-7">
+      <div id="map" style="height:87vh;border-radius:8px;"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Modal: Agregar al plan -->
+<div class="modal fade" id="modalAgregarPlan" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Agregar al plan — <span id="plan-dia-label"></span></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="plan-dia" />
+        <div class="mb-2">
+          <label class="form-label">Productor</label>
+          <select id="plan-productor" class="form-select"></select>
+        </div>
+        <div class="row g-2 mb-2">
+          <div class="col">
+            <label class="form-label">Retiro (cajas)</label>
+            <input type="number" id="plan-cajas" class="form-control" value="0" min="0" />
+          </div>
+          <div class="col">
+            <label class="form-label">Despacho alimento (kg)</label>
+            <input type="number" id="plan-despacho" class="form-control" value="0" min="0" step="0.5" />
+          </div>
+        </div>
+        <div class="mb-2">
+          <label class="form-label">Vehículo</label>
+          <select id="plan-vehiculo" class="form-select"></select>
+        </div>
+        <div class="mb-2">
+          <label class="form-label">Notas</label>
+          <input type="text" id="plan-notas" class="form-control" placeholder="Opcional..." />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-success" onclick="guardarEntradaPlan()">Agregar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Editar productor -->
+<div class="modal fade" id="modalProductor" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Editar Productor</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="edit-id" />
+        <div class="mb-2"><label class="form-label">Nombre</label><input type="text" id="edit-nombre" class="form-control" /></div>
+        <div class="mb-2"><label class="form-label">Comuna</label><input type="text" id="edit-comuna" class="form-control" /></div>
+        <div class="row g-2 mb-2">
+          <div class="col"><label class="form-label">Latitud</label><input type="number" id="edit-lat" class="form-control" step="0.00001" /></div>
+          <div class="col"><label class="form-label">Longitud</label><input type="number" id="edit-lon" class="form-control" step="0.00001" /></div>
+        </div>
+        <div class="mb-2">
+          <label class="form-label">Prioridad</label>
+          <select id="edit-prioridad" class="form-select"><option>ALTA</option><option>MEDIA</option><option>BAJA</option></select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-success" onclick="guardarProductor()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
