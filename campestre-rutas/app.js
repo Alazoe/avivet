@@ -463,12 +463,32 @@ function calcularSugerencias(rutaParadas) {
     .slice(0, 10);
 }
 
+// ── Tiempo estimado ───────────────────────────────────────────────────────────
+
+const VEL_PROMEDIO_KMH = 60; // velocidad promedio en rutas rurales Chile
+
+function tiempoViaje(distancia_km, numParadas) {
+  const minParada = parseInt(document.getElementById("min-parada")?.value || 20);
+  const minRuta = (distancia_km / VEL_PROMEDIO_KMH) * 60;
+  const total = Math.round(minRuta + numParadas * minParada);
+  return total >= 60
+    ? `${Math.floor(total / 60)}h ${total % 60}min`
+    : `${total} min`;
+}
+
+function tiempoCosto(kmExtra, numParadasActual) {
+  const minParada = parseInt(document.getElementById("min-parada")?.value || 20);
+  const minExtra = Math.round((kmExtra / VEL_PROMEDIO_KMH) * 60) + minParada;
+  return minExtra >= 60
+    ? `+${Math.floor(minExtra / 60)}h ${minExtra % 60}min`
+    : `+${minExtra} min`;
+}
+
 // ── Rutas de retiro ALTA (Chevrolet Partner) ──────────────────────────────────
 
-function generarRuta(dia) {
-  // Siempre usar Chevrolet Partner para el retiro ALTA
+function generarRuta() {
+  const dia = document.getElementById("dia-retiro").value;
   const partner = vehiculos.find(v => v.nombre.toLowerCase().includes("partner")) || vehiculos[vehiculos.length - 1];
-
   rutaActiva = { dia, paradas: [...altas] };
   _dibujarRutaActiva(partner);
 }
@@ -481,14 +501,18 @@ function agregarSugerido(prodId) {
   _dibujarRutaActiva(partner);
 }
 
+function quitarDeRuta(prodId) {
+  rutaActiva.paradas = rutaActiva.paradas.filter(p => String(p.id) !== String(prodId));
+  const partner = vehiculos.find(v => v.nombre.toLowerCase().includes("partner")) || vehiculos[vehiculos.length - 1];
+  _dibujarRutaActiva(partner);
+}
+
 function _dibujarRutaActiva(vehiculo) {
   limpiarRutas();
   const rutas = optimizarCliente(rutaActiva.paradas, [vehiculo]);
   const rutaOrdenada = rutas[0]?.paradas || rutaActiva.paradas;
-
   _renderRutaRetiro(rutas, rutaActiva.dia);
   rutas.forEach((r, i) => dibujarRuta(r.paradas, COLORES_RUTA[i % COLORES_RUTA.length]));
-
   const sugerencias = calcularSugerencias(rutaOrdenada);
   _renderSugerencias(sugerencias, rutas[0]);
 }
@@ -496,30 +520,40 @@ function _dibujarRutaActiva(vehiculo) {
 function _renderRutaRetiro(rutas, dia) {
   const r = rutas[0];
   if (!r) return;
-  const altasEnRuta = r.paradas.filter(p => p.prioridad === "ALTA").length;
   const extras = r.paradas.filter(p => p.prioridad !== "ALTA").length;
+  const tiempo = tiempoViaje(r.distancia_km, r.paradas.length);
 
   document.getElementById("resultado-rutas").innerHTML = `
     <div class="card ruta-card v0 mb-2">
-      <div class="card-header py-1 d-flex justify-content-between align-items-center">
-        <span class="fw-bold" style="color:${COLORES[0]}">
-          🚚 ${r.vehiculo.nombre} — ${dia}
-        </span>
-        <span>
-          <span class="badge bg-secondary">${r.distancia_km} km</span>
-          <span class="badge bg-danger ms-1">${altasEnRuta} ALTA</span>
-          ${extras ? `<span class="badge bg-primary ms-1">+${extras} extra</span>` : ""}
-        </span>
+      <div class="card-header py-2">
+        <div class="d-flex justify-content-between align-items-center">
+          <span class="fw-bold" style="color:${COLORES[0]}">🚚 ${r.vehiculo.nombre} — ${dia}</span>
+          <span>
+            <span class="badge bg-secondary">${r.distancia_km} km</span>
+            <span class="badge bg-success ms-1">⏱ ${tiempo}</span>
+          </span>
+        </div>
+        <div class="small text-muted mt-1">
+          ${r.paradas.length} paradas · ${r.paradas.filter(p=>p.prioridad==="ALTA").length} obligatorias
+          ${extras ? ` · <span class="text-primary">${extras} adicionales</span>` : ""}
+        </div>
       </div>
-      <div class="card-body p-2">
-        <ol class="mb-0 ps-3 small">
-          ${r.paradas.map(p =>
-            `<li>
-              <b>${p.nombre}</b> — ${p.comuna}
-              <span class="badge ms-1 ${p.prioridad === "ALTA" ? "bg-danger" : "bg-primary"}" style="font-size:10px">${p.prioridad}</span>
-            </li>`
-          ).join("")}
-        </ol>
+      <div class="card-body p-0">
+        <table class="table table-sm mb-0 small">
+          <tbody>
+            ${r.paradas.map((p, i) => `
+              <tr>
+                <td class="text-muted ps-2" style="width:24px">${i + 1}</td>
+                <td><b>${p.nombre}</b><br><span class="text-muted" style="font-size:11px">${p.comuna}</span></td>
+                <td class="text-end pe-2">
+                  <span class="badge ${p.prioridad === "ALTA" ? "bg-danger" : "bg-primary"}">${p.prioridad}</span>
+                  ${p.prioridad !== "ALTA"
+                    ? `<button class="btn btn-sm btn-outline-secondary py-0 px-1 ms-1" style="font-size:10px" onclick="quitarDeRuta(${p.id})">✕</button>`
+                    : ""}
+                </td>
+              </tr>`).join("")}
+          </tbody>
+        </table>
       </div>
     </div>
     <div id="panel-sugerencias"></div>`;
@@ -528,16 +562,25 @@ function _renderRutaRetiro(rutas, dia) {
 function _renderSugerencias(sugerencias, ruta) {
   const el = document.getElementById("panel-sugerencias");
   if (!sugerencias.length || !el) return;
+  const distBase = ruta?.distancia_km || 0;
 
   el.innerHTML = `
     <div class="card border-primary mb-2">
-      <div class="card-header py-1 bg-primary bg-opacity-10 fw-bold small">
-        💡 Productores para aprovechar el viaje
-        <span class="text-muted fw-normal ms-1">(ordenados por menor desvío)</span>
+      <div class="card-header py-1 bg-primary bg-opacity-10 d-flex justify-content-between align-items-center">
+        <span class="fw-bold small">💡 ¿A quién más visitar?</span>
+        <span class="text-muted small">ordenado por menor desvío</span>
       </div>
       <div class="card-body p-0">
         <table class="table table-sm table-hover mb-0 small">
-          <thead><tr><th>Productor</th><th>Comuna</th><th class="text-end">+ km</th><th></th></tr></thead>
+          <thead>
+            <tr>
+              <th>Productor</th>
+              <th>Comuna</th>
+              <th class="text-end">+ km</th>
+              <th class="text-end">+ tiempo</th>
+              <th></th>
+            </tr>
+          </thead>
           <tbody>
             ${sugerencias.map(p => `
               <tr>
@@ -548,10 +591,9 @@ function _renderSugerencias(sugerencias, ruta) {
                     +${p.costo_km} km
                   </span>
                 </td>
+                <td class="text-end text-muted" style="font-size:11px">${tiempoCosto(p.costo_km, ruta?.paradas?.length || 5)}</td>
                 <td>
-                  <button class="btn btn-sm btn-outline-primary py-0 px-2" onclick="agregarSugerido(${p.id})">
-                    + Agregar
-                  </button>
+                  <button class="btn btn-sm btn-outline-primary py-0 px-2" onclick="agregarSugerido(${p.id})">+ Ir</button>
                 </td>
               </tr>`).join("")}
           </tbody>
@@ -568,14 +610,15 @@ function optimizarRutas() {
   const vehs  = vehiculos.filter(v => vehiculosSeleccionados.has(v.id));
   if (!prods.length) { alert("Selecciona al menos un productor."); return; }
   const rutas = optimizarCliente(prods, vehs);
-  document.getElementById("resultado-rutas").innerHTML =
-    `<h6 class="fw-bold mt-1">Rutas de la semana</h6>` +
+  document.getElementById("resultado-rutas-semana").innerHTML =
+    `<h6 class="fw-bold mt-1">Rutas semanales</h6>` +
     rutas.map((r, i) =>
       `<div class="card ruta-card v${i} mb-2">
         <div class="card-body p-2">
           <div class="fw-bold" style="color:${COLORES[i]}">
             🚚 ${r.vehiculo.nombre}
             <span class="badge bg-secondary ms-1">${r.distancia_km} km</span>
+            <span class="badge bg-success ms-1">⏱ ${tiempoViaje(r.distancia_km, r.paradas.length)}</span>
             <span class="badge bg-light text-dark ms-1">${r.paradas.length} paradas</span>
           </div>
           <ol class="mb-0 mt-1 ps-3 small">
