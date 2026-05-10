@@ -13,6 +13,7 @@ const COLORES_RUTA = ["red", "blue", "green"];
 let map, allProductores = [], vehiculos = [], altas = [], seleccionados = new Set();
 let markers = {}, rutaLayers = [], vehiculosSeleccionados = new Set();
 let fechaSemanaActual = "";
+let rutaActiva = { dia: null, paradas: [] }; // estado de la ruta de retiro en construcción
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 
@@ -441,13 +442,125 @@ function toggleVehiculo(id) {
   vehiculosSeleccionados.has(id) ? vehiculosSeleccionados.delete(id) : vehiculosSeleccionados.add(id);
 }
 
-function generarRuta(dia) {
-  limpiarRutas();
-  const vehs = vehiculos.filter(v => vehiculosSeleccionados.has(v.id));
-  const rutas = optimizarCliente(altas, vehs);
-  mostrarResultado(rutas, `Ruta ${dia}`);
-  rutas.forEach((r, i) => dibujarRuta(r.paradas, COLORES_RUTA[i % COLORES_RUTA.length]));
+// ── Lógica de inserción (costo de agregar un productor a una ruta existente) ──
+
+function insertionCost(rutaParadas, candidato) {
+  const puntos = [{ latitud: BASE.lat, longitud: BASE.lon }, ...rutaParadas, { latitud: BASE.lat, longitud: BASE.lon }];
+  let min = Infinity;
+  for (let i = 0; i < puntos.length - 1; i++) {
+    const costo = haversine(puntos[i], candidato) + haversine(candidato, puntos[i + 1]) - haversine(puntos[i], puntos[i + 1]);
+    if (costo < min) min = costo;
+  }
+  return min;
 }
+
+function calcularSugerencias(rutaParadas) {
+  const idsEnRuta = new Set(rutaParadas.map(p => String(p.id)));
+  return allProductores
+    .filter(p => !idsEnRuta.has(String(p.id)))
+    .map(p => ({ ...p, costo_km: Math.round(insertionCost(rutaParadas, p) * 10) / 10 }))
+    .sort((a, b) => a.costo_km - b.costo_km)
+    .slice(0, 10);
+}
+
+// ── Rutas de retiro ALTA (Chevrolet Partner) ──────────────────────────────────
+
+function generarRuta(dia) {
+  // Siempre usar Chevrolet Partner para el retiro ALTA
+  const partner = vehiculos.find(v => v.nombre.toLowerCase().includes("partner")) || vehiculos[vehiculos.length - 1];
+
+  rutaActiva = { dia, paradas: [...altas] };
+  _dibujarRutaActiva(partner);
+}
+
+function agregarSugerido(prodId) {
+  const prod = allProductores.find(p => String(p.id) === String(prodId));
+  if (!prod) return;
+  rutaActiva.paradas.push(prod);
+  const partner = vehiculos.find(v => v.nombre.toLowerCase().includes("partner")) || vehiculos[vehiculos.length - 1];
+  _dibujarRutaActiva(partner);
+}
+
+function _dibujarRutaActiva(vehiculo) {
+  limpiarRutas();
+  const rutas = optimizarCliente(rutaActiva.paradas, [vehiculo]);
+  const rutaOrdenada = rutas[0]?.paradas || rutaActiva.paradas;
+
+  _renderRutaRetiro(rutas, rutaActiva.dia);
+  rutas.forEach((r, i) => dibujarRuta(r.paradas, COLORES_RUTA[i % COLORES_RUTA.length]));
+
+  const sugerencias = calcularSugerencias(rutaOrdenada);
+  _renderSugerencias(sugerencias, rutas[0]);
+}
+
+function _renderRutaRetiro(rutas, dia) {
+  const r = rutas[0];
+  if (!r) return;
+  const altasEnRuta = r.paradas.filter(p => p.prioridad === "ALTA").length;
+  const extras = r.paradas.filter(p => p.prioridad !== "ALTA").length;
+
+  document.getElementById("resultado-rutas").innerHTML = `
+    <div class="card ruta-card v0 mb-2">
+      <div class="card-header py-1 d-flex justify-content-between align-items-center">
+        <span class="fw-bold" style="color:${COLORES[0]}">
+          🚚 ${r.vehiculo.nombre} — ${dia}
+        </span>
+        <span>
+          <span class="badge bg-secondary">${r.distancia_km} km</span>
+          <span class="badge bg-danger ms-1">${altasEnRuta} ALTA</span>
+          ${extras ? `<span class="badge bg-primary ms-1">+${extras} extra</span>` : ""}
+        </span>
+      </div>
+      <div class="card-body p-2">
+        <ol class="mb-0 ps-3 small">
+          ${r.paradas.map(p =>
+            `<li>
+              <b>${p.nombre}</b> — ${p.comuna}
+              <span class="badge ms-1 ${p.prioridad === "ALTA" ? "bg-danger" : "bg-primary"}" style="font-size:10px">${p.prioridad}</span>
+            </li>`
+          ).join("")}
+        </ol>
+      </div>
+    </div>
+    <div id="panel-sugerencias"></div>`;
+}
+
+function _renderSugerencias(sugerencias, ruta) {
+  const el = document.getElementById("panel-sugerencias");
+  if (!sugerencias.length || !el) return;
+
+  el.innerHTML = `
+    <div class="card border-primary mb-2">
+      <div class="card-header py-1 bg-primary bg-opacity-10 fw-bold small">
+        💡 Productores para aprovechar el viaje
+        <span class="text-muted fw-normal ms-1">(ordenados por menor desvío)</span>
+      </div>
+      <div class="card-body p-0">
+        <table class="table table-sm table-hover mb-0 small">
+          <thead><tr><th>Productor</th><th>Comuna</th><th class="text-end">+ km</th><th></th></tr></thead>
+          <tbody>
+            ${sugerencias.map(p => `
+              <tr>
+                <td><b>${p.nombre}</b></td>
+                <td class="text-muted">${p.comuna}</td>
+                <td class="text-end">
+                  <span class="badge ${p.costo_km <= 5 ? "bg-success" : p.costo_km <= 15 ? "bg-warning text-dark" : "bg-secondary"}">
+                    +${p.costo_km} km
+                  </span>
+                </td>
+                <td>
+                  <button class="btn btn-sm btn-outline-primary py-0 px-2" onclick="agregarSugerido(${p.id})">
+                    + Agregar
+                  </button>
+                </td>
+              </tr>`).join("")}
+          </tbody>
+        </table>
+      </div>
+    </div>`;
+}
+
+// ── Rutas semanales generales ─────────────────────────────────────────────────
 
 function optimizarRutas() {
   limpiarRutas();
@@ -455,13 +568,8 @@ function optimizarRutas() {
   const vehs  = vehiculos.filter(v => vehiculosSeleccionados.has(v.id));
   if (!prods.length) { alert("Selecciona al menos un productor."); return; }
   const rutas = optimizarCliente(prods, vehs);
-  mostrarResultado(rutas, "Rutas de la semana");
-  rutas.forEach((r, i) => dibujarRuta(r.paradas, COLORES_RUTA[i % COLORES_RUTA.length]));
-}
-
-function mostrarResultado(rutas, titulo) {
   document.getElementById("resultado-rutas").innerHTML =
-    `<h6 class="fw-bold mt-1">${titulo}</h6>` +
+    `<h6 class="fw-bold mt-1">Rutas de la semana</h6>` +
     rutas.map((r, i) =>
       `<div class="card ruta-card v${i} mb-2">
         <div class="card-body p-2">
@@ -476,6 +584,7 @@ function mostrarResultado(rutas, titulo) {
         </div>
       </div>`
     ).join("");
+  rutas.forEach((r, i) => dibujarRuta(r.paradas, COLORES_RUTA[i % COLORES_RUTA.length]));
 }
 
 // ── Tabla productores ─────────────────────────────────────────────────────────

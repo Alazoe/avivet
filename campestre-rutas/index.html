@@ -57,16 +57,19 @@
         <div class="tab-pane fade" id="tab-rutas">
 
           <div class="card border-danger mb-3">
-            <div class="card-header bg-danger text-white fw-bold d-flex justify-content-between">
-              <span>⭐ Retiro Fijo — ALTA</span>
+            <div class="card-header bg-danger text-white fw-bold d-flex justify-content-between align-items-center">
+              <span>⭐ Retiro de huevos — ALTA</span>
               <span class="badge bg-light text-danger" id="badge-altas">0</span>
             </div>
             <div class="card-body p-2">
-              <p class="text-muted small mb-2">Lunes y Jueves — siempre incluidos</p>
+              <p class="text-muted small mb-2">
+                Chevrolet Partner · 2 veces por semana<br>
+                <span class="text-primary">El programa sugiere productores cercanos para aprovechar el viaje.</span>
+              </p>
               <div id="lista-altas" class="small mb-2"></div>
               <div class="d-flex gap-2">
-                <button class="btn btn-sm btn-outline-danger w-50" onclick="generarRuta('Lunes')">📍 Ruta Lunes</button>
-                <button class="btn btn-sm btn-outline-danger w-50" onclick="generarRuta('Jueves')">📍 Ruta Jueves</button>
+                <button class="btn btn-sm btn-danger w-50" onclick="generarRuta('Lunes')">📍 Generar Ruta Lunes</button>
+                <button class="btn btn-sm btn-danger w-50" onclick="generarRuta('Jueves')">📍 Generar Ruta Jueves</button>
               </div>
             </div>
           </div>
