@@ -9,11 +9,26 @@ const DIA_COLOR = { Lunes: "danger", Martes: "primary", "Miércoles": "warning",
 const COLORES = ["#dc3545", "#0d6efd", "#198754"];
 const COLORES_RUTA = ["red", "blue", "green"];
 
+// ── Zonas geográficas ─────────────────────────────────────────────────────────
+const ZONAS = [
+  { nombre: "Zona Norte",              icono: "⬆️", test: p => p.latitud > -33.8 },
+  { nombre: "Zona Centro",             icono: "🔵", test: p => p.latitud > -34.1  && p.latitud <= -33.8 },
+  { nombre: "Zona Rancagua / Requínoa",icono: "🟡", test: p => p.latitud > -34.4  && p.latitud <= -34.1 },
+  { nombre: "Zona San Vicente",        icono: "🔴", test: p => p.latitud > -34.6  && p.latitud <= -34.4 && p.longitud > -71.2 },
+  { nombre: "Zona Pichidegua / Litueche",icono:"🟠",test: p => p.latitud > -34.6 && p.latitud <= -34.4 && p.longitud <= -71.2 },
+  { nombre: "Zona Sur",                icono: "⬇️", test: p => p.latitud <= -34.6 },
+];
+
+function getZona(p) {
+  return ZONAS.find(z => z.test(p)) || ZONAS[ZONAS.length - 1];
+}
+
 // ── Estado global ─────────────────────────────────────────────────────────────
 let map, allProductores = [], vehiculos = [], altas = [], seleccionados = new Set();
 let markers = {}, rutaLayers = [], vehiculosSeleccionados = new Set();
 let fechaSemanaActual = "";
-let rutaActiva = { dia: null, paradas: [] }; // estado de la ruta de retiro en construcción
+let rutaActiva = { dia: null, paradas: [] };
+let altasSeleccionadas = new Set(); // permite deseleccionar productores ALTA
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 
@@ -45,6 +60,7 @@ async function cargarDatos() {
   allProductores = prods;
   vehiculos = vehs;
   altas = prods.filter(p => p.prioridad === "ALTA");
+  altasSeleccionadas = new Set(altas.map(p => p.id));
   vehiculosSeleccionados = new Set(vehs.map(v => v.id));
 
   const lunes = new Date(lunesToDate() + "T12:00:00");
@@ -397,24 +413,49 @@ function optimizarCliente(prods, vehiculosList) {
 // ── Panel Rutas ───────────────────────────────────────────────────────────────
 
 function renderAltas() {
-  document.getElementById("badge-altas").textContent = altas.length;
-  document.getElementById("lista-altas").innerHTML = altas.map(p =>
-    `<div class="productor-item"><span class="badge badge-alta me-1">ALTA</span>${p.nombre} <span class="text-muted">— ${p.comuna}</span></div>`
-  ).join("");
-}
-
-function renderProductores(filtro = "") {
-  const lista = allProductores.filter(p =>
-    p.prioridad !== "ALTA" && p.nombre.toLowerCase().includes(filtro.toLowerCase())
-  );
-  document.getElementById("lista-productores").innerHTML = lista.map(p => {
-    const sel = seleccionados.has(p.id);
-    return `<div class="productor-item ${sel?"selected":""}" onclick="toggleSeleccion(${p.id})">
-      <input type="checkbox" class="me-1" ${sel?"checked":""} />
-      <span class="badge badge-${p.prioridad.toLowerCase()} me-1">${p.prioridad}</span>
+  const sel = altasSeleccionadas.size;
+  document.getElementById("badge-altas").textContent = `${sel}/${altas.length}`;
+  document.getElementById("lista-altas").innerHTML = altas.map(p => {
+    const checked = altasSeleccionadas.has(p.id);
+    return `<div class="productor-item ${checked ? "selected" : ""}" onclick="toggleAlta(${p.id})">
+      <input type="checkbox" class="me-1" ${checked ? "checked" : ""} />
+      <span class="badge badge-alta me-1">ALTA</span>
       ${p.nombre} <span class="text-muted">— ${p.comuna}</span>
     </div>`;
   }).join("");
+}
+
+function toggleAlta(id) {
+  altasSeleccionadas.has(id) ? altasSeleccionadas.delete(id) : altasSeleccionadas.add(id);
+  renderAltas();
+  actualizarMarcadores();
+}
+
+function renderProductores(filtro = "") {
+  const f = filtro.toLowerCase();
+  const candidatos = allProductores.filter(p =>
+    p.prioridad !== "ALTA" &&
+    (p.nombre.toLowerCase().includes(f) || p.comuna.toLowerCase().includes(f))
+  );
+
+  // Agrupar por zona
+  const grupos = ZONAS.map(z => ({
+    ...z,
+    items: candidatos.filter(p => z.test(p))
+  })).filter(g => g.items.length > 0);
+
+  document.getElementById("lista-productores").innerHTML = grupos.map(g => `
+    <div class="zona-header">${g.icono} ${g.nombre} <span class="text-muted">(${g.items.length})</span></div>
+    ${g.items.map(p => {
+      const sel = seleccionados.has(p.id);
+      return `<div class="productor-item ${sel ? "selected" : ""}" onclick="toggleSeleccion(${p.id})">
+        <input type="checkbox" class="me-1" ${sel ? "checked" : ""} />
+        <span class="badge badge-${p.prioridad.toLowerCase()} me-1">${p.prioridad}</span>
+        ${p.nombre} <span class="text-muted">— ${p.comuna}</span>
+      </div>`;
+    }).join("")}
+  `).join("");
+
   document.getElementById("badge-sel").textContent = `${seleccionados.size} sel.`;
 }
 
@@ -489,7 +530,9 @@ function tiempoCosto(kmExtra, numParadasActual) {
 function generarRuta() {
   const dia = document.getElementById("dia-retiro").value;
   const partner = vehiculos.find(v => v.nombre.toLowerCase().includes("partner")) || vehiculos[vehiculos.length - 1];
-  rutaActiva = { dia, paradas: [...altas] };
+  const altasFiltradas = altas.filter(p => altasSeleccionadas.has(p.id));
+  if (!altasFiltradas.length) { alert("Selecciona al menos un productor ALTA."); return; }
+  rutaActiva = { dia, paradas: [...altasFiltradas] };
   _dibujarRutaActiva(partner);
 }
 
