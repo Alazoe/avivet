@@ -482,11 +482,21 @@ td { padding:11px 14px; }
               <div class="chart-leyenda" id="chart-donut-leyenda"></div>
             </div>
           </div>
-          <div class="card">
-            <div class="card-body">
-              <div class="chart-titulo">Stock actual vs. mínimo (kg)</div>
-              <div class="chart-wrap" id="chart-barras-wrap">
-                <canvas id="chart-barras"></canvas>
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <div class="card">
+              <div class="card-body">
+                <div class="chart-titulo">Ingredientes base — stock vs. mínimo (kg)</div>
+                <div class="chart-wrap" id="chart-base-wrap">
+                  <canvas id="chart-base"></canvas>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-body">
+                <div class="chart-titulo">Microingredientes — stock vs. mínimo (kg)</div>
+                <div class="chart-wrap" id="chart-micro-wrap">
+                  <canvas id="chart-micro"></canvas>
+                </div>
               </div>
             </div>
           </div>
@@ -1375,7 +1385,8 @@ function renderStockDia() {
 
 // ── GRÁFICOS ──
 let _chartDonut  = null;
-let _chartBarras = null;
+let _chartBase   = null;
+let _chartMicro  = null;
 
 function renderGraficos() {
   const stock = dashData?.stock;
@@ -1428,19 +1439,28 @@ function renderGraficos() {
     </div>`
   ).join("");
 
-  // ── BARRAS HORIZONTALES — stock actual vs mínimo ──
-  const mpsFiltradas = mps.filter(m => m.stock_min > 0 || m.stock > 0);
-  const labels      = mpsFiltradas.map(m => m.nombre.length > 22 ? m.nombre.slice(0,20)+"…" : m.nombre);
-  const stockActual = mpsFiltradas.map(m => m.stock);
-  const stockMin    = mpsFiltradas.map(m => m.stock_min);
-  const bgColors    = mpsFiltradas.map(m => COLORES_ESTADO[m.estado]?.bg  || "#9CA3AF");
-  const bdColors    = mpsFiltradas.map(m => COLORES_ESTADO[m.estado]?.borde || "#6B7280");
+  // ── BARRAS HORIZONTALES — separadas por volumen ──
+  const BASE_KEYWORDS = ["MAIZ", "MAÍZ", "SOYA", "CONCHUELA", "CARBONATO", "HARINILLA", "TRIGO"];
+  const esBase = m => BASE_KEYWORDS.some(k => m.nombre.toUpperCase().includes(k));
 
-  document.getElementById("chart-barras-wrap").style.height = Math.max(300, mpsFiltradas.length * 28) + "px";
+  const mpsConStock = mps.filter(m => m.stock_min > 0 || m.stock > 0);
+  _chartBase  = _buildBarChart("chart-base",  "chart-base-wrap",  mpsConStock.filter(esBase),    _chartBase,  COLORES_ESTADO);
+  _chartMicro = _buildBarChart("chart-micro", "chart-micro-wrap", mpsConStock.filter(m => !esBase(m)), _chartMicro, COLORES_ESTADO);
+}
 
-  const barrasCtx = document.getElementById("chart-barras").getContext("2d");
-  if (_chartBarras) _chartBarras.destroy();
-  _chartBarras = new Chart(barrasCtx, {
+function _buildBarChart(canvasId, wrapId, grupo, instanciaPrevia, COLORES) {
+  if (!grupo.length) return instanciaPrevia;
+  const labels      = grupo.map(m => m.nombre.length > 26 ? m.nombre.slice(0,24)+"…" : m.nombre);
+  const stockActual = grupo.map(m => m.stock);
+  const stockMin    = grupo.map(m => m.stock_min);
+  const bgColors    = grupo.map(m => COLORES[m.estado]?.bg    || "#9CA3AF");
+  const bdColors    = grupo.map(m => COLORES[m.estado]?.borde || "#6B7280");
+
+  document.getElementById(wrapId).style.height = Math.max(200, grupo.length * 32) + "px";
+
+  const ctx = document.getElementById(canvasId).getContext("2d");
+  if (instanciaPrevia) instanciaPrevia.destroy();
+  return new Chart(ctx, {
     type: "bar",
     data: {
       labels,
@@ -1474,7 +1494,7 @@ function renderGraficos() {
         legend: { display: true, position: "bottom",
           labels: { font: { family: "DM Sans", size: 11 }, boxWidth: 14, padding: 16 } },
         tooltip: { callbacks: { label: ctx => {
-          const m = mpsFiltradas[ctx.dataIndex];
+          const m = grupo[ctx.dataIndex];
           if (ctx.datasetIndex === 0) return ` Stock actual: ${m.stock.toLocaleString("es-CL")} kg — ${m.estado}`;
           return ` Mínimo: ${m.stock_min.toLocaleString("es-CL")} kg`;
         }}}
