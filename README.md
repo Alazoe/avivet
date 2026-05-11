@@ -10,6 +10,7 @@
 |-------------|------|-------------|
 | **Auditoría SAG Bioseguridad** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/auditoria-sag/) | Pauta de verificación Res. 7695/2024 |
 | **Inventario de Huevos** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/inventario-huevos/) | Control de stock y ventas |
+| **Gestión de Rutas — La Campestre** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/campestre-rutas/) | Planificación y optimización de rutas de retiro de huevos |
 
 ---
 
@@ -46,6 +47,32 @@ Productores avícolas del sur de Chile que necesitan autoevaluar su nivel de cum
 
 ---
 
+## 🗺️ Gestión de Rutas — La Campestre
+
+### ➡️ [https://alazoe.github.io/avivet/campestre-rutas/](https://alazoe.github.io/avivet/campestre-rutas/)
+
+Herramienta para planificar y optimizar rutas de retiro de huevos frescos y despacho de alimento, con 53 productores geolocalizados.
+
+### ¿Qué incluye?
+
+- ✅ Mapa interactivo con todos los productores (ALTA / MEDIA / BAJA prioridad)
+- ✅ Ruta de retiro ALTA con Chevrolet Partner — elige el día libremente
+- ✅ Sugerencias automáticas de productores cercanos para aprovechar el viaje
+- ✅ Tiempo estimado de viaje por ruta y por productor adicional
+- ✅ Plan semanal por día con tabla editable (cajas, alimento, vehículo)
+- ✅ Optimización de rutas semanales para 3 vehículos (10T, 6T, Partner)
+- ✅ Datos en Google Sheets — sin servidor, acceso desde cualquier dispositivo
+
+### Flota
+
+| Vehículo | Capacidad |
+|---|---|
+| Camión Grande | 10 toneladas |
+| Camión Mediano | 6 toneladas |
+| Chevrolet Partner | ~1 tonelada |
+
+---
+
 ## 📞 Contacto y Asesoría
 
 **MV Andrés Lazo Escobar**
@@ -65,4 +92,4 @@ Especialista en medicina aviar · Sur de Chile
 
 ---
 
-*Última actualización: 2025 · Basado en Res. Exenta SAG N° 7695/2024 del 13/11/2024*
+*Última actualización: 2026*
