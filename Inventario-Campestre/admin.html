@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin — Inventario La Campestre</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
 <style>
 :root {
   --verde: #3B4A20; --verde-med: #5A6B31; --verde-clar: #7A9040;
@@ -240,7 +241,16 @@ td { padding:11px 14px; }
 .proy-prod-row td:first-child { font-weight:600; color:var(--texto); font-family:'DM Sans',sans-serif; }
 .aviso-plan { padding:30px 20px; text-align:center; color:var(--gris); font-size:14px; }
 
+/* GRÁFICOS */
+.graficos-grid { display:grid; grid-template-columns:320px 1fr; gap:16px; align-items:start; }
+.chart-wrap { position:relative; }
+.chart-titulo { font-size:13px; font-weight:600; color:var(--verde); margin-bottom:14px; }
+.chart-leyenda { display:flex; flex-wrap:wrap; gap:10px; margin-top:12px; }
+.leyenda-item { display:flex; align-items:center; gap:6px; font-size:11px; color:var(--gris); }
+.leyenda-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+
 @media (max-width:768px) {
+  .graficos-grid { grid-template-columns:1fr; }
   .sidebar { width:100%; height:56px; bottom:0; top:auto; flex-direction:row; padding:0; }
   .sidebar-logo,.sidebar-footer { display:none; }
   .nav-items { display:flex; flex-direction:row; padding:0; overflow-x:auto; }
@@ -286,6 +296,10 @@ td { padding:11px 14px; }
         <button class="nav-item" onclick="irA('control',this)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="3" y1="4" x2="21" y2="4"/></svg>
           Control Diario
+        </button>
+        <button class="nav-item" onclick="irA('graficos',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/></svg>
+          Gráficos
         </button>
       </div>
       <div class="sidebar-footer">
@@ -452,6 +466,33 @@ td { padding:11px 14px; }
         </div>
       </div>
 
+      <!-- GRÁFICOS -->
+      <div class="page" id="pg-graficos">
+        <div class="page-header">
+          <h2>Gráficos de Stock</h2>
+          <p>Criticidad y niveles actuales por materia prima</p>
+        </div>
+        <div class="graficos-grid">
+          <div class="card">
+            <div class="card-body">
+              <div class="chart-titulo">Distribución por estado</div>
+              <div class="chart-wrap" style="height:240px">
+                <canvas id="chart-donut"></canvas>
+              </div>
+              <div class="chart-leyenda" id="chart-donut-leyenda"></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-body">
+              <div class="chart-titulo">Stock actual vs. mínimo (kg)</div>
+              <div class="chart-wrap" id="chart-barras-wrap">
+                <canvas id="chart-barras"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </main>
   </div>
 </div>
@@ -538,6 +579,7 @@ function irA(pagina, btn) {
   if(pagina==="planificacion"){ Promise.all([cargarPlanDesdeSheet(),cargarRecetasDesdeGAS()]).then(()=>renderPlan()); }
   if(pagina==="stockdia")     renderStockDia();
   if(pagina==="control")      iniciarControlDiario();
+  if(pagina==="graficos")     renderGraficos();
 }
 
 // ── DASHBOARD ──
@@ -1329,6 +1371,121 @@ function renderStockDia() {
 
   html+=`</tbody></table></div>`;
   stockEl.innerHTML=html;
+}
+
+// ── GRÁFICOS ──
+let _chartDonut  = null;
+let _chartBarras = null;
+
+function renderGraficos() {
+  const stock = dashData?.stock;
+  if (!stock || !stock.length) {
+    cargarDashboard().then(() => renderGraficos());
+    return;
+  }
+
+  const COLORES_ESTADO = {
+    "OK":        { bg: "#5A6B31", borde: "#3B4A20" },
+    "BAJO":      { bg: "#E67E22", borde: "#C07B1E" },
+    "CRÍTICO":   { bg: "#C0392B", borde: "#922B21" },
+    "SIN STOCK": { bg: "#9CA3AF", borde: "#6B7280" },
+  };
+
+  const mps = stock.filter(m => m.grupo !== "Envases");
+
+  // ── DONUT ──
+  const conteos = { "OK": 0, "BAJO": 0, "CRÍTICO": 0, "SIN STOCK": 0 };
+  mps.forEach(m => { if (conteos[m.estado] !== undefined) conteos[m.estado]++; });
+
+  const donutCtx = document.getElementById("chart-donut").getContext("2d");
+  if (_chartDonut) _chartDonut.destroy();
+  _chartDonut = new Chart(donutCtx, {
+    type: "doughnut",
+    data: {
+      labels: Object.keys(conteos),
+      datasets: [{
+        data: Object.values(conteos),
+        backgroundColor: Object.keys(conteos).map(k => COLORES_ESTADO[k].bg),
+        borderColor:     Object.keys(conteos).map(k => COLORES_ESTADO[k].borde),
+        borderWidth: 2,
+        hoverOffset: 6,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: true,
+      cutout: "65%",
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.parsed} MPs` } }
+      }
+    }
+  });
+
+  document.getElementById("chart-donut-leyenda").innerHTML = Object.entries(conteos).map(([estado, n]) =>
+    `<div class="leyenda-item">
+      <div class="leyenda-dot" style="background:${COLORES_ESTADO[estado].bg}"></div>
+      <span>${estado} (${n})</span>
+    </div>`
+  ).join("");
+
+  // ── BARRAS HORIZONTALES — stock actual vs mínimo ──
+  const mpsFiltradas = mps.filter(m => m.stock_min > 0 || m.stock > 0);
+  const labels      = mpsFiltradas.map(m => m.nombre.length > 22 ? m.nombre.slice(0,20)+"…" : m.nombre);
+  const stockActual = mpsFiltradas.map(m => m.stock);
+  const stockMin    = mpsFiltradas.map(m => m.stock_min);
+  const bgColors    = mpsFiltradas.map(m => COLORES_ESTADO[m.estado]?.bg  || "#9CA3AF");
+  const bdColors    = mpsFiltradas.map(m => COLORES_ESTADO[m.estado]?.borde || "#6B7280");
+
+  document.getElementById("chart-barras-wrap").style.height = Math.max(300, mpsFiltradas.length * 28) + "px";
+
+  const barrasCtx = document.getElementById("chart-barras").getContext("2d");
+  if (_chartBarras) _chartBarras.destroy();
+  _chartBarras = new Chart(barrasCtx, {
+    type: "bar",
+    data: {
+      labels,
+      datasets: [
+        {
+          label: "Stock actual (kg)",
+          data: stockActual,
+          backgroundColor: bgColors,
+          borderColor: bdColors,
+          borderWidth: 1,
+          borderRadius: 4,
+          order: 2,
+        },
+        {
+          label: "Stock mínimo (kg)",
+          data: stockMin,
+          type: "scatter",
+          pointStyle: "line",
+          pointRadius: 8,
+          pointBorderWidth: 3,
+          borderColor: "#1E2210",
+          backgroundColor: "#1E2210",
+          order: 1,
+        }
+      ]
+    },
+    options: {
+      indexAxis: "y",
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: true, position: "bottom",
+          labels: { font: { family: "DM Sans", size: 11 }, boxWidth: 14, padding: 16 } },
+        tooltip: { callbacks: { label: ctx => {
+          const m = mpsFiltradas[ctx.dataIndex];
+          if (ctx.datasetIndex === 0) return ` Stock actual: ${m.stock.toLocaleString("es-CL")} kg — ${m.estado}`;
+          return ` Mínimo: ${m.stock_min.toLocaleString("es-CL")} kg`;
+        }}}
+      },
+      scales: {
+        x: { grid: { color: "rgba(0,0,0,0.05)" },
+             ticks: { font: { family: "DM Mono", size: 10 }, callback: v => v.toLocaleString("es-CL") } },
+        y: { ticks: { font: { family: "DM Sans", size: 11 } } }
+      }
+    }
+  });
 }
 </script>
 
