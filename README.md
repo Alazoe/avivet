@@ -83,10 +83,11 @@ cd avivet-repo/calculadoras-dosis
 python3 oxitetraciclina.py
 ```
 
-| Herramienta | Tipo | Antibiótico | Dosis |
-|-------------|------|------------|-------|
-| `index.html` | Web (GitHub Pages) | Oxitetraciclina · Zanil® HCL 80% | 27–80 mg/kg PV/día · 7–14 días |
-| `oxitetraciclina.py` | Python CLI | Oxitetraciclina · Zanil® HCL 80% | 27–80 mg/kg PV/día · 7–14 días |
+| Herramienta | Tipo | Antibiótico | Especies | Dosis |
+|-------------|------|------------|---------|-------|
+| `oxitetraciclina.html` | Web | Oxitetraciclina · Zanil® HCL 80% | Pollos / Pavos | 16,8–90,1 mg/kg PV/día · 5–14 días |
+| `florfenicol.html` | Web | Florfenicol · Veterin® 10% | Pollos / Pavos / Cerdos | 0,1–0,3 mL/kg PV/día · 5–7 días |
+| `oxitetraciclina.py` | Python CLI | Oxitetraciclina · Zanil® HCL 80% | Pollos / Pavos | 27–80 mg/kg PV/día · 7–14 días |
 
 ---
 
