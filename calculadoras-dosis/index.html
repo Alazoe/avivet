@@ -15,6 +15,7 @@
   --gold:#b5813a; --gold-l:#fdf3e0;
   --blue:#1a4a7a; --blue-l:#e8f0fc;
   --orange:#92400e; --orange-l:#fff7ed; --orange-b:#fed7aa;
+  --purple:#5b2d8e; --purple-l:#f3eeff; --purple-b:#d4b8f5;
   --radius:12px;
   --shadow:0 1px 3px rgba(0,0,0,0.06),0 4px 16px rgba(0,0,0,0.04);
   --shadow-md:0 2px 8px rgba(0,0,0,0.08),0 8px 32px rgba(0,0,0,0.06);
@@ -54,6 +55,7 @@ main{max-width:960px;margin:0 auto;padding:48px 20px 60px;animation:fadeIn 0.4s 
 .drug-type-badge.polvo{background:var(--accent-l);color:var(--accent);border:1px solid #a8dfc0;}
 .drug-type-badge.liquido{background:var(--blue-l);color:var(--blue);border:1px solid #b8d0f0;}
 .drug-type-badge.restringido{background:var(--orange-l);color:var(--orange);border:1px solid var(--orange-b);}
+.drug-type-badge.antipar{background:var(--purple-l);color:var(--purple);border:1px solid var(--purple-b);}
 .drug-name{font-family:"Fraunces",serif;font-size:22px;font-weight:700;line-height:1.15;margin-bottom:2px;}
 .drug-commercial{font-size:13px;color:var(--text3);font-weight:500;margin-bottom:14px;}
 
@@ -94,9 +96,9 @@ main{max-width:960px;margin:0 auto;padding:48px 20px 60px;animation:fadeIn 0.4s 
 
 <main>
   <div class="hero">
-    <div class="section-badge">💊 Antibióticos</div>
+    <div class="section-badge">💊 Antibióticos y Antiparasíticos</div>
     <h1 class="hero-title">Calculadoras<br>de Dosis</h1>
-    <p class="hero-sub">Dosis en agua de bebida para pollos broiler, pavos, pollas de reemplazo y cerdos. Selecciona el antibiótico a calcular.</p>
+    <p class="hero-sub">Dosis en agua de bebida para pollos broiler, pavos, pollas de reemplazo y cerdos. Selecciona el fármaco a calcular.</p>
   </div>
 
   <div class="drug-grid">
@@ -193,6 +195,29 @@ main{max-width:960px;margin:0 auto;padding:48px 20px 60px;animation:fadeIn 0.4s 
         <div class="drug-dose-info">
           <strong>0,125 – 0,25 mL/kg PV/día</strong>
           5 días · mL de producto/día
+        </div>
+        <div class="drug-cta">Calcular →</div>
+      </div>
+    </a>
+
+    <!-- Levamisol LEVANTEL -->
+    <a href="levantel.html" class="drug-card">
+      <div class="drug-card-top">
+        <div class="drug-type-badge antipar">🪱 Antiparasítico</div>
+        <div class="drug-name">Leva-<br>misol</div>
+        <div class="drug-commercial">LEVANTEL® 46%</div>
+        <div class="drug-species">
+          <span class="sp-badge">🐔 Pollos broiler</span>
+        </div>
+        <div class="drug-inds">
+          <div class="drug-ind"><span class="drug-ind-icon">🪱</span><span><em>Ascaridia galli · Heterakis gallinae · Capillaria spp.</em></span></div>
+          <div class="drug-ind"><span class="drug-ind-icon">⚡</span><span>Dosis única · En agua de bebida o alimento</span></div>
+        </div>
+      </div>
+      <div class="drug-card-bottom">
+        <div class="drug-dose-info">
+          <strong>30–40 mg Levamisol base/kg PV</strong>
+          Dosis única · g de producto
         </div>
         <div class="drug-cta">Calcular →</div>
       </div>
