@@ -7,6 +7,16 @@ Fuente de los números: `app.js` — cada línea tiene indicada su fuente origin
 
 ---
 
+## Sección Iniciar
+
+Calculadora de edad del lote incorporada en la app. Ingresando la fecha de nacimiento muestra:
+
+- **Semana actual de vida** — sem 1 = días 1-7, sem 2 = días 8-14, etc.
+- **Día de vida y días desde el nacimiento**
+- **Etapa** — Crianza o Postura según la línea genética seleccionada
+- **Próxima semana** — fecha en que comienza el siguiente ciclo semanal
+
+
 ## Líneas incluidas
 
 | Línea | Tipo | Fin crianza | Inicio postura | Fuente |

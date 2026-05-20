@@ -820,3 +820,51 @@ function renderEquipamiento() {
       ${ficha('Acceso exterior',    extM2,     'm²',         '0,19 m²/ave')}
     </div>`;
 }
+
+// ── INICIAR — CALCULAR EDAD ────────────────────────────────────────────
+function calcularEdad() {
+  const val = document.getElementById('inp-nacimiento').value;
+  const res = document.getElementById('edad-resultado');
+  if (!val) { res.style.display = 'none'; return; }
+
+  const nac = new Date(val + 'T00:00:00');
+  const hoy = new Date(); hoy.setHours(0, 0, 0, 0);
+  const diasDesdeNac = Math.floor((hoy - nac) / 86400000);
+
+  if (diasDesdeNac < 0) {
+    res.style.display = 'none';
+    return;
+  }
+
+  const diaVida = diasDesdeNac + 1;          // día 1 = día de nacimiento
+  const semana  = Math.ceil(diaVida / 7);    // sem 1 = días 1-7, sem 2 = días 8-14, ...
+
+  const L = LINEAS[lineaSel];
+  const enCrianza = semana <= L.crianzaSem;
+  const etapaLabel = enCrianza ? 'Crianza' : 'Postura';
+  const etapaColor = enCrianza ? '#1b4332' : '#b71c1c';
+  const etapaFondo = enCrianza ? '#e8f5e9'  : '#ffebee';
+
+  // Días restantes hasta el inicio de la siguiente semana
+  const diasEnSemActual = ((diaVida - 1) % 7) + 1;
+  const diasParaSigSem  = 7 - diasEnSemActual;
+  const proxFecha = new Date(hoy);
+  proxFecha.setDate(hoy.getDate() + diasParaSigSem + 1);
+  const proxStr = proxFecha.toLocaleDateString('es-CL', { day: 'numeric', month: 'long' });
+
+  document.getElementById('edad-semana').textContent = 'Semana ' + semana;
+  document.getElementById('edad-dias').textContent   = 'Día ' + diaVida + ' de vida · ' + diasDesdeNac + ' días desde el nacimiento';
+  document.getElementById('edad-etapa').textContent  = etapaLabel;
+  document.getElementById('edad-etapa').style.background = etapaFondo;
+  document.getElementById('edad-etapa').style.color      = etapaColor;
+  document.getElementById('edad-prox').textContent   =
+    diasParaSigSem === 0
+      ? 'Hoy comienza la semana ' + (semana + 1)
+      : 'Semana ' + (semana + 1) + ' comienza el ' + proxStr + ' (' + diasParaSigSem + ' días)';
+
+  // Días de vida al nacer (día 1) del lote
+  const edadMeses = (diasDesdeNac / 30.44).toFixed(1);
+  document.getElementById('edad-dias-nacer').textContent = edadMeses + ' meses de edad';
+
+  res.style.display = 'flex';
+}
