@@ -8,6 +8,7 @@
 
 | Herramienta | Link | Descripción |
 |-------------|------|-------------|
+| **Calculadoras de Dosis** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/calculadoras-dosis/) | Cálculo de dosis de antibióticos en agua de bebida |
 | **Auditoría SAG Bioseguridad** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/auditoria-sag/) | Pauta de verificación Res. 7695/2024 |
 | **Inventario de Huevos** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/inventario-huevos/) | Control de stock y ventas |
 | **Gestión de Rutas — La Campestre** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/campestre-rutas/) | Planificación y optimización de rutas de retiro de huevos |
@@ -70,6 +71,22 @@ Herramienta para planificar y optimizar rutas de retiro de huevos frescos y desp
 | Camión Grande | 10 toneladas |
 | Camión Mediano | 6 toneladas |
 | Chevrolet Partner | ~1 tonelada |
+
+---
+
+## 💊 Calculadoras de Dosis
+
+Scripts Python para calcular dosis de antibióticos vía oral en agua de bebida para aves.
+
+```bash
+cd avivet-repo/calculadoras-dosis
+python3 oxitetraciclina.py
+```
+
+| Herramienta | Tipo | Antibiótico | Dosis |
+|-------------|------|------------|-------|
+| `index.html` | Web (GitHub Pages) | Oxitetraciclina · Zanil® HCL 80% | 27–80 mg/kg PV/día · 7–14 días |
+| `oxitetraciclina.py` | Python CLI | Oxitetraciclina · Zanil® HCL 80% | 27–80 mg/kg PV/día · 7–14 días |
 
 ---
 
