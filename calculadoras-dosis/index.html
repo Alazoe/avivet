@@ -37,9 +37,8 @@ main{max-width:960px;margin:0 auto;padding:48px 20px 60px;animation:fadeIn 0.4s 
 .hero-title{font-family:"Fraunces",serif;font-size:32px;font-weight:700;line-height:1.2;margin-bottom:8px;}
 .hero-sub{font-size:15px;color:var(--text2);max-width:480px;}
 
-.drug-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
-@media(max-width:700px){.drug-grid{grid-template-columns:1fr 1fr;}}
-@media(max-width:460px){.drug-grid{grid-template-columns:1fr;}}
+.drug-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+@media(max-width:480px){.drug-grid{grid-template-columns:1fr;}}
 
 .drug-card{
   background:var(--surface);border:1.5px solid var(--border);
@@ -147,6 +146,32 @@ main{max-width:960px;margin:0 auto;padding:48px 20px 60px;animation:fadeIn 0.4s 
         <div class="drug-dose-info">
           <strong>0,1 – 0,3 mL/kg PV/día</strong>
           5 – 7 días · mL de producto/día
+        </div>
+        <div class="drug-cta">Calcular →</div>
+      </div>
+    </a>
+
+    <!-- Terrivet -->
+    <a href="terrivet.html" class="drug-card">
+      <div class="drug-card-top">
+        <div class="drug-type-badge polvo">💊 Polvo oral</div>
+        <div class="drug-name">Oxitetra-<br>ciclina</div>
+        <div class="drug-commercial">TERRIVET® 65,5%</div>
+        <div class="drug-species">
+          <span class="sp-badge">🐔 Pollos broiler</span>
+          <span class="sp-badge">🦃 Pavos</span>
+          <span class="sp-badge">🐷 Cerdos</span>
+        </div>
+        <div class="drug-inds">
+          <div class="drug-ind"><span class="drug-ind-icon">🦴</span><span>Sinovitis · <em>M. synoviae</em></span></div>
+          <div class="drug-ind"><span class="drug-ind-icon">🫁</span><span>Respiratorio / digestivo · <em>M. gallisepticum · E. coli · P. multocida</em></span></div>
+          <div class="drug-ind"><span class="drug-ind-icon">🐷</span><span>Cerdos: neumonía · leptospirosis · rinitis · ileítis</span></div>
+        </div>
+      </div>
+      <div class="drug-card-bottom">
+        <div class="drug-dose-info">
+          <strong>16,8 – 90,1 mg/kg PV/día (aves)</strong>
+          32,95 – 41,19 mg/kg PV/día (cerdos) · g/día
         </div>
         <div class="drug-cta">Calcular →</div>
       </div>
