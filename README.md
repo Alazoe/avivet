@@ -88,6 +88,7 @@ python3 oxitetraciclina.py
 | `oxitetraciclina.html` | Web | Oxitetraciclina · Zanil® HCL 80% / TERRIVET® 65,5% | Pollos / Pavos | 16,8–90,1 mg/kg PV/día · 5–14 días |
 | `florfenicol.html` | Web | Florfenicol · Veterin® 10% | Pollos / Pavos / Cerdos | 0,1–0,3 mL/kg PV/día · 5–7 días |
 | `primavet.html` | Web | Amoxicilina · Primavet® 50% | Pollos broiler / Cerdos | 40 mg/kg PV/día · 5–7 días |
+| `azovetril.html` | Web | Trimetoprim+Sulfadimidina · Azovetril® | Pollos broiler / Pavos | 0,125–0,25 mL/kg PV/día · 5 días |
 | `enrofloxacino.html` | Web | Enrofloxacino · Enromic® 20% | Pollos broiler / Pollas reemplazo | 0,05 mL/kg PV/día · 3–5 días |
 | `oxitetraciclina.py` | Python CLI | Oxitetraciclina · Zanil® HCL 80% | Pollos / Pavos | 27–80 mg/kg PV/día · 7–14 días |
 
