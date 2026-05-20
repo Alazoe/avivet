@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Oxitetraciclina · Zanil® HCL 80% — AviVet</title>
+<title>Oxitetraciclina — AviVet</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -13,7 +13,6 @@
   --text:#1a1916; --text2:#5a5650; --text3:#9a948c;
   --accent:#1b4332; --accent2:#2d6a4f; --accent-l:#d8f3dc;
   --gold:#b5813a; --gold-l:#fdf3e0;
-  --red:#c0392b; --red-l:#fde8e6;
   --ok:#1b7a4a; --ok-l:#e8f7ee;
   --radius:12px;
   --shadow:0 1px 3px rgba(0,0,0,0.06),0 4px 16px rgba(0,0,0,0.04);
@@ -24,18 +23,8 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);min
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 @keyframes slideIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 
-header{
-  background:var(--surface);border-bottom:1px solid var(--border);
-  padding:0 24px;height:56px;
-  display:flex;align-items:center;gap:12px;
-  position:sticky;top:0;z-index:100;
-}
-.hdr-back{
-  display:flex;align-items:center;gap:5px;
-  font-size:13px;font-weight:500;color:var(--text2);
-  text-decoration:none;padding:5px 10px;border-radius:8px;
-  border:1px solid var(--border);transition:all 0.15s;
-}
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;height:56px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100;}
+.hdr-back{display:flex;align-items:center;gap:5px;font-size:13px;font-weight:500;color:var(--text2);text-decoration:none;padding:5px 10px;border-radius:8px;border:1px solid var(--border);transition:all 0.15s;}
 .hdr-back:hover{border-color:var(--accent);color:var(--accent);}
 .logo-mark{width:32px;height:32px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
 .logo-text{font-family:"Fraunces",serif;font-weight:700;font-size:16px;color:var(--text);}
@@ -45,35 +34,33 @@ header{
 
 main{max-width:900px;margin:0 auto;padding:32px 20px 60px;animation:fadeIn 0.4s ease;}
 .page-hero{margin-bottom:28px;}
-.drug-badge{
-  display:inline-flex;align-items:center;gap:6px;
-  background:var(--accent-l);border:1px solid #a8dfc0;
-  color:var(--accent);border-radius:20px;padding:4px 12px;
-  font-size:11px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;
-  margin-bottom:10px;
-}
+.drug-badge{display:inline-flex;align-items:center;gap:6px;background:var(--accent-l);border:1px solid #a8dfc0;color:var(--accent);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:10px;}
 .page-title{font-family:"Fraunces",serif;font-size:28px;font-weight:700;line-height:1.2;margin-bottom:6px;}
 .page-sub{font-size:14px;color:var(--text2);}
-.dose-ref{
-  display:inline-flex;align-items:center;gap:6px;margin-top:10px;
-  background:var(--gold-l);border:1px solid #e8d5a8;
-  border-radius:8px;padding:6px 12px;font-size:12px;color:#7a5a1a;
-}
+.dose-ref{display:inline-flex;align-items:center;gap:6px;margin-top:10px;background:var(--gold-l);border:1px solid #e8d5a8;border-radius:8px;padding:6px 12px;font-size:12px;color:#7a5a1a;}
 
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
-@media(max-width:620px){.grid{grid-template-columns:1fr;}}
+/* ─── SELECTOR DE PRODUCTO ─── */
+.section-label{font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px;}
+.section-label span{font-weight:400;color:var(--text3);}
+.prod-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;}
+@media(max-width:480px){.prod-grid{grid-template-columns:1fr;}}
+.prod-opt{border:1.5px solid var(--border);border-radius:14px;padding:16px;cursor:pointer;transition:all 0.15s;background:var(--surface);display:flex;flex-direction:column;gap:8px;}
+.prod-opt:hover{border-color:var(--accent);background:var(--accent-l);}
+.prod-opt.active{border-color:var(--accent);background:var(--accent-l);box-shadow:0 0 0 3px rgba(27,67,50,0.08);}
+.prod-name{font-family:"Fraunces",serif;font-size:16px;font-weight:700;color:var(--text);}
+.prod-conc{font-size:12px;color:var(--text3);font-weight:500;}
+.prod-pills{display:flex;gap:5px;flex-wrap:wrap;}
+.prod-pill{font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;}
+.prod-pill.conc{background:var(--accent-l);color:var(--accent);border:1px solid #a8dfc0;}
+.prod-pill.sp{background:var(--surface2);color:var(--text2);border:1px solid var(--border);}
 
-.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);overflow:hidden;}
-.card-header{padding:16px 20px 14px;border-bottom:1px solid var(--border2);display:flex;align-items:center;gap:10px;}
-.card-icon{width:34px;height:34px;border-radius:8px;background:var(--accent-l);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
-.card-title{font-weight:600;font-size:14px;}
-.card-body{padding:20px;}
-
-.ind-section{margin-bottom:20px;}
-.ind-section-label{font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px;display:flex;align-items:center;gap:6px;}
-.ind-section-label span{font-weight:400;color:var(--text3);}
-.ind-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
-@media(max-width:580px){.ind-grid{grid-template-columns:1fr;}}
+/* ─── SELECTOR DE INDICACIÓN ─── */
+.ind-section{margin-bottom:20px;display:none;}
+.ind-section.visible{display:block;}
+.ind-grid{display:grid;gap:10px;}
+.ind-grid.cols-3{grid-template-columns:repeat(3,1fr);}
+.ind-grid.cols-2{grid-template-columns:repeat(2,1fr);}
+@media(max-width:580px){.ind-grid.cols-3,.ind-grid.cols-2{grid-template-columns:1fr;}}
 .ind-opt{border:1.5px solid var(--border);border-radius:14px;padding:14px 14px 12px;cursor:pointer;transition:all 0.15s;background:var(--surface);display:flex;flex-direction:column;gap:6px;}
 .ind-opt:hover{border-color:var(--accent);background:var(--accent-l);}
 .ind-opt.active{border-color:var(--accent);background:var(--accent-l);box-shadow:0 0 0 3px rgba(27,67,50,0.08);}
@@ -86,6 +73,16 @@ main{max-width:900px;margin:0 auto;padding:32px 20px 60px;animation:fadeIn 0.4s 
 .ind-pill.dose{background:var(--accent-l);color:var(--accent);border:1px solid #a8dfc0;}
 .ind-pill.dur{background:var(--surface2);color:var(--text2);border:1px solid var(--border);}
 
+/* ─── FORMULARIO ─── */
+.form-grid-wrap{display:none;}
+.form-grid-wrap.visible{display:block;}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+@media(max-width:620px){.grid{grid-template-columns:1fr;}}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);overflow:hidden;}
+.card-header{padding:16px 20px 14px;border-bottom:1px solid var(--border2);display:flex;align-items:center;gap:10px;}
+.card-icon{width:34px;height:34px;border-radius:8px;background:var(--accent-l);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.card-title{font-weight:600;font-size:14px;}
+.card-body{padding:20px;}
 .field{margin-bottom:16px;}
 .field:last-child{margin-bottom:0;}
 label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;color:var(--text);}
@@ -96,7 +93,6 @@ input[type=number]::-webkit-inner-spin-button{opacity:1;}
 .select-wrap{position:relative;}
 .select-wrap::after{content:'▾';position:absolute;right:12px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--text3);font-size:13px;}
 .select-wrap select{padding-right:30px;}
-
 .dose-options{display:flex;gap:8px;flex-wrap:wrap;}
 .dose-opt{flex:1;min-width:70px;border:1.5px solid var(--border);border-radius:10px;padding:8px 10px;text-align:center;cursor:pointer;transition:all 0.15s;background:var(--surface);}
 .dose-opt:hover{border-color:var(--accent);background:var(--accent-l);}
@@ -107,14 +103,15 @@ input[type=number]::-webkit-inner-spin-button{opacity:1;}
 .dose-custom.visible{display:block;}
 .custom-agua{display:none;margin-top:10px;}
 .custom-agua.visible{display:block;}
-
 .btn-calc{width:100%;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);padding:14px 24px;font-family:"DM Sans",sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:background 0.2s,transform 0.1s;margin-top:4px;display:flex;align-items:center;justify-content:center;gap:8px;}
 .btn-calc:hover{background:var(--accent2);}
 .btn-calc:active{transform:scale(0.99);}
 
+/* ─── RESULTADO ─── */
 #resultado{display:none;animation:slideIn 0.35s ease;}
 #resultado.visible{display:block;}
-.ind-tag{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600;letter-spacing:0.3px;text-transform:uppercase;margin-bottom:10px;}
+.res-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
+.res-tag{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600;letter-spacing:0.3px;text-transform:uppercase;}
 .result-card{background:var(--accent);border-radius:16px;padding:24px;margin-bottom:20px;color:#fff;}
 .result-card-title{font-family:"Fraunces",serif;font-size:18px;font-weight:700;margin-bottom:4px;}
 .result-card-sub{font-size:13px;color:rgba(255,255,255,0.7);margin-bottom:20px;}
@@ -154,89 +151,130 @@ input[type=number]::-webkit-inner-spin-button{opacity:1;}
 
 <main>
   <div class="page-hero">
-    <div class="drug-badge">💊 Antibiótico</div>
-    <h1 class="page-title">Oxitetraciclina<br>Zanil® HCL 80%</h1>
-    <p class="page-sub">Cálculo de dosis para agua de bebida · Pollos broiler y pavos</p>
-    <div class="dose-ref" id="dose-ref-badge">📋 Selecciona una indicación para ver el rango de dosis</div>
+    <div class="drug-badge">💊 Antibiótico · Polvo oral</div>
+    <h1 class="page-title">Oxitetraciclina</h1>
+    <p class="page-sub">Cálculo de dosis para agua de bebida · Pollos broiler y Pavos</p>
+    <div class="dose-ref" id="dose-ref-badge">📋 Selecciona el producto comercial</div>
   </div>
 
   <div id="formulario">
-    <div class="ind-section">
-      <div class="ind-section-label">Indicación / Diagnóstico <span>— selecciona antes de calcular</span></div>
-      <div class="ind-grid">
+
+    <!-- 1. Selector de producto -->
+    <div class="section-label">Producto comercial <span>— selecciona primero</span></div>
+    <div class="prod-grid">
+
+      <div class="prod-opt" id="prod-zanil" onclick="selectProducto('zanil')">
+        <div class="prod-name">Zanil® HCL 80%</div>
+        <div class="prod-conc">Oxitetraciclina HCl 80% · Polvo soluble</div>
+        <div class="prod-pills">
+          <span class="prod-pill conc">80% HCl</span>
+          <span class="prod-pill sp">🐔 Pollos broiler</span>
+          <span class="prod-pill sp">🦃 Pavos</span>
+        </div>
+      </div>
+
+      <div class="prod-opt" id="prod-terrivet" onclick="selectProducto('terrivet')">
+        <div class="prod-name">TERRIVET® 65,5%</div>
+        <div class="prod-conc">Oxitetraciclina HCl 65,5% · Polvo oral</div>
+        <div class="prod-pills">
+          <span class="prod-pill conc">65,5% HCl</span>
+          <span class="prod-pill sp">🐔 Pollos broiler</span>
+          <span class="prod-pill sp">🦃 Pavos</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 2. Selector de indicación -->
+    <div class="ind-section" id="ind-section">
+      <div class="section-label">Indicación / Diagnóstico <span>— selecciona antes de calcular</span></div>
+      <div class="ind-grid cols-3" id="ind-grid">
+
         <div class="ind-opt" id="ind-sinovitis" onclick="selectIndicacion('sinovitis')">
           <div class="ind-opt-head"><span class="ind-opt-icon">🦴</span><span class="ind-opt-name">Sinovitis infecciosa</span></div>
           <div class="ind-opt-agents">Mycoplasma synoviae</div>
           <div class="ind-opt-pills"><span class="ind-pill dose">16,8–33,6 mg/kg/día</span><span class="ind-pill dur">5–7 días</span></div>
         </div>
+
         <div class="ind-opt" id="ind-respiratorio" onclick="selectIndicacion('respiratorio')">
           <div class="ind-opt-head"><span class="ind-opt-icon">🫁</span><span class="ind-opt-name">Cuadro respiratorio</span></div>
           <div class="ind-opt-agents">M. gallisepticum · E. coli · P. multocida</div>
           <div class="ind-opt-pills"><span class="ind-pill dose">33,6–90,1 mg/kg/día</span><span class="ind-pill dur">5–7 días</span></div>
         </div>
+
         <div class="ind-opt" id="ind-general" onclick="selectIndicacion('general')">
           <div class="ind-opt-head"><span class="ind-opt-icon">💊</span><span class="ind-opt-name">Uso general</span></div>
           <div class="ind-opt-agents">Infecciones bacterianas sensibles a oxitetraciclina</div>
           <div class="ind-opt-pills"><span class="ind-pill dose">27–80 mg/kg/día</span><span class="ind-pill dur">7–14 días</span></div>
         </div>
+
       </div>
     </div>
 
-    <div class="grid">
-      <div class="card">
-        <div class="card-header"><div class="card-icon">🐣</div><span class="card-title">Datos del lote</span></div>
-        <div class="card-body">
-          <div class="field"><label>N° de aves</label><input type="number" id="n_aves" min="1" placeholder="Ej: 5000"></div>
-          <div class="field"><label>Peso promedio por ave <span>(kg)</span></label><input type="number" id="peso" min="0.01" step="0.001" placeholder="Ej: 0.850"></div>
-          <div class="field">
-            <label>Etapa de edad</label>
-            <div class="select-wrap">
-              <select id="etapa" onchange="toggleCustomAgua()">
-                <option value="65">Semana 1 · 1-7 días · ~65 mL/ave/día</option>
-                <option value="120">Semana 2 · 8-14 días · ~120 mL/ave/día</option>
-                <option value="175" selected>Semana 3 · 15-21 días · ~175 mL/ave/día</option>
-                <option value="220">Semana 4 · 22-28 días · ~220 mL/ave/día</option>
-                <option value="270">Semana 5 · 29-35 días · ~270 mL/ave/día</option>
-                <option value="310">Semana 6+ · >35 días · ~310 mL/ave/día</option>
-                <option value="custom">Consumo personalizado…</option>
-              </select>
-            </div>
-            <div class="custom-agua" id="customAguaWrap"><input type="number" id="custom_agua" min="1" step="1" placeholder="mL / ave / día"></div>
-          </div>
-        </div>
-      </div>
+    <!-- 3. Formulario -->
+    <div class="form-grid-wrap" id="form-grid-wrap">
+      <div class="grid">
 
-      <div class="card">
-        <div class="card-header"><div class="card-icon">💉</div><span class="card-title">Parámetros del tratamiento</span></div>
-        <div class="card-body">
-          <div class="field">
-            <label>Duración <span>(días)</span></label>
-            <div class="select-wrap"><select id="duracion"></select></div>
-          </div>
-          <div class="field">
-            <label>Dosis de Zanil® HCL 80% <span id="dose-range-label">(mg/kg PV/día)</span></label>
-            <div class="dose-options">
-              <div class="dose-opt" id="dopt-min" onclick="selectDosis(this,'min')"><span class="opt-label">Mínima</span><span class="opt-val" id="dopt-min-val">—</span></div>
-              <div class="dose-opt active" id="dopt-med" onclick="selectDosis(this,'med')"><span class="opt-label">Media</span><span class="opt-val" id="dopt-med-val">—</span></div>
-              <div class="dose-opt" id="dopt-max" onclick="selectDosis(this,'max')"><span class="opt-label">Máxima</span><span class="opt-val" id="dopt-max-val">—</span></div>
-              <div class="dose-opt" id="dopt-custom" onclick="selectDosis(this,'custom')"><span class="opt-label">Otra</span><span class="opt-val">···</span></div>
+        <div class="card">
+          <div class="card-header"><div class="card-icon">🐣</div><span class="card-title">Datos del lote</span></div>
+          <div class="card-body">
+            <div class="field"><label>N° de aves</label><input type="number" id="n_aves" min="1" placeholder="Ej: 5000"></div>
+            <div class="field"><label>Peso promedio por ave <span>(kg)</span></label><input type="number" id="peso" min="0.01" step="0.001" placeholder="Ej: 0.850"></div>
+            <div class="field">
+              <label>Etapa de edad</label>
+              <div class="select-wrap">
+                <select id="etapa" onchange="toggleCustomAgua()">
+                  <option value="65">Semana 1 · 1-7 días · ~65 mL/ave/día</option>
+                  <option value="120">Semana 2 · 8-14 días · ~120 mL/ave/día</option>
+                  <option value="175" selected>Semana 3 · 15-21 días · ~175 mL/ave/día</option>
+                  <option value="220">Semana 4 · 22-28 días · ~220 mL/ave/día</option>
+                  <option value="270">Semana 5 · 29-35 días · ~270 mL/ave/día</option>
+                  <option value="310">Semana 6+ · >35 días · ~310 mL/ave/día</option>
+                  <option value="custom">Consumo personalizado…</option>
+                </select>
+              </div>
+              <div class="custom-agua" id="customAguaWrap"><input type="number" id="custom_agua" min="1" step="1" placeholder="mL / ave / día"></div>
             </div>
-            <div class="dose-custom" id="doseCustomWrap"><input type="number" id="dosis_custom" step="0.1" placeholder="mg/kg/día"></div>
           </div>
-          <button class="btn-calc" onclick="calcular()">Calcular dosis</button>
         </div>
+
+        <div class="card">
+          <div class="card-header"><div class="card-icon">💉</div><span class="card-title">Parámetros del tratamiento</span></div>
+          <div class="card-body">
+            <div class="field">
+              <label>Duración <span>(días)</span></label>
+              <div class="select-wrap"><select id="duracion"></select></div>
+            </div>
+            <div class="field">
+              <label>Dosis <span id="dose-range-label">(mg/kg PV/día)</span></label>
+              <div class="dose-options">
+                <div class="dose-opt" id="dopt-min" onclick="selectDosis(this,'min')"><span class="opt-label">Mínima</span><span class="opt-val" id="dopt-min-val">—</span></div>
+                <div class="dose-opt active" id="dopt-med" onclick="selectDosis(this,'med')"><span class="opt-label">Media</span><span class="opt-val" id="dopt-med-val">—</span></div>
+                <div class="dose-opt" id="dopt-max" onclick="selectDosis(this,'max')"><span class="opt-label">Máxima</span><span class="opt-val" id="dopt-max-val">—</span></div>
+                <div class="dose-opt" id="dopt-custom" onclick="selectDosis(this,'custom')"><span class="opt-label">Otra</span><span class="opt-val">···</span></div>
+              </div>
+              <div class="dose-custom" id="doseCustomWrap"><input type="number" id="dosis_custom" step="0.1" placeholder="mg/kg/día"></div>
+            </div>
+            <button class="btn-calc" onclick="calcular()">Calcular dosis</button>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
 
+  <!-- Resultado -->
   <div id="resultado">
     <div style="height:24px;"></div>
     <div class="result-card">
-      <div class="ind-tag" id="res-ind-tag"></div>
+      <div class="res-tags">
+        <div class="res-tag" id="res-prod-tag"></div>
+        <div class="res-tag" id="res-ind-tag"></div>
+      </div>
       <div class="result-card-title">Resultado del cálculo</div>
       <div class="result-card-sub" id="res-subtitulo"></div>
       <div class="result-grid">
-        <div class="result-item highlight"><div class="result-label">Zanil® por día</div><div class="result-value" id="res-g-dia">—</div><div class="result-unit">gramos / día</div></div>
+        <div class="result-item highlight"><div class="result-label" id="res-prod-label">Producto por día</div><div class="result-value" id="res-g-dia">—</div><div class="result-unit">gramos / día</div></div>
         <div class="result-item"><div class="result-label">Agua del lote / día</div><div class="result-value" id="res-agua">—</div><div class="result-unit">litros / día</div></div>
         <div class="result-item"><div class="result-label">Concentración</div><div class="result-value" id="res-conc-gl">—</div><div class="result-unit" id="res-conc-mgl"></div></div>
         <div class="result-item highlight"><div class="result-label">Total tratamiento</div><div class="result-value" id="res-total">—</div><div class="result-unit" id="res-total-kg"></div></div>
@@ -248,6 +286,7 @@ input[type=number]::-webkit-inner-spin-button{opacity:1;}
     </div>
     <div class="summary-card">
       <div class="summary-title">Resumen del tratamiento</div>
+      <div class="summary-row"><span class="summary-key">Producto</span><span class="summary-val" id="sum-prod">—</span></div>
       <div class="summary-row"><span class="summary-key">Indicación</span><span class="summary-val" id="sum-ind">—</span></div>
       <div class="summary-row"><span class="summary-key">Agente(s)</span><span class="summary-val" id="sum-agentes">—</span></div>
       <div class="summary-row"><span class="summary-key">Lote</span><span class="summary-val" id="sum-lote">—</span></div>
@@ -262,20 +301,58 @@ input[type=number]::-webkit-inner-spin-button{opacity:1;}
 </main>
 
 <script>
-const INDICACIONES = {
-  sinovitis:    { nombre:'Sinovitis infecciosa', emoji:'🦴', agentes:'Mycoplasma synoviae sensible a Oxitetraciclina', dosisMin:16.8, dosisMax:33.6, durMin:5, durMax:7 },
-  respiratorio: { nombre:'Cuadro respiratorio',  emoji:'🫁', agentes:'M. gallisepticum · E. coli · P. multocida sensibles a Oxitetraciclina', dosisMin:33.6, dosisMax:90.1, durMin:5, durMax:7 },
-  general:      { nombre:'Uso general',          emoji:'💊', agentes:'Infecciones bacterianas sensibles a Oxitetraciclina', dosisMin:27, dosisMax:80, durMin:7, durMax:14 },
+const PRODUCTOS = {
+  zanil:    { nombre:'Zanil® HCL 80%',   indicaciones:['sinovitis','respiratorio','general'], cols:3 },
+  terrivet: { nombre:'TERRIVET® 65,5%',  indicaciones:['sinovitis','respiratorio'],           cols:2 },
 };
-let indicacionActual = null, dosisKey = 'med';
+
+const INDICACIONES = {
+  sinovitis:    { nombre:'Sinovitis infecciosa', emoji:'🦴', agentes:'Mycoplasma synoviae sensible a Oxitetraciclina',                                    dosisMin:16.8, dosisMax:33.6, durMin:5,  durMax:7  },
+  respiratorio: { nombre:'Cuadro respiratorio',  emoji:'🫁', agentes:'M. gallisepticum · E. coli · P. multocida sensibles a Oxitetraciclina',             dosisMin:33.6, dosisMax:90.1, durMin:5,  durMax:7  },
+  general:      { nombre:'Uso general',          emoji:'💊', agentes:'Infecciones bacterianas sensibles a Oxitetraciclina',                               dosisMin:27,   dosisMax:80,   durMin:7,  durMax:14 },
+};
+
+let productoActual = null, indicacionActual = null, dosisKey = 'med';
+
+// ── Producto ──────────────────────────────────────────────────
+
+function selectProducto(key) {
+  productoActual = key;
+  indicacionActual = null;
+  const prod = PRODUCTOS[key];
+
+  document.querySelectorAll('.prod-opt').forEach(el => el.classList.remove('active'));
+  document.getElementById('prod-' + key).classList.add('active');
+
+  // Mostrar/ocultar indicación "general" según producto
+  document.getElementById('ind-general').style.display = prod.indicaciones.includes('general') ? '' : 'none';
+
+  // Ajustar columnas de la grilla
+  const grid = document.getElementById('ind-grid');
+  grid.className = `ind-grid cols-${prod.cols}`;
+
+  // Limpiar indicación previa
+  document.querySelectorAll('.ind-opt').forEach(el => el.classList.remove('active'));
+  document.getElementById('form-grid-wrap').classList.remove('visible');
+  document.getElementById('dose-ref-badge').textContent = `📋 ${prod.nombre} · Selecciona la indicación`;
+
+  document.getElementById('ind-section').classList.add('visible');
+}
+
+// ── Indicación ────────────────────────────────────────────────
 
 function selectIndicacion(key) {
   indicacionActual = key;
-  const ind = INDICACIONES[key];
+  const ind  = INDICACIONES[key];
+  const prod = PRODUCTOS[productoActual];
+
   document.querySelectorAll('.ind-opt').forEach(el => el.classList.remove('active'));
   document.getElementById('ind-' + key).classList.add('active');
-  const med = Math.round((ind.dosisMin + ind.dosisMax) / 2 * 10) / 10;
-  document.getElementById('dose-ref-badge').textContent = `📋 ${ind.dosisMin}–${ind.dosisMax} mg Zanil®/kg PV/día · ${ind.durMin}–${ind.durMax} días`;
+
+  document.getElementById('dose-ref-badge').textContent =
+    `📋 ${prod.nombre} · ${ind.dosisMin}–${ind.dosisMax} mg/kg PV/día · ${ind.durMin}–${ind.durMax} días`;
+
+  // Duración
   const sel = document.getElementById('duracion');
   sel.innerHTML = '';
   for (let d = ind.durMin; d <= ind.durMax; d++) {
@@ -284,6 +361,9 @@ function selectIndicacion(key) {
     if (d === ind.durMin) opt.selected = true;
     sel.appendChild(opt);
   }
+
+  // Botones dosis
+  const med = Math.round((ind.dosisMin + ind.dosisMax) / 2 * 10) / 10;
   document.getElementById('dopt-min-val').textContent = ind.dosisMin;
   document.getElementById('dopt-med-val').textContent = med;
   document.getElementById('dopt-max-val').textContent = ind.dosisMax;
@@ -291,17 +371,24 @@ function selectIndicacion(key) {
   const ci = document.getElementById('dosis_custom');
   ci.min = ind.dosisMin; ci.max = ind.dosisMax;
   ci.placeholder = `${ind.dosisMin}–${ind.dosisMax} mg/kg/día`;
+
   dosisKey = 'med';
   document.querySelectorAll('.dose-opt').forEach(el => el.classList.remove('active'));
   document.getElementById('dopt-med').classList.add('active');
   document.getElementById('doseCustomWrap').classList.remove('visible');
+
+  document.getElementById('form-grid-wrap').classList.add('visible');
 }
+
+// ── Dosis ─────────────────────────────────────────────────────
+
 function selectDosis(el, key) {
   dosisKey = key;
   document.querySelectorAll('.dose-opt').forEach(o => o.classList.remove('active'));
   el.classList.add('active');
   document.getElementById('doseCustomWrap').classList.toggle('visible', key === 'custom');
 }
+
 function getDosisValue() {
   if (!indicacionActual) return null;
   const ind = INDICACIONES[indicacionActual];
@@ -311,6 +398,9 @@ function getDosisValue() {
   if (dosisKey === 'max') return ind.dosisMax;
   return parseFloat(document.getElementById('dosis_custom').value) || null;
 }
+
+// ── Agua ──────────────────────────────────────────────────────
+
 function toggleCustomAgua() {
   document.getElementById('customAguaWrap').classList.toggle('visible', document.getElementById('etapa').value === 'custom');
 }
@@ -324,48 +414,69 @@ function getEtapaDesc() {
   if (sel.value === 'custom') return `Personalizado (${document.getElementById('custom_agua').value} mL/ave/día)`;
   return sel.options[sel.selectedIndex].text.split(' · ').slice(0,2).join(' · ');
 }
+
 function fmt(n, dec=2) { return n.toLocaleString('es-CL',{minimumFractionDigits:dec,maximumFractionDigits:dec}); }
 
+// ── Cálculo ───────────────────────────────────────────────────
+
 function calcular() {
+  if (!productoActual)   { alert('Selecciona el producto comercial primero.'); return; }
   if (!indicacionActual) { alert('Selecciona una indicación primero.'); return; }
-  const ind = INDICACIONES[indicacionActual];
-  const nAves = parseFloat(document.getElementById('n_aves').value);
-  const pesoKg = parseFloat(document.getElementById('peso').value);
+
+  const prod = PRODUCTOS[productoActual];
+  const ind  = INDICACIONES[indicacionActual];
+
+  const nAves     = parseFloat(document.getElementById('n_aves').value);
+  const pesoKg    = parseFloat(document.getElementById('peso').value);
   const consumoMl = getConsumoMl();
-  const duracion = parseInt(document.getElementById('duracion').value);
-  const dosis = getDosisValue();
+  const duracion  = parseInt(document.getElementById('duracion').value);
+  const dosis     = getDosisValue();
+
   if (!nAves || nAves < 1)   { alert('Ingresa el número de aves.'); return; }
-  if (!pesoKg || pesoKg<=0) { alert('Ingresa el peso promedio.'); return; }
+  if (!pesoKg || pesoKg <= 0){ alert('Ingresa el peso promedio.'); return; }
   if (!consumoMl)            { alert('Ingresa el consumo de agua.'); return; }
   if (!dosis)                { alert('Ingresa o selecciona la dosis.'); return; }
-  if (dosis < ind.dosisMin || dosis > ind.dosisMax) { alert(`Dosis fuera de rango (${ind.dosisMin}–${ind.dosisMax} mg/kg/día).`); return; }
+  if (dosis < ind.dosisMin || dosis > ind.dosisMax) {
+    alert(`Dosis fuera de rango (${ind.dosisMin}–${ind.dosisMax} mg/kg/día).`); return;
+  }
 
-  const pesoTotal = nAves * pesoKg;
-  const dosisDiaG = (pesoTotal * dosis) / 1000;
+  const pesoTotal  = nAves * pesoKg;
+  const dosisDiaG  = (pesoTotal * dosis) / 1000;
   const aguaTotalL = (consumoMl * nAves) / 1000;
-  const concGL = dosisDiaG / aguaTotalL;
-  const totalG = dosisDiaG * duracion;
+  const concGL     = dosisDiaG / aguaTotalL;
+  const totalG     = dosisDiaG * duracion;
 
-  document.getElementById('res-ind-tag').textContent = `${ind.emoji} ${ind.nombre}`;
-  document.getElementById('res-subtitulo').textContent = `${fmt(nAves,0)} aves · ${pesoKg} kg/ave · ${dosis} mg/kg/día · ${duracion} días`;
-  document.getElementById('res-g-dia').textContent = fmt(dosisDiaG,1);
-  document.getElementById('res-agua').textContent = fmt(aguaTotalL,1);
-  document.getElementById('res-conc-gl').textContent = fmt(concGL,4) + ' g/L';
-  document.getElementById('res-conc-mgl').textContent = `${fmt(concGL*1000,2)} mg/L`;
-  document.getElementById('res-total').textContent = fmt(totalG,0) + ' g';
-  document.getElementById('res-total-kg').textContent = `${fmt(totalG/1000,3)} kg`;
-  document.getElementById('res-instruccion').innerHTML = `Disuelve <strong>${fmt(dosisDiaG,1)} g de Zanil® HCL 80%</strong> en los <strong>${fmt(aguaTotalL,1)} litros</strong> de agua del lote ese día. Repite cada 24 horas durante <strong>${duracion} días</strong> consecutivos.`;
-  document.getElementById('sum-ind').textContent = ind.nombre;
-  document.getElementById('sum-agentes').textContent = ind.agentes;
-  document.getElementById('sum-lote').textContent = `${fmt(nAves,0)} aves`;
-  document.getElementById('sum-etapa').textContent = getEtapaDesc();
-  document.getElementById('sum-dosis').textContent = `${dosis} mg Zanil®/kg PV/día`;
+  document.getElementById('res-prod-tag').textContent = `💊 ${prod.nombre}`;
+  document.getElementById('res-ind-tag').textContent  = `${ind.emoji} ${ind.nombre}`;
+  document.getElementById('res-prod-label').textContent = prod.nombre.split('®')[0] + '® por día';
+  document.getElementById('res-subtitulo').textContent =
+    `${fmt(nAves,0)} aves · ${pesoKg} kg/ave · ${dosis} mg/kg/día · ${duracion} días`;
+
+  document.getElementById('res-g-dia').textContent    = fmt(dosisDiaG, 1);
+  document.getElementById('res-agua').textContent     = fmt(aguaTotalL, 1);
+  document.getElementById('res-conc-gl').textContent  = fmt(concGL, 4) + ' g/L';
+  document.getElementById('res-conc-mgl').textContent = `${fmt(concGL * 1000, 2)} mg/L`;
+  document.getElementById('res-total').textContent    = fmt(totalG, 0) + ' g';
+  document.getElementById('res-total-kg').textContent = `${fmt(totalG / 1000, 3)} kg`;
+
+  document.getElementById('res-instruccion').innerHTML =
+    `Disuelve <strong>${fmt(dosisDiaG,1)} g de ${prod.nombre}</strong> en los
+    <strong>${fmt(aguaTotalL,1)} litros</strong> de agua del lote ese día.
+    Repite cada 24 horas durante <strong>${duracion} días</strong> consecutivos.`;
+
+  document.getElementById('sum-prod').textContent     = prod.nombre;
+  document.getElementById('sum-ind').textContent      = ind.nombre;
+  document.getElementById('sum-agentes').textContent  = ind.agentes;
+  document.getElementById('sum-lote').textContent     = `${fmt(nAves,0)} aves`;
+  document.getElementById('sum-etapa').textContent    = getEtapaDesc();
+  document.getElementById('sum-dosis').textContent    = `${dosis} mg ${prod.nombre}/kg PV/día`;
   document.getElementById('sum-duracion').textContent = `${duracion} días`;
-  document.getElementById('sum-pvtotal').textContent = `${fmt(pesoTotal,1)} kg PV`;
+  document.getElementById('sum-pvtotal').textContent  = `${fmt(pesoTotal,1)} kg PV`;
 
   document.getElementById('resultado').classList.add('visible');
   document.getElementById('resultado').scrollIntoView({behavior:'smooth',block:'start'});
 }
+
 function resetForm() {
   document.getElementById('resultado').classList.remove('visible');
   window.scrollTo({top:0,behavior:'smooth'});
