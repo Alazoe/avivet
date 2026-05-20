@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Enrofloxacino · Enromic® 20% — AviVet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#f5f4f0; --surface:#ffffff; --surface2:#f0ede8;
+  --border:#ddd9d0; --border2:#e8e4de;
+  --text:#1a1916; --text2:#5a5650; --text3:#9a948c;
+  --accent:#1b4332; --accent2:#2d6a4f; --accent-l:#d8f3dc;
+  --gold:#b5813a; --gold-l:#fdf3e0;
+  --ok:#1b7a4a; --ok-l:#e8f7ee;
+  --orange:#92400e; --orange-l:#fff7ed; --orange-b:#fed7aa;
+  --radius:12px;
+  --shadow:0 1px 3px rgba(0,0,0,0.06),0 4px 16px rgba(0,0,0,0.04);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;line-height:1.5;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;height:56px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100;}
+.hdr-back{display:flex;align-items:center;gap:5px;font-size:13px;font-weight:500;color:var(--text2);text-decoration:none;padding:5px 10px;border-radius:8px;border:1px solid var(--border);transition:all 0.15s;}
+.hdr-back:hover{border-color:var(--accent);color:var(--accent);}
+.logo-mark{width:32px;height:32px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.logo-text{font-family:"Fraunces",serif;font-weight:700;font-size:16px;color:var(--text);}
+.logo-sub{font-size:11px;color:var(--text3);font-weight:500;margin-left:2px;}
+.hdr-sep{width:1px;height:20px;background:var(--border);margin:0 4px;}
+.hdr-title{font-size:13px;color:var(--text2);font-weight:500;}
+
+main{max-width:900px;margin:0 auto;padding:32px 20px 60px;animation:fadeIn 0.4s ease;}
+
+.page-hero{margin-bottom:20px;}
+.drug-badge{display:inline-flex;align-items:center;gap:6px;background:var(--orange-l);border:1px solid var(--orange-b);color:var(--orange);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:10px;}
+.page-title{font-family:"Fraunces",serif;font-size:28px;font-weight:700;line-height:1.2;margin-bottom:6px;}
+.page-sub{font-size:14px;color:var(--text2);}
+.dose-ref{display:inline-flex;align-items:center;gap:6px;margin-top:10px;background:var(--gold-l);border:1px solid #e8d5a8;border-radius:8px;padding:6px 12px;font-size:12px;color:#7a5a1a;}
+
+/* ─── ALERTA FLUOROQUINOLONA ─── */
+.fluoro-alert{
+  background:var(--orange-l);border:1.5px solid var(--orange-b);
+  border-radius:14px;padding:16px 18px;margin-bottom:24px;
+  display:flex;gap:12px;align-items:flex-start;
+}
+.fluoro-alert-icon{font-size:20px;flex-shrink:0;margin-top:1px;}
+.fluoro-alert-title{font-size:13px;font-weight:700;color:var(--orange);margin-bottom:4px;}
+.fluoro-alert-text{font-size:12px;color:#78350f;line-height:1.5;}
+
+/* ─── SELECTOR ESPECIE ─── */
+.sp-section{margin-bottom:20px;}
+.sp-section-label{font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px;}
+.sp-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:480px){.sp-grid{grid-template-columns:1fr;}}
+.sp-opt{border:1.5px solid var(--border);border-radius:14px;padding:16px;cursor:pointer;transition:all 0.15s;background:var(--surface);display:flex;flex-direction:column;gap:6px;}
+.sp-opt:hover{border-color:var(--accent);background:var(--accent-l);}
+.sp-opt.active{border-color:var(--accent);background:var(--accent-l);box-shadow:0 0 0 3px rgba(27,67,50,0.08);}
+.sp-opt-head{display:flex;align-items:center;gap:10px;}
+.sp-opt-icon{font-size:24px;line-height:1;}
+.sp-opt-name{font-size:15px;font-weight:700;color:var(--text);}
+.sp-opt-sub{font-size:12px;color:var(--text3);}
+.sp-opt-pills{display:flex;gap:5px;flex-wrap:wrap;}
+.sp-pill{font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;letter-spacing:0.2px;}
+.sp-pill.dose{background:var(--accent-l);color:var(--accent);border:1px solid #a8dfc0;}
+.sp-pill.dur{background:var(--surface2);color:var(--text2);border:1px solid var(--border);}
+
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+@media(max-width:620px){.grid{grid-template-columns:1fr;}}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);overflow:hidden;}
+.card-header{padding:16px 20px 14px;border-bottom:1px solid var(--border2);display:flex;align-items:center;gap:10px;}
+.card-icon{width:34px;height:34px;border-radius:8px;background:var(--accent-l);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.card-title{font-weight:600;font-size:14px;}
+.card-body{padding:20px;}
+.field{margin-bottom:16px;}
+.field:last-child{margin-bottom:0;}
+label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;color:var(--text);}
+label span{font-weight:400;color:var(--text3);margin-left:4px;}
+input[type=number],select{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:var(--radius);font-family:"DM Sans",sans-serif;font-size:14px;color:var(--text);background:var(--surface);outline:none;transition:border-color 0.15s,box-shadow 0.15s;appearance:none;-webkit-appearance:none;}
+input[type=number]:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(27,67,50,0.1);}
+input[type=number]::-webkit-inner-spin-button{opacity:1;}
+.select-wrap{position:relative;}
+.select-wrap::after{content:'▾';position:absolute;right:12px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--text3);font-size:13px;}
+.select-wrap select{padding-right:30px;}
+.custom-agua{display:none;margin-top:10px;}
+.custom-agua.visible{display:block;}
+
+/* dosis fija */
+.dosis-fija{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:12px;}
+.dosis-fija-val{font-size:20px;font-weight:700;color:var(--accent);}
+.dosis-fija-sub{font-size:11px;color:var(--text3);margin-top:2px;}
+
+.btn-calc{width:100%;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);padding:14px 24px;font-family:"DM Sans",sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:background 0.2s,transform 0.1s;margin-top:4px;display:flex;align-items:center;justify-content:center;gap:8px;}
+.btn-calc:hover{background:var(--accent2);}
+.btn-calc:active{transform:scale(0.99);}
+
+#resultado{display:none;animation:slideIn 0.35s ease;}
+#resultado.visible{display:block;}
+.sp-tag{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600;letter-spacing:0.3px;text-transform:uppercase;margin-bottom:10px;}
+.result-card{background:var(--accent);border-radius:16px;padding:24px;margin-bottom:20px;color:#fff;}
+.result-card-title{font-family:"Fraunces",serif;font-size:18px;font-weight:700;margin-bottom:4px;}
+.result-card-sub{font-size:13px;color:rgba(255,255,255,0.7);margin-bottom:20px;}
+.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:480px){.result-grid{grid-template-columns:1fr;}}
+.result-item{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);border-radius:10px;padding:12px 14px;}
+.result-item.highlight{background:rgba(255,255,255,0.18);border-color:rgba(255,255,255,0.3);}
+.result-label{font-size:11px;color:rgba(255,255,255,0.65);font-weight:600;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:4px;}
+.result-value{font-size:22px;font-weight:700;line-height:1;}
+.result-unit{font-size:13px;color:rgba(255,255,255,0.7);margin-top:3px;}
+.instruccion{background:var(--ok-l);border:1px solid #a8dfc0;border-radius:12px;padding:16px 18px;display:flex;gap:12px;align-items:flex-start;margin-bottom:20px;}
+.instr-icon{font-size:20px;flex-shrink:0;margin-top:1px;}
+.instr-title{font-weight:600;font-size:14px;color:var(--ok);margin-bottom:4px;}
+.instr-text{font-size:14px;color:#1a4a2a;line-height:1.5;}
+.summary-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:20px;}
+.summary-title{font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:10px;}
+.summary-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border2);font-size:13px;}
+.summary-row:last-child{border-bottom:none;}
+.summary-key{color:var(--text2);}
+.summary-val{font-weight:600;color:var(--text);text-align:right;max-width:60%;}
+.btn-reset{background:transparent;border:1.5px solid var(--border);color:var(--text2);border-radius:var(--radius);padding:10px 20px;font-family:"DM Sans",sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:all 0.15s;}
+.btn-reset:hover{border-color:var(--accent);color:var(--accent);}
+.aviso{background:var(--gold-l);border:1px solid #e8d5a8;border-radius:10px;padding:12px 16px;font-size:12px;color:#7a5a1a;display:flex;gap:8px;align-items:flex-start;margin-top:20px;}
+</style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="hdr-back">← Volver</a>
+  <div class="hdr-sep"></div>
+  <div class="logo-mark">🐔</div>
+  <span class="logo-text">AviVet</span>
+  <span class="logo-sub">MV Andrés Lazo</span>
+  <div class="hdr-sep"></div>
+  <span class="hdr-title">Calculadora de Dosis</span>
+</header>
+
+<main>
+  <div class="page-hero">
+    <div class="drug-badge">💧 Solución oral · Uso restringido</div>
+    <h1 class="page-title">Enrofloxacino<br>Enromic® 20%</h1>
+    <p class="page-sub">Cálculo de dosis para agua de bebida · Pollos broiler y Pollas de reemplazo</p>
+    <div class="dose-ref">📋 0,05 mL Enromic® 20% / kg PV / día · 3–5 días</div>
+  </div>
+
+  <!-- Alerta Fluoroquinolona -->
+  <div class="fluoro-alert">
+    <span class="fluoro-alert-icon">⚠️</span>
+    <div>
+      <div class="fluoro-alert-title">Fluoroquinolona — Uso restringido</div>
+      <div class="fluoro-alert-text">
+        Las Fluoroquinolonas <strong>NO deben utilizarse como primera línea de tratamiento</strong>, a menos que esté clínicamente justificado.
+        Su uso debe basarse, en lo posible, en <strong>pruebas de susceptibilidad</strong>.
+        Reservar para casos que hayan respondido de forma escasa a otros antimicrobianos o cuando se espera que no respondan.
+      </div>
+    </div>
+  </div>
+
+  <div id="formulario">
+
+    <!-- Selector de especie -->
+    <div class="sp-section">
+      <div class="sp-section-label">Especie / Tipo de ave</div>
+      <div class="sp-grid">
+
+        <div class="sp-opt" id="sp-broiler" onclick="selectEspecie('broiler')">
+          <div class="sp-opt-head">
+            <span class="sp-opt-icon">🐔</span>
+            <div>
+              <div class="sp-opt-name">Pollos broiler</div>
+              <div class="sp-opt-sub">Engorda · 1–7 semanas</div>
+            </div>
+          </div>
+          <div class="sp-opt-pills">
+            <span class="sp-pill dose">0,05 mL/kg/día (fijo)</span>
+            <span class="sp-pill dur">3–5 días</span>
+          </div>
+        </div>
+
+        <div class="sp-opt" id="sp-pollas" onclick="selectEspecie('pollas')">
+          <div class="sp-opt-head">
+            <span class="sp-opt-icon">🐓</span>
+            <div>
+              <div class="sp-opt-name">Pollas de reemplazo</div>
+              <div class="sp-opt-sub">Recría · hasta 18 semanas</div>
+            </div>
+          </div>
+          <div class="sp-opt-pills">
+            <span class="sp-pill dose">0,05 mL/kg/día (fijo)</span>
+            <span class="sp-pill dur">3–5 días</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Formulario principal -->
+    <div class="grid" id="form-grid" style="display:none;">
+
+      <!-- Datos del lote -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon" id="lote-icon">🐔</div>
+          <span class="card-title">Datos del lote</span>
+        </div>
+        <div class="card-body">
+          <div class="field">
+            <label id="label-animales">N° de aves</label>
+            <input type="number" id="n_aves" min="1" placeholder="Ej: 10000">
+          </div>
+          <div class="field">
+            <label>Peso promedio por ave <span>(kg)</span></label>
+            <input type="number" id="peso" min="0.01" step="0.001" placeholder="Ej: 1.200">
+          </div>
+          <div class="field">
+            <label id="label-etapa">Semana de edad</label>
+            <div class="select-wrap">
+              <select id="etapa" onchange="toggleCustomAgua()"></select>
+            </div>
+            <div class="custom-agua" id="customAguaWrap">
+              <input type="number" id="custom_agua" min="1" step="1" placeholder="mL / ave / día">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Parámetros del tratamiento -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon">💉</div>
+          <span class="card-title">Parámetros del tratamiento</span>
+        </div>
+        <div class="card-body">
+          <div class="field">
+            <label>Duración <span>(días)</span></label>
+            <div class="select-wrap">
+              <select id="duracion">
+                <option value="3">3 días</option>
+                <option value="4">4 días</option>
+                <option value="5" selected>5 días</option>
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <label>Dosis de Enromic® 20%</label>
+            <div class="dosis-fija">
+              <div>
+                <div class="dosis-fija-val">0,05 mL / kg PV / día</div>
+                <div class="dosis-fija-sub">= 10 mg Enrofloxacino / kg PV / día · Dosis fija ficha técnica</div>
+              </div>
+            </div>
+          </div>
+          <button class="btn-calc" onclick="calcular()">Calcular dosis</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Resultado -->
+  <div id="resultado">
+    <div style="height:24px;"></div>
+    <div class="result-card">
+      <div class="sp-tag" id="res-sp-tag"></div>
+      <div class="result-card-title">Resultado del cálculo</div>
+      <div class="result-card-sub" id="res-subtitulo"></div>
+      <div class="result-grid">
+        <div class="result-item highlight">
+          <div class="result-label">Enromic® 20% por día</div>
+          <div class="result-value" id="res-ml-dia">—</div>
+          <div class="result-unit">mL / día</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Agua del lote / día</div>
+          <div class="result-value" id="res-agua">—</div>
+          <div class="result-unit">litros / día</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Concentración</div>
+          <div class="result-value" id="res-conc">—</div>
+          <div class="result-unit" id="res-conc-sub"></div>
+        </div>
+        <div class="result-item highlight">
+          <div class="result-label">Total tratamiento</div>
+          <div class="result-value" id="res-total">—</div>
+          <div class="result-unit" id="res-total-sub"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="instruccion">
+      <span class="instr-icon">✅</span>
+      <div>
+        <div class="instr-title">Instrucción de preparación</div>
+        <div class="instr-text" id="res-instruccion"></div>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-title">Resumen del tratamiento</div>
+      <div class="summary-row"><span class="summary-key">Especie</span><span class="summary-val" id="sum-especie">—</span></div>
+      <div class="summary-row"><span class="summary-key">Indicación</span><span class="summary-val" id="sum-ind">—</span></div>
+      <div class="summary-row"><span class="summary-key">Lote</span><span class="summary-val" id="sum-lote">—</span></div>
+      <div class="summary-row"><span class="summary-key">Etapa</span><span class="summary-val" id="sum-etapa">—</span></div>
+      <div class="summary-row"><span class="summary-key">Dosis aplicada</span><span class="summary-val">0,05 mL Enromic®/kg PV/día</span></div>
+      <div class="summary-row"><span class="summary-key">Duración</span><span class="summary-val" id="sum-duracion">—</span></div>
+      <div class="summary-row"><span class="summary-key">Peso vivo total</span><span class="summary-val" id="sum-pvtotal">—</span></div>
+    </div>
+
+    <button class="btn-reset" onclick="resetForm()">← Nuevo cálculo</button>
+
+    <div class="aviso">
+      <span>⚠️</span>
+      <span>Uso exclusivo bajo prescripción veterinaria. Fluoroquinolona de uso restringido — aplicar solo cuando esté clínicamente justificado y, en lo posible, basado en prueba de susceptibilidad. Los valores de consumo de agua son estimados.</span>
+    </div>
+  </div>
+</main>
+
+<script>
+// Enromic® 20% = 200 mg Enrofloxacino / mL
+const DOSIS_ML_KG = 0.05;   // mL/kg PV/día (fija)
+
+const ESPECIES = {
+  broiler: {
+    nombre: 'Pollos broiler',
+    emoji: '🐔',
+    indicacion: 'Gram negativos y Mycoplasma spp.: E. coli · Pasteurella spp. · Salmonella spp.',
+    etapas: [
+      { label:'Semana 1 · 1-7 días',   mlDia:65 },
+      { label:'Semana 2 · 8-14 días',  mlDia:120 },
+      { label:'Semana 3 · 15-21 días', mlDia:175, default:true },
+      { label:'Semana 4 · 22-28 días', mlDia:220 },
+      { label:'Semana 5 · 29-35 días', mlDia:270 },
+      { label:'Semana 6+ · >35 días',  mlDia:310 },
+      { label:'Consumo personalizado…', mlDia:'custom' },
+    ],
+  },
+  pollas: {
+    nombre: 'Pollas de reemplazo',
+    emoji: '🐓',
+    indicacion: 'Gram negativos y Mycoplasma spp.: E. coli · Pasteurella spp. · Salmonella spp.',
+    etapas: [
+      { label:'Semana 1-2 · 0-14 días',    mlDia:70 },
+      { label:'Semana 3-4 · 15-28 días',   mlDia:100, default:true },
+      { label:'Semana 5-8 · 29-56 días',   mlDia:150 },
+      { label:'Semana 9-12 · 57-84 días',  mlDia:185 },
+      { label:'Semana 13-18+ · >84 días',  mlDia:220 },
+      { label:'Consumo personalizado…',    mlDia:'custom' },
+    ],
+  },
+};
+
+let especieActual = null;
+
+function selectEspecie(key) {
+  especieActual = key;
+  const sp = ESPECIES[key];
+  document.querySelectorAll('.sp-opt').forEach(el => el.classList.remove('active'));
+  document.getElementById('sp-' + key).classList.add('active');
+  document.getElementById('lote-icon').textContent = sp.emoji;
+  document.getElementById('label-animales').textContent = `N° de ${sp.nombre.toLowerCase()}`;
+
+  const sel = document.getElementById('etapa');
+  sel.innerHTML = '';
+  sp.etapas.forEach(e => {
+    const opt = document.createElement('option');
+    opt.value = e.mlDia;
+    opt.textContent = e.mlDia === 'custom'
+      ? e.label
+      : `${e.label} · ~${e.mlDia} mL/ave/día`;
+    if (e.default) opt.selected = true;
+    sel.appendChild(opt);
+  });
+  document.getElementById('customAguaWrap').classList.remove('visible');
+  document.getElementById('form-grid').style.display = '';
+}
+
+function toggleCustomAgua() {
+  document.getElementById('customAguaWrap').classList.toggle('visible', document.getElementById('etapa').value === 'custom');
+}
+
+function getConsumoMl() {
+  const sel = document.getElementById('etapa');
+  if (sel.value === 'custom') return parseFloat(document.getElementById('custom_agua').value) || null;
+  return parseFloat(sel.value);
+}
+
+function getEtapaDesc() {
+  const sel = document.getElementById('etapa');
+  if (sel.value === 'custom') return `Personalizado (${document.getElementById('custom_agua').value} mL/ave/día)`;
+  return sel.options[sel.selectedIndex].text.split(' · ').slice(0, 2).join(' · ');
+}
+
+function fmt(n, dec=2) { return n.toLocaleString('es-CL',{minimumFractionDigits:dec,maximumFractionDigits:dec}); }
+
+function calcular() {
+  if (!especieActual) { alert('Selecciona el tipo de ave primero.'); return; }
+  const sp = ESPECIES[especieActual];
+  const nAves     = parseFloat(document.getElementById('n_aves').value);
+  const pesoKg    = parseFloat(document.getElementById('peso').value);
+  const consumoMl = getConsumoMl();
+  const duracion  = parseInt(document.getElementById('duracion').value);
+
+  if (!nAves || nAves < 1)   { alert('Ingresa el número de aves.'); return; }
+  if (!pesoKg || pesoKg <= 0){ alert('Ingresa el peso promedio.'); return; }
+  if (!consumoMl)            { alert('Ingresa el consumo de agua.'); return; }
+
+  const pesoTotal  = nAves * pesoKg;
+  const mlDia      = pesoTotal * DOSIS_ML_KG;
+  const aguaTotalL = (consumoMl * nAves) / 1000;
+  const concMlL    = mlDia / aguaTotalL;
+  const totalMl    = mlDia * duracion;
+
+  document.getElementById('res-sp-tag').textContent     = `${sp.emoji} ${sp.nombre}`;
+  document.getElementById('res-subtitulo').textContent  =
+    `${fmt(nAves,0)} aves · ${pesoKg} kg/ave · ${DOSIS_ML_KG} mL/kg/día · ${duracion} días`;
+
+  document.getElementById('res-ml-dia').textContent    = fmt(mlDia, 1);
+  document.getElementById('res-agua').textContent      = fmt(aguaTotalL, 1);
+  document.getElementById('res-conc').textContent      = fmt(concMlL, 3) + ' mL/L';
+  document.getElementById('res-conc-sub').textContent  = `${fmt(concMlL * 200, 1)} mg Enrofloxacino/L`;
+  document.getElementById('res-total').textContent     = fmt(totalMl, 0) + ' mL';
+  document.getElementById('res-total-sub').textContent = totalMl >= 1000
+    ? `${fmt(totalMl / 1000, 3)} L de producto`
+    : 'de Enromic® 20%';
+
+  document.getElementById('res-instruccion').innerHTML =
+    `Agrega <strong>${fmt(mlDia,1)} mL de Enromic® 20%</strong> a los
+    <strong>${fmt(aguaTotalL,1)} litros</strong> de agua del lote ese día
+    (concentración: ${fmt(concMlL,3)} mL/L · ${fmt(concMlL*200,1)} mg/L).
+    Repite cada 24 horas durante <strong>${duracion} días</strong> consecutivos.
+    Agitar el producto antes de usar.`;
+
+  document.getElementById('sum-especie').textContent  = sp.nombre;
+  document.getElementById('sum-ind').textContent      = sp.indicacion;
+  document.getElementById('sum-lote').textContent     = `${fmt(nAves,0)} aves`;
+  document.getElementById('sum-etapa').textContent    = getEtapaDesc();
+  document.getElementById('sum-duracion').textContent = `${duracion} días`;
+  document.getElementById('sum-pvtotal').textContent  = `${fmt(pesoTotal,1)} kg PV`;
+
+  document.getElementById('resultado').classList.add('visible');
+  document.getElementById('resultado').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function resetForm() {
+  document.getElementById('resultado').classList.remove('visible');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>

@@ -14,6 +14,7 @@
   --accent:#1b4332; --accent2:#2d6a4f; --accent-l:#d8f3dc;
   --gold:#b5813a; --gold-l:#fdf3e0;
   --blue:#1a4a7a; --blue-l:#e8f0fc;
+  --orange:#92400e; --orange-l:#fff7ed; --orange-b:#fed7aa;
   --radius:12px;
   --shadow:0 1px 3px rgba(0,0,0,0.06),0 4px 16px rgba(0,0,0,0.04);
   --shadow-md:0 2px 8px rgba(0,0,0,0.08),0 8px 32px rgba(0,0,0,0.06);
@@ -29,15 +30,16 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:0
 .hdr-sep{width:1px;height:20px;background:var(--border);margin:0 4px;}
 .hdr-title{font-size:13px;color:var(--text2);font-weight:500;}
 
-main{max-width:760px;margin:0 auto;padding:48px 20px 60px;animation:fadeIn 0.4s ease;}
+main{max-width:960px;margin:0 auto;padding:48px 20px 60px;animation:fadeIn 0.4s ease;}
 
 .hero{margin-bottom:36px;}
 .section-badge{display:inline-flex;align-items:center;gap:6px;background:var(--accent-l);border:1px solid #a8dfc0;color:var(--accent);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:12px;}
 .hero-title{font-family:"Fraunces",serif;font-size:32px;font-weight:700;line-height:1.2;margin-bottom:8px;}
 .hero-sub{font-size:15px;color:var(--text2);max-width:480px;}
 
-.drug-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-@media(max-width:560px){.drug-grid{grid-template-columns:1fr;}}
+.drug-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+@media(max-width:700px){.drug-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:460px){.drug-grid{grid-template-columns:1fr;}}
 
 .drug-card{
   background:var(--surface);border:1.5px solid var(--border);
@@ -52,6 +54,7 @@ main{max-width:760px;margin:0 auto;padding:48px 20px 60px;animation:fadeIn 0.4s 
 .drug-type-badge{display:inline-flex;align-items:center;gap:5px;border-radius:20px;padding:3px 10px;font-size:10px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:12px;}
 .drug-type-badge.polvo{background:var(--accent-l);color:var(--accent);border:1px solid #a8dfc0;}
 .drug-type-badge.liquido{background:var(--blue-l);color:var(--blue);border:1px solid #b8d0f0;}
+.drug-type-badge.restringido{background:var(--orange-l);color:var(--orange);border:1px solid var(--orange-b);}
 .drug-name{font-family:"Fraunces",serif;font-size:22px;font-weight:700;line-height:1.15;margin-bottom:2px;}
 .drug-commercial{font-size:13px;color:var(--text3);font-weight:500;margin-bottom:14px;}
 
@@ -94,7 +97,7 @@ main{max-width:760px;margin:0 auto;padding:48px 20px 60px;animation:fadeIn 0.4s 
   <div class="hero">
     <div class="section-badge">💊 Antibióticos</div>
     <h1 class="hero-title">Calculadoras<br>de Dosis</h1>
-    <p class="hero-sub">Dosis en agua de bebida para pollos broiler, pavos y cerdos. Selecciona el antibiótico a calcular.</p>
+    <p class="hero-sub">Dosis en agua de bebida para pollos broiler, pavos, pollas de reemplazo y cerdos. Selecciona el antibiótico a calcular.</p>
   </div>
 
   <div class="drug-grid">
@@ -144,6 +147,30 @@ main{max-width:760px;margin:0 auto;padding:48px 20px 60px;animation:fadeIn 0.4s 
         <div class="drug-dose-info">
           <strong>0,1 – 0,3 mL/kg PV/día</strong>
           5 – 7 días · mL de producto/día
+        </div>
+        <div class="drug-cta">Calcular →</div>
+      </div>
+    </a>
+
+    <!-- Enrofloxacino -->
+    <a href="enrofloxacino.html" class="drug-card">
+      <div class="drug-card-top">
+        <div class="drug-type-badge restringido">⚠️ Uso restringido</div>
+        <div class="drug-name">Enroflo-<br>xacino</div>
+        <div class="drug-commercial">Enromic® 20%</div>
+        <div class="drug-species">
+          <span class="sp-badge">🐔 Pollos broiler</span>
+          <span class="sp-badge">🐓 Pollas reemplazo</span>
+        </div>
+        <div class="drug-inds">
+          <div class="drug-ind"><span class="drug-ind-icon">🫁</span><span><em>E. coli · Pasteurella spp. · Salmonella spp. · Mycoplasma spp.</em></span></div>
+          <div class="drug-ind"><span class="drug-ind-icon">⚠️</span><span>Fluoroquinolona · No usar como primera línea</span></div>
+        </div>
+      </div>
+      <div class="drug-card-bottom">
+        <div class="drug-dose-info">
+          <strong>0,05 mL/kg PV/día (fijo)</strong>
+          3–5 días · mL de producto/día
         </div>
         <div class="drug-cta">Calcular →</div>
       </div>
