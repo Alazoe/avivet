@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Presupuesto Diario Avícola · avivet.cl</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+<style>
+:root {
+  --fondo:     #f8f6f1;
+  --papel:     #ffffff;
+  --tinta:     #1a1a1a;
+  --suave:     #555;
+  --tenue:     #888;
+  --linea:     #e0ddd5;
+  --linea-f:   #c4c0b6;
+  --prim:      #1b4332;
+  --prim-osc:  #133024;
+  --acento:    #f0a500;
+  --acento-cl: #fef5e0;
+  --ok:        #1b5e20;
+  --mal:       #b71c1c;
+  --ft:        'Crimson Pro', Georgia, serif;
+  --fc:        'Inter', system-ui, sans-serif;
+  --fm:        'IBM Plex Mono', ui-monospace, monospace;
+  --mw:        1200px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--fc); font-size: 15px; line-height: 1.6;
+  color: var(--tinta); background: var(--fondo);
+  background-image:
+    radial-gradient(circle at 20% 10%, rgba(27,67,50,.04) 0%, transparent 50%),
+    radial-gradient(circle at 80% 90%, rgba(240,165,0,.04) 0%, transparent 50%);
+  -webkit-font-smoothing: antialiased;
+}
+.cont { max-width: var(--mw); margin: 0 auto; padding: 0 32px; }
+
+/* ── Cabecera ── */
+.cabecera {
+  background: var(--prim); border-bottom: 3px solid var(--acento);
+  padding: 14px 0; position: sticky; top: 0; z-index: 100;
+}
+.cabecera .cont { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+.marca { display: flex; flex-direction: column; line-height: 1.1; }
+.marca-titulo { font-family: var(--ft); font-size: 22px; font-weight: 700; color: #fff; letter-spacing: -.01em; }
+.marca-sub { font-size: 11px; color: var(--acento); letter-spacing: .06em; text-transform: uppercase; margin-top: 2px; }
+.nav-cab { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+.nav-cab a { color: rgba(255,255,255,.85); text-decoration: none; font-size: 13px; font-weight: 500; padding: 4px 0; border-bottom: 2px solid transparent; transition: border-color .2s, color .2s; }
+.nav-cab a:hover { color: var(--acento); border-bottom-color: var(--acento); }
+.btn-cab {
+  font-family: var(--fc); font-size: 13px; font-weight: 600;
+  padding: 7px 16px; border: 1.5px solid rgba(255,255,255,.4); border-radius: 5px;
+  background: transparent; color: rgba(255,255,255,.9); cursor: pointer; transition: all .18s;
+}
+.btn-cab:hover { background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.7); }
+
+/* ── Hero ── */
+.hero { padding: 56px 0 44px; border-bottom: 1px solid var(--linea); margin-bottom: 52px; }
+.hero-meta { font-family: var(--fm); font-size: 11px; color: var(--tenue); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 18px; }
+.hero h1 { font-family: var(--ft); font-size: clamp(28px,4.5vw,48px); font-weight: 700; line-height: 1.05; letter-spacing: -.02em; color: var(--prim); margin-bottom: 16px; max-width: 26ch; }
+.hero-bajada { font-size: 15px; color: var(--suave); max-width: 70ch; margin-bottom: 32px; line-height: 1.7; }
+.hero-fichas { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px,1fr)); gap: 1px; background: var(--linea); border: 1px solid var(--linea); max-width: 800px; }
+.ficha { background: var(--papel); padding: 20px 18px; display: flex; flex-direction: column; gap: 4px; }
+.ficha-num { font-family: var(--ft); font-size: 30px; font-weight: 700; color: var(--prim); line-height: 1; }
+.ficha-num.ok  { color: var(--ok); }
+.ficha-num.mal { color: var(--mal); }
+.ficha-lbl { font-size: 11px; color: var(--tenue); letter-spacing: .08em; text-transform: uppercase; }
+.ficha-sub { font-size: 12px; color: var(--suave); margin-top: 2px; }
+
+/* ── Selector lote ── */
+.panel-lotes {
+  background: var(--prim); border-radius: 8px; padding: 18px 22px;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 20px; margin-bottom: 52px;
+}
+.cfg-lbl { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: rgba(255,255,255,.6); }
+.sel-lote {
+  font-family: var(--fc); font-size: 14px; font-weight: 500;
+  padding: 7px 12px; border: 1px solid rgba(255,255,255,.3); border-radius: 5px;
+  background: rgba(255,255,255,.1); color: #fff; min-width: 280px; cursor: pointer;
+  -webkit-appearance: none; appearance: none;
+}
+.sel-lote option { background: var(--prim-osc); color: #fff; }
+.sel-lote:focus { outline: 2px solid var(--acento); outline-offset: 1px; }
+.sep-v { width: 1px; height: 36px; background: rgba(255,255,255,.2); flex-shrink: 0; }
+.lote-meta-txt { font-size: 12px; color: rgba(255,255,255,.7); margin-top: 3px; }
+
+/* ── Bloques ── */
+.bloque { margin-bottom: 72px; scroll-margin-top: 80px; }
+.bloque h2 { font-family: var(--ft); font-size: clamp(22px,3vw,32px); font-weight: 600; color: var(--prim); letter-spacing: -.01em; margin-bottom: 10px; position: relative; padding-left: 18px; }
+.bloque h2::before { content: ''; position: absolute; left: 0; top: 7px; bottom: 7px; width: 4px; background: var(--acento); }
+.bloque-desc { color: var(--suave); margin-bottom: 28px; max-width: 72ch; font-size: 14.5px; }
+.nota-fuente { display: inline-block; font-family: var(--fm); font-size: 11px; color: var(--tenue); background: var(--fondo); border: 1px solid var(--linea); padding: 3px 10px; border-radius: 3px; }
+
+/* ── Tabs ── */
+.tabs { display: flex; gap: 4px; margin-bottom: 36px; border-bottom: 2px solid var(--linea); }
+.tab { font-family: var(--fc); font-size: 13px; font-weight: 600; padding: 10px 22px; border: none; border-bottom: 3px solid transparent; background: none; cursor: pointer; color: var(--tenue); letter-spacing: .02em; transition: color .18s, border-color .18s; margin-bottom: -2px; }
+.tab:hover { color: var(--prim); }
+.tab.activo { color: var(--prim); border-bottom-color: var(--acento); }
+.tab-panel { display: none; }
+.tab-panel.activo { display: block; }
+
+/* ── Gráficos ── */
+.graficos-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 28px; }
+.graficos-grid.full { grid-template-columns: 1fr; }
+.grafico-wrap { background: var(--papel); border: 1px solid var(--linea); padding: 20px 18px 14px; }
+.grafico-titulo { font-family: var(--fc); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--tenue); margin-bottom: 14px; }
+.grafico-canvas { position: relative; height: 230px; }
+.leyenda { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 12px; font-size: 12px; color: var(--suave); }
+.leyenda-item { display: inline-flex; align-items: center; gap: 6px; }
+.cuad { display: inline-block; width: 12px; height: 12px; border-radius: 2px; flex-shrink: 0; }
+
+/* ── Tabla ── */
+.tabla-controles { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; padding: 11px 16px; background: var(--papel); border: 1px solid var(--linea); border-bottom: none; font-size: 13px; color: var(--suave); }
+.tabla-wrap { overflow-x: auto; background: var(--papel); border: 1px solid var(--linea); max-height: 500px; overflow-y: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; }
+thead { position: sticky; top: 0; background: var(--prim); color: #fff; z-index: 2; }
+thead th { padding: 9px 11px; text-align: center; font-weight: 500; font-size: 11px; letter-spacing: .04em; text-transform: uppercase; border-right: 1px solid rgba(255,255,255,.1); white-space: nowrap; }
+thead th:last-child { border-right: 0; }
+thead .th-real { background: rgba(27,94,32,.5); }
+tbody td { padding: 7px 10px; text-align: center; border-bottom: 1px solid var(--linea); border-right: 1px solid var(--linea); white-space: nowrap; }
+tbody tr:hover td { background: var(--acento-cl); }
+td.fecha { font-family: var(--fm); font-size: 11px; text-align: left; padding-left: 12px; }
+td.ok  { color: var(--ok); font-weight: 600; }
+td.mal { color: var(--mal); font-weight: 600; }
+td.real { background: rgba(27,94,32,.07) !important; font-weight: 600; }
+
+/* ── Config panel ── */
+.config-hdr { display: flex; align-items: center; justify-content: space-between; padding: 13px 20px; background: var(--prim); border-radius: 6px; cursor: pointer; user-select: none; }
+.config-titulo { font-family: var(--fc); font-size: 12px; font-weight: 600; color: #fff; letter-spacing: .05em; text-transform: uppercase; }
+.config-toggle { font-family: var(--fm); font-size: 11px; color: rgba(255,255,255,.75); background: none; border: 1px solid rgba(255,255,255,.3); border-radius: 4px; padding: 3px 9px; cursor: pointer; }
+.config-body { padding: 22px; background: var(--papel); border: 1px solid var(--linea); border-top: none; border-radius: 0 0 6px 6px; }
+.config-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px,1fr)); gap: 14px; }
+.cfg-field { display: flex; flex-direction: column; gap: 5px; }
+.cfg-field span { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--tenue); }
+.cfg-field input { font-family: var(--fc); font-size: 14px; padding: 7px 10px; border: 1px solid var(--linea-f); border-radius: 5px; background: var(--fondo); color: var(--tinta); width: 100%; }
+.cfg-field input:focus { outline: 2px solid var(--acento); outline-offset: 1px; border-color: transparent; }
+.cfg-sep { grid-column: 1/-1; border: none; border-top: 1px dashed var(--linea); }
+.cfg-sec { grid-column: 1/-1; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--suave); margin-top: 2px; }
+
+/* ── Botones ── */
+.btn { font-family: var(--fc); font-size: 14px; font-weight: 600; padding: 10px 22px; border: none; border-radius: 5px; cursor: pointer; transition: background .15s; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; }
+.btn-acento { background: var(--acento); color: #1a1a1a; }
+.btn-acento:hover { background: #d89200; }
+.btn-prim   { background: var(--prim); color: #fff; }
+.btn-prim:hover { background: var(--prim-osc); }
+.btn-ok     { background: #2e7d32; color: #fff; }
+.btn-ok:hover { background: #1b5e20; }
+.btn-linea  { background: none; border: 1px solid var(--linea-f); color: var(--suave); }
+.btn-linea:hover { border-color: var(--prim); color: var(--prim); }
+.btn-sm { padding: 6px 14px; font-size: 12px; }
+
+/* ── Metodología / Pie ── */
+.metodo { background: var(--papel); border: 1px solid var(--linea); padding: 32px; }
+.metodo-lista { list-style: none; display: grid; gap: 12px; font-size: 14px; color: var(--suave); }
+.metodo-lista li { padding-left: 22px; position: relative; line-height: 1.6; }
+.metodo-lista li::before { content: '·'; position: absolute; left: 6px; top: -2px; font-size: 22px; color: var(--acento); font-weight: 700; }
+.metodo-lista strong { color: var(--prim); font-weight: 600; }
+.pie { margin-top: 52px; padding: 26px 0; border-top: 1px solid var(--linea); font-size: 13px; color: var(--tenue); text-align: center; line-height: 1.7; }
+.pie strong { color: var(--prim); }
+
+/* ── Modal ── */
+.modal-bg { display: none; position: fixed; inset: 0; background: rgba(27,67,50,.5); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
+.modal-bg.abierto { display: flex; }
+.modal { background: var(--papel); border-radius: 8px; padding: 30px; width: 100%; max-width: 560px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,.3); }
+.modal h2 { font-family: var(--ft); font-size: 26px; font-weight: 700; color: var(--prim); margin-bottom: 20px; }
+.modal-close { float: right; background: none; border: none; font-size: 22px; cursor: pointer; color: var(--tenue); }
+.modal-close:hover { color: var(--tinta); }
+.modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.modal-field { display: flex; flex-direction: column; gap: 5px; }
+.modal-field.full { grid-column: 1/-1; }
+.modal-field label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--tenue); }
+.modal-field input { font-family: var(--fc); font-size: 14px; padding: 9px 12px; border: 1px solid var(--linea-f); border-radius: 5px; background: var(--fondo); color: var(--tinta); width: 100%; }
+.modal-field input:focus { outline: 2px solid var(--acento); outline-offset: 1px; border-color: transparent; }
+.modal-sep { grid-column: 1/-1; border: none; border-top: 1px dashed var(--linea); margin: 4px 0; }
+.modal-sec { grid-column: 1/-1; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--suave); margin-top: 4px; }
+.modal-acciones { grid-column: 1/-1; display: flex; gap: 10px; margin-top: 8px; }
+
+/* ── Estado vacío ── */
+.vacio { text-align: center; padding: 80px 24px; color: var(--tenue); border: 1px dashed var(--linea-f); background: var(--papel); }
+.vacio h2 { font-family: var(--ft); font-size: 26px; color: var(--prim); margin-bottom: 10px; }
+.vacio p  { font-size: 14px; margin-bottom: 24px; }
+
+@media (max-width: 900px) {
+  .cont { padding: 0 20px; }
+  .hero { padding: 40px 0 32px; }
+  .graficos-grid { grid-template-columns: 1fr; }
+  .hero-fichas { grid-template-columns: repeat(2,1fr); }
+  .nav-cab a { display: none; }
+  .modal-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="cont">
+    <a href="https://avivet.cl" class="marca" style="text-decoration:none">
+      <span class="marca-titulo">avivet.cl</span>
+      <span class="marca-sub">medicina aviar · sur de Chile</span>
+    </a>
+    <div class="nav-cab">
+      <a href="#graficos">Gráficos</a>
+      <a href="#tabla">Tabla</a>
+      <a href="#metodo">Metodología</a>
+      <button class="btn-cab" onclick="abrirModal()">+ Nuevo lote</button>
+    </div>
+  </div>
+</header>
+
+<main class="cont">
+
+  <section class="hero">
+    <div class="hero-meta">Herramienta técnica · <span id="fecha-hoy"></span></div>
+    <h1>Presupuesto diario avícola · seguimiento en tiempo real</h1>
+    <p class="hero-bajada">
+      Proyección productiva y financiera basada en curvas Lohman Brown para sistemas no convencionales del sur de Chile.
+      Ingresa los datos diarios para comparar lo real contra lo proyectado y anticipar el resultado del ciclo.
+    </p>
+    <div class="hero-fichas">
+      <div class="ficha"><span class="ficha-num" id="kpi-sem">—</span><span class="ficha-lbl">semana de vida</span></div>
+      <div class="ficha"><span class="ficha-num" id="kpi-pos">—</span><span class="ficha-lbl">% postura proyectado</span></div>
+      <div class="ficha"><span class="ficha-num" id="kpi-aves">—</span><span class="ficha-lbl">aves proyectadas</span></div>
+      <div class="ficha">
+        <span class="ficha-num" id="kpi-res">—</span>
+        <span class="ficha-lbl">resultado acum. proyectado</span>
+        <span class="ficha-sub" id="kpi-res-sub"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- SELECTOR LOTE -->
+  <div class="panel-lotes">
+    <div>
+      <div class="cfg-lbl" style="margin-bottom:7px">Lote activo</div>
+      <select class="sel-lote" id="sel-lote" onchange="selLote(this.value)">
+        <option value="">— Selecciona un lote —</option>
+      </select>
+    </div>
+    <div class="sep-v"></div>
+    <div>
+      <div class="cfg-lbl" id="lote-nombre-txt"></div>
+      <div class="lote-meta-txt" id="lote-meta-txt"></div>
+    </div>
+  </div>
+
+  <!-- CONTENIDO DINÁMICO -->
+  <div id="contenido">
+    <div class="vacio">
+      <h2>Crea tu primer lote</h2>
+      <p>Configura los parámetros del lote para generar la proyección de 80 semanas</p>
+      <button class="btn btn-prim" onclick="abrirModal()">+ Nuevo lote</button>
+    </div>
+  </div>
+
+  <!-- METODOLOGÍA -->
+  <section class="bloque metodo" id="metodo" style="display:none">
+    <h2>Metodología y supuestos</h2>
+    <ul class="metodo-lista">
+      <li><strong>Curva de postura:</strong> Lohman Brown, semanas 0–80. Inicio en semana 18 (~1.1%), pico en semanas 32–35 (~95.8%).</li>
+      <li><strong>Mortalidad:</strong> curva semanal Lohman Brown. Mayor en crianza (sem 1: 0.4%/sem) y decreciente en postura (~0.05–0.09%/sem).</li>
+      <li><strong>Consumo de alimento:</strong> 7 dietas según etapa productiva (12 gr/ave/día en sem 1 hasta 117 gr/ave/día en plena postura). Costos por kg editables.</li>
+      <li><strong>Gastos fijos:</strong> sueldo + luz + agua + gas + combustible + viruta + insumos, distribuidos en 30 días/mes.</li>
+      <li><strong>Resultado diario:</strong> Ingreso (huevos × precio) − Costo alimento − Gastos fijos. Los datos se guardan localmente en tu navegador.</li>
+      <li><strong>Advertencia:</strong> valores son proyecciones orientativas. El manejo real (sanidad, nutrición, fotoperiodo) puede modificar ±10–15%.</li>
+    </ul>
+  </section>
+
+  <footer class="pie" id="pie" style="display:none">
+    <p><strong>avivet.cl</strong> · MV Andrés Lazo Escobar · Valdivia, Chile<br>
+    Proyección generada el <span id="fecha-pie"></span>. Revisar parámetros antes de uso comercial.</p>
+  </footer>
+
+</main>
+
+<!-- MODAL NUEVO LOTE -->
+<div class="modal-bg" id="modal">
+  <div class="modal">
+    <button class="modal-close" onclick="cerrarModal()">×</button>
+    <h2 id="modal-titulo">Nuevo lote</h2>
+    <form id="form-lote" onsubmit="guardarLote(event)">
+      <div class="modal-grid">
+        <div class="modal-field full">
+          <label>Nombre / cliente</label>
+          <input type="text" name="nombre" placeholder="Ej: Jonathan Morales — Pitrufquén" required>
+        </div>
+        <div class="modal-field">
+          <label>Fecha de nacimiento</label>
+          <input type="date" name="fechaNacimiento" required>
+        </div>
+        <div class="modal-field">
+          <label>N° aves iniciales</label>
+          <input type="number" name="nAves" value="1500" min="1" required>
+        </div>
+        <div class="modal-field">
+          <label>Precio venta huevo ($/ud.)</label>
+          <input type="number" name="precioHuevo" value="130" min="1" required>
+        </div>
+        <div class="modal-field">
+          <label>Gastos fijos / mes ($)</label>
+          <input type="number" name="gastosMes" value="2441000" min="0" required>
+        </div>
+        <hr class="modal-sep">
+        <div class="modal-sec">Costo alimento por dieta ($/kg)</div>
+        <div class="modal-field"><label>Dieta 1 · crianza 1–3 sem</label><input type="number" name="d1" value="450"></div>
+        <div class="modal-field"><label>Dieta 2 · crianza 4–6 sem</label><input type="number" name="d2" value="470"></div>
+        <div class="modal-field"><label>Dieta 3 · crianza 7–12 sem</label><input type="number" name="d3" value="490"></div>
+        <div class="modal-field"><label>Dieta 4 · transición 13–15 sem</label><input type="number" name="d4" value="520"></div>
+        <div class="modal-field"><label>Dieta 5 · preinicio 16–17 sem</label><input type="number" name="d5" value="535"></div>
+        <div class="modal-field"><label>Dieta 6 · postura 18–45 sem</label><input type="number" name="d6" value="550"></div>
+        <div class="modal-field"><label>Dieta 7 · postura 46–80 sem</label><input type="number" name="d7" value="550"></div>
+        <div class="modal-acciones">
+          <button type="submit" class="btn btn-acento">Guardar y proyectar</button>
+          <button type="button" class="btn btn-linea" onclick="cerrarModal()">Cancelar</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+/* ════════════════════════════════════════════════════════════
+   CURVAS LOHMAN BROWN
+   ════════════════════════════════════════════════════════════ */
+const POSTURA = {
+  0:0,1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,9:0,10:0,11:0,12:0,13:0,14:0,15:0,16:0,17:0,
+  18:1.1,19:9.3,20:36.7,21:54.7,22:72.2,23:82.6,24:88.2,25:91.4,26:93.2,
+  27:94.3,28:94.9,29:95.2,30:95.4,31:95.6,32:95.7,33:95.8,34:95.8,35:95.7,
+  36:95.6,37:95.4,38:95.2,39:95.1,40:94.9,41:94.7,42:94.5,43:94.3,44:94.1,
+  45:93.8,46:93.6,47:93.3,48:93.0,49:92.7,50:92.3,51:92.0,52:91.7,53:91.3,
+  54:91.0,55:90.6,56:90.2,57:89.9,58:89.5,59:89.1,60:88.8,61:88.4,62:88.0,
+  63:87.6,64:87.2,65:86.8,66:86.5,67:86.1,68:85.6,69:85.2,70:84.7,71:84.3,
+  72:83.7,73:83.2,74:82.7,75:82.2,76:81.7,77:81.1,78:80.6,79:80.0,80:79.5,
+};
+
+const MORTALIDAD = {
+  0:0,1:0.004,2:0.0015,3:0.001,4:0.001,5:0.001,6:0.001,7:0.001,
+  8:0.001,9:0.001,10:0.001,11:0.001,12:0.002,13:0.0008,14:0.0007,
+  15:0.0008,16:0.0007,17:0.0015,18:0.0003,19:0.0005,20:0.0007,
+  21:0.0007,22:0.0007,23:0.0006,24:0.0006,25:0.0004,26:0.0005,
+  27:0.0006,28:0.0005,29:0.0005,30:0.0005,31:0.0004,32:0.0006,
+  33:0.0006,34:0.0005,35:0.0005,36:0.0006,37:0.0004,38:0.0006,
+  39:0.0006,40:0.0006,41:0.0005,42:0.0006,43:0.0006,44:0.0009,
+  45:0.0007,46:0.0005,47:0.0006,48:0.0006,49:0.0007,50:0.0006,
+  51:0.0009,52:0.0006,53:0.0008,54:0.0007,55:0.0008,56:0.0009,
+  57:0.0007,58:0.0019,59:0.0008,60:0.0008,61:0.0012,62:0.0008,
+  63:0.0007,64:0.0005,65:0.0011,66:0.0006,67:0.0006,68:0.001,
+  69:0.0013,70:0.0015,71:0.0015,72:0.0025,73:0.0015,74:0.0015,
+  75:0.0015,76:0.0025,77:0.0015,78:0.0015,79:0.0015,80:0.0015,
+};
+
+// sem → {gr, dieta}
+const CONSUMO = (() => {
+  const raw = [
+    [1,12,1],[2,17,1],[3,20,1],[4,25,2],[5,29,2],[6,35,2],
+    [7,41,3],[8,47,3],[9,52,3],[10,56,3],[11,60,3],[12,62,3],
+    [13,64,4],[14,66,4],[15,68,4],[16,70,5],[17,72,5],
+    [18,73,6],[19,85,6],[20,90,6],[21,97,6],[22,100,6],
+    [23,104,6],[24,109,6],[25,112,6],[26,114,6],[27,115,6],
+    [28,116,6],[29,117,6],[30,117,6],[31,117,6],[32,117,6],
+    [33,117,6],[34,117,6],[35,117,6],[36,116,6],[37,116,6],
+    [38,116,6],[39,116,6],[40,116,6],[41,116,6],[42,116,6],
+    [43,116,6],[44,116,6],[45,116,6],
+  ];
+  const m = {};
+  raw.forEach(([s,g,d]) => m[s] = {gr:g, dieta:d});
+  for (let s = 46; s <= 80; s++) m[s] = {gr:116, dieta:7};
+  return m;
+})();
+
+/* ════════════════════════════════════════════════════════════
+   MOTOR DE PROYECCIÓN
+   ════════════════════════════════════════════════════════════ */
+function proyectar(lote) {
+  const fn = new Date(lote.fechaNacimiento + 'T12:00:00');
+  let aves = +lote.nAves;
+  const precio = +lote.precioHuevo;
+  const gastoMes = +lote.gastosMes;
+  const costoDieta = lote.costoDieta;
+  const dias = [];
+
+  for (let n = 0; n < 560; n++) {
+    const f = new Date(fn); f.setDate(fn.getDate() + n);
+    const fecha = f.toISOString().slice(0, 10);
+    const sem = Math.floor(n / 7) + 1;
+    const mort = MORTALIDAD[sem] ?? 0.001;
+    const pos  = POSTURA[sem]    ?? 0;
+    const cons = CONSUMO[sem]    ?? {gr:116, dieta:7};
+    const mortDia  = aves * mort;
+    const avesFin  = aves - mortDia;
+    const consumoKg = aves * cons.gr / 1000;
+    const costoAlim = consumoKg * (+costoDieta[cons.dieta] || 520);
+    const huevos   = Math.round(aves * pos / 100);
+    const ingreso  = huevos * precio;
+    const gastoDia = gastoMes / 30;
+    const resultado = ingreso - costoAlim - gastoDia;
+    dias.push({
+      fecha, n: n+1, sem,
+      aves:       Math.round(avesFin * 10) / 10,
+      pos, huevos,
+      consumoKg:  Math.round(consumoKg * 10) / 10,
+      dieta:      cons.dieta,
+      costoAlim:  Math.round(costoAlim),
+      gastoDia:   Math.round(gastoDia),
+      ingreso:    Math.round(ingreso),
+      resultado:  Math.round(resultado),
+    });
+    aves = avesFin;
+  }
+  let acum = 0;
+  dias.forEach(d => { acum += d.resultado; d.acum = Math.round(acum); });
+  return dias;
+}
+
+/* ════════════════════════════════════════════════════════════
+   ALMACENAMIENTO (localStorage)
+   ════════════════════════════════════════════════════════════ */
+const CLAVE = 'avivet_presupuesto_v1';
+
+function getLotes() { return JSON.parse(localStorage.getItem(CLAVE) || '[]'); }
+function setLotes(l) { localStorage.setItem(CLAVE, JSON.stringify(l)); }
+function getLote(id) { return getLotes().find(l => l.id === id); }
+
+function saveLote(lote) {
+  const arr = getLotes();
+  const idx = arr.findIndex(l => l.id === lote.id);
+  if (idx >= 0) arr[idx] = lote; else arr.push(lote);
+  setLotes(arr);
+}
+
+function guardarRegistroDia(loteId, fecha, datos) {
+  const lote = getLote(loteId);
+  if (!lote) return;
+  lote.registros = lote.registros || {};
+  lote.registros[fecha] = datos;
+  saveLote(lote);
+}
+
+/* ════════════════════════════════════════════════════════════
+   ESTADO GLOBAL
+   ════════════════════════════════════════════════════════════ */
+let loteId = null;
+let proy   = null;
+const HOY  = new Date().toISOString().slice(0, 10);
+let charts = {};
+
+const NUM = v => v == null ? '—' : Math.round(v).toLocaleString('es-CL');
+const PCT = v => v == null ? '—' : (+v).toFixed(1) + '%';
+const MN  = v => v == null ? '—' : '$' + Math.round(v).toLocaleString('es-CL');
+
+/* ════════════════════════════════════════════════════════════
+   INIT
+   ════════════════════════════════════════════════════════════ */
+(function init() {
+  const hoy = new Date().toLocaleDateString('es-CL', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
+  document.getElementById('fecha-hoy').textContent = hoy;
+  document.getElementById('fecha-pie').textContent = hoy;
+  cargarSelector();
+})();
+
+function cargarSelector() {
+  const lotes = getLotes();
+  const sel = document.getElementById('sel-lote');
+  sel.innerHTML = '<option value="">— Selecciona un lote —</option>';
+  lotes.forEach(l => {
+    const o = document.createElement('option');
+    o.value = l.id;
+    const fn = new Date(l.fechaNacimiento + 'T12:00:00').toLocaleDateString('es-CL', {day:'2-digit', month:'short', year:'numeric'});
+    o.textContent = `${l.nombre}  ·  ${(+l.nAves).toLocaleString('es-CL')} aves  ·  nac. ${fn}`;
+    sel.appendChild(o);
+  });
+  if (loteId) sel.value = loteId;
+  // Cargar automáticamente si solo hay un lote
+  if (!loteId && lotes.length === 1) {
+    sel.value = lotes[0].id;
+    selLote(lotes[0].id);
+  }
+}
+
+function selLote(id) {
+  if (!id) return;
+  loteId = id;
+  const lote = getLote(id);
+  if (!lote) return;
+  document.getElementById('lote-nombre-txt').textContent  = lote.nombre;
+  const fn = new Date(lote.fechaNacimiento + 'T12:00:00').toLocaleDateString('es-CL', {day:'numeric', month:'long', year:'numeric'});
+  document.getElementById('lote-meta-txt').textContent =
+    `${(+lote.nAves).toLocaleString('es-CL')} aves · nacimiento ${fn}`;
+  proy = proyectar(lote);
+  renderDashboard(lote);
+}
+
+/* ════════════════════════════════════════════════════════════
+   DASHBOARD
+   ════════════════════════════════════════════════════════════ */
+function renderDashboard(lote) {
+  // KPIs hero
+  const dHoy  = proy.find(d => d.fecha === HOY) || proy[proy.length - 1];
+  const regs  = Object.keys(lote.registros || {});
+  document.getElementById('kpi-sem').textContent  = `Sem ${dHoy.sem}`;
+  document.getElementById('kpi-pos').textContent  = `${dHoy.pos.toFixed(1)}%`;
+  document.getElementById('kpi-aves').textContent = NUM(dHoy.aves);
+  const res = dHoy.acum;
+  const elRes = document.getElementById('kpi-res');
+  elRes.textContent  = '$' + Math.abs(res).toLocaleString('es-CL');
+  elRes.className    = 'ficha-num ' + (res >= 0 ? 'ok' : 'mal');
+  document.getElementById('kpi-res-sub').textContent = res >= 0 ? 'superávit' : 'déficit';
+
+  // Inyectar HTML
+  document.getElementById('contenido').innerHTML = `
+  <section id="graficos" class="bloque">
+    <h2>Proyección vs Real</h2>
+    <p class="bloque-desc">
+      <strong>${lote.nombre}</strong> · semana ${dHoy.sem} de vida ·
+      ${regs.length} día${regs.length!==1?'s':''} con datos reales.
+      <button class="btn btn-ok btn-sm" style="margin-left:16px" onclick="exportarExcel()">↓ Exportar Excel</button>
+    </p>
+
+    <div class="tabs">
+      <button class="tab activo" onclick="setTab(event,'t-graficos')">Gráficos</button>
+      <button class="tab" onclick="setTab(event,'t-tabla')">Tabla diaria</button>
+      <button class="tab" onclick="setTab(event,'t-config')">Configuración</button>
+    </div>
+
+    <div id="t-graficos" class="tab-panel activo">
+      <div class="graficos-grid full">
+        <div class="grafico-wrap">
+          <div class="grafico-titulo">Ingreso y costo semanal ($)</div>
+          <div class="leyenda">
+            <span class="leyenda-item"><span class="cuad" style="background:#1b4332;opacity:.7"></span>Ingreso proyectado</span>
+            <span class="leyenda-item"><span class="cuad" style="background:#f0a500"></span>Ingreso real</span>
+            <span class="leyenda-item"><span class="cuad" style="background:rgba(183,28,28,.4)"></span>Costo total proyectado</span>
+          </div>
+          <div class="grafico-canvas"><canvas id="cFin"></canvas></div>
+        </div>
+      </div>
+      <div class="graficos-grid">
+        <div class="grafico-wrap">
+          <div class="grafico-titulo">% Postura — proyectado vs real</div>
+          <div class="grafico-canvas"><canvas id="cPos"></canvas></div>
+        </div>
+        <div class="grafico-wrap">
+          <div class="grafico-titulo">Resultado neto acumulado ($)</div>
+          <div class="grafico-canvas"><canvas id="cAcum"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="t-tabla" class="tab-panel" style="display:none">
+      <div class="tabla-controles">
+        <span>Últimos 30 días y próximos 7</span>
+        <button class="btn btn-ok btn-sm" style="margin-left:auto" onclick="abrirRegistro()">+ Ingresar datos reales</button>
+      </div>
+      <div class="tabla-wrap"><table>
+        <thead><tr>
+          <th style="text-align:left;padding-left:12px">Fecha</th>
+          <th>Sem</th><th>Aves</th>
+          <th>% Post.Proy</th><th class="th-real">% Post.Real</th>
+          <th>Huevos Proy</th><th class="th-real">Huevos Real</th>
+          <th>Ingreso Proy</th><th class="th-real">Ingreso Real</th>
+          <th>Resultado</th>
+        </tr></thead>
+        <tbody id="tbody"></tbody>
+      </table></div>
+    </div>
+
+    <div id="t-config" class="tab-panel" style="display:none">
+      <div class="config-hdr" onclick="toggleCfg()">
+        <span class="config-titulo">Parámetros del lote</span>
+        <button class="config-toggle" id="cfg-toggle-btn">▲ Plegar</button>
+      </div>
+      <div class="config-body" id="cfg-body">
+        <div class="config-grid">
+          <div class="cfg-field"><span>Precio huevo ($/ud.)</span><input type="number" id="cfg-precio" value="${lote.precioHuevo}"></div>
+          <div class="cfg-field"><span>Gastos fijos / mes ($)</span><input type="number" id="cfg-gastos" value="${lote.gastosMes}"></div>
+          <hr class="cfg-sep">
+          <div class="cfg-sec">Costo alimento por dieta ($/kg)</div>
+          ${[1,2,3,4,5,6,7].map(d=>`
+          <div class="cfg-field"><span>Dieta ${d}</span><input type="number" id="cfg-d${d}" value="${lote.costoDieta[d]||''}"></div>`).join('')}
+          <hr class="cfg-sep">
+          <div style="grid-column:1/-1;display:flex;gap:10px">
+            <button class="btn btn-acento" onclick="aplicarConfig()">Guardar y recalcular</button>
+            <button class="btn btn-linea" style="color:var(--mal);border-color:var(--mal)" onclick="confirmarEliminar()">Eliminar lote</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>`;
+
+  document.getElementById('metodo').style.display = 'block';
+  document.getElementById('pie').style.display    = 'block';
+
+  renderGraficos(lote);
+  renderTabla(lote);
+}
+
+/* ── Tabs ── */
+function setTab(e, id) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('activo'));
+  document.querySelectorAll('.tab-panel').forEach(p => { p.classList.remove('activo'); p.style.display = 'none'; });
+  e.target.classList.add('activo');
+  const panel = document.getElementById(id);
+  panel.classList.add('activo');
+  panel.style.display = 'block';
+  if (id === 't-graficos') renderGraficos(getLote(loteId));
+  if (id === 't-tabla')    renderTabla(getLote(loteId));
+}
+
+function toggleCfg() {
+  const b = document.getElementById('cfg-body');
+  const btn = document.getElementById('cfg-toggle-btn');
+  const vis = b.style.display !== 'none';
+  b.style.display = vis ? 'none' : '';
+  btn.textContent = vis ? '▼ Expandir' : '▲ Plegar';
+}
+
+/* ════════════════════════════════════════════════════════════
+   GRÁFICOS — Chart.js
+   ════════════════════════════════════════════════════════════ */
+function semData(lote) {
+  const m = {};
+  const regs = lote.registros || {};
+  proy.forEach(d => {
+    const s = d.sem;
+    if (!m[s]) m[s] = {s, ingP:0, costoP:0, acumP:0, postP:0, ingR:null, acumR:null, postR:null};
+    m[s].ingP   += d.ingreso;
+    m[s].costoP += d.ingreso - d.resultado;
+    m[s].acumP   = d.acum;
+    m[s].postP   = d.pos;
+    const reg = regs[d.fecha];
+    if (reg?.huevosReal != null) {
+      m[s].ingR = (m[s].ingR||0) + (reg.huevosReal * +lote.precioHuevo);
+      m[s].postR = reg.posturaReal;
+    }
+    if (reg?.huevosReal != null) {
+      const ingR = reg.huevosReal * +lote.precioHuevo;
+      const resR = ingR - d.costoAlim - d.gastoDia;
+      m[s].acumR = (m[s].acumR||0) + resR;
+    }
+  });
+  // Acumulado real real
+  let ar = 0;
+  Object.values(m).sort((a,b)=>a.s-b.s).forEach(v => {
+    if (v.acumR != null) { ar += v.acumR; v.acumR = ar; }
+  });
+  return Object.values(m).sort((a,b) => a.s - b.s);
+}
+
+const tFont = { font: { size: 10, family: "'IBM Plex Mono', monospace" } };
+const gridColor = '#e0ddd5';
+
+function dc(id) { if (charts[id]) { charts[id].destroy(); delete charts[id]; } }
+
+function renderGraficos(lote) {
+  if (!proy || !lote) return;
+  const sems = semData(lote);
+  const lbs  = sems.map(s => `S${s.s}`);
+
+  dc('fin');
+  const cFin = document.getElementById('cFin');
+  if (cFin) charts.fin = new Chart(cFin, {
+    type: 'bar',
+    data: { labels: lbs, datasets: [
+      { label:'Costo total',        data: sems.map(s=>s.costoP), backgroundColor:'rgba(183,28,28,.38)', stack:'p' },
+      { label:'Ingreso proyectado', data: sems.map(s=>s.ingP),   backgroundColor:'rgba(27,67,50,.65)',  stack:'p' },
+      { label:'Ingreso real',       data: sems.map(s=>s.ingR),   backgroundColor:'#f0a500',             stack:'r' },
+    ]},
+    options: { responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{ labels:{ font:{size:11} } } },
+      scales:{ x:{ stacked:true, ticks:tFont, grid:{color:gridColor} },
+               y:{ ticks:{...tFont, callback:v=>'$'+Math.round(v/1000)+'k'}, grid:{color:gridColor} } } }
+  });
+
+  dc('pos');
+  const cPos = document.getElementById('cPos');
+  if (cPos) charts.pos = new Chart(cPos, {
+    type: 'line',
+    data: { labels: lbs, datasets: [
+      { label:'Proyectado', data:sems.map(s=>s.postP), borderColor:'#1b4332', backgroundColor:'rgba(27,67,50,.08)', fill:true, tension:.3, pointRadius:0, borderWidth:2 },
+      { label:'Real',       data:sems.map(s=>s.postR!=null?s.postR:null), borderColor:'#f0a500', borderWidth:2.5, pointRadius:3, spanGaps:false, tension:.2 },
+    ]},
+    options: { responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{ labels:{ font:{size:11} } } },
+      scales:{ x:{ ticks:tFont, grid:{color:gridColor} },
+               y:{ min:0, max:100, ticks:{...tFont, callback:v=>v+'%'}, grid:{color:gridColor} } } }
+  });
+
+  dc('acum');
+  const cAcum = document.getElementById('cAcum');
+  if (cAcum) charts.acum = new Chart(cAcum, {
+    type: 'line',
+    data: { labels: lbs, datasets: [
+      { label:'Proyectado', data:sems.map(s=>s.acumP),                           borderColor:'#1b4332', fill:false, tension:.3, pointRadius:0, borderWidth:2 },
+      { label:'Real',       data:sems.map(s=>s.acumR!=null?s.acumR:null),        borderColor:'#f0a500', borderWidth:2.5, pointRadius:3, spanGaps:false, tension:.2 },
+      { label:'Break-even', data:sems.map(()=>0),                                borderColor:'#aaa', borderDash:[4,4], borderWidth:1, pointRadius:0 },
+    ]},
+    options: { responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{ labels:{ font:{size:11} } } },
+      scales:{ x:{ ticks:tFont, grid:{color:gridColor} },
+               y:{ ticks:{...tFont, callback:v=>'$'+Math.round(v/1e6)+'M'}, grid:{color:gridColor} } } }
+  });
+}
+
+/* ════════════════════════════════════════════════════════════
+   TABLA DIARIA
+   ════════════════════════════════════════════════════════════ */
+function renderTabla(lote) {
+  const tbody = document.getElementById('tbody');
+  if (!tbody || !proy) return;
+  const regs = lote.registros || {};
+  const idx  = proy.findIndex(d => d.fecha >= HOY);
+  const slice = proy.slice(Math.max(0, idx-30), Math.min(proy.length, idx+7)).reverse();
+  tbody.innerHTML = slice.map(d => {
+    const esHoy = d.fecha === HOY;
+    const reg   = regs[d.fecha];
+    const tieneR = reg?.huevosReal != null;
+    const ingR  = tieneR ? reg.huevosReal * +lote.precioHuevo : null;
+    const rc    = d.resultado >= 0 ? 'ok' : 'mal';
+    return `<tr${esHoy?' style="background:var(--acento-cl)"':''}>
+      <td class="fecha">${d.fecha}${esHoy?' <b>· hoy</b>':''}</td>
+      <td>${d.sem}</td><td>${NUM(d.aves)}</td>
+      <td>${PCT(d.pos)}</td>
+      <td class="${tieneR?'real':''}">${tieneR?PCT(reg.posturaReal):'—'}</td>
+      <td>${NUM(d.huevos)}</td>
+      <td class="${tieneR?'real':''}">${tieneR?NUM(reg.huevosReal):'—'}</td>
+      <td>${MN(d.ingreso)}</td>
+      <td class="${tieneR?'real':''}">${tieneR?MN(ingR):'—'}</td>
+      <td class="${rc}">${MN(d.resultado)}</td>
+    </tr>`;
+  }).join('');
+}
+
+/* ════════════════════════════════════════════════════════════
+   MODAL — NUEVO / EDITAR LOTE
+   ════════════════════════════════════════════════════════════ */
+let modoEditar = null;
+
+function abrirModal(id) {
+  modoEditar = id || null;
+  const modal = document.getElementById('modal');
+  const form  = document.getElementById('form-lote');
+  document.getElementById('modal-titulo').textContent = id ? 'Editar lote' : 'Nuevo lote';
+  if (id) {
+    const l = getLote(id);
+    form.nombre.value = l.nombre;
+    form.fechaNacimiento.value = l.fechaNacimiento;
+    form.nAves.value = l.nAves;
+    form.precioHuevo.value = l.precioHuevo;
+    form.gastosMes.value = l.gastosMes;
+    [1,2,3,4,5,6,7].forEach(d => form[`d${d}`].value = l.costoDieta[d] || '');
+  } else {
+    form.reset();
+  }
+  modal.classList.add('abierto');
+}
+
+function cerrarModal() {
+  document.getElementById('modal').classList.remove('abierto');
+}
+
+function guardarLote(e) {
+  e.preventDefault();
+  const f = e.target;
+  const costoDieta = {};
+  [1,2,3,4,5,6,7].forEach(d => costoDieta[d] = +(f[`d${d}`].value) || 520);
+  const lote = {
+    id:             modoEditar || `l${Date.now()}`,
+    nombre:         f.nombre.value.trim(),
+    fechaNacimiento:f.fechaNacimiento.value,
+    nAves:          +f.nAves.value,
+    precioHuevo:    +f.precioHuevo.value,
+    gastosMes:      +f.gastosMes.value,
+    costoDieta,
+    registros:      modoEditar ? (getLote(modoEditar)?.registros || {}) : {},
+  };
+  saveLote(lote);
+  loteId = lote.id;
+  cargarSelector();
+  selLote(lote.id);
+  cerrarModal();
+}
+
+/* ════════════════════════════════════════════════════════════
+   REGISTRO DIARIO REAL
+   ════════════════════════════════════════════════════════════ */
+function abrirRegistro(fecha) {
+  fecha = fecha || HOY;
+  const lote = getLote(loteId);
+  const reg  = lote?.registros?.[fecha] || {};
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-bg abierto';
+  overlay.innerHTML = `<div class="modal">
+    <button class="modal-close" onclick="this.closest('.modal-bg').remove()">×</button>
+    <h2>Registro diario real</h2>
+    <div class="modal-grid">
+      <div class="modal-field full"><label>Fecha</label>
+        <input type="date" id="r-fecha" value="${fecha}"></div>
+      <div class="modal-field"><label>N° huevos producidos</label>
+        <input type="number" id="r-huevos" min="0" placeholder="Ej: 1 200" value="${reg.huevosReal??''}"></div>
+      <div class="modal-field"><label>% Postura real</label>
+        <input type="number" id="r-postura" step="0.1" min="0" max="100" placeholder="Ej: 85.5" value="${reg.posturaReal??''}"></div>
+      <div class="modal-field full"><label>Nota (opcional)</label>
+        <input type="text" id="r-nota" placeholder="Ej: vacunación, cambio de dieta…" value="${reg.nota??''}"></div>
+      <div class="modal-acciones">
+        <button class="btn btn-ok" onclick="guardarReg(this)">Guardar</button>
+        <button class="btn btn-linea" onclick="this.closest('.modal-bg').remove()">Cancelar</button>
+      </div>
+    </div>
+  </div>`;
+  document.body.appendChild(overlay);
+}
+
+function guardarReg(btn) {
+  const fecha   = document.getElementById('r-fecha').value;
+  const huevos  = parseFloat(document.getElementById('r-huevos').value);
+  const postura = parseFloat(document.getElementById('r-postura').value);
+  const nota    = document.getElementById('r-nota').value;
+  if (!fecha || isNaN(huevos)) { alert('Ingresa fecha y N° de huevos'); return; }
+  guardarRegistroDia(loteId, fecha, {
+    huevosReal: huevos,
+    posturaReal: isNaN(postura) ? null : postura,
+    nota,
+  });
+  btn.closest('.modal-bg').remove();
+  selLote(loteId);
+}
+
+/* ════════════════════════════════════════════════════════════
+   CONFIGURACIÓN
+   ════════════════════════════════════════════════════════════ */
+function aplicarConfig() {
+  const lote = getLote(loteId);
+  lote.precioHuevo = +document.getElementById('cfg-precio').value;
+  lote.gastosMes   = +document.getElementById('cfg-gastos').value;
+  [1,2,3,4,5,6,7].forEach(d => lote.costoDieta[d] = +document.getElementById(`cfg-d${d}`).value || 520);
+  saveLote(lote);
+  selLote(loteId);
+}
+
+function confirmarEliminar() {
+  const lote = getLote(loteId);
+  if (!confirm(`¿Eliminar el lote "${lote.nombre}"? Esta acción no se puede deshacer.`)) return;
+  const arr = getLotes().filter(l => l.id !== loteId);
+  setLotes(arr);
+  loteId = null;
+  proy   = null;
+  cargarSelector();
+  document.getElementById('contenido').innerHTML = `<div class="vacio">
+    <h2>Crea tu primer lote</h2><p>Configura los parámetros del lote para generar la proyección</p>
+    <button class="btn btn-prim" onclick="abrirModal()">+ Nuevo lote</button>
+  </div>`;
+  document.getElementById('metodo').style.display = 'none';
+  document.getElementById('pie').style.display    = 'none';
+  ['kpi-sem','kpi-pos','kpi-aves','kpi-res'].forEach(id => document.getElementById(id).textContent = '—');
+  document.getElementById('kpi-res-sub').textContent = '';
+  document.getElementById('lote-nombre-txt').textContent = '';
+  document.getElementById('lote-meta-txt').textContent = '';
+}
+
+/* ════════════════════════════════════════════════════════════
+   EXPORTAR EXCEL (SheetJS)
+   ════════════════════════════════════════════════════════════ */
+function exportarExcel() {
+  if (!proy) return;
+  const lote = getLote(loteId);
+  const regs = lote.registros || {};
+  const wb   = XLSX.utils.book_new();
+  const HOY_STR = new Date().toLocaleDateString('es-CL');
+
+  // ── Hoja 1: Resumen ──
+  const resData = [
+    ['Presupuesto Avícola — Resumen', ''],
+    ['Lote / Cliente',          lote.nombre],
+    ['Fecha de nacimiento',     lote.fechaNacimiento],
+    ['N° aves iniciales',       +lote.nAves],
+    ['Precio venta huevo ($/ud)', +lote.precioHuevo],
+    ['Gastos fijos / mes ($)',   +lote.gastosMes],
+    ['Semanas proyectadas',      80],
+    ['Días proyectados',         proy.length],
+    ['Días con datos reales',    Object.keys(regs).length],
+    ['Resultado acum. proyectado (fin ciclo)', proy[proy.length-1].acum],
+    ['Generado',                 HOY_STR],
+  ];
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(resData), 'Resumen');
+
+  // ── Hoja 2: Proyección semanal ──
+  const semMap = {};
+  proy.forEach(d => {
+    const s = d.sem;
+    if (!semMap[s]) semMap[s] = {s, fecha:d.fecha, aves:0, pos:0, huevos:0, consumo:0, costo:0, ingreso:0, gasto:0, res:0, acum:0};
+    semMap[s].huevos  += d.huevos;
+    semMap[s].consumo += d.consumoKg;
+    semMap[s].costo   += d.costoAlim;
+    semMap[s].ingreso += d.ingreso;
+    semMap[s].gasto   += d.gastoDia;
+    semMap[s].res     += d.resultado;
+    semMap[s].aves     = d.aves;
+    semMap[s].pos      = d.pos;
+    semMap[s].acum     = d.acum;
+  });
+  const semRows = [['Semana','Fecha','Aves','% Postura','Huevos/sem','Consumo kg','Costo alimento','Ingresos','Gastos fijos','Resultado','Acumulado']];
+  Object.values(semMap).sort((a,b)=>a.s-b.s).forEach(s => {
+    semRows.push([s.s, s.fecha, Math.round(s.aves), s.pos/100, Math.round(s.huevos), Math.round(s.consumo), Math.round(s.costo), Math.round(s.ingreso), Math.round(s.gasto), Math.round(s.res), Math.round(s.acum)]);
+  });
+  const wsSem = XLSX.utils.aoa_to_sheet(semRows);
+  // Formato % en columna D
+  for (let r = 2; r <= semRows.length; r++) wsSem[XLSX.utils.encode_cell({r:r-1,c:3})].z = '0.0%';
+  XLSX.utils.book_append_sheet(wb, wsSem, 'Proyección Semanal');
+
+  // ── Hoja 3: Real vs Proyectado ──
+  const rvpRows = [['Fecha','Sem','Aves','% Post.Proy','Huevos Proy','Ingreso Proy','% Post.Real','Huevos Real','Ingreso Real','Resultado Proy','Resultado Real','Nota']];
+  proy.forEach(d => {
+    const reg = regs[d.fecha];
+    const tieneR = reg?.huevosReal != null;
+    const ingR = tieneR ? reg.huevosReal * +lote.precioHuevo : null;
+    const resR = tieneR ? ingR - d.costoAlim - d.gastoDia : null;
+    rvpRows.push([
+      d.fecha, d.sem, Math.round(d.aves), d.pos/100,
+      d.huevos, d.ingreso,
+      tieneR ? (reg.posturaReal??null)/100 : null,
+      tieneR ? reg.huevosReal : null,
+      ingR, d.resultado, resR,
+      reg?.nota || '',
+    ]);
+  });
+  const wsRvp = XLSX.utils.aoa_to_sheet(rvpRows);
+  ['D','G'].forEach(col => {
+    for (let r = 2; r <= rvpRows.length; r++) {
+      const cell = wsRvp[XLSX.utils.encode_cell({r:r-1, c: col==='D'?3:6})];
+      if (cell) cell.z = '0.0%';
+    }
+  });
+  XLSX.utils.book_append_sheet(wb, wsRvp, 'Real vs Proyectado');
+
+  // ── Hoja 4: Proyección diaria completa ──
+  const diaRows = [['Fecha','Día','Sem','Aves','% Postura','Huevos','Consumo kg','Dieta','Costo alim.','Gastos','Ingresos','Resultado','Acumulado']];
+  proy.forEach(d => diaRows.push([
+    d.fecha, d.n, d.sem, Math.round(d.aves), d.pos/100,
+    d.huevos, d.consumoKg, d.dieta,
+    d.costoAlim, d.gastoDia, d.ingreso, d.resultado, d.acum
+  ]));
+  const wsDia = XLSX.utils.aoa_to_sheet(diaRows);
+  for (let r = 2; r <= diaRows.length; r++) { const c = wsDia[XLSX.utils.encode_cell({r:r-1,c:4})]; if(c) c.z='0.0%'; }
+  XLSX.utils.book_append_sheet(wb, wsDia, 'Proyección Diaria');
+
+  const nombre = lote.nombre.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]/g,'').replace(/\s+/g,'_');
+  XLSX.writeFile(wb, `Presupuesto_${nombre}_${HOY}.xlsx`);
+}
+</script>
+</body>
+</html>
