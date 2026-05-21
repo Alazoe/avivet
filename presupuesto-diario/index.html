@@ -89,6 +89,11 @@ body {
 .sel-lote:focus { outline: 2px solid var(--acento); outline-offset: 1px; }
 .sep-v { width: 1px; height: 36px; background: rgba(255,255,255,.2); flex-shrink: 0; }
 .lote-meta-txt { font-size: 12px; color: rgba(255,255,255,.7); margin-top: 3px; }
+.badge-genetica {
+  font-family: var(--fm); font-size: 10px; padding: 2px 8px; border-radius: 3px;
+  background: rgba(240,165,0,.2); color: var(--acento); border: 1px solid rgba(240,165,0,.3);
+  display: inline-block; margin-top: 4px;
+}
 
 /* ── Bloques ── */
 .bloque { margin-bottom: 72px; scroll-margin-top: 80px; }
@@ -138,10 +143,18 @@ td.real { background: rgba(27,94,32,.07) !important; font-weight: 600; }
 .config-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px,1fr)); gap: 14px; }
 .cfg-field { display: flex; flex-direction: column; gap: 5px; }
 .cfg-field span { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--tenue); }
-.cfg-field input { font-family: var(--fc); font-size: 14px; padding: 7px 10px; border: 1px solid var(--linea-f); border-radius: 5px; background: var(--fondo); color: var(--tinta); width: 100%; }
-.cfg-field input:focus { outline: 2px solid var(--acento); outline-offset: 1px; border-color: transparent; }
+.cfg-field input, .cfg-field select { font-family: var(--fc); font-size: 14px; padding: 7px 10px; border: 1px solid var(--linea-f); border-radius: 5px; background: var(--fondo); color: var(--tinta); width: 100%; }
+.cfg-field input:focus, .cfg-field select:focus { outline: 2px solid var(--acento); outline-offset: 1px; border-color: transparent; }
 .cfg-sep { grid-column: 1/-1; border: none; border-top: 1px dashed var(--linea); }
 .cfg-sec { grid-column: 1/-1; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--suave); margin-top: 2px; }
+
+/* ── Precios por mes ── */
+.precios-mes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px,1fr)); gap: 8px; margin-top: 8px; }
+.pm-item { display: flex; flex-direction: column; gap: 3px; }
+.pm-item span { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--tenue); white-space: nowrap; }
+.pm-item input { font-family: var(--fm); font-size: 13px; padding: 5px 8px; border: 1px solid var(--linea-f); border-radius: 4px; background: var(--fondo); color: var(--tinta); width: 100%; }
+.pm-item input:focus { outline: 2px solid var(--acento); outline-offset: 1px; border-color: transparent; }
+.pm-item.modificado input { border-color: var(--acento); background: var(--acento-cl); }
 
 /* ── Botones ── */
 .btn { font-family: var(--fc); font-size: 14px; font-weight: 600; padding: 10px 22px; border: none; border-radius: 5px; cursor: pointer; transition: background .15s; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; }
@@ -167,7 +180,7 @@ td.real { background: rgba(27,94,32,.07) !important; font-weight: 600; }
 /* ── Modal ── */
 .modal-bg { display: none; position: fixed; inset: 0; background: rgba(27,67,50,.5); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
 .modal-bg.abierto { display: flex; }
-.modal { background: var(--papel); border-radius: 8px; padding: 30px; width: 100%; max-width: 560px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,.3); }
+.modal { background: var(--papel); border-radius: 8px; padding: 30px; width: 100%; max-width: 580px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,.3); }
 .modal h2 { font-family: var(--ft); font-size: 26px; font-weight: 700; color: var(--prim); margin-bottom: 20px; }
 .modal-close { float: right; background: none; border: none; font-size: 22px; cursor: pointer; color: var(--tenue); }
 .modal-close:hover { color: var(--tinta); }
@@ -175,8 +188,12 @@ td.real { background: rgba(27,94,32,.07) !important; font-weight: 600; }
 .modal-field { display: flex; flex-direction: column; gap: 5px; }
 .modal-field.full { grid-column: 1/-1; }
 .modal-field label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--tenue); }
-.modal-field input { font-family: var(--fc); font-size: 14px; padding: 9px 12px; border: 1px solid var(--linea-f); border-radius: 5px; background: var(--fondo); color: var(--tinta); width: 100%; }
-.modal-field input:focus { outline: 2px solid var(--acento); outline-offset: 1px; border-color: transparent; }
+.modal-field input, .modal-field select {
+  font-family: var(--fc); font-size: 14px; padding: 9px 12px;
+  border: 1px solid var(--linea-f); border-radius: 5px;
+  background: var(--fondo); color: var(--tinta); width: 100%;
+}
+.modal-field input:focus, .modal-field select:focus { outline: 2px solid var(--acento); outline-offset: 1px; border-color: transparent; }
 .modal-sep { grid-column: 1/-1; border: none; border-top: 1px dashed var(--linea); margin: 4px 0; }
 .modal-sec { grid-column: 1/-1; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--suave); margin-top: 4px; }
 .modal-acciones { grid-column: 1/-1; display: flex; gap: 10px; margin-top: 8px; }
@@ -186,6 +203,9 @@ td.real { background: rgba(27,94,32,.07) !important; font-weight: 600; }
 .vacio h2 { font-family: var(--ft); font-size: 26px; color: var(--prim); margin-bottom: 10px; }
 .vacio p  { font-size: 14px; margin-bottom: 24px; }
 
+/* ── Genética badge en modal ── */
+.gen-badge { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 11px; font-weight: 600; }
+
 @media (max-width: 900px) {
   .cont { padding: 0 20px; }
   .hero { padding: 40px 0 32px; }
@@ -193,6 +213,7 @@ td.real { background: rgba(27,94,32,.07) !important; font-weight: 600; }
   .hero-fichas { grid-template-columns: repeat(2,1fr); }
   .nav-cab a { display: none; }
   .modal-grid { grid-template-columns: 1fr; }
+  .precios-mes-grid { grid-template-columns: repeat(3,1fr); }
 }
 </style>
 </head>
@@ -219,8 +240,8 @@ td.real { background: rgba(27,94,32,.07) !important; font-weight: 600; }
     <div class="hero-meta">Herramienta técnica · <span id="fecha-hoy"></span></div>
     <h1>Presupuesto diario avícola · seguimiento en tiempo real</h1>
     <p class="hero-bajada">
-      Proyección productiva y financiera basada en curvas Lohman Brown para sistemas no convencionales del sur de Chile.
-      Ingresa los datos diarios para comparar lo real contra lo proyectado y anticipar el resultado del ciclo.
+      Proyección productiva y financiera con curvas oficiales por genética (Hy-Line, Lohmann, Nick Brown, Dekalb).
+      Precio de huevo editable por mes y año. Ingresa datos diarios reales para comparar con lo proyectado.
     </p>
     <div class="hero-fichas">
       <div class="ficha"><span class="ficha-num" id="kpi-sem">—</span><span class="ficha-lbl">semana de vida</span></div>
@@ -246,6 +267,7 @@ td.real { background: rgba(27,94,32,.07) !important; font-weight: 600; }
     <div>
       <div class="cfg-lbl" id="lote-nombre-txt"></div>
       <div class="lote-meta-txt" id="lote-meta-txt"></div>
+      <div id="lote-gen-badge"></div>
     </div>
   </div>
 
@@ -253,7 +275,7 @@ td.real { background: rgba(27,94,32,.07) !important; font-weight: 600; }
   <div id="contenido">
     <div class="vacio">
       <h2>Crea tu primer lote</h2>
-      <p>Configura los parámetros del lote para generar la proyección de 80 semanas</p>
+      <p>Configura los parámetros del lote para generar la proyección productiva y financiera</p>
       <button class="btn btn-prim" onclick="abrirModal()">+ Nuevo lote</button>
     </div>
   </div>
@@ -262,12 +284,14 @@ td.real { background: rgba(27,94,32,.07) !important; font-weight: 600; }
   <section class="bloque metodo" id="metodo" style="display:none">
     <h2>Metodología y supuestos</h2>
     <ul class="metodo-lista">
-      <li><strong>Curva de postura:</strong> Lohman Brown, semanas 0–80. Inicio en semana 18 (~1.1%), pico en semanas 32–35 (~95.8%).</li>
-      <li><strong>Mortalidad:</strong> curva semanal Lohman Brown. Mayor en crianza (sem 1: 0.4%/sem) y decreciente en postura (~0.05–0.09%/sem).</li>
-      <li><strong>Consumo de alimento:</strong> 7 dietas según etapa productiva (12 gr/ave/día en sem 1 hasta 117 gr/ave/día en plena postura). Costos por kg editables.</li>
+      <li><strong>Curvas genéticas:</strong> Hy-Line Brown, Hy-Line W-80, Lohmann Brown, Nick Brown y Dekalb Brown. Datos de manuales oficiales usados en <a href="https://avivet.cl/avivet/curvas-geneticas/" target="_blank" style="color:var(--prim)">curvas-geneticas</a>.</li>
+      <li><strong>Postura %:</strong> curva semanal oficial de cada genética (% Ave-Día Actual). Semanas de crianza con 0% postura.</li>
+      <li><strong>Consumo de alimento:</strong> promedio alMin/alMax semanal de la genética seleccionada. 7 periodos de costo ($/kg) editables.</li>
+      <li><strong>Mortalidad:</strong> curva semanal de referencia Lohmann Brown, aplicada a todas las genéticas como base.</li>
+      <li><strong>Precio huevo por mes:</strong> se puede asignar un precio diferente para cada mes-año del ciclo. Los meses sin precio específico usan el valor base.</li>
       <li><strong>Gastos fijos:</strong> sueldo + luz + agua + gas + combustible + viruta + insumos, distribuidos en 30 días/mes.</li>
-      <li><strong>Resultado diario:</strong> Ingreso (huevos × precio) − Costo alimento − Gastos fijos. Los datos se guardan localmente en tu navegador.</li>
-      <li><strong>Advertencia:</strong> valores son proyecciones orientativas. El manejo real (sanidad, nutrición, fotoperiodo) puede modificar ±10–15%.</li>
+      <li><strong>Resultado diario:</strong> Ingreso (huevos × precio del mes) − Costo alimento − Gastos fijos. Los datos se guardan localmente en tu navegador.</li>
+      <li><strong>Advertencia:</strong> valores son proyecciones orientativas. El manejo real puede modificar ±10–15%.</li>
     </ul>
   </section>
 
@@ -278,17 +302,30 @@ td.real { background: rgba(27,94,32,.07) !important; font-weight: 600; }
 
 </main>
 
-<!-- MODAL NUEVO LOTE -->
+<!-- MODAL NUEVO / EDITAR LOTE -->
 <div class="modal-bg" id="modal">
   <div class="modal">
     <button class="modal-close" onclick="cerrarModal()">×</button>
     <h2 id="modal-titulo">Nuevo lote</h2>
     <form id="form-lote" onsubmit="guardarLote(event)">
       <div class="modal-grid">
+
         <div class="modal-field full">
           <label>Nombre / cliente</label>
           <input type="text" name="nombre" placeholder="Ej: Jonathan Morales — Pitrufquén" required>
         </div>
+
+        <div class="modal-field full">
+          <label>Genética</label>
+          <select name="genetica">
+            <option value="Lohmann Brown">Lohmann Brown</option>
+            <option value="Hy-Line Brown">Hy-Line Brown</option>
+            <option value="Hy-Line W-80">Hy-Line W-80 (huevo blanco)</option>
+            <option value="Nick Brown">Nick Brown</option>
+            <option value="Dekalb Brown">Dekalb Brown</option>
+          </select>
+        </div>
+
         <div class="modal-field">
           <label>Fecha de nacimiento</label>
           <input type="date" name="fechaNacimiento" required>
@@ -298,22 +335,24 @@ td.real { background: rgba(27,94,32,.07) !important; font-weight: 600; }
           <input type="number" name="nAves" value="1500" min="1" required>
         </div>
         <div class="modal-field">
-          <label>Precio venta huevo ($/ud.)</label>
+          <label>Precio venta huevo base ($/ud.)</label>
           <input type="number" name="precioHuevo" value="130" min="1" required>
         </div>
         <div class="modal-field">
           <label>Gastos fijos / mes ($)</label>
           <input type="number" name="gastosMes" value="2441000" min="0" required>
         </div>
+
         <hr class="modal-sep">
-        <div class="modal-sec">Costo alimento por dieta ($/kg)</div>
+        <div class="modal-sec">Costo alimento por periodo ($/kg)</div>
         <div class="modal-field"><label>Dieta 1 · crianza 1–3 sem</label><input type="number" name="d1" value="450"></div>
         <div class="modal-field"><label>Dieta 2 · crianza 4–6 sem</label><input type="number" name="d2" value="470"></div>
         <div class="modal-field"><label>Dieta 3 · crianza 7–12 sem</label><input type="number" name="d3" value="490"></div>
         <div class="modal-field"><label>Dieta 4 · transición 13–15 sem</label><input type="number" name="d4" value="520"></div>
-        <div class="modal-field"><label>Dieta 5 · preinicio 16–17 sem</label><input type="number" name="d5" value="535"></div>
-        <div class="modal-field"><label>Dieta 6 · postura 18–45 sem</label><input type="number" name="d6" value="550"></div>
-        <div class="modal-field"><label>Dieta 7 · postura 46–80 sem</label><input type="number" name="d7" value="550"></div>
+        <div class="modal-field"><label>Dieta 5 · preinicio 16–18 sem</label><input type="number" name="d5" value="535"></div>
+        <div class="modal-field"><label>Dieta 6 · postura inicio</label><input type="number" name="d6" value="550"></div>
+        <div class="modal-field"><label>Dieta 7 · postura tardía</label><input type="number" name="d7" value="550"></div>
+
         <div class="modal-acciones">
           <button type="submit" class="btn btn-acento">Guardar y proyectar</button>
           <button type="button" class="btn btn-linea" onclick="cerrarModal()">Cancelar</button>
@@ -325,19 +364,241 @@ td.real { background: rgba(27,94,32,.07) !important; font-weight: 600; }
 
 <script>
 /* ════════════════════════════════════════════════════════════
-   CURVAS LOHMAN BROWN
+   CURVAS GENÉTICAS — datos oficiales por línea
+   Postura: [sem, pesoMin, pesoMax, pct%, pesoHuevo_g, alMin, alMax, aguaMin, aguaMax]
    ════════════════════════════════════════════════════════════ */
-const POSTURA = {
-  0:0,1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,9:0,10:0,11:0,12:0,13:0,14:0,15:0,16:0,17:0,
-  18:1.1,19:9.3,20:36.7,21:54.7,22:72.2,23:82.6,24:88.2,25:91.4,26:93.2,
-  27:94.3,28:94.9,29:95.2,30:95.4,31:95.6,32:95.7,33:95.8,34:95.8,35:95.7,
-  36:95.6,37:95.4,38:95.2,39:95.1,40:94.9,41:94.7,42:94.5,43:94.3,44:94.1,
-  45:93.8,46:93.6,47:93.3,48:93.0,49:92.7,50:92.3,51:92.0,52:91.7,53:91.3,
-  54:91.0,55:90.6,56:90.2,57:89.9,58:89.5,59:89.1,60:88.8,61:88.4,62:88.0,
-  63:87.6,64:87.2,65:86.8,66:86.5,67:86.1,68:85.6,69:85.2,70:84.7,71:84.3,
-  72:83.7,73:83.2,74:82.7,75:82.2,76:81.7,77:81.1,78:80.6,79:80.0,80:79.5,
+const LINEAS = {
+  'Hy-Line Brown': {
+    color: '#f0a500', crianzaSem: 17,
+    crianza: [
+      [1,0.070,0.080,12,14,18,28],[2,0.115,0.145,17,21,25,42],[3,0.190,0.220,20,25,30,50],
+      [4,0.270,0.320,25,30,37,60],[5,0.360,0.420,29,36,43,73],[6,0.470,0.520,35,44,52,89],
+      [7,0.570,0.640,41,49,62,98],[8,0.680,0.760,47,56,71,112],[9,0.780,0.880,52,61,78,122],
+      [10,0.885,0.995,56,64,84,129],[11,0.995,1.105,60,69,90,137],[12,1.095,1.205,62,72,93,144],
+      [13,1.175,1.295,64,74,96,148],[14,1.265,1.365,66,77,99,154],[15,1.345,1.445,68,79,102,158],
+      [16,1.410,1.510,70,82,105,164],[17,1.485,1.590,72,85,108,170],
+    ],
+    postura: [
+      [18,1.550,1.670,4.4,46.5,73,88,110,176],[19,1.620,1.740,17.7,49.3,85,94,127,188],
+      [20,1.680,1.800,44.1,51.6,90,99,135,197],[21,1.730,1.850,71.0,53.5,95,103,142,205],
+      [22,1.770,1.890,86.5,55.0,99,107,148,215],[23,1.800,1.920,92.4,56.4,102,111,154,222],
+      [24,1.820,1.950,94.4,57.5,106,114,159,228],[25,1.840,1.980,95.2,58.4,108,115,162,230],
+      [26,1.860,2.000,95.5,59.2,109,116,163,231],[27,1.880,2.010,95.7,59.9,109,116,164,232],
+      [28,1.890,2.030,95.7,60.4,109,116,164,233],[29,1.900,2.040,95.7,60.9,109,117,164,233],
+      [30,1.910,2.050,95.7,61.3,109,117,164,233],[31,1.920,2.060,95.6,61.7,109,117,164,233],
+      [32,1.930,2.070,95.6,62.0,109,117,164,234],[33,1.930,2.070,95.5,62.3,109,117,164,233],
+      [34,1.940,2.080,95.3,62.5,109,117,164,233],[35,1.940,2.080,95.1,62.7,109,117,163,233],
+      [36,1.950,2.080,94.9,62.9,109,116,163,233],[37,1.950,2.090,94.7,63.1,108,116,163,232],
+      [38,1.950,2.090,94.5,63.2,108,116,163,232],[39,1.950,2.090,94.3,63.3,108,116,163,232],
+      [40,1.950,2.090,94.1,63.4,108,116,163,232],[41,1.960,2.090,93.9,63.5,108,116,163,232],
+      [42,1.960,2.100,93.6,63.6,108,116,163,232],[43,1.960,2.100,93.3,63.7,108,116,163,232],
+      [44,1.960,2.100,93.0,63.8,108,116,163,232],[45,1.960,2.100,92.7,63.9,108,116,163,232],
+      [46,1.960,2.100,92.4,63.9,108,116,163,232],[47,1.960,2.100,92.1,64.0,108,116,163,232],
+      [48,1.960,2.100,91.9,64.0,108,116,163,232],[49,1.960,2.100,91.6,64.1,108,116,163,232],
+      [50,1.960,2.100,91.4,64.1,108,116,163,232],[51,1.960,2.100,91.1,64.2,108,116,163,232],
+      [52,1.960,2.100,90.9,64.2,108,116,163,232],[53,1.960,2.100,90.7,64.3,108,116,163,232],
+      [54,1.960,2.100,90.5,64.3,108,116,163,232],[55,1.960,2.100,90.2,64.3,108,116,163,232],
+      [56,1.960,2.100,90.1,64.4,108,116,163,232],[57,1.960,2.100,89.8,64.4,108,116,163,232],
+      [58,1.960,2.100,89.6,64.4,108,116,163,232],[59,1.960,2.100,89.4,64.5,108,116,163,232],
+      [60,1.960,2.100,89.1,64.5,108,116,163,232],[61,1.960,2.100,88.8,64.6,108,116,163,232],
+      [62,1.960,2.100,88.5,64.6,108,116,163,232],[63,1.960,2.100,88.3,64.6,108,116,163,232],
+      [64,1.960,2.100,88.0,64.6,108,116,163,232],[65,1.960,2.100,87.7,64.7,108,116,163,232],
+      [66,1.960,2.100,87.3,64.7,108,116,163,232],[67,1.960,2.100,86.9,64.7,108,116,163,232],
+      [68,1.960,2.100,86.4,64.7,108,116,163,232],[69,1.960,2.100,85.9,64.8,108,116,163,232],
+      [70,1.960,2.100,85.4,64.8,108,116,163,232],[71,1.960,2.100,84.9,64.8,108,116,163,232],
+      [72,1.960,2.100,84.2,64.9,108,116,163,232],[73,1.960,2.100,83.6,64.9,108,116,163,232],
+      [74,1.960,2.100,83.0,64.9,108,116,163,232],[75,1.960,2.100,82.4,64.9,108,116,163,232],
+      [76,1.960,2.100,81.8,64.9,108,116,163,232],[77,1.960,2.100,81.2,65.0,108,116,163,232],
+      [78,1.960,2.100,80.6,65.0,108,116,163,232],[79,1.960,2.100,80.0,65.0,108,116,163,232],
+      [80,1.960,2.100,79.4,65.0,108,116,163,232],
+    ],
+  },
+
+  'Hy-Line W-80': {
+    color: '#4a90a4', crianzaSem: 17,
+    crianza: [
+      [1,0.063,0.067,12,14,18,28],[2,0.117,0.125,16,19,23,38],[3,0.175,0.187,21,25,32,50],
+      [4,0.246,0.262,25,31,41,62],[5,0.322,0.343,30,35,47,70],[6,0.397,0.423,34,39,53,78],
+      [7,0.497,0.528,37,43,59,86],[8,0.565,0.602,41,46,63,92],[9,0.644,0.684,44,50,66,100],
+      [10,0.719,0.765,47,53,72,106],[11,0.805,0.856,51,56,77,112],[12,0.888,0.946,54,59,81,118],
+      [13,0.961,1.023,57,62,86,124],[14,1.028,1.094,60,65,90,130],[15,1.086,1.155,63,68,95,136],
+      [16,1.137,1.209,67,72,101,144],[17,1.190,1.266,70,75,105,150],[18,1.228,1.306,74,80,108,156],
+    ],
+    postura: [
+      [19,1.230,1.310,9.5,41.8,76,83,114,166],[20,1.280,1.360,37.5,44.5,79,89,119,178],
+      [21,1.310,1.390,71.6,46.8,85,93,128,186],[22,1.340,1.420,84.4,48.8,87,96,131,192],
+      [23,1.370,1.460,89.5,50.5,88,98,132,196],[24,1.390,1.480,92.4,52.0,90,100,135,200],
+      [25,1.430,1.520,94.2,53.1,93,102,140,204],[26,1.460,1.550,95.4,54.3,94,103,141,206],
+      [27,1.470,1.560,95.6,55.3,95,105,143,210],[28,1.500,1.590,96.6,56.2,96,106,144,212],
+      [29,1.520,1.610,96.9,57.0,97,106,146,212],[30,1.530,1.630,96.9,57.6,98,107,147,214],
+      [31,1.540,1.640,96.9,58.2,99,108,149,216],[32,1.550,1.650,96.8,58.6,100,108,150,216],
+      [33,1.560,1.660,96.7,59.0,101,108,150,216],[34,1.560,1.660,96.7,59.3,101,109,152,218],
+      [35,1.570,1.670,96.6,59.5,102,109,153,218],[36,1.570,1.670,96.6,59.7,102,109,153,218],
+      [37,1.570,1.670,96.5,59.9,103,110,155,220],[38,1.570,1.670,96.4,60.1,103,110,155,220],
+      [39,1.570,1.670,96.4,60.2,103,110,155,220],[40,1.570,1.670,96.3,60.4,103,110,155,220],
+      [41,1.580,1.680,96.2,60.5,103,110,155,220],[42,1.580,1.680,96.3,60.5,103,110,155,220],
+      [43,1.580,1.680,96.2,60.6,103,110,155,220],[44,1.580,1.680,96.1,60.7,103,110,155,220],
+      [45,1.590,1.690,96.0,60.8,103,110,155,220],[46,1.590,1.690,95.9,60.9,103,110,155,220],
+      [47,1.590,1.690,95.8,60.9,103,110,155,220],[48,1.590,1.690,95.7,60.9,103,110,155,220],
+      [49,1.590,1.690,95.5,61.0,103,110,155,220],[50,1.590,1.690,95.2,61.1,103,110,155,220],
+      [51,1.590,1.690,95.2,61.1,103,110,155,220],[52,1.590,1.690,95.0,61.1,103,110,155,220],
+      [53,1.590,1.690,94.8,61.1,103,110,155,220],[54,1.590,1.690,94.6,61.2,103,110,155,220],
+      [55,1.590,1.700,94.5,61.2,103,110,155,220],[56,1.590,1.700,94.1,61.3,103,110,155,220],
+      [57,1.590,1.700,93.9,61.3,103,110,155,220],[58,1.590,1.700,93.8,61.3,103,110,155,220],
+      [59,1.590,1.700,93.4,61.3,103,110,155,220],[60,1.590,1.700,93.1,61.4,103,110,155,220],
+      [61,1.590,1.700,92.9,61.4,103,110,155,220],[62,1.600,1.700,92.6,61.4,103,110,155,220],
+      [63,1.600,1.700,92.3,61.4,103,110,155,220],[64,1.600,1.700,92.1,61.5,103,110,155,220],
+      [65,1.600,1.700,91.8,61.5,103,110,155,220],[66,1.600,1.700,91.5,61.6,103,110,155,220],
+      [67,1.600,1.700,91.2,61.6,103,110,155,220],[68,1.600,1.700,90.9,61.6,103,110,155,220],
+      [69,1.600,1.700,90.6,61.7,103,110,155,220],[70,1.600,1.700,90.3,61.7,103,110,155,220],
+      [71,1.600,1.700,90.0,61.7,103,110,155,220],[72,1.600,1.700,89.6,61.8,103,110,155,220],
+      [73,1.600,1.700,89.3,61.8,103,110,155,220],[74,1.600,1.700,89.0,61.9,103,110,155,220],
+      [75,1.600,1.700,88.6,61.9,103,110,155,220],[76,1.600,1.700,88.3,61.9,103,110,155,220],
+      [77,1.600,1.700,88.0,61.9,103,110,155,220],[78,1.600,1.700,87.7,61.9,103,110,155,220],
+      [79,1.600,1.700,87.3,62.0,103,110,155,220],[80,1.600,1.700,87.0,62.0,103,110,155,220],
+    ],
+  },
+
+  'Lohmann Brown': {
+    color: '#e05c5c', crianzaSem: 17,
+    crianza: [
+      [1,0.073,0.077,11,14,18,28],[2,0.121,0.129,16,20,25,40],[3,0.184,0.196,19,24,30,48],
+      [4,0.261,0.277,24,29,37,58],[5,0.350,0.372,28,35,43,68],[6,0.449,0.477,33,42,50,82],
+      [7,0.549,0.583,38,46,58,92],[8,0.647,0.687,44,52,67,104],[9,0.742,0.788,49,57,74,114],
+      [10,0.834,0.886,53,61,80,122],[11,0.921,0.977,57,65,86,130],[12,1.003,1.065,59,68,89,136],
+      [13,1.082,1.148,61,70,92,140],[14,1.157,1.229,63,72,95,144],[15,1.229,1.305,65,74,98,148],
+      [16,1.298,1.378,67,77,101,154],[17,1.365,1.449,69,80,104,160],[18,1.431,1.519,71,83,107,166],
+    ],
+    postura: [
+      [19,1.498,1.590,9.8,42.9,88,93,163,172],[20,1.565,1.661,37.2,45.4,92,97,170,180],
+      [21,1.629,1.729,55.2,48.0,96,102,178,189],[22,1.685,1.789,72.7,50.4,100,106,185,196],
+      [23,1.728,1.834,83.1,52.6,103,109,191,202],[24,1.762,1.872,88.7,54.5,106,112,196,207],
+      [25,1.788,1.898,91.9,56.2,109,115,202,213],[26,1.803,1.915,93.7,57.4,109,115,202,213],
+      [27,1.811,1.923,94.8,58.5,109,115,202,213],[28,1.816,1.928,95.4,59.4,109,115,202,213],
+      [29,1.819,1.931,95.7,60.2,109,115,202,213],[30,1.822,1.934,95.9,60.8,109,115,202,213],
+      [31,1.825,1.937,96.1,61.2,109,115,202,213],[32,1.827,1.939,96.2,61.6,109,115,202,213],
+      [33,1.829,1.943,96.3,61.9,109,115,202,213],[34,1.832,1.946,96.3,62.1,109,115,202,213],
+      [35,1.834,1.948,96.2,62.3,109,115,202,213],[36,1.836,1.950,96.1,62.5,109,115,202,213],
+      [37,1.838,1.952,95.9,62.6,109,115,202,213],[38,1.840,1.954,95.7,62.7,109,115,202,213],
+      [39,1.843,1.957,95.6,62.9,109,115,202,213],[40,1.845,1.959,95.4,63.0,109,115,202,213],
+      [41,1.848,1.962,95.2,63.2,109,115,202,213],[42,1.851,1.965,95.0,63.3,109,115,202,213],
+      [43,1.853,1.967,94.8,63.4,109,115,202,213],[44,1.855,1.969,94.6,63.6,109,115,202,213],
+      [45,1.858,1.972,94.3,63.7,109,115,202,213],[46,1.859,1.975,94.0,63.8,109,115,202,213],
+      [47,1.862,1.978,93.7,63.9,109,115,202,213],[48,1.864,1.980,93.4,63.9,109,115,202,213],
+      [49,1.867,1.983,93.1,64.0,109,115,202,213],[50,1.870,1.986,92.8,64.1,109,115,202,213],
+      [51,1.872,1.988,92.5,64.2,109,115,202,213],[52,1.874,1.990,92.1,64.2,109,115,202,213],
+      [53,1.876,1.992,91.8,64.3,109,115,202,213],[54,1.878,1.994,91.4,64.4,109,115,202,213],
+      [55,1.881,1.997,91.1,64.4,109,115,202,213],[56,1.884,2.000,90.7,64.5,109,115,202,213],
+      [57,1.887,2.003,90.3,64.5,109,115,202,213],[58,1.889,2.005,90.0,64.6,109,115,202,213],
+      [59,1.891,2.007,89.6,64.6,109,115,202,213],[60,1.892,2.010,89.2,64.7,109,115,202,213],
+      [61,1.895,2.013,88.9,64.7,109,115,202,213],[62,1.897,2.015,88.5,64.8,109,115,202,213],
+      [63,1.900,2.018,88.1,64.8,109,115,202,213],[64,1.902,2.020,87.7,64.8,109,115,202,213],
+      [65,1.905,2.023,87.2,64.9,109,115,202,213],[66,1.908,2.026,86.9,64.9,109,115,202,213],
+      [67,1.910,2.028,86.5,65.0,109,115,202,213],[68,1.912,2.030,86.1,65.0,109,115,202,213],
+      [69,1.915,2.033,85.7,65.1,109,115,202,213],[70,1.917,2.035,85.2,65.1,109,115,202,213],
+      [71,1.919,2.037,84.7,65.1,109,115,202,213],[72,1.921,2.039,84.2,65.2,109,115,202,213],
+      [73,1.924,2.042,83.7,65.2,109,115,202,213],[74,1.926,2.046,83.2,65.2,109,115,202,213],
+      [75,1.928,2.048,82.7,65.3,109,115,202,213],[76,1.930,2.050,82.1,65.3,109,115,202,213],
+      [77,1.933,2.053,81.6,65.3,109,115,202,213],[78,1.935,2.055,81.1,65.4,109,115,202,213],
+      [79,1.937,2.057,80.5,65.4,109,115,202,213],[80,1.939,2.059,80.0,65.4,109,115,202,213],
+    ],
+  },
+
+  'Nick Brown': {
+    color: '#5cae5c', crianzaSem: 18,
+    crianza: [
+      [1,0.040,0.100,8,12,15,21],[2,0.095,0.155,14,18,26,33],[3,0.160,0.220,20,24,37,44],
+      [4,0.240,0.300,26,30,48,56],[5,0.333,0.393,32,36,59,67],[6,0.445,0.505,39,43,72,80],
+      [7,0.559,0.619,44,48,82,89],[8,0.664,0.724,50,54,93,100],[9,0.759,0.819,55,59,102,109],
+      [10,0.850,0.910,59,63,109,117],[11,0.937,0.997,62,66,115,122],[12,1.022,1.082,64,68,118,126],
+      [13,1.104,1.164,65,69,120,128],[14,1.183,1.243,67,71,124,131],[15,1.261,1.321,69,73,128,135],
+      [16,1.337,1.397,72,76,133,141],[17,1.410,1.470,76,80,141,148],[18,1.486,1.546,79,83,146,154],
+    ],
+    postura: [
+      [19,1.576,1.616,10.0,45.0,113,118,205,218],[20,1.655,1.695,45.0,47.6,113,118,205,218],
+      [21,1.730,1.770,67.6,50.0,113,118,205,218],[22,1.790,1.830,81.0,52.2,113,118,205,218],
+      [23,1.830,1.870,89.0,54.1,113,118,205,218],[24,1.862,1.902,92.5,55.8,113,118,205,218],
+      [25,1.877,1.917,93.7,57.2,113,118,205,218],[26,1.888,1.928,94.4,58.4,113,118,205,218],
+      [27,1.894,1.934,94.8,59.2,113,118,205,218],[28,1.898,1.938,95.1,59.9,113,118,205,218],
+      [29,1.902,1.942,95.4,60.5,113,118,205,218],[30,1.905,1.945,95.6,61.0,113,118,205,218],
+      [31,1.908,1.948,95.7,61.5,113,118,205,218],[32,1.911,1.951,95.8,61.9,113,118,205,218],
+      [33,1.914,1.954,95.8,62.3,113,118,205,218],[34,1.917,1.957,95.8,62.6,113,118,205,218],
+      [35,1.920,1.960,95.7,62.8,113,118,205,218],[36,1.923,1.963,95.6,63.0,113,118,205,218],
+      [37,1.926,1.966,95.5,63.2,113,118,205,218],[38,1.929,1.969,95.4,63.4,113,118,205,218],
+      [39,1.932,1.972,95.3,63.5,113,118,205,218],[40,1.935,1.975,95.1,63.7,113,118,205,218],
+      [41,1.938,1.978,94.9,63.8,113,118,205,218],[42,1.941,1.981,94.7,63.9,113,118,205,218],
+      [43,1.944,1.984,94.4,64.0,113,118,205,218],[44,1.947,1.987,94.2,64.1,113,118,205,218],
+      [45,1.950,1.990,94.0,64.2,113,118,205,218],[46,1.953,1.993,93.7,64.3,113,118,205,218],
+      [47,1.956,1.996,93.5,64.4,113,118,205,218],[48,1.959,1.999,93.2,64.5,113,118,205,218],
+      [49,1.962,2.002,92.9,64.6,113,118,205,218],[50,1.965,2.005,92.6,64.7,113,118,205,218],
+      [51,1.968,2.008,92.3,64.8,113,118,205,218],[52,1.971,2.011,92.0,64.9,113,118,205,218],
+      [53,1.974,2.014,91.7,65.0,113,118,205,218],[54,1.977,2.017,91.3,65.1,113,118,205,218],
+      [55,1.979,2.019,91.0,65.2,113,118,205,218],[56,1.981,2.021,90.6,65.3,113,118,205,218],
+      [57,1.983,2.023,90.2,65.3,113,118,205,218],[58,1.985,2.025,89.9,65.4,113,118,205,218],
+      [59,1.987,2.027,89.5,65.5,113,118,205,218],[60,1.989,2.029,89.0,65.6,113,118,205,218],
+      [61,1.991,2.031,88.6,65.7,113,118,205,218],[62,1.993,2.033,88.2,65.8,113,118,205,218],
+      [63,1.995,2.035,87.8,65.8,113,118,205,218],[64,1.997,2.037,87.3,65.9,113,118,205,218],
+      [65,1.999,2.039,86.8,66.0,113,118,205,218],[66,2.001,2.041,86.4,66.1,113,118,205,218],
+      [67,2.003,2.043,85.9,66.1,113,118,205,218],[68,2.005,2.045,85.4,66.2,113,118,205,218],
+      [69,2.007,2.047,84.9,66.3,113,118,205,218],[70,2.009,2.049,84.4,66.4,113,118,205,218],
+      [71,2.011,2.051,83.9,66.4,113,118,205,218],[72,2.013,2.053,83.3,66.5,113,118,205,218],
+      [73,2.015,2.055,82.8,66.6,113,118,205,218],[74,2.017,2.057,82.2,66.6,113,118,205,218],
+      [75,2.019,2.059,81.7,66.7,113,118,205,218],[76,2.021,2.061,81.1,66.7,113,118,205,218],
+      [77,2.023,2.063,80.5,66.8,113,118,205,218],[78,2.025,2.065,79.9,66.9,113,118,205,218],
+      [79,2.028,2.068,79.3,66.9,113,118,205,218],[80,2.030,2.070,78.7,67.0,113,118,205,218],
+    ],
+  },
+
+  'Dekalb Brown': {
+    color: '#b5651d', crianzaSem: 17,
+    crianza: [
+      [1,0.059,0.062,9,11,16,20],[2,0.112,0.118,15,17,27,31],[3,0.166,0.174,23,25,41,45],
+      [4,0.234,0.246,30,32,54,58],[5,0.322,0.338,35,37,63,67],[6,0.419,0.441,40,42,72,76],
+      [7,0.517,0.543,44,46,79,83],[8,0.605,0.636,48,50,86,90],[9,0.692,0.728,52,54,94,97],
+      [10,0.780,0.820,56,58,101,104],[11,0.868,0.912,59,61,106,110],[12,0.960,1.010,62,64,112,115],
+      [13,1.053,1.107,65,67,117,121],[14,1.136,1.194,68,70,122,126],[15,1.219,1.281,71,73,128,131],
+      [16,1.302,1.368,75,77,135,139],[17,1.375,1.445,81,83,146,149],
+    ],
+    postura: [
+      [18,1.440,1.480,4.0,41.1,87,91,157,163],[19,1.505,1.545,15.9,44.7,93,97,167,175],
+      [20,1.575,1.615,41.8,47.8,98,102,176,184],[21,1.630,1.670,67.9,50.4,102,106,184,191],
+      [22,1.675,1.715,86.4,52.5,105,109,189,196],[23,1.710,1.750,94.8,54.4,107,111,193,200],
+      [24,1.735,1.775,96.3,53.9,109,113,196,203],[25,1.755,1.795,96.8,57.2,110,114,198,205],
+      [26,1.770,1.810,96.9,58.3,111,115,200,207],[27,1.780,1.820,97.0,59.2,112,116,202,209],
+      [28,1.789,1.829,97.0,59.7,113,117,203,211],[29,1.797,1.837,97.0,60.3,113,117,203,211],
+      [30,1.804,1.844,96.9,60.8,113,117,203,211],[31,1.810,1.850,96.8,61.0,113,117,203,211],
+      [32,1.815,1.855,96.7,61.0,113,117,203,211],[33,1.820,1.860,96.5,61.4,113,117,203,211],
+      [34,1.825,1.865,96.4,61.6,113,117,203,211],[35,1.830,1.870,96.2,61.8,113,117,203,211],
+      [36,1.834,1.874,96.0,61.9,113,117,203,211],[37,1.838,1.878,95.8,62.1,113,117,203,211],
+      [38,1.842,1.882,95.5,62.1,113,117,203,211],[39,1.845,1.885,95.3,62.1,113,117,203,211],
+      [40,1.848,1.888,95.1,62.3,113,117,203,211],[41,1.850,1.890,94.8,62.4,113,117,203,211],
+      [42,1.852,1.892,94.6,62.4,113,117,203,211],[43,1.854,1.894,94.4,62.4,113,117,203,211],
+      [44,1.856,1.896,94.1,62.4,113,117,203,211],[45,1.858,1.898,93.9,62.4,113,117,203,211],
+      [46,1.860,1.900,93.7,62.5,113,117,203,211],[47,1.862,1.902,93.4,62.5,113,117,203,211],
+      [48,1.864,1.904,93.2,62.5,113,117,203,211],[49,1.866,1.906,92.9,62.5,113,117,203,211],
+      [50,1.868,1.908,92.6,62.6,113,117,203,211],[51,1.870,1.910,92.2,62.6,113,117,203,211],
+      [52,1.872,1.912,92.0,62.7,113,117,203,211],[53,1.874,1.914,91.7,62.6,113,117,203,211],
+      [54,1.876,1.916,91.4,62.7,113,117,203,211],[55,1.878,1.918,91.1,62.7,113,117,203,211],
+      [56,1.880,1.920,90.8,62.7,113,117,203,211],[57,1.882,1.922,90.6,62.8,113,117,203,211],
+      [58,1.884,1.924,90.3,62.8,113,117,203,211],[59,1.886,1.926,90.0,62.8,113,117,203,211],
+      [60,1.888,1.928,89.7,62.8,113,117,203,211],[61,1.890,1.930,89.4,62.9,113,117,203,211],
+      [62,1.892,1.932,89.1,62.9,113,117,203,211],[63,1.894,1.934,88.8,62.9,113,117,203,211],
+      [64,1.896,1.936,88.6,63.0,113,117,203,211],[65,1.898,1.938,88.3,63.0,113,117,203,211],
+      [66,1.900,1.940,88.0,63.0,113,117,203,211],[67,1.902,1.942,87.7,63.0,113,117,203,211],
+      [68,1.904,1.944,87.4,63.0,113,117,203,211],[69,1.906,1.946,87.1,63.1,113,117,203,211],
+      [70,1.908,1.948,86.7,63.1,113,117,203,211],[71,1.910,1.950,86.4,63.1,113,117,203,211],
+      [72,1.912,1.952,86.1,63.2,113,117,203,211],[73,1.914,1.954,85.8,63.2,113,117,203,211],
+      [74,1.916,1.956,85.5,63.2,113,117,203,211],[75,1.918,1.958,85.2,63.2,113,117,203,211],
+      [76,1.920,1.960,84.9,63.3,113,117,203,211],[77,1.921,1.961,84.5,63.3,113,117,203,211],
+      [78,1.922,1.962,84.2,63.3,113,117,203,211],[79,1.923,1.963,83.9,63.3,113,117,203,211],
+      [80,1.924,1.964,83.6,63.4,113,117,203,211],
+    ],
+  },
 };
 
+/* ════════════════════════════════════════════════════════════
+   MORTALIDAD — curva semanal de referencia
+   ════════════════════════════════════════════════════════════ */
 const MORTALIDAD = {
   0:0,1:0.004,2:0.0015,3:0.001,4:0.001,5:0.001,6:0.001,7:0.001,
   8:0.001,9:0.001,10:0.001,11:0.001,12:0.002,13:0.0008,14:0.0007,
@@ -354,71 +615,95 @@ const MORTALIDAD = {
   75:0.0015,76:0.0025,77:0.0015,78:0.0015,79:0.0015,80:0.0015,
 };
 
-// sem → {gr, dieta}
-const CONSUMO = (() => {
-  const raw = [
-    [1,12,1],[2,17,1],[3,20,1],[4,25,2],[5,29,2],[6,35,2],
-    [7,41,3],[8,47,3],[9,52,3],[10,56,3],[11,60,3],[12,62,3],
-    [13,64,4],[14,66,4],[15,68,4],[16,70,5],[17,72,5],
-    [18,73,6],[19,85,6],[20,90,6],[21,97,6],[22,100,6],
-    [23,104,6],[24,109,6],[25,112,6],[26,114,6],[27,115,6],
-    [28,116,6],[29,117,6],[30,117,6],[31,117,6],[32,117,6],
-    [33,117,6],[34,117,6],[35,117,6],[36,116,6],[37,116,6],
-    [38,116,6],[39,116,6],[40,116,6],[41,116,6],[42,116,6],
-    [43,116,6],[44,116,6],[45,116,6],
-  ];
-  const m = {};
-  raw.forEach(([s,g,d]) => m[s] = {gr:g, dieta:d});
-  for (let s = 46; s <= 80; s++) m[s] = {gr:116, dieta:7};
-  return m;
-})();
+/* ════════════════════════════════════════════════════════════
+   HELPERS DE CURVAS
+   ════════════════════════════════════════════════════════════ */
+function dietaId(sem) {
+  if (sem <= 3)  return 1;
+  if (sem <= 6)  return 2;
+  if (sem <= 12) return 3;
+  if (sem <= 15) return 4;
+  if (sem <= 18) return 5;
+  if (sem <= 45) return 6;
+  return 7;
+}
+
+function buildCurvas(geneticaNombre) {
+  const L = LINEAS[geneticaNombre] || LINEAS['Lohmann Brown'];
+  const posMap     = {};
+  const consumoMap = {};
+
+  L.crianza.forEach(([sem,,, alMin, alMax]) => {
+    consumoMap[sem] = { gr: (alMin + alMax) / 2, dieta: dietaId(sem) };
+  });
+  L.postura.forEach(([sem,,, pct,, alMin, alMax]) => {
+    posMap[sem]     = pct;
+    consumoMap[sem] = { gr: (alMin + alMax) / 2, dieta: dietaId(sem) };
+  });
+
+  const maxSem = Math.max(...Object.keys(consumoMap).map(Number));
+  const fallback = consumoMap[maxSem];
+
+  return {
+    posMap,
+    getConsumo(sem) { return consumoMap[sem] || fallback; },
+    getPos(sem)     { return posMap[sem] ?? 0; },
+  };
+}
 
 /* ════════════════════════════════════════════════════════════
    MOTOR DE PROYECCIÓN
    ════════════════════════════════════════════════════════════ */
 function proyectar(lote) {
-  const fn = new Date(lote.fechaNacimiento + 'T12:00:00');
-  let aves = +lote.nAves;
-  const precio = +lote.precioHuevo;
-  const gastoMes = +lote.gastosMes;
-  const costoDieta = lote.costoDieta;
-  const dias = [];
+  const curvas      = buildCurvas(lote.genetica || 'Lohmann Brown');
+  const preciosMes  = lote.preciosHuevoPorMes || {};
+  const precioBase  = +lote.precioHuevo;
+  const gastoMes    = +lote.gastosMes;
+  const costoDieta  = lote.costoDieta;
+  const fn          = new Date(lote.fechaNacimiento + 'T12:00:00');
+  let aves          = +lote.nAves;
+  const dias        = [];
 
   for (let n = 0; n < 560; n++) {
-    const f = new Date(fn); f.setDate(fn.getDate() + n);
+    const f    = new Date(fn); f.setDate(fn.getDate() + n);
     const fecha = f.toISOString().slice(0, 10);
-    const sem = Math.floor(n / 7) + 1;
-    const mort = MORTALIDAD[sem] ?? 0.001;
-    const pos  = POSTURA[sem]    ?? 0;
-    const cons = CONSUMO[sem]    ?? {gr:116, dieta:7};
-    const mortDia  = aves * mort;
-    const avesFin  = aves - mortDia;
+    const mes   = fecha.slice(0, 7);
+    const sem   = Math.floor(n / 7) + 1;
+    const mort  = MORTALIDAD[sem] ?? 0.0015;
+    const pos   = curvas.getPos(sem);
+    const cons  = curvas.getConsumo(sem);
+    const precio = preciosMes[mes] != null ? +preciosMes[mes] : precioBase;
+
+    const mortDia   = aves * mort;
+    const avesFin   = aves - mortDia;
     const consumoKg = aves * cons.gr / 1000;
     const costoAlim = consumoKg * (+costoDieta[cons.dieta] || 520);
-    const huevos   = Math.round(aves * pos / 100);
-    const ingreso  = huevos * precio;
-    const gastoDia = gastoMes / 30;
+    const huevos    = Math.round(aves * pos / 100);
+    const ingreso   = huevos * precio;
+    const gastoDia  = gastoMes / 30;
     const resultado = ingreso - costoAlim - gastoDia;
+
     dias.push({
-      fecha, n: n+1, sem,
-      aves:       Math.round(avesFin * 10) / 10,
+      fecha, n: n + 1, sem, mes, precio,
+      aves:      Math.round(avesFin * 10) / 10,
       pos, huevos,
-      consumoKg:  Math.round(consumoKg * 10) / 10,
-      dieta:      cons.dieta,
-      costoAlim:  Math.round(costoAlim),
-      gastoDia:   Math.round(gastoDia),
-      ingreso:    Math.round(ingreso),
-      resultado:  Math.round(resultado),
+      consumoKg: Math.round(consumoKg * 10) / 10,
+      dieta:     cons.dieta,
+      costoAlim: Math.round(costoAlim),
+      gastoDia:  Math.round(gastoDia),
+      ingreso:   Math.round(ingreso),
+      resultado: Math.round(resultado),
     });
     aves = avesFin;
   }
+
   let acum = 0;
   dias.forEach(d => { acum += d.resultado; d.acum = Math.round(acum); });
   return dias;
 }
 
 /* ════════════════════════════════════════════════════════════
-   ALMACENAMIENTO (localStorage)
+   ALMACENAMIENTO
    ════════════════════════════════════════════════════════════ */
 const CLAVE = 'avivet_presupuesto_v1';
 
@@ -453,6 +738,14 @@ const NUM = v => v == null ? '—' : Math.round(v).toLocaleString('es-CL');
 const PCT = v => v == null ? '—' : (+v).toFixed(1) + '%';
 const MN  = v => v == null ? '—' : '$' + Math.round(v).toLocaleString('es-CL');
 
+const GEN_COLORES = {
+  'Hy-Line Brown':  '#f0a500',
+  'Hy-Line W-80':   '#4a90a4',
+  'Lohmann Brown':  '#e05c5c',
+  'Nick Brown':     '#5cae5c',
+  'Dekalb Brown':   '#b5651d',
+};
+
 /* ════════════════════════════════════════════════════════════
    INIT
    ════════════════════════════════════════════════════════════ */
@@ -465,17 +758,17 @@ const MN  = v => v == null ? '—' : '$' + Math.round(v).toLocaleString('es-CL')
 
 function cargarSelector() {
   const lotes = getLotes();
-  const sel = document.getElementById('sel-lote');
+  const sel   = document.getElementById('sel-lote');
   sel.innerHTML = '<option value="">— Selecciona un lote —</option>';
   lotes.forEach(l => {
-    const o = document.createElement('option');
-    o.value = l.id;
+    const o  = document.createElement('option');
+    o.value  = l.id;
     const fn = new Date(l.fechaNacimiento + 'T12:00:00').toLocaleDateString('es-CL', {day:'2-digit', month:'short', year:'numeric'});
-    o.textContent = `${l.nombre}  ·  ${(+l.nAves).toLocaleString('es-CL')} aves  ·  nac. ${fn}`;
+    const gen = l.genetica || 'Lohmann Brown';
+    o.textContent = `${l.nombre}  ·  ${gen}  ·  ${(+l.nAves).toLocaleString('es-CL')} aves  ·  nac. ${fn}`;
     sel.appendChild(o);
   });
   if (loteId) sel.value = loteId;
-  // Cargar automáticamente si solo hay un lote
   if (!loteId && lotes.length === 1) {
     sel.value = lotes[0].id;
     selLote(lotes[0].id);
@@ -487,10 +780,14 @@ function selLote(id) {
   loteId = id;
   const lote = getLote(id);
   if (!lote) return;
-  document.getElementById('lote-nombre-txt').textContent  = lote.nombre;
+  const gen = lote.genetica || 'Lohmann Brown';
+  const col = GEN_COLORES[gen] || '#1b4332';
+  document.getElementById('lote-nombre-txt').textContent = lote.nombre;
   const fn = new Date(lote.fechaNacimiento + 'T12:00:00').toLocaleDateString('es-CL', {day:'numeric', month:'long', year:'numeric'});
   document.getElementById('lote-meta-txt').textContent =
     `${(+lote.nAves).toLocaleString('es-CL')} aves · nacimiento ${fn}`;
+  document.getElementById('lote-gen-badge').innerHTML =
+    `<span class="badge-genetica" style="color:${col}">${gen}</span>`;
   proy = proyectar(lote);
   renderDashboard(lote);
 }
@@ -499,34 +796,38 @@ function selLote(id) {
    DASHBOARD
    ════════════════════════════════════════════════════════════ */
 function renderDashboard(lote) {
-  // KPIs hero
-  const dHoy  = proy.find(d => d.fecha === HOY) || proy[proy.length - 1];
-  const regs  = Object.keys(lote.registros || {});
+  const dHoy = proy.find(d => d.fecha === HOY) || proy[proy.length - 1];
+  const regs = Object.keys(lote.registros || {});
+  const gen  = lote.genetica || 'Lohmann Brown';
+  const col  = GEN_COLORES[gen] || '#1b4332';
+
   document.getElementById('kpi-sem').textContent  = `Sem ${dHoy.sem}`;
   document.getElementById('kpi-pos').textContent  = `${dHoy.pos.toFixed(1)}%`;
   document.getElementById('kpi-aves').textContent = NUM(dHoy.aves);
   const res = dHoy.acum;
   const elRes = document.getElementById('kpi-res');
-  elRes.textContent  = '$' + Math.abs(res).toLocaleString('es-CL');
-  elRes.className    = 'ficha-num ' + (res >= 0 ? 'ok' : 'mal');
+  elRes.textContent = '$' + Math.abs(res).toLocaleString('es-CL');
+  elRes.className   = 'ficha-num ' + (res >= 0 ? 'ok' : 'mal');
   document.getElementById('kpi-res-sub').textContent = res >= 0 ? 'superávit' : 'déficit';
 
-  // Inyectar HTML
   document.getElementById('contenido').innerHTML = `
   <section id="graficos" class="bloque">
     <h2>Proyección vs Real</h2>
     <p class="bloque-desc">
-      <strong>${lote.nombre}</strong> · semana ${dHoy.sem} de vida ·
-      ${regs.length} día${regs.length!==1?'s':''} con datos reales.
+      <strong>${lote.nombre}</strong>
+      · <span style="font-weight:600;color:${col}">${gen}</span>
+      · semana ${dHoy.sem} · ${regs.length} día${regs.length!==1?'s':''} con datos reales.
       <button class="btn btn-ok btn-sm" style="margin-left:16px" onclick="exportarExcel()">↓ Exportar Excel</button>
     </p>
 
     <div class="tabs">
       <button class="tab activo" onclick="setTab(event,'t-graficos')">Gráficos</button>
       <button class="tab" onclick="setTab(event,'t-tabla')">Tabla diaria</button>
+      <button class="tab" onclick="setTab(event,'t-precios')">Precios por mes</button>
       <button class="tab" onclick="setTab(event,'t-config')">Configuración</button>
     </div>
 
+    <!-- GRÁFICOS -->
     <div id="t-graficos" class="tab-panel activo">
       <div class="graficos-grid full">
         <div class="grafico-wrap">
@@ -551,6 +852,7 @@ function renderDashboard(lote) {
       </div>
     </div>
 
+    <!-- TABLA -->
     <div id="t-tabla" class="tab-panel" style="display:none">
       <div class="tabla-controles">
         <span>Últimos 30 días y próximos 7</span>
@@ -562,6 +864,7 @@ function renderDashboard(lote) {
           <th>Sem</th><th>Aves</th>
           <th>% Post.Proy</th><th class="th-real">% Post.Real</th>
           <th>Huevos Proy</th><th class="th-real">Huevos Real</th>
+          <th>$/huevo</th>
           <th>Ingreso Proy</th><th class="th-real">Ingreso Real</th>
           <th>Resultado</th>
         </tr></thead>
@@ -569,6 +872,12 @@ function renderDashboard(lote) {
       </table></div>
     </div>
 
+    <!-- PRECIOS POR MES -->
+    <div id="t-precios" class="tab-panel" style="display:none">
+      <div id="precios-panel"></div>
+    </div>
+
+    <!-- CONFIGURACIÓN -->
     <div id="t-config" class="tab-panel" style="display:none">
       <div class="config-hdr" onclick="toggleCfg()">
         <span class="config-titulo">Parámetros del lote</span>
@@ -576,10 +885,10 @@ function renderDashboard(lote) {
       </div>
       <div class="config-body" id="cfg-body">
         <div class="config-grid">
-          <div class="cfg-field"><span>Precio huevo ($/ud.)</span><input type="number" id="cfg-precio" value="${lote.precioHuevo}"></div>
+          <div class="cfg-field"><span>Precio huevo base ($/ud.)</span><input type="number" id="cfg-precio" value="${lote.precioHuevo}"></div>
           <div class="cfg-field"><span>Gastos fijos / mes ($)</span><input type="number" id="cfg-gastos" value="${lote.gastosMes}"></div>
           <hr class="cfg-sep">
-          <div class="cfg-sec">Costo alimento por dieta ($/kg)</div>
+          <div class="cfg-sec">Costo alimento por periodo ($/kg)</div>
           ${[1,2,3,4,5,6,7].map(d=>`
           <div class="cfg-field"><span>Dieta ${d}</span><input type="number" id="cfg-d${d}" value="${lote.costoDieta[d]||''}"></div>`).join('')}
           <hr class="cfg-sep">
@@ -597,6 +906,7 @@ function renderDashboard(lote) {
 
   renderGraficos(lote);
   renderTabla(lote);
+  renderPreciosMes(lote);
 }
 
 /* ── Tabs ── */
@@ -609,21 +919,116 @@ function setTab(e, id) {
   panel.style.display = 'block';
   if (id === 't-graficos') renderGraficos(getLote(loteId));
   if (id === 't-tabla')    renderTabla(getLote(loteId));
+  if (id === 't-precios')  renderPreciosMes(getLote(loteId));
 }
 
 function toggleCfg() {
-  const b = document.getElementById('cfg-body');
+  const b   = document.getElementById('cfg-body');
   const btn = document.getElementById('cfg-toggle-btn');
   const vis = b.style.display !== 'none';
   b.style.display = vis ? 'none' : '';
-  btn.textContent = vis ? '▼ Expandir' : '▲ Plegar';
+  btn.textContent  = vis ? '▼ Expandir' : '▲ Plegar';
 }
 
 /* ════════════════════════════════════════════════════════════
-   GRÁFICOS — Chart.js
+   PRECIOS POR MES
+   ════════════════════════════════════════════════════════════ */
+function renderPreciosMes(lote) {
+  const panel = document.getElementById('precios-panel');
+  if (!panel || !proy) return;
+
+  const precioBase = +lote.precioHuevo;
+  const preciosMes = lote.preciosHuevoPorMes || {};
+
+  // Recopilar todos los mes-año únicos del ciclo
+  const meses = [...new Set(proy.map(d => d.mes))];
+
+  const mesNombre = m => {
+    const [y, mo] = m.split('-');
+    return new Date(+y, +mo - 1, 1).toLocaleDateString('es-CL', {month:'short', year:'numeric'});
+  };
+
+  const items = meses.map(m => {
+    const val  = preciosMes[m] != null ? preciosMes[m] : precioBase;
+    const mod  = preciosMes[m] != null && +preciosMes[m] !== precioBase;
+    return `<div class="pm-item${mod?' modificado':''}" id="pm-wrap-${m}">
+      <span>${mesNombre(m)}</span>
+      <input type="number" id="pm-${m}" value="${val}" min="1"
+        oninput="marcarMesMod('${m}',${precioBase})">
+    </div>`;
+  }).join('');
+
+  panel.innerHTML = `
+    <div style="margin-bottom:16px">
+      <p style="font-size:14px;color:var(--suave);margin-bottom:8px">
+        Asigna un precio de venta diferente para cada mes del ciclo.
+        Los meses en <span style="color:var(--acento);font-weight:600">dorado</span> tienen precio personalizado.
+        Los demás usan el precio base (<strong>${MN(precioBase)}/ud.</strong>).
+      </p>
+    </div>
+    <div class="precios-mes-grid">${items}</div>
+    <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn btn-acento" onclick="guardarPreciosMes()">Guardar precios y recalcular</button>
+      <button class="btn btn-linea btn-sm" onclick="resetPreciosMes()">Resetear todo al precio base</button>
+    </div>`;
+}
+
+function marcarMesMod(mes, precioBase) {
+  const input = document.getElementById(`pm-${mes}`);
+  const wrap  = document.getElementById(`pm-wrap-${mes}`);
+  if (!input || !wrap) return;
+  const mod = +input.value !== precioBase && input.value !== '';
+  wrap.classList.toggle('modificado', mod);
+}
+
+function guardarPreciosMes() {
+  const lote = getLote(loteId);
+  if (!lote) return;
+  const precioBase = +lote.precioHuevo;
+  const preciosMes = {};
+  const meses = [...new Set(proy.map(d => d.mes))];
+  meses.forEach(m => {
+    const el = document.getElementById(`pm-${m}`);
+    if (el) {
+      const v = +el.value;
+      if (!isNaN(v) && v > 0 && v !== precioBase) preciosMes[m] = v;
+    }
+  });
+  lote.preciosHuevoPorMes = preciosMes;
+  saveLote(lote);
+  proy = proyectar(lote);
+  renderDashboard(lote);
+  // Volver al tab precios
+  document.querySelectorAll('.tab').forEach((t,i) => {
+    const target = ['t-graficos','t-tabla','t-precios','t-config'][i];
+    t.classList.toggle('activo', target === 't-precios');
+  });
+  document.querySelectorAll('.tab-panel').forEach(p => {
+    p.classList.remove('activo');
+    p.style.display = 'none';
+  });
+  const tp = document.getElementById('t-precios');
+  if (tp) { tp.classList.add('activo'); tp.style.display = 'block'; }
+  renderPreciosMes(lote);
+}
+
+function resetPreciosMes() {
+  const lote = getLote(loteId);
+  if (!lote) return;
+  lote.preciosHuevoPorMes = {};
+  saveLote(lote);
+  proy = proyectar(lote);
+  renderDashboard(lote);
+  const tp = document.getElementById('t-precios');
+  if (tp) { tp.classList.add('activo'); tp.style.display = 'block'; }
+  renderPreciosMes(lote);
+}
+
+/* ════════════════════════════════════════════════════════════
+   GRÁFICOS
    ════════════════════════════════════════════════════════════ */
 function semData(lote) {
-  const m = {};
+  const m    = {};
   const regs = lote.registros || {};
   proy.forEach(d => {
     const s = d.sem;
@@ -634,16 +1039,16 @@ function semData(lote) {
     m[s].postP   = d.pos;
     const reg = regs[d.fecha];
     if (reg?.huevosReal != null) {
-      m[s].ingR = (m[s].ingR||0) + (reg.huevosReal * +lote.precioHuevo);
+      const precio = d.precio;
+      m[s].ingR  = (m[s].ingR||0) + (reg.huevosReal * precio);
       m[s].postR = reg.posturaReal;
     }
     if (reg?.huevosReal != null) {
-      const ingR = reg.huevosReal * +lote.precioHuevo;
+      const ingR = reg.huevosReal * d.precio;
       const resR = ingR - d.costoAlim - d.gastoDia;
       m[s].acumR = (m[s].acumR||0) + resR;
     }
   });
-  // Acumulado real real
   let ar = 0;
   Object.values(m).sort((a,b)=>a.s-b.s).forEach(v => {
     if (v.acumR != null) { ar += v.acumR; v.acumR = ar; }
@@ -653,7 +1058,6 @@ function semData(lote) {
 
 const tFont = { font: { size: 10, family: "'IBM Plex Mono', monospace" } };
 const gridColor = '#e0ddd5';
-
 function dc(id) { if (charts[id]) { charts[id].destroy(); delete charts[id]; } }
 
 function renderGraficos(lote) {
@@ -695,9 +1099,9 @@ function renderGraficos(lote) {
   if (cAcum) charts.acum = new Chart(cAcum, {
     type: 'line',
     data: { labels: lbs, datasets: [
-      { label:'Proyectado', data:sems.map(s=>s.acumP),                           borderColor:'#1b4332', fill:false, tension:.3, pointRadius:0, borderWidth:2 },
-      { label:'Real',       data:sems.map(s=>s.acumR!=null?s.acumR:null),        borderColor:'#f0a500', borderWidth:2.5, pointRadius:3, spanGaps:false, tension:.2 },
-      { label:'Break-even', data:sems.map(()=>0),                                borderColor:'#aaa', borderDash:[4,4], borderWidth:1, pointRadius:0 },
+      { label:'Proyectado', data:sems.map(s=>s.acumP),                    borderColor:'#1b4332', fill:false, tension:.3, pointRadius:0, borderWidth:2 },
+      { label:'Real',       data:sems.map(s=>s.acumR!=null?s.acumR:null), borderColor:'#f0a500', borderWidth:2.5, pointRadius:3, spanGaps:false, tension:.2 },
+      { label:'Break-even', data:sems.map(()=>0),                         borderColor:'#aaa', borderDash:[4,4], borderWidth:1, pointRadius:0 },
     ]},
     options: { responsive:true, maintainAspectRatio:false,
       plugins:{ legend:{ labels:{ font:{size:11} } } },
@@ -712,15 +1116,15 @@ function renderGraficos(lote) {
 function renderTabla(lote) {
   const tbody = document.getElementById('tbody');
   if (!tbody || !proy) return;
-  const regs = lote.registros || {};
-  const idx  = proy.findIndex(d => d.fecha >= HOY);
+  const regs  = lote.registros || {};
+  const idx   = proy.findIndex(d => d.fecha >= HOY);
   const slice = proy.slice(Math.max(0, idx-30), Math.min(proy.length, idx+7)).reverse();
   tbody.innerHTML = slice.map(d => {
-    const esHoy = d.fecha === HOY;
-    const reg   = regs[d.fecha];
+    const esHoy  = d.fecha === HOY;
+    const reg    = regs[d.fecha];
     const tieneR = reg?.huevosReal != null;
-    const ingR  = tieneR ? reg.huevosReal * +lote.precioHuevo : null;
-    const rc    = d.resultado >= 0 ? 'ok' : 'mal';
+    const ingR   = tieneR ? reg.huevosReal * d.precio : null;
+    const rc     = d.resultado >= 0 ? 'ok' : 'mal';
     return `<tr${esHoy?' style="background:var(--acento-cl)"':''}>
       <td class="fecha">${d.fecha}${esHoy?' <b>· hoy</b>':''}</td>
       <td>${d.sem}</td><td>${NUM(d.aves)}</td>
@@ -728,6 +1132,7 @@ function renderTabla(lote) {
       <td class="${tieneR?'real':''}">${tieneR?PCT(reg.posturaReal):'—'}</td>
       <td>${NUM(d.huevos)}</td>
       <td class="${tieneR?'real':''}">${tieneR?NUM(reg.huevosReal):'—'}</td>
+      <td style="font-family:var(--fm);font-size:11px">${MN(d.precio)}</td>
       <td>${MN(d.ingreso)}</td>
       <td class="${tieneR?'real':''}">${tieneR?MN(ingR):'—'}</td>
       <td class="${rc}">${MN(d.resultado)}</td>
@@ -742,21 +1147,21 @@ let modoEditar = null;
 
 function abrirModal(id) {
   modoEditar = id || null;
-  const modal = document.getElementById('modal');
-  const form  = document.getElementById('form-lote');
+  const form = document.getElementById('form-lote');
   document.getElementById('modal-titulo').textContent = id ? 'Editar lote' : 'Nuevo lote';
   if (id) {
     const l = getLote(id);
-    form.nombre.value = l.nombre;
+    form.nombre.value          = l.nombre;
+    form.genetica.value        = l.genetica || 'Lohmann Brown';
     form.fechaNacimiento.value = l.fechaNacimiento;
-    form.nAves.value = l.nAves;
-    form.precioHuevo.value = l.precioHuevo;
-    form.gastosMes.value = l.gastosMes;
+    form.nAves.value           = l.nAves;
+    form.precioHuevo.value     = l.precioHuevo;
+    form.gastosMes.value       = l.gastosMes;
     [1,2,3,4,5,6,7].forEach(d => form[`d${d}`].value = l.costoDieta[d] || '');
   } else {
     form.reset();
   }
-  modal.classList.add('abierto');
+  document.getElementById('modal').classList.add('abierto');
 }
 
 function cerrarModal() {
@@ -769,14 +1174,16 @@ function guardarLote(e) {
   const costoDieta = {};
   [1,2,3,4,5,6,7].forEach(d => costoDieta[d] = +(f[`d${d}`].value) || 520);
   const lote = {
-    id:             modoEditar || `l${Date.now()}`,
-    nombre:         f.nombre.value.trim(),
-    fechaNacimiento:f.fechaNacimiento.value,
-    nAves:          +f.nAves.value,
-    precioHuevo:    +f.precioHuevo.value,
-    gastosMes:      +f.gastosMes.value,
+    id:               modoEditar || `l${Date.now()}`,
+    nombre:           f.nombre.value.trim(),
+    genetica:         f.genetica.value || 'Lohmann Brown',
+    fechaNacimiento:  f.fechaNacimiento.value,
+    nAves:            +f.nAves.value,
+    precioHuevo:      +f.precioHuevo.value,
+    preciosHuevoPorMes: modoEditar ? (getLote(modoEditar)?.preciosHuevoPorMes || {}) : {},
+    gastosMes:        +f.gastosMes.value,
     costoDieta,
-    registros:      modoEditar ? (getLote(modoEditar)?.registros || {}) : {},
+    registros:        modoEditar ? (getLote(modoEditar)?.registros || {}) : {},
   };
   saveLote(lote);
   loteId = lote.id;
@@ -822,7 +1229,7 @@ function guardarReg(btn) {
   const nota    = document.getElementById('r-nota').value;
   if (!fecha || isNaN(huevos)) { alert('Ingresa fecha y N° de huevos'); return; }
   guardarRegistroDia(loteId, fecha, {
-    huevosReal: huevos,
+    huevosReal:  huevos,
     posturaReal: isNaN(postura) ? null : postura,
     nota,
   });
@@ -839,16 +1246,15 @@ function aplicarConfig() {
   lote.gastosMes   = +document.getElementById('cfg-gastos').value;
   [1,2,3,4,5,6,7].forEach(d => lote.costoDieta[d] = +document.getElementById(`cfg-d${d}`).value || 520);
   saveLote(lote);
-  selLote(loteId);
+  proy = proyectar(lote);
+  renderDashboard(lote);
 }
 
 function confirmarEliminar() {
   const lote = getLote(loteId);
   if (!confirm(`¿Eliminar el lote "${lote.nombre}"? Esta acción no se puede deshacer.`)) return;
-  const arr = getLotes().filter(l => l.id !== loteId);
-  setLotes(arr);
-  loteId = null;
-  proy   = null;
+  setLotes(getLotes().filter(l => l.id !== loteId));
+  loteId = null; proy = null;
   cargarSelector();
   document.getElementById('contenido').innerHTML = `<div class="vacio">
     <h2>Crea tu primer lote</h2><p>Configura los parámetros del lote para generar la proyección</p>
@@ -860,35 +1266,49 @@ function confirmarEliminar() {
   document.getElementById('kpi-res-sub').textContent = '';
   document.getElementById('lote-nombre-txt').textContent = '';
   document.getElementById('lote-meta-txt').textContent = '';
+  document.getElementById('lote-gen-badge').innerHTML = '';
 }
 
 /* ════════════════════════════════════════════════════════════
-   EXPORTAR EXCEL (SheetJS)
+   EXPORTAR EXCEL
    ════════════════════════════════════════════════════════════ */
 function exportarExcel() {
   if (!proy) return;
-  const lote = getLote(loteId);
-  const regs = lote.registros || {};
-  const wb   = XLSX.utils.book_new();
+  const lote    = getLote(loteId);
+  const regs    = lote.registros || {};
+  const wb      = XLSX.utils.book_new();
   const HOY_STR = new Date().toLocaleDateString('es-CL');
+  const gen     = lote.genetica || 'Lohmann Brown';
 
-  // ── Hoja 1: Resumen ──
+  // Hoja 1: Resumen
   const resData = [
     ['Presupuesto Avícola — Resumen', ''],
     ['Lote / Cliente',          lote.nombre],
+    ['Genética',                gen],
     ['Fecha de nacimiento',     lote.fechaNacimiento],
     ['N° aves iniciales',       +lote.nAves],
-    ['Precio venta huevo ($/ud)', +lote.precioHuevo],
-    ['Gastos fijos / mes ($)',   +lote.gastosMes],
+    ['Precio huevo base ($/ud.)',+lote.precioHuevo],
+    ['Gastos fijos / mes ($)',  +lote.gastosMes],
     ['Semanas proyectadas',      80],
     ['Días proyectados',         proy.length],
     ['Días con datos reales',    Object.keys(regs).length],
     ['Resultado acum. proyectado (fin ciclo)', proy[proy.length-1].acum],
-    ['Generado',                 HOY_STR],
+    ['Generado', HOY_STR],
   ];
   XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(resData), 'Resumen');
 
-  // ── Hoja 2: Proyección semanal ──
+  // Hoja 2: Precios por mes
+  const pmRows = [['Mes', 'Precio ($/ud.)', 'Tipo']];
+  const preciosMes = lote.preciosHuevoPorMes || {};
+  const meses = [...new Set(proy.map(d => d.mes))];
+  meses.forEach(m => {
+    const v = preciosMes[m] != null ? +preciosMes[m] : +lote.precioHuevo;
+    const tipo = preciosMes[m] != null ? 'Personalizado' : 'Base';
+    pmRows.push([m, v, tipo]);
+  });
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(pmRows), 'Precios por Mes');
+
+  // Hoja 3: Proyección semanal
   const semMap = {};
   proy.forEach(d => {
     const s = d.sem;
@@ -908,48 +1328,47 @@ function exportarExcel() {
     semRows.push([s.s, s.fecha, Math.round(s.aves), s.pos/100, Math.round(s.huevos), Math.round(s.consumo), Math.round(s.costo), Math.round(s.ingreso), Math.round(s.gasto), Math.round(s.res), Math.round(s.acum)]);
   });
   const wsSem = XLSX.utils.aoa_to_sheet(semRows);
-  // Formato % en columna D
   for (let r = 2; r <= semRows.length; r++) wsSem[XLSX.utils.encode_cell({r:r-1,c:3})].z = '0.0%';
   XLSX.utils.book_append_sheet(wb, wsSem, 'Proyección Semanal');
 
-  // ── Hoja 3: Real vs Proyectado ──
-  const rvpRows = [['Fecha','Sem','Aves','% Post.Proy','Huevos Proy','Ingreso Proy','% Post.Real','Huevos Real','Ingreso Real','Resultado Proy','Resultado Real','Nota']];
+  // Hoja 4: Real vs Proyectado
+  const rvpRows = [['Fecha','Sem','Aves','% Post.Proy','Huevos Proy','$/huevo','Ingreso Proy','% Post.Real','Huevos Real','Ingreso Real','Resultado Proy','Resultado Real','Nota']];
   proy.forEach(d => {
-    const reg = regs[d.fecha];
+    const reg    = regs[d.fecha];
     const tieneR = reg?.huevosReal != null;
-    const ingR = tieneR ? reg.huevosReal * +lote.precioHuevo : null;
-    const resR = tieneR ? ingR - d.costoAlim - d.gastoDia : null;
+    const ingR   = tieneR ? reg.huevosReal * d.precio : null;
+    const resR   = tieneR ? ingR - d.costoAlim - d.gastoDia : null;
     rvpRows.push([
       d.fecha, d.sem, Math.round(d.aves), d.pos/100,
-      d.huevos, d.ingreso,
+      d.huevos, d.precio, d.ingreso,
       tieneR ? (reg.posturaReal??null)/100 : null,
       tieneR ? reg.huevosReal : null,
-      ingR, d.resultado, resR,
-      reg?.nota || '',
+      ingR, d.resultado, resR, reg?.nota || '',
     ]);
   });
   const wsRvp = XLSX.utils.aoa_to_sheet(rvpRows);
-  ['D','G'].forEach(col => {
+  ['D','H'].forEach((col, ci) => {
+    const colIdx = ci === 0 ? 3 : 7;
     for (let r = 2; r <= rvpRows.length; r++) {
-      const cell = wsRvp[XLSX.utils.encode_cell({r:r-1, c: col==='D'?3:6})];
+      const cell = wsRvp[XLSX.utils.encode_cell({r:r-1, c:colIdx})];
       if (cell) cell.z = '0.0%';
     }
   });
   XLSX.utils.book_append_sheet(wb, wsRvp, 'Real vs Proyectado');
 
-  // ── Hoja 4: Proyección diaria completa ──
-  const diaRows = [['Fecha','Día','Sem','Aves','% Postura','Huevos','Consumo kg','Dieta','Costo alim.','Gastos','Ingresos','Resultado','Acumulado']];
+  // Hoja 5: Proyección diaria completa
+  const diaRows = [['Fecha','Día','Sem','Aves','% Postura','Huevos','Consumo kg','Dieta','Costo alim.','Gastos','$/huevo','Ingresos','Resultado','Acumulado']];
   proy.forEach(d => diaRows.push([
     d.fecha, d.n, d.sem, Math.round(d.aves), d.pos/100,
     d.huevos, d.consumoKg, d.dieta,
-    d.costoAlim, d.gastoDia, d.ingreso, d.resultado, d.acum
+    d.costoAlim, d.gastoDia, d.precio, d.ingreso, d.resultado, d.acum
   ]));
   const wsDia = XLSX.utils.aoa_to_sheet(diaRows);
   for (let r = 2; r <= diaRows.length; r++) { const c = wsDia[XLSX.utils.encode_cell({r:r-1,c:4})]; if(c) c.z='0.0%'; }
   XLSX.utils.book_append_sheet(wb, wsDia, 'Proyección Diaria');
 
   const nombre = lote.nombre.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]/g,'').replace(/\s+/g,'_');
-  XLSX.writeFile(wb, `Presupuesto_${nombre}_${HOY}.xlsx`);
+  XLSX.writeFile(wb, `Presupuesto_${gen.replace(/\s/g,'_')}_${nombre}_${HOY}.xlsx`);
 }
 </script>
 </body>
