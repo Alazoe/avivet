@@ -40,6 +40,23 @@ main{max-width:900px;margin:0 auto;padding:32px 20px 60px;animation:fadeIn 0.4s 
 .page-sub{font-size:14px;color:var(--text2);}
 .dose-ref{display:inline-flex;align-items:center;gap:6px;margin-top:10px;background:var(--gold-l);border:1px solid #e8d5a8;border-radius:8px;padding:6px 12px;font-size:12px;color:#7a5a1a;}
 
+/* Selector de especie */
+.sp-section{margin-bottom:20px;}
+.sp-section-label{font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px;}
+.sp-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:480px){.sp-grid{grid-template-columns:1fr;}}
+.sp-opt{border:1.5px solid var(--border);border-radius:14px;padding:16px;cursor:pointer;transition:all 0.15s;background:var(--surface);display:flex;flex-direction:column;gap:6px;}
+.sp-opt:hover{border-color:var(--accent);background:var(--accent-l);}
+.sp-opt.active{border-color:var(--accent);background:var(--accent-l);box-shadow:0 0 0 3px rgba(27,67,50,0.08);}
+.sp-opt-head{display:flex;align-items:center;gap:10px;}
+.sp-opt-icon{font-size:24px;line-height:1;}
+.sp-opt-name{font-size:15px;font-weight:700;color:var(--text);}
+.sp-opt-sub{font-size:12px;color:var(--text3);}
+.sp-opt-pills{display:flex;gap:5px;flex-wrap:wrap;}
+.sp-pill{font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;letter-spacing:0.2px;}
+.sp-pill.dose{background:var(--accent-l);color:var(--accent);border:1px solid #a8dfc0;}
+.sp-pill.dur{background:var(--surface2);color:var(--text2);border:1px solid var(--border);}
+
 /* Info indicación */
 .ind-info{background:var(--ok-l);border:1px solid #a8dfc0;border-radius:12px;padding:14px 16px;margin-bottom:20px;display:flex;gap:10px;align-items:flex-start;font-size:13px;}
 .ind-info-icon{font-size:18px;flex-shrink:0;}
@@ -83,6 +100,8 @@ input[type=number]::-webkit-inner-spin-button{opacity:1;}
 .btn-calc{width:100%;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);padding:14px 24px;font-family:"DM Sans",sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:background 0.2s,transform 0.1s;margin-top:4px;display:flex;align-items:center;justify-content:center;gap:8px;}
 .btn-calc:hover{background:var(--accent2);}
 .btn-calc:active{transform:scale(0.99);}
+
+#formulario-grid{display:none;}
 
 #resultado{display:none;animation:slideIn 0.35s ease;}
 #resultado.visible{display:block;}
@@ -141,83 +160,114 @@ input[type=number]::-webkit-inner-spin-button{opacity:1;}
     </div>
   </div>
 
-  <!-- Formulario -->
-  <div class="grid">
+  <div id="formulario">
 
-    <!-- Datos del lote -->
-    <div class="card">
-      <div class="card-header">
-        <div class="card-icon">🐣</div>
-        <span class="card-title">Datos del lote</span>
-      </div>
-      <div class="card-body">
-        <div class="field">
-          <label>N° de aves</label>
-          <input type="number" id="n_aves" min="1" placeholder="Ej: 10000">
-        </div>
-        <div class="field">
-          <label>Peso promedio por ave <span>(kg)</span></label>
-          <input type="number" id="peso" min="0.01" step="0.001" placeholder="Ej: 1.200">
-        </div>
-        <div class="field">
-          <label>Semana de edad</label>
-          <div class="select-wrap">
-            <select id="etapa" onchange="toggleCustomAgua()">
-              <option value="65">Semana 1 · 1-7 días · ~65 mL/ave/día</option>
-              <option value="120">Semana 2 · 8-14 días · ~120 mL/ave/día</option>
-              <option value="175" selected>Semana 3 · 15-21 días · ~175 mL/ave/día</option>
-              <option value="220">Semana 4 · 22-28 días · ~220 mL/ave/día</option>
-              <option value="270">Semana 5 · 29-35 días · ~270 mL/ave/día</option>
-              <option value="310">Semana 6+ · >35 días · ~310 mL/ave/día</option>
-              <option value="custom">Consumo personalizado…</option>
-            </select>
+    <!-- Selector de especie -->
+    <div class="sp-section">
+      <div class="sp-section-label">Especie</div>
+      <div class="sp-grid">
+
+        <div class="sp-opt" id="sp-broiler" onclick="selectEspecie('broiler')">
+          <div class="sp-opt-head">
+            <span class="sp-opt-icon">🐔</span>
+            <div>
+              <div class="sp-opt-name">Pollos broiler</div>
+              <div class="sp-opt-sub">Engorda · 1–7 semanas</div>
+            </div>
           </div>
-          <div class="custom-agua" id="customAguaWrap">
-            <input type="number" id="custom_agua" min="1" step="1" placeholder="mL / ave / día">
+          <div class="sp-opt-pills">
+            <span class="sp-pill dose">0,125–0,25 mL/kg/día</span>
+            <span class="sp-pill dur">5 días</span>
           </div>
         </div>
+
+        <div class="sp-opt" id="sp-pavos" onclick="selectEspecie('pavos')">
+          <div class="sp-opt-head">
+            <span class="sp-opt-icon">🦃</span>
+            <div>
+              <div class="sp-opt-name">Pavos</div>
+              <div class="sp-opt-sub">Engorda</div>
+            </div>
+          </div>
+          <div class="sp-opt-pills">
+            <span class="sp-pill dose">0,125–0,25 mL/kg/día</span>
+            <span class="sp-pill dur">5 días</span>
+          </div>
+        </div>
+
       </div>
     </div>
 
-    <!-- Parámetros del tratamiento -->
-    <div class="card">
-      <div class="card-header">
-        <div class="card-icon">💉</div>
-        <span class="card-title">Parámetros del tratamiento</span>
-      </div>
-      <div class="card-body">
-        <div class="field">
-          <label>Duración</label>
-          <div class="dosis-fija">
-            <div>
-              <div class="dosis-fija-val">5 días</div>
-              <div class="dosis-fija-sub">Duración fija según ficha técnica</div>
+    <!-- Formulario principal -->
+    <div class="grid" id="formulario-grid">
+
+      <!-- Datos del lote -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon" id="lote-icon">🐔</div>
+          <span class="card-title">Datos del lote</span>
+        </div>
+        <div class="card-body">
+          <div class="field">
+            <label id="label-animales">N° de aves</label>
+            <input type="number" id="n_aves" min="1" placeholder="Ej: 10000">
+          </div>
+          <div class="field">
+            <label>Peso promedio por ave <span>(kg)</span></label>
+            <input type="number" id="peso" min="0.01" step="0.001" placeholder="Ej: 1.200">
+          </div>
+          <div class="field">
+            <label id="label-etapa">Semana de edad</label>
+            <div class="select-wrap">
+              <select id="etapa" onchange="toggleCustomAgua()"></select>
+            </div>
+            <div class="custom-agua" id="customAguaWrap">
+              <input type="number" id="custom_agua" min="1" step="1" placeholder="mL / ave / día">
             </div>
           </div>
         </div>
-        <div class="field">
-          <label>Dosis de Azovetril® <span>(mL/kg PV/día)</span></label>
-          <div class="dose-options">
-            <div class="dose-opt" id="dopt-min" onclick="selectDosis(this,'min')"><span class="opt-label">Mínima</span><span class="opt-val">0,125</span></div>
-            <div class="dose-opt active" id="dopt-med" onclick="selectDosis(this,'med')"><span class="opt-label">Media</span><span class="opt-val">0,19</span></div>
-            <div class="dose-opt" id="dopt-max" onclick="selectDosis(this,'max')"><span class="opt-label">Máxima</span><span class="opt-val">0,25</span></div>
-            <div class="dose-opt" id="dopt-custom" onclick="selectDosis(this,'custom')"><span class="opt-label">Otra</span><span class="opt-val">···</span></div>
-          </div>
-          <div class="dose-custom" id="doseCustomWrap">
-            <input type="number" id="dosis_custom" min="0.125" max="0.25" step="0.001" placeholder="0,125–0,25 mL/kg/día">
-          </div>
-        </div>
-        <button class="btn-calc" onclick="calcular()">Calcular dosis</button>
       </div>
-    </div>
 
+      <!-- Parámetros del tratamiento -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon">💉</div>
+          <span class="card-title">Parámetros del tratamiento</span>
+        </div>
+        <div class="card-body">
+          <div class="field">
+            <label>Duración</label>
+            <div class="dosis-fija">
+              <div>
+                <div class="dosis-fija-val">5 días</div>
+                <div class="dosis-fija-sub">Duración fija según ficha técnica</div>
+              </div>
+            </div>
+          </div>
+          <div class="field">
+            <label>Dosis de Azovetril® <span>(mL/kg PV/día)</span></label>
+            <div class="dose-options">
+              <div class="dose-opt" id="dopt-min" onclick="selectDosis(this,'min')"><span class="opt-label">Mínima</span><span class="opt-val">0,125</span></div>
+              <div class="dose-opt active" id="dopt-med" onclick="selectDosis(this,'med')"><span class="opt-label">Media</span><span class="opt-val">0,19</span></div>
+              <div class="dose-opt" id="dopt-max" onclick="selectDosis(this,'max')"><span class="opt-label">Máxima</span><span class="opt-val">0,25</span></div>
+              <div class="dose-opt" id="dopt-custom" onclick="selectDosis(this,'custom')"><span class="opt-label">Otra</span><span class="opt-val">···</span></div>
+            </div>
+            <div class="dose-custom" id="doseCustomWrap">
+              <input type="number" id="dosis_custom" min="0.125" max="0.25" step="0.001" placeholder="0,125–0,25 mL/kg/día">
+            </div>
+          </div>
+          <button class="btn-calc" onclick="calcular()">Calcular dosis</button>
+        </div>
+      </div>
+
+    </div>
   </div>
 
   <!-- Resultado -->
   <div id="resultado">
     <div style="height:24px;"></div>
     <div class="result-card">
-      <div class="sp-tag">🐔 Pollos broiler y Pavos</div>
+      <div class="sp-tag" id="res-sp-tag">🐔 Pollos broiler</div>
       <div class="result-card-title">Resultado del cálculo</div>
       <div class="result-card-sub" id="res-subtitulo"></div>
       <div class="result-grid">
@@ -255,6 +305,7 @@ input[type=number]::-webkit-inner-spin-button{opacity:1;}
     <div class="summary-card">
       <div class="summary-title">Resumen del tratamiento</div>
       <div class="summary-row"><span class="summary-key">Producto</span><span class="summary-val">Azovetril® (Trimetoprima 2% + Sulfadimidina 10%)</span></div>
+      <div class="summary-row"><span class="summary-key">Especie</span><span class="summary-val" id="sum-especie">—</span></div>
       <div class="summary-row"><span class="summary-key">Indicación</span><span class="summary-val">Coccidiosis · Coriza · Pasteurelosis · Colibacilosis · Salmonelosis</span></div>
       <div class="summary-row"><span class="summary-key">Lote</span><span class="summary-val" id="sum-lote">—</span></div>
       <div class="summary-row"><span class="summary-key">Etapa</span><span class="summary-val" id="sum-etapa">—</span></div>
@@ -264,7 +315,7 @@ input[type=number]::-webkit-inner-spin-button{opacity:1;}
     </div>
 
     <button class="btn-reset" onclick="resetForm()">← Nuevo cálculo</button>
-    <div class="aviso"><span>⚠️</span><span>Uso exclusivo bajo prescripción veterinaria. Los valores de consumo de agua son estimados — ajusta según el consumo real medido en el plantel.</span></div>
+    <div class="aviso"><span>⚠️</span><span id="aviso-text">Uso exclusivo bajo prescripción veterinaria. Los valores de consumo de agua son estimados — ajusta según el consumo real medido en el plantel.</span></div>
   </div>
 </main>
 
@@ -273,7 +324,65 @@ input[type=number]::-webkit-inner-spin-button{opacity:1;}
 const DOSIS_MIN = 0.125, DOSIS_MED = 0.1875, DOSIS_MAX = 0.25;
 const DURACION  = 5;
 
-let dosisKey = 'med';
+const ESPECIES = {
+  broiler: {
+    nombre: 'Pollos broiler',
+    emoji: '🐔',
+    resguardo: 'Período de resguardo: 10 días.',
+    etapas: [
+      { label:'Semana 1 · 1-7 días',   mlDia:65 },
+      { label:'Semana 2 · 8-14 días',  mlDia:120 },
+      { label:'Semana 3 · 15-21 días', mlDia:175, default:true },
+      { label:'Semana 4 · 22-28 días', mlDia:220 },
+      { label:'Semana 5 · 29-35 días', mlDia:270 },
+      { label:'Semana 6+ · >35 días',  mlDia:310 },
+      { label:'Consumo personalizado…', mlDia:'custom' },
+    ],
+  },
+  pavos: {
+    nombre: 'Pavos',
+    emoji: '🦃',
+    resguardo: 'Período de resguardo: 14 días.',
+    etapas: [
+      { label:'Semana 1 · 1-7 días',    mlDia:60 },
+      { label:'Semana 2 · 8-14 días',   mlDia:130 },
+      { label:'Semana 3 · 15-21 días',  mlDia:200, default:true },
+      { label:'Semana 4 · 22-28 días',  mlDia:300 },
+      { label:'Semana 5 · 29-35 días',  mlDia:380 },
+      { label:'Semana 6 · 36-42 días',  mlDia:460 },
+      { label:'Semana 7+ · >42 días',   mlDia:550 },
+      { label:'Consumo personalizado…', mlDia:'custom' },
+    ],
+  },
+};
+
+let especieActual = null, dosisKey = 'med';
+
+function selectEspecie(key) {
+  especieActual = key;
+  const sp = ESPECIES[key];
+
+  document.querySelectorAll('.sp-opt').forEach(el => el.classList.remove('active'));
+  document.getElementById('sp-' + key).classList.add('active');
+
+  document.getElementById('lote-icon').textContent      = sp.emoji;
+  document.getElementById('label-animales').textContent = `N° de ${sp.nombre.toLowerCase()}`;
+
+  const sel = document.getElementById('etapa');
+  sel.innerHTML = '';
+  sp.etapas.forEach(e => {
+    const opt = document.createElement('option');
+    opt.value = e.mlDia;
+    opt.textContent = e.mlDia === 'custom'
+      ? e.label
+      : `${e.label} · ~${e.mlDia} mL/ave/día`;
+    if (e.default) opt.selected = true;
+    sel.appendChild(opt);
+  });
+  document.getElementById('customAguaWrap').classList.remove('visible');
+
+  document.getElementById('formulario-grid').style.display = 'grid';
+}
 
 function selectDosis(el, key) {
   dosisKey = key;
@@ -283,9 +392,9 @@ function selectDosis(el, key) {
 }
 
 function getDosis() {
-  if (dosisKey === 'min')    return DOSIS_MIN;
-  if (dosisKey === 'med')    return DOSIS_MED;
-  if (dosisKey === 'max')    return DOSIS_MAX;
+  if (dosisKey === 'min') return DOSIS_MIN;
+  if (dosisKey === 'med') return DOSIS_MED;
+  if (dosisKey === 'max') return DOSIS_MAX;
   return parseFloat(document.getElementById('dosis_custom').value) || null;
 }
 
@@ -309,6 +418,8 @@ function getEtapaDesc() {
 function fmt(n, dec=2) { return n.toLocaleString('es-CL',{minimumFractionDigits:dec,maximumFractionDigits:dec}); }
 
 function calcular() {
+  if (!especieActual) { alert('Selecciona la especie primero.'); return; }
+  const sp        = ESPECIES[especieActual];
   const nAves     = parseFloat(document.getElementById('n_aves').value);
   const pesoKg    = parseFloat(document.getElementById('peso').value);
   const consumoMl = getConsumoMl();
@@ -329,6 +440,7 @@ function calcular() {
   const concMlL    = mlDia / aguaPrepL;
   const totalMl    = mlDia * DURACION;
 
+  document.getElementById('res-sp-tag').textContent = `${sp.emoji} ${sp.nombre}`;
   document.getElementById('res-subtitulo').textContent =
     `${fmt(nAves,0)} aves · ${pesoKg} kg/ave · ${fmt(dosis,3)} mL/kg/día · ${DURACION} días`;
 
@@ -352,11 +464,16 @@ function calcular() {
     `Administra en <strong>una sola toma diaria</strong>. ` +
     `Prepara la solución fresca cada día durante <strong>${DURACION} días</strong> consecutivos.`;
 
+  document.getElementById('sum-especie').textContent  = sp.nombre;
   document.getElementById('sum-lote').textContent     = `${fmt(nAves,0)} aves`;
   document.getElementById('sum-etapa').textContent    = getEtapaDesc();
   document.getElementById('sum-dosis').textContent    =
     `${fmt(dosis,3)} mL Azovetril®/kg PV/día (= ${fmt(dosis*20,2)} mg Trim. + ${fmt(dosis*100,1)} mg Sulf./kg)`;
   document.getElementById('sum-pvtotal').textContent  = `${fmt(pesoTotal,1)} kg PV`;
+
+  document.getElementById('aviso-text').textContent =
+    `Uso exclusivo bajo prescripción veterinaria. ${sp.resguardo} ` +
+    `Los valores de consumo de agua son estimados — ajusta según el consumo real medido en el plantel.`;
 
   document.getElementById('resultado').classList.add('visible');
   document.getElementById('resultado').scrollIntoView({behavior:'smooth',block:'start'});
