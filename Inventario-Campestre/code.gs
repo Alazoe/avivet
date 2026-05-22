@@ -382,6 +382,7 @@ function doGet(e) {
       case "guardarPlanificacion": result = guardarPlanificacion(JSON.parse(decodeURIComponent(e.parameter.payload||"{}"))); break;
       case "getPlanificacion":     result = getPlanificacion(e.parameter);                break;
       case "getConteosDelDia":     result = getConteosDelDia(e.parameter.fecha);          break;
+      case "actualizarPrecios":    result = actualizarPrecios(JSON.parse(decodeURIComponent(e.parameter.payload||"{}"))); break;
       default: result = { ok: true, msg: "Sistema activo" };
     }
   } catch(err) {
@@ -407,6 +408,26 @@ function getMateriasPrimas() {
       stock_min: r[4], proveedor: r[5], precio: r[6], activo: r[7]
     }))
   };
+}
+
+// ── Actualiza precios $/kg en hoja MATERIAS_PRIMAS (col G)
+//    payload: { "30MAIZ-00": 250, "30AFSY-00": 780, ... }
+function actualizarPrecios(precios) {
+  if (!precios || typeof precios !== "object") return { ok: false, error: "Payload inválido" };
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  const ws = ss.getSheetByName("MATERIAS_PRIMAS");
+  if (!ws) return { ok: false, error: "Hoja MATERIAS_PRIMAS no encontrada" };
+  const lastRow = ws.getLastRow();
+  const data    = ws.getRange(3, 1, lastRow - 2, 7).getValues();
+  let actualizados = 0;
+  data.forEach((row, i) => {
+    const cod = row[0];
+    if (cod && precios[cod] !== undefined) {
+      ws.getRange(3 + i, 7).setValue(Number(precios[cod]) || 0);
+      actualizados++;
+    }
+  });
+  return { ok: true, msg: `${actualizados} precios actualizados`, n: actualizados };
 }
 
 // ── Calcula consumo diario promedio de cada MP
