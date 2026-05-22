@@ -11,23 +11,16 @@
 <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
 <style>
 :root {
-  --fondo:     #f8f6f1;
-  --papel:     #ffffff;
-  --tinta:     #1a1a1a;
-  --suave:     #555;
-  --tenue:     #888;
-  --linea:     #e0ddd5;
-  --linea-f:   #c4c0b6;
-  --prim:      #1b4332;
-  --prim-osc:  #133024;
-  --acento:    #f0a500;
-  --acento-cl: #fef5e0;
-  --ok:        #1b5e20;
-  --mal:       #b71c1c;
-  --ft:        'Crimson Pro', Georgia, serif;
-  --fc:        'Inter', system-ui, sans-serif;
-  --fm:        'IBM Plex Mono', ui-monospace, monospace;
-  --mw:        1200px;
+  --fondo:     #f8f6f1;  --papel:     #ffffff;
+  --tinta:     #1a1a1a;  --suave:     #555;   --tenue:     #888;
+  --linea:     #e0ddd5;  --linea-f:   #c4c0b6;
+  --prim:      #1b4332;  --prim-osc:  #133024;
+  --acento:    #f0a500;  --acento-cl: #fef5e0;
+  --ok:        #1b5e20;  --mal:       #b71c1c;
+  --ft: 'Crimson Pro', Georgia, serif;
+  --fc: 'Inter', system-ui, sans-serif;
+  --fm: 'IBM Plex Mono', ui-monospace, monospace;
+  --mw: 1200px;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
@@ -42,10 +35,7 @@ body {
 .cont { max-width: var(--mw); margin: 0 auto; padding: 0 32px; }
 
 /* ── Cabecera ── */
-.cabecera {
-  background: var(--prim); border-bottom: 3px solid var(--acento);
-  padding: 14px 0; position: sticky; top: 0; z-index: 100;
-}
+.cabecera { background: var(--prim); border-bottom: 3px solid var(--acento); padding: 14px 0; position: sticky; top: 0; z-index: 100; }
 .cabecera .cont { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
 .marca { display: flex; flex-direction: column; line-height: 1.1; }
 .marca-titulo { font-family: var(--ft); font-size: 22px; font-weight: 700; color: #fff; letter-spacing: -.01em; }
@@ -53,11 +43,7 @@ body {
 .nav-cab { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
 .nav-cab a { color: rgba(255,255,255,.85); text-decoration: none; font-size: 13px; font-weight: 500; padding: 4px 0; border-bottom: 2px solid transparent; transition: border-color .2s, color .2s; }
 .nav-cab a:hover { color: var(--acento); border-bottom-color: var(--acento); }
-.btn-cab {
-  font-family: var(--fc); font-size: 13px; font-weight: 600;
-  padding: 7px 16px; border: 1.5px solid rgba(255,255,255,.4); border-radius: 5px;
-  background: transparent; color: rgba(255,255,255,.9); cursor: pointer; transition: all .18s;
-}
+.btn-cab { font-family: var(--fc); font-size: 13px; font-weight: 600; padding: 7px 16px; border: 1.5px solid rgba(255,255,255,.4); border-radius: 5px; background: transparent; color: rgba(255,255,255,.9); cursor: pointer; transition: all .18s; }
 .btn-cab:hover { background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.7); }
 
 /* ── Hero ── */
@@ -65,46 +51,33 @@ body {
 .hero-meta { font-family: var(--fm); font-size: 11px; color: var(--tenue); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 18px; }
 .hero h1 { font-family: var(--ft); font-size: clamp(28px,4.5vw,48px); font-weight: 700; line-height: 1.05; letter-spacing: -.02em; color: var(--prim); margin-bottom: 16px; max-width: 26ch; }
 .hero-bajada { font-size: 15px; color: var(--suave); max-width: 70ch; margin-bottom: 32px; line-height: 1.7; }
-.hero-fichas { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px,1fr)); gap: 1px; background: var(--linea); border: 1px solid var(--linea); max-width: 800px; }
+.hero-fichas { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px,1fr)); gap: 1px; background: var(--linea); border: 1px solid var(--linea); max-width: 900px; }
 .ficha { background: var(--papel); padding: 20px 18px; display: flex; flex-direction: column; gap: 4px; }
-.ficha-num { font-family: var(--ft); font-size: 30px; font-weight: 700; color: var(--prim); line-height: 1; }
+.ficha-num { font-family: var(--ft); font-size: 28px; font-weight: 700; color: var(--prim); line-height: 1; }
 .ficha-num.ok  { color: var(--ok); }
 .ficha-num.mal { color: var(--mal); }
 .ficha-lbl { font-size: 11px; color: var(--tenue); letter-spacing: .08em; text-transform: uppercase; }
 .ficha-sub { font-size: 12px; color: var(--suave); margin-top: 2px; }
 
 /* ── Selector lote ── */
-.panel-lotes {
-  background: var(--prim); border-radius: 8px; padding: 18px 22px;
-  display: flex; flex-wrap: wrap; align-items: center; gap: 20px; margin-bottom: 52px;
-}
+.panel-lotes { background: var(--prim); border-radius: 8px; padding: 18px 22px; display: flex; flex-wrap: wrap; align-items: center; gap: 20px; margin-bottom: 52px; }
 .cfg-lbl { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: rgba(255,255,255,.6); }
-.sel-lote {
-  font-family: var(--fc); font-size: 14px; font-weight: 500;
-  padding: 7px 12px; border: 1px solid rgba(255,255,255,.3); border-radius: 5px;
-  background: rgba(255,255,255,.1); color: #fff; min-width: 280px; cursor: pointer;
-  -webkit-appearance: none; appearance: none;
-}
+.sel-lote { font-family: var(--fc); font-size: 14px; font-weight: 500; padding: 7px 12px; border: 1px solid rgba(255,255,255,.3); border-radius: 5px; background: rgba(255,255,255,.1); color: #fff; min-width: 280px; cursor: pointer; -webkit-appearance: none; appearance: none; }
 .sel-lote option { background: var(--prim-osc); color: #fff; }
 .sel-lote:focus { outline: 2px solid var(--acento); outline-offset: 1px; }
 .sep-v { width: 1px; height: 36px; background: rgba(255,255,255,.2); flex-shrink: 0; }
 .lote-meta-txt { font-size: 12px; color: rgba(255,255,255,.7); margin-top: 3px; }
-.badge-genetica {
-  font-family: var(--fm); font-size: 10px; padding: 2px 8px; border-radius: 3px;
-  background: rgba(240,165,0,.2); color: var(--acento); border: 1px solid rgba(240,165,0,.3);
-  display: inline-block; margin-top: 4px;
-}
+.badge-genetica { font-family: var(--fm); font-size: 10px; padding: 2px 8px; border-radius: 3px; background: rgba(240,165,0,.2); border: 1px solid rgba(240,165,0,.3); display: inline-block; margin-top: 4px; }
 
 /* ── Bloques ── */
 .bloque { margin-bottom: 72px; scroll-margin-top: 80px; }
 .bloque h2 { font-family: var(--ft); font-size: clamp(22px,3vw,32px); font-weight: 600; color: var(--prim); letter-spacing: -.01em; margin-bottom: 10px; position: relative; padding-left: 18px; }
 .bloque h2::before { content: ''; position: absolute; left: 0; top: 7px; bottom: 7px; width: 4px; background: var(--acento); }
 .bloque-desc { color: var(--suave); margin-bottom: 28px; max-width: 72ch; font-size: 14.5px; }
-.nota-fuente { display: inline-block; font-family: var(--fm); font-size: 11px; color: var(--tenue); background: var(--fondo); border: 1px solid var(--linea); padding: 3px 10px; border-radius: 3px; }
 
 /* ── Tabs ── */
-.tabs { display: flex; gap: 4px; margin-bottom: 36px; border-bottom: 2px solid var(--linea); }
-.tab { font-family: var(--fc); font-size: 13px; font-weight: 600; padding: 10px 22px; border: none; border-bottom: 3px solid transparent; background: none; cursor: pointer; color: var(--tenue); letter-spacing: .02em; transition: color .18s, border-color .18s; margin-bottom: -2px; }
+.tabs { display: flex; gap: 4px; margin-bottom: 36px; border-bottom: 2px solid var(--linea); flex-wrap: wrap; }
+.tab { font-family: var(--fc); font-size: 13px; font-weight: 600; padding: 10px 18px; border: none; border-bottom: 3px solid transparent; background: none; cursor: pointer; color: var(--tenue); letter-spacing: .02em; transition: color .18s, border-color .18s; margin-bottom: -2px; }
 .tab:hover { color: var(--prim); }
 .tab.activo { color: var(--prim); border-bottom-color: var(--acento); }
 .tab-panel { display: none; }
@@ -135,7 +108,7 @@ td.ok  { color: var(--ok); font-weight: 600; }
 td.mal { color: var(--mal); font-weight: 600; }
 td.real { background: rgba(27,94,32,.07) !important; font-weight: 600; }
 
-/* ── Config panel ── */
+/* ── Config ── */
 .config-hdr { display: flex; align-items: center; justify-content: space-between; padding: 13px 20px; background: var(--prim); border-radius: 6px; cursor: pointer; user-select: none; }
 .config-titulo { font-family: var(--fc); font-size: 12px; font-weight: 600; color: #fff; letter-spacing: .05em; text-transform: uppercase; }
 .config-toggle { font-family: var(--fm); font-size: 11px; color: rgba(255,255,255,.75); background: none; border: 1px solid rgba(255,255,255,.3); border-radius: 4px; padding: 3px 9px; cursor: pointer; }
@@ -156,6 +129,29 @@ td.real { background: rgba(27,94,32,.07) !important; font-weight: 600; }
 .pm-item input:focus { outline: 2px solid var(--acento); outline-offset: 1px; border-color: transparent; }
 .pm-item.modificado input { border-color: var(--acento); background: var(--acento-cl); }
 
+/* ── Gastos especiales ── */
+.gastos-tabla { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 8px; }
+.gastos-tabla th { padding: 8px 10px; text-align: left; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; background: var(--prim); color: #fff; }
+.gastos-tabla td { padding: 8px 10px; border-bottom: 1px solid var(--linea); vertical-align: middle; }
+.gastos-tabla tr:last-child td { border-bottom: none; }
+.gastos-tabla tr:hover td { background: var(--acento-cl); }
+.gasto-cat { display: inline-block; font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 3px; }
+.cat-pollas   { background: #fef5e0; color: #7a5700; }
+.cat-inversion{ background: #e8f5e9; color: #1b5e20; }
+.cat-vacuna   { background: #e8f2f8; color: #1e5a7a; }
+.cat-viruta   { background: #fdf0ea; color: #8b3a0a; }
+.cat-otro     { background: #f0f0f0; color: #555; }
+
+.gasto-form { display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 8px; align-items: end; margin-top: 16px; padding: 16px; background: var(--fondo); border: 1px dashed var(--linea-f); border-radius: 6px; }
+.gasto-form-field { display: flex; flex-direction: column; gap: 4px; }
+.gasto-form-field label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--tenue); }
+.gasto-form-field input, .gasto-form-field select { font-family: var(--fc); font-size: 13px; padding: 7px 9px; border: 1px solid var(--linea-f); border-radius: 4px; background: var(--papel); color: var(--tinta); width: 100%; }
+.gasto-form-field input:focus, .gasto-form-field select:focus { outline: 2px solid var(--acento); }
+
+.ciclo-siguiente { margin-top: 32px; padding: 22px 24px; background: var(--papel); border: 1px solid var(--linea); border-left: 4px solid var(--acento); }
+.ciclo-siguiente h3 { font-family: var(--ft); font-size: 20px; font-weight: 600; color: var(--prim); margin-bottom: 8px; }
+.ciclo-siguiente p { font-size: 14px; color: var(--suave); margin-bottom: 14px; line-height: 1.6; }
+
 /* ── Botones ── */
 .btn { font-family: var(--fc); font-size: 14px; font-weight: 600; padding: 10px 22px; border: none; border-radius: 5px; cursor: pointer; transition: background .15s; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; }
 .btn-acento { background: var(--acento); color: #1a1a1a; }
@@ -167,8 +163,32 @@ td.real { background: rgba(27,94,32,.07) !important; font-weight: 600; }
 .btn-linea  { background: none; border: 1px solid var(--linea-f); color: var(--suave); }
 .btn-linea:hover { border-color: var(--prim); color: var(--prim); }
 .btn-sm { padding: 6px 14px; font-size: 12px; }
+.btn-ico { padding: 5px 10px; font-size: 13px; background: none; border: 1px solid var(--linea-f); border-radius: 4px; cursor: pointer; color: var(--mal); }
+.btn-ico:hover { background: #fdecea; border-color: var(--mal); }
 
-/* ── Metodología / Pie ── */
+/* ── Modal ── */
+.modal-bg { display: none; position: fixed; inset: 0; background: rgba(27,67,50,.5); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
+.modal-bg.abierto { display: flex; }
+.modal { background: var(--papel); border-radius: 8px; padding: 30px; width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,.3); }
+.modal h2 { font-family: var(--ft); font-size: 26px; font-weight: 700; color: var(--prim); margin-bottom: 20px; }
+.modal-close { float: right; background: none; border: none; font-size: 22px; cursor: pointer; color: var(--tenue); }
+.modal-close:hover { color: var(--tinta); }
+.modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.modal-field { display: flex; flex-direction: column; gap: 5px; }
+.modal-field.full { grid-column: 1/-1; }
+.modal-field label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--tenue); }
+.modal-field input, .modal-field select { font-family: var(--fc); font-size: 14px; padding: 9px 12px; border: 1px solid var(--linea-f); border-radius: 5px; background: var(--fondo); color: var(--tinta); width: 100%; }
+.modal-field input:focus, .modal-field select:focus { outline: 2px solid var(--acento); outline-offset: 1px; border-color: transparent; }
+.modal-sep { grid-column: 1/-1; border: none; border-top: 1px dashed var(--linea); margin: 4px 0; }
+.modal-sec { grid-column: 1/-1; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--suave); margin-top: 4px; }
+.modal-acciones { grid-column: 1/-1; display: flex; gap: 10px; margin-top: 8px; flex-wrap: wrap; }
+
+/* ── Vacío ── */
+.vacio { text-align: center; padding: 80px 24px; color: var(--tenue); border: 1px dashed var(--linea-f); background: var(--papel); }
+.vacio h2 { font-family: var(--ft); font-size: 26px; color: var(--prim); margin-bottom: 10px; }
+.vacio p  { font-size: 14px; margin-bottom: 24px; }
+
+/* ── Metodología ── */
 .metodo { background: var(--papel); border: 1px solid var(--linea); padding: 32px; }
 .metodo-lista { list-style: none; display: grid; gap: 12px; font-size: 14px; color: var(--suave); }
 .metodo-lista li { padding-left: 22px; position: relative; line-height: 1.6; }
@@ -177,43 +197,17 @@ td.real { background: rgba(27,94,32,.07) !important; font-weight: 600; }
 .pie { margin-top: 52px; padding: 26px 0; border-top: 1px solid var(--linea); font-size: 13px; color: var(--tenue); text-align: center; line-height: 1.7; }
 .pie strong { color: var(--prim); }
 
-/* ── Modal ── */
-.modal-bg { display: none; position: fixed; inset: 0; background: rgba(27,67,50,.5); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
-.modal-bg.abierto { display: flex; }
-.modal { background: var(--papel); border-radius: 8px; padding: 30px; width: 100%; max-width: 580px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,.3); }
-.modal h2 { font-family: var(--ft); font-size: 26px; font-weight: 700; color: var(--prim); margin-bottom: 20px; }
-.modal-close { float: right; background: none; border: none; font-size: 22px; cursor: pointer; color: var(--tenue); }
-.modal-close:hover { color: var(--tinta); }
-.modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-.modal-field { display: flex; flex-direction: column; gap: 5px; }
-.modal-field.full { grid-column: 1/-1; }
-.modal-field label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--tenue); }
-.modal-field input, .modal-field select {
-  font-family: var(--fc); font-size: 14px; padding: 9px 12px;
-  border: 1px solid var(--linea-f); border-radius: 5px;
-  background: var(--fondo); color: var(--tinta); width: 100%;
-}
-.modal-field input:focus, .modal-field select:focus { outline: 2px solid var(--acento); outline-offset: 1px; border-color: transparent; }
-.modal-sep { grid-column: 1/-1; border: none; border-top: 1px dashed var(--linea); margin: 4px 0; }
-.modal-sec { grid-column: 1/-1; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--suave); margin-top: 4px; }
-.modal-acciones { grid-column: 1/-1; display: flex; gap: 10px; margin-top: 8px; }
-
-/* ── Estado vacío ── */
-.vacio { text-align: center; padding: 80px 24px; color: var(--tenue); border: 1px dashed var(--linea-f); background: var(--papel); }
-.vacio h2 { font-family: var(--ft); font-size: 26px; color: var(--prim); margin-bottom: 10px; }
-.vacio p  { font-size: 14px; margin-bottom: 24px; }
-
-/* ── Genética badge en modal ── */
-.gen-badge { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 11px; font-weight: 600; }
-
 @media (max-width: 900px) {
   .cont { padding: 0 20px; }
   .hero { padding: 40px 0 32px; }
   .graficos-grid { grid-template-columns: 1fr; }
   .hero-fichas { grid-template-columns: repeat(2,1fr); }
   .nav-cab a { display: none; }
+  .modal-grid, .gasto-form { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 600px) {
   .modal-grid { grid-template-columns: 1fr; }
-  .precios-mes-grid { grid-template-columns: repeat(3,1fr); }
+  .gasto-form { grid-template-columns: 1fr 1fr; }
 }
 </style>
 </head>
@@ -240,13 +234,14 @@ td.real { background: rgba(27,94,32,.07) !important; font-weight: 600; }
     <div class="hero-meta">Herramienta técnica · <span id="fecha-hoy"></span></div>
     <h1>Presupuesto diario avícola · seguimiento en tiempo real</h1>
     <p class="hero-bajada">
-      Proyección productiva y financiera con curvas oficiales por genética (Hy-Line, Lohmann, Nick Brown, Dekalb).
-      Precio de huevo editable por mes y año. Ingresa datos diarios reales para comparar con lo proyectado.
+      Proyección a 130 semanas con curvas oficiales Hy-Line, Lohmann, Nick Brown y Dekalb.
+      Precio de huevo por mes, gastos iniciales (pollas, vacunas, viruta, inversión) y continuación de ciclos.
     </p>
     <div class="hero-fichas">
       <div class="ficha"><span class="ficha-num" id="kpi-sem">—</span><span class="ficha-lbl">semana de vida</span></div>
       <div class="ficha"><span class="ficha-num" id="kpi-pos">—</span><span class="ficha-lbl">% postura proyectado</span></div>
       <div class="ficha"><span class="ficha-num" id="kpi-aves">—</span><span class="ficha-lbl">aves proyectadas</span></div>
+      <div class="ficha"><span class="ficha-num" id="kpi-ginv">—</span><span class="ficha-lbl">inversión inicial</span><span class="ficha-sub" id="kpi-ginv-sub"></span></div>
       <div class="ficha">
         <span class="ficha-num" id="kpi-res">—</span>
         <span class="ficha-lbl">resultado acum. proyectado</span>
@@ -255,7 +250,6 @@ td.real { background: rgba(27,94,32,.07) !important; font-weight: 600; }
     </div>
   </section>
 
-  <!-- SELECTOR LOTE -->
   <div class="panel-lotes">
     <div>
       <div class="cfg-lbl" style="margin-bottom:7px">Lote activo</div>
@@ -271,27 +265,24 @@ td.real { background: rgba(27,94,32,.07) !important; font-weight: 600; }
     </div>
   </div>
 
-  <!-- CONTENIDO DINÁMICO -->
   <div id="contenido">
     <div class="vacio">
       <h2>Crea tu primer lote</h2>
-      <p>Configura los parámetros del lote para generar la proyección productiva y financiera</p>
+      <p>Configura los parámetros y los gastos iniciales para generar la proyección completa del ciclo</p>
       <button class="btn btn-prim" onclick="abrirModal()">+ Nuevo lote</button>
     </div>
   </div>
 
-  <!-- METODOLOGÍA -->
   <section class="bloque metodo" id="metodo" style="display:none">
     <h2>Metodología y supuestos</h2>
     <ul class="metodo-lista">
-      <li><strong>Curvas genéticas:</strong> Hy-Line Brown, Hy-Line W-80, Lohmann Brown, Nick Brown y Dekalb Brown. Datos de manuales oficiales usados en <a href="https://avivet.cl/avivet/curvas-geneticas/" target="_blank" style="color:var(--prim)">curvas-geneticas</a>.</li>
-      <li><strong>Postura %:</strong> curva semanal oficial de cada genética (% Ave-Día Actual). Semanas de crianza con 0% postura.</li>
-      <li><strong>Consumo de alimento:</strong> promedio alMin/alMax semanal de la genética seleccionada. 7 periodos de costo ($/kg) editables.</li>
-      <li><strong>Mortalidad:</strong> curva semanal de referencia Lohmann Brown, aplicada a todas las genéticas como base.</li>
-      <li><strong>Precio huevo por mes:</strong> se puede asignar un precio diferente para cada mes-año del ciclo. Los meses sin precio específico usan el valor base.</li>
+      <li><strong>Curvas genéticas:</strong> Hy-Line Brown, Hy-Line W-80, Lohmann Brown, Nick Brown y Dekalb Brown — manuales oficiales usados en <a href="https://avivet.cl/avivet/curvas-geneticas/" target="_blank" style="color:var(--prim)">curvas-geneticas</a>.</li>
+      <li><strong>Extensión a 130 semanas:</strong> semanas 1–100 usan curva oficial. Desde semana 101 la postura disminuye 1% semanal hasta mínimo 50%. Máximo 130 semanas (910 días).</li>
+      <li><strong>Gastos especiales:</strong> compra de pollas, inversión inicial, vacunas y viruta se aplican en la semana especificada como costo de única vez.</li>
+      <li><strong>Precio huevo por mes:</strong> precio personalizado por mes-año; meses sin asignar usan el precio base.</li>
       <li><strong>Gastos fijos:</strong> sueldo + luz + agua + gas + combustible + viruta + insumos, distribuidos en 30 días/mes.</li>
-      <li><strong>Resultado diario:</strong> Ingreso (huevos × precio del mes) − Costo alimento − Gastos fijos. Los datos se guardan localmente en tu navegador.</li>
-      <li><strong>Advertencia:</strong> valores son proyecciones orientativas. El manejo real puede modificar ±10–15%.</li>
+      <li><strong>Resultado diario:</strong> Ingreso − Costo alimento − Gastos fijos − Gastos especiales de ese día.</li>
+      <li><strong>Siguiente ciclo:</strong> al finalizar el ciclo se puede crear un nuevo lote con fecha de nacimiento calculada automáticamente.</li>
     </ul>
   </section>
 
@@ -299,7 +290,6 @@ td.real { background: rgba(27,94,32,.07) !important; font-weight: 600; }
     <p><strong>avivet.cl</strong> · MV Andrés Lazo Escobar · Valdivia, Chile<br>
     Proyección generada el <span id="fecha-pie"></span>. Revisar parámetros antes de uso comercial.</p>
   </footer>
-
 </main>
 
 <!-- MODAL NUEVO / EDITAR LOTE -->
@@ -314,7 +304,6 @@ td.real { background: rgba(27,94,32,.07) !important; font-weight: 600; }
           <label>Nombre / cliente</label>
           <input type="text" name="nombre" placeholder="Ej: Jonathan Morales — Pitrufquén" required>
         </div>
-
         <div class="modal-field full">
           <label>Genética</label>
           <select name="genetica">
@@ -325,7 +314,6 @@ td.real { background: rgba(27,94,32,.07) !important; font-weight: 600; }
             <option value="Dekalb Brown">Dekalb Brown</option>
           </select>
         </div>
-
         <div class="modal-field">
           <label>Fecha de nacimiento</label>
           <input type="date" name="fechaNacimiento" required>
@@ -335,12 +323,32 @@ td.real { background: rgba(27,94,32,.07) !important; font-weight: 600; }
           <input type="number" name="nAves" value="1500" min="1" required>
         </div>
         <div class="modal-field">
-          <label>Precio venta huevo base ($/ud.)</label>
+          <label>Precio huevo base ($/ud.)</label>
           <input type="number" name="precioHuevo" value="130" min="1" required>
         </div>
         <div class="modal-field">
           <label>Gastos fijos / mes ($)</label>
           <input type="number" name="gastosMes" value="2441000" min="0" required>
+        </div>
+
+        <!-- Gastos iniciales — solo al crear -->
+        <div class="modal-sep" id="sep-gi"></div>
+        <div class="modal-sec" id="sec-gi">Gastos iniciales (semana 1) — opcional</div>
+        <div class="modal-field" id="fi-pollas">
+          <label>Compra de pollas ($)</label>
+          <input type="number" name="gi_pollas" value="0" min="0">
+        </div>
+        <div class="modal-field" id="fi-inversion">
+          <label>Inversión inicial / equipos ($)</label>
+          <input type="number" name="gi_inversion" value="0" min="0">
+        </div>
+        <div class="modal-field" id="fi-vacunas">
+          <label>Vacunas iniciales ($)</label>
+          <input type="number" name="gi_vacunas" value="0" min="0">
+        </div>
+        <div class="modal-field" id="fi-viruta">
+          <label>Viruta inicial ($)</label>
+          <input type="number" name="gi_viruta" value="0" min="0">
         </div>
 
         <hr class="modal-sep">
@@ -364,234 +372,178 @@ td.real { background: rgba(27,94,32,.07) !important; font-weight: 600; }
 
 <script>
 /* ════════════════════════════════════════════════════════════
-   CURVAS GENÉTICAS — datos oficiales por línea
-   Postura: [sem, pesoMin, pesoMax, pct%, pesoHuevo_g, alMin, alMax, aguaMin, aguaMax]
+   DATOS DE GENÉTICA (manuales oficiales, semanas 1-100)
+   Postura: [sem, pesoMin, pesoMax, pct%, pesoHuevo_g, alMin, alMax, ...]
    ════════════════════════════════════════════════════════════ */
 const LINEAS = {
   'Hy-Line Brown': {
-    color: '#f0a500', crianzaSem: 17,
-    crianza: [
-      [1,0.070,0.080,12,14,18,28],[2,0.115,0.145,17,21,25,42],[3,0.190,0.220,20,25,30,50],
-      [4,0.270,0.320,25,30,37,60],[5,0.360,0.420,29,36,43,73],[6,0.470,0.520,35,44,52,89],
-      [7,0.570,0.640,41,49,62,98],[8,0.680,0.760,47,56,71,112],[9,0.780,0.880,52,61,78,122],
-      [10,0.885,0.995,56,64,84,129],[11,0.995,1.105,60,69,90,137],[12,1.095,1.205,62,72,93,144],
-      [13,1.175,1.295,64,74,96,148],[14,1.265,1.365,66,77,99,154],[15,1.345,1.445,68,79,102,158],
-      [16,1.410,1.510,70,82,105,164],[17,1.485,1.590,72,85,108,170],
+    color:'#f0a500', crianzaSem:17,
+    crianza:[
+      [1,.07,.08,12,14],[2,.115,.145,17,21],[3,.19,.22,20,25],
+      [4,.27,.32,25,30],[5,.36,.42,29,36],[6,.47,.52,35,44],
+      [7,.57,.64,41,49],[8,.68,.76,47,56],[9,.78,.88,52,61],
+      [10,.885,.995,56,64],[11,.995,1.105,60,69],[12,1.095,1.205,62,72],
+      [13,1.175,1.295,64,74],[14,1.265,1.365,66,77],[15,1.345,1.445,68,79],
+      [16,1.41,1.51,70,82],[17,1.485,1.59,72,85],
     ],
-    postura: [
-      [18,1.550,1.670,4.4,46.5,73,88,110,176],[19,1.620,1.740,17.7,49.3,85,94,127,188],
-      [20,1.680,1.800,44.1,51.6,90,99,135,197],[21,1.730,1.850,71.0,53.5,95,103,142,205],
-      [22,1.770,1.890,86.5,55.0,99,107,148,215],[23,1.800,1.920,92.4,56.4,102,111,154,222],
-      [24,1.820,1.950,94.4,57.5,106,114,159,228],[25,1.840,1.980,95.2,58.4,108,115,162,230],
-      [26,1.860,2.000,95.5,59.2,109,116,163,231],[27,1.880,2.010,95.7,59.9,109,116,164,232],
-      [28,1.890,2.030,95.7,60.4,109,116,164,233],[29,1.900,2.040,95.7,60.9,109,117,164,233],
-      [30,1.910,2.050,95.7,61.3,109,117,164,233],[31,1.920,2.060,95.6,61.7,109,117,164,233],
-      [32,1.930,2.070,95.6,62.0,109,117,164,234],[33,1.930,2.070,95.5,62.3,109,117,164,233],
-      [34,1.940,2.080,95.3,62.5,109,117,164,233],[35,1.940,2.080,95.1,62.7,109,117,163,233],
-      [36,1.950,2.080,94.9,62.9,109,116,163,233],[37,1.950,2.090,94.7,63.1,108,116,163,232],
-      [38,1.950,2.090,94.5,63.2,108,116,163,232],[39,1.950,2.090,94.3,63.3,108,116,163,232],
-      [40,1.950,2.090,94.1,63.4,108,116,163,232],[41,1.960,2.090,93.9,63.5,108,116,163,232],
-      [42,1.960,2.100,93.6,63.6,108,116,163,232],[43,1.960,2.100,93.3,63.7,108,116,163,232],
-      [44,1.960,2.100,93.0,63.8,108,116,163,232],[45,1.960,2.100,92.7,63.9,108,116,163,232],
-      [46,1.960,2.100,92.4,63.9,108,116,163,232],[47,1.960,2.100,92.1,64.0,108,116,163,232],
-      [48,1.960,2.100,91.9,64.0,108,116,163,232],[49,1.960,2.100,91.6,64.1,108,116,163,232],
-      [50,1.960,2.100,91.4,64.1,108,116,163,232],[51,1.960,2.100,91.1,64.2,108,116,163,232],
-      [52,1.960,2.100,90.9,64.2,108,116,163,232],[53,1.960,2.100,90.7,64.3,108,116,163,232],
-      [54,1.960,2.100,90.5,64.3,108,116,163,232],[55,1.960,2.100,90.2,64.3,108,116,163,232],
-      [56,1.960,2.100,90.1,64.4,108,116,163,232],[57,1.960,2.100,89.8,64.4,108,116,163,232],
-      [58,1.960,2.100,89.6,64.4,108,116,163,232],[59,1.960,2.100,89.4,64.5,108,116,163,232],
-      [60,1.960,2.100,89.1,64.5,108,116,163,232],[61,1.960,2.100,88.8,64.6,108,116,163,232],
-      [62,1.960,2.100,88.5,64.6,108,116,163,232],[63,1.960,2.100,88.3,64.6,108,116,163,232],
-      [64,1.960,2.100,88.0,64.6,108,116,163,232],[65,1.960,2.100,87.7,64.7,108,116,163,232],
-      [66,1.960,2.100,87.3,64.7,108,116,163,232],[67,1.960,2.100,86.9,64.7,108,116,163,232],
-      [68,1.960,2.100,86.4,64.7,108,116,163,232],[69,1.960,2.100,85.9,64.8,108,116,163,232],
-      [70,1.960,2.100,85.4,64.8,108,116,163,232],[71,1.960,2.100,84.9,64.8,108,116,163,232],
-      [72,1.960,2.100,84.2,64.9,108,116,163,232],[73,1.960,2.100,83.6,64.9,108,116,163,232],
-      [74,1.960,2.100,83.0,64.9,108,116,163,232],[75,1.960,2.100,82.4,64.9,108,116,163,232],
-      [76,1.960,2.100,81.8,64.9,108,116,163,232],[77,1.960,2.100,81.2,65.0,108,116,163,232],
-      [78,1.960,2.100,80.6,65.0,108,116,163,232],[79,1.960,2.100,80.0,65.0,108,116,163,232],
-      [80,1.960,2.100,79.4,65.0,108,116,163,232],
+    postura:[
+      [18,4.4,73,88],[19,17.7,85,94],[20,44.1,90,99],[21,71.0,95,103],
+      [22,86.5,99,107],[23,92.4,102,111],[24,94.4,106,114],[25,95.2,108,115],
+      [26,95.5,109,116],[27,95.7,109,116],[28,95.7,109,116],[29,95.7,109,117],
+      [30,95.7,109,117],[31,95.6,109,117],[32,95.6,109,117],[33,95.5,109,117],
+      [34,95.3,109,117],[35,95.1,109,117],[36,94.9,109,116],[37,94.7,108,116],
+      [38,94.5,108,116],[39,94.3,108,116],[40,94.1,108,116],[41,93.9,108,116],
+      [42,93.6,108,116],[43,93.3,108,116],[44,93.0,108,116],[45,92.7,108,116],
+      [46,92.4,108,116],[47,92.1,108,116],[48,91.9,108,116],[49,91.6,108,116],
+      [50,91.4,108,116],[51,91.1,108,116],[52,90.9,108,116],[53,90.7,108,116],
+      [54,90.5,108,116],[55,90.2,108,116],[56,90.1,108,116],[57,89.8,108,116],
+      [58,89.6,108,116],[59,89.4,108,116],[60,89.1,108,116],[61,88.8,108,116],
+      [62,88.5,108,116],[63,88.3,108,116],[64,88.0,108,116],[65,87.7,108,116],
+      [66,87.3,108,116],[67,86.9,108,116],[68,86.4,108,116],[69,85.9,108,116],
+      [70,85.4,108,116],[71,84.9,108,116],[72,84.2,108,116],[73,83.6,108,116],
+      [74,83.0,108,116],[75,82.4,108,116],[76,81.8,108,116],[77,81.2,108,116],
+      [78,80.6,108,116],[79,80.0,108,116],[80,79.4,108,116],[81,78.8,108,116],
+      [82,78.3,108,116],[83,77.7,108,116],[84,77.2,108,116],[85,76.7,108,116],
+      [86,76.2,108,116],[87,75.7,108,116],[88,75.2,108,116],[89,74.8,108,116],
+      [90,74.4,108,116],[91,74.0,108,116],[92,73.7,108,116],[93,73.3,108,116],
+      [94,73.0,108,116],[95,72.6,108,116],[96,72.3,108,116],[97,71.9,108,116],
+      [98,71.6,108,116],[99,71.2,108,116],[100,70.9,108,116],
     ],
   },
-
   'Hy-Line W-80': {
-    color: '#4a90a4', crianzaSem: 17,
-    crianza: [
-      [1,0.063,0.067,12,14,18,28],[2,0.117,0.125,16,19,23,38],[3,0.175,0.187,21,25,32,50],
-      [4,0.246,0.262,25,31,41,62],[5,0.322,0.343,30,35,47,70],[6,0.397,0.423,34,39,53,78],
-      [7,0.497,0.528,37,43,59,86],[8,0.565,0.602,41,46,63,92],[9,0.644,0.684,44,50,66,100],
-      [10,0.719,0.765,47,53,72,106],[11,0.805,0.856,51,56,77,112],[12,0.888,0.946,54,59,81,118],
-      [13,0.961,1.023,57,62,86,124],[14,1.028,1.094,60,65,90,130],[15,1.086,1.155,63,68,95,136],
-      [16,1.137,1.209,67,72,101,144],[17,1.190,1.266,70,75,105,150],[18,1.228,1.306,74,80,108,156],
+    color:'#4a90a4', crianzaSem:17,
+    crianza:[
+      [1,.063,.067,12,14],[2,.117,.125,16,19],[3,.175,.187,21,25],
+      [4,.246,.262,25,31],[5,.322,.343,30,35],[6,.397,.423,34,39],
+      [7,.497,.528,37,43],[8,.565,.602,41,46],[9,.644,.684,44,50],
+      [10,.719,.765,47,53],[11,.805,.856,51,56],[12,.888,.946,54,59],
+      [13,.961,1.023,57,62],[14,1.028,1.094,60,65],[15,1.086,1.155,63,68],
+      [16,1.137,1.209,67,72],[17,1.19,1.266,70,75],[18,1.228,1.306,74,80],
     ],
-    postura: [
-      [19,1.230,1.310,9.5,41.8,76,83,114,166],[20,1.280,1.360,37.5,44.5,79,89,119,178],
-      [21,1.310,1.390,71.6,46.8,85,93,128,186],[22,1.340,1.420,84.4,48.8,87,96,131,192],
-      [23,1.370,1.460,89.5,50.5,88,98,132,196],[24,1.390,1.480,92.4,52.0,90,100,135,200],
-      [25,1.430,1.520,94.2,53.1,93,102,140,204],[26,1.460,1.550,95.4,54.3,94,103,141,206],
-      [27,1.470,1.560,95.6,55.3,95,105,143,210],[28,1.500,1.590,96.6,56.2,96,106,144,212],
-      [29,1.520,1.610,96.9,57.0,97,106,146,212],[30,1.530,1.630,96.9,57.6,98,107,147,214],
-      [31,1.540,1.640,96.9,58.2,99,108,149,216],[32,1.550,1.650,96.8,58.6,100,108,150,216],
-      [33,1.560,1.660,96.7,59.0,101,108,150,216],[34,1.560,1.660,96.7,59.3,101,109,152,218],
-      [35,1.570,1.670,96.6,59.5,102,109,153,218],[36,1.570,1.670,96.6,59.7,102,109,153,218],
-      [37,1.570,1.670,96.5,59.9,103,110,155,220],[38,1.570,1.670,96.4,60.1,103,110,155,220],
-      [39,1.570,1.670,96.4,60.2,103,110,155,220],[40,1.570,1.670,96.3,60.4,103,110,155,220],
-      [41,1.580,1.680,96.2,60.5,103,110,155,220],[42,1.580,1.680,96.3,60.5,103,110,155,220],
-      [43,1.580,1.680,96.2,60.6,103,110,155,220],[44,1.580,1.680,96.1,60.7,103,110,155,220],
-      [45,1.590,1.690,96.0,60.8,103,110,155,220],[46,1.590,1.690,95.9,60.9,103,110,155,220],
-      [47,1.590,1.690,95.8,60.9,103,110,155,220],[48,1.590,1.690,95.7,60.9,103,110,155,220],
-      [49,1.590,1.690,95.5,61.0,103,110,155,220],[50,1.590,1.690,95.2,61.1,103,110,155,220],
-      [51,1.590,1.690,95.2,61.1,103,110,155,220],[52,1.590,1.690,95.0,61.1,103,110,155,220],
-      [53,1.590,1.690,94.8,61.1,103,110,155,220],[54,1.590,1.690,94.6,61.2,103,110,155,220],
-      [55,1.590,1.700,94.5,61.2,103,110,155,220],[56,1.590,1.700,94.1,61.3,103,110,155,220],
-      [57,1.590,1.700,93.9,61.3,103,110,155,220],[58,1.590,1.700,93.8,61.3,103,110,155,220],
-      [59,1.590,1.700,93.4,61.3,103,110,155,220],[60,1.590,1.700,93.1,61.4,103,110,155,220],
-      [61,1.590,1.700,92.9,61.4,103,110,155,220],[62,1.600,1.700,92.6,61.4,103,110,155,220],
-      [63,1.600,1.700,92.3,61.4,103,110,155,220],[64,1.600,1.700,92.1,61.5,103,110,155,220],
-      [65,1.600,1.700,91.8,61.5,103,110,155,220],[66,1.600,1.700,91.5,61.6,103,110,155,220],
-      [67,1.600,1.700,91.2,61.6,103,110,155,220],[68,1.600,1.700,90.9,61.6,103,110,155,220],
-      [69,1.600,1.700,90.6,61.7,103,110,155,220],[70,1.600,1.700,90.3,61.7,103,110,155,220],
-      [71,1.600,1.700,90.0,61.7,103,110,155,220],[72,1.600,1.700,89.6,61.8,103,110,155,220],
-      [73,1.600,1.700,89.3,61.8,103,110,155,220],[74,1.600,1.700,89.0,61.9,103,110,155,220],
-      [75,1.600,1.700,88.6,61.9,103,110,155,220],[76,1.600,1.700,88.3,61.9,103,110,155,220],
-      [77,1.600,1.700,88.0,61.9,103,110,155,220],[78,1.600,1.700,87.7,61.9,103,110,155,220],
-      [79,1.600,1.700,87.3,62.0,103,110,155,220],[80,1.600,1.700,87.0,62.0,103,110,155,220],
+    postura:[
+      [19,9.5,76,83],[20,37.5,79,89],[21,71.6,85,93],[22,84.4,87,96],
+      [23,89.5,88,98],[24,92.4,90,100],[25,94.2,93,102],[26,95.4,94,103],
+      [27,95.6,95,105],[28,96.6,96,106],[29,96.9,97,106],[30,96.9,98,107],
+      [31,96.9,99,108],[32,96.8,100,108],[33,96.7,101,108],[34,96.7,101,109],
+      [35,96.6,102,109],[36,96.6,102,109],[37,96.5,103,110],[38,96.4,103,110],
+      [39,96.4,103,110],[40,96.3,103,110],[41,96.2,103,110],[42,96.3,103,110],
+      [43,96.2,103,110],[44,96.1,103,110],[45,96.0,103,110],[46,95.9,103,110],
+      [47,95.8,103,110],[48,95.7,103,110],[49,95.5,103,110],[50,95.2,103,110],
+      [51,95.2,103,110],[52,95.0,103,110],[53,94.8,103,110],[54,94.6,103,110],
+      [55,94.5,103,110],[56,94.1,103,110],[57,93.9,103,110],[58,93.8,103,110],
+      [59,93.4,103,110],[60,93.1,103,110],[61,92.9,103,110],[62,92.6,103,110],
+      [63,92.3,103,110],[64,92.1,103,110],[65,91.8,103,110],[66,91.5,103,110],
+      [67,91.2,103,110],[68,90.9,103,110],[69,90.6,103,110],[70,90.3,103,110],
+      [71,90.0,103,110],[72,89.6,103,110],[73,89.3,103,110],[74,89.0,103,110],
+      [75,88.6,103,110],[76,88.3,103,110],[77,88.0,103,110],[78,87.7,103,110],
+      [79,87.3,103,110],[80,87.0,103,110],[81,86.6,103,110],[82,86.4,103,110],
+      [83,86.1,103,110],[84,85.8,103,110],[85,85.4,103,110],[86,85.1,103,110],
+      [87,84.8,103,110],[88,84.5,103,110],[89,84.2,103,110],[90,83.8,103,110],
+      [91,83.4,103,110],[92,83.1,103,110],[93,82.7,103,110],[94,82.4,103,110],
+      [95,82.0,103,110],[96,81.7,103,110],[97,81.4,103,110],[98,81.1,103,110],
+      [99,80.7,103,110],[100,80.4,103,110],
     ],
   },
-
   'Lohmann Brown': {
-    color: '#e05c5c', crianzaSem: 17,
-    crianza: [
-      [1,0.073,0.077,11,14,18,28],[2,0.121,0.129,16,20,25,40],[3,0.184,0.196,19,24,30,48],
-      [4,0.261,0.277,24,29,37,58],[5,0.350,0.372,28,35,43,68],[6,0.449,0.477,33,42,50,82],
-      [7,0.549,0.583,38,46,58,92],[8,0.647,0.687,44,52,67,104],[9,0.742,0.788,49,57,74,114],
-      [10,0.834,0.886,53,61,80,122],[11,0.921,0.977,57,65,86,130],[12,1.003,1.065,59,68,89,136],
-      [13,1.082,1.148,61,70,92,140],[14,1.157,1.229,63,72,95,144],[15,1.229,1.305,65,74,98,148],
-      [16,1.298,1.378,67,77,101,154],[17,1.365,1.449,69,80,104,160],[18,1.431,1.519,71,83,107,166],
+    color:'#e05c5c', crianzaSem:17,
+    crianza:[
+      [1,.073,.077,11,14],[2,.121,.129,16,20],[3,.184,.196,19,24],
+      [4,.261,.277,24,29],[5,.35,.372,28,35],[6,.449,.477,33,42],
+      [7,.549,.583,38,46],[8,.647,.687,44,52],[9,.742,.788,49,57],
+      [10,.834,.886,53,61],[11,.921,.977,57,65],[12,1.003,1.065,59,68],
+      [13,1.082,1.148,61,70],[14,1.157,1.229,63,72],[15,1.229,1.305,65,74],
+      [16,1.298,1.378,67,77],[17,1.365,1.449,69,80],[18,1.431,1.519,71,83],
     ],
-    postura: [
-      [19,1.498,1.590,9.8,42.9,88,93,163,172],[20,1.565,1.661,37.2,45.4,92,97,170,180],
-      [21,1.629,1.729,55.2,48.0,96,102,178,189],[22,1.685,1.789,72.7,50.4,100,106,185,196],
-      [23,1.728,1.834,83.1,52.6,103,109,191,202],[24,1.762,1.872,88.7,54.5,106,112,196,207],
-      [25,1.788,1.898,91.9,56.2,109,115,202,213],[26,1.803,1.915,93.7,57.4,109,115,202,213],
-      [27,1.811,1.923,94.8,58.5,109,115,202,213],[28,1.816,1.928,95.4,59.4,109,115,202,213],
-      [29,1.819,1.931,95.7,60.2,109,115,202,213],[30,1.822,1.934,95.9,60.8,109,115,202,213],
-      [31,1.825,1.937,96.1,61.2,109,115,202,213],[32,1.827,1.939,96.2,61.6,109,115,202,213],
-      [33,1.829,1.943,96.3,61.9,109,115,202,213],[34,1.832,1.946,96.3,62.1,109,115,202,213],
-      [35,1.834,1.948,96.2,62.3,109,115,202,213],[36,1.836,1.950,96.1,62.5,109,115,202,213],
-      [37,1.838,1.952,95.9,62.6,109,115,202,213],[38,1.840,1.954,95.7,62.7,109,115,202,213],
-      [39,1.843,1.957,95.6,62.9,109,115,202,213],[40,1.845,1.959,95.4,63.0,109,115,202,213],
-      [41,1.848,1.962,95.2,63.2,109,115,202,213],[42,1.851,1.965,95.0,63.3,109,115,202,213],
-      [43,1.853,1.967,94.8,63.4,109,115,202,213],[44,1.855,1.969,94.6,63.6,109,115,202,213],
-      [45,1.858,1.972,94.3,63.7,109,115,202,213],[46,1.859,1.975,94.0,63.8,109,115,202,213],
-      [47,1.862,1.978,93.7,63.9,109,115,202,213],[48,1.864,1.980,93.4,63.9,109,115,202,213],
-      [49,1.867,1.983,93.1,64.0,109,115,202,213],[50,1.870,1.986,92.8,64.1,109,115,202,213],
-      [51,1.872,1.988,92.5,64.2,109,115,202,213],[52,1.874,1.990,92.1,64.2,109,115,202,213],
-      [53,1.876,1.992,91.8,64.3,109,115,202,213],[54,1.878,1.994,91.4,64.4,109,115,202,213],
-      [55,1.881,1.997,91.1,64.4,109,115,202,213],[56,1.884,2.000,90.7,64.5,109,115,202,213],
-      [57,1.887,2.003,90.3,64.5,109,115,202,213],[58,1.889,2.005,90.0,64.6,109,115,202,213],
-      [59,1.891,2.007,89.6,64.6,109,115,202,213],[60,1.892,2.010,89.2,64.7,109,115,202,213],
-      [61,1.895,2.013,88.9,64.7,109,115,202,213],[62,1.897,2.015,88.5,64.8,109,115,202,213],
-      [63,1.900,2.018,88.1,64.8,109,115,202,213],[64,1.902,2.020,87.7,64.8,109,115,202,213],
-      [65,1.905,2.023,87.2,64.9,109,115,202,213],[66,1.908,2.026,86.9,64.9,109,115,202,213],
-      [67,1.910,2.028,86.5,65.0,109,115,202,213],[68,1.912,2.030,86.1,65.0,109,115,202,213],
-      [69,1.915,2.033,85.7,65.1,109,115,202,213],[70,1.917,2.035,85.2,65.1,109,115,202,213],
-      [71,1.919,2.037,84.7,65.1,109,115,202,213],[72,1.921,2.039,84.2,65.2,109,115,202,213],
-      [73,1.924,2.042,83.7,65.2,109,115,202,213],[74,1.926,2.046,83.2,65.2,109,115,202,213],
-      [75,1.928,2.048,82.7,65.3,109,115,202,213],[76,1.930,2.050,82.1,65.3,109,115,202,213],
-      [77,1.933,2.053,81.6,65.3,109,115,202,213],[78,1.935,2.055,81.1,65.4,109,115,202,213],
-      [79,1.937,2.057,80.5,65.4,109,115,202,213],[80,1.939,2.059,80.0,65.4,109,115,202,213],
+    postura:[
+      [19,9.8,88,93],[20,37.2,92,97],[21,55.2,96,102],[22,72.7,100,106],
+      [23,83.1,103,109],[24,88.7,106,112],[25,91.9,109,115],[26,93.7,109,115],
+      [27,94.8,109,115],[28,95.4,109,115],[29,95.7,109,115],[30,95.9,109,115],
+      [31,96.1,109,115],[32,96.2,109,115],[33,96.3,109,115],[34,96.3,109,115],
+      [35,96.2,109,115],[36,96.1,109,115],[37,95.9,109,115],[38,95.7,109,115],
+      [39,95.6,109,115],[40,95.4,109,115],[41,95.2,109,115],[42,95.0,109,115],
+      [43,94.8,109,115],[44,94.6,109,115],[45,94.3,109,115],[46,94.0,109,115],
+      [47,93.7,109,115],[48,93.4,109,115],[49,93.1,109,115],[50,92.8,109,115],
+      [51,92.5,109,115],[52,92.1,109,115],[53,91.8,109,115],[54,91.4,109,115],
+      [55,91.1,109,115],[56,90.7,109,115],[57,90.3,109,115],[58,90.0,109,115],
+      [59,89.6,109,115],[60,89.2,109,115],[61,88.9,109,115],[62,88.5,109,115],
+      [63,88.1,109,115],[64,87.7,109,115],[65,87.2,109,115],[66,86.9,109,115],
+      [67,86.5,109,115],[68,86.1,109,115],[69,85.7,109,115],[70,85.2,109,115],
+      [71,84.7,109,115],[72,84.2,109,115],[73,83.7,109,115],[74,83.2,109,115],
+      [75,82.7,109,115],[76,82.1,109,115],[77,81.6,109,115],[78,81.1,109,115],
+      [79,80.5,109,115],[80,80.0,109,115],[81,79.4,109,115],[82,78.8,109,115],
+      [83,78.2,109,115],[84,77.6,109,115],[85,77.1,109,115],[86,76.5,109,115],
+      [87,75.8,109,115],[88,75.2,109,115],[89,74.6,109,115],[90,74.0,109,115],
+      [91,73.3,109,115],[92,72.7,109,115],[93,72.0,109,115],[94,71.4,109,115],
+      [95,70.7,109,115],[96,70.1,109,115],[97,69.4,109,115],[98,68.7,109,115],
+      [99,68.0,109,115],[100,67.3,109,115],
     ],
   },
-
   'Nick Brown': {
-    color: '#5cae5c', crianzaSem: 18,
-    crianza: [
-      [1,0.040,0.100,8,12,15,21],[2,0.095,0.155,14,18,26,33],[3,0.160,0.220,20,24,37,44],
-      [4,0.240,0.300,26,30,48,56],[5,0.333,0.393,32,36,59,67],[6,0.445,0.505,39,43,72,80],
-      [7,0.559,0.619,44,48,82,89],[8,0.664,0.724,50,54,93,100],[9,0.759,0.819,55,59,102,109],
-      [10,0.850,0.910,59,63,109,117],[11,0.937,0.997,62,66,115,122],[12,1.022,1.082,64,68,118,126],
-      [13,1.104,1.164,65,69,120,128],[14,1.183,1.243,67,71,124,131],[15,1.261,1.321,69,73,128,135],
-      [16,1.337,1.397,72,76,133,141],[17,1.410,1.470,76,80,141,148],[18,1.486,1.546,79,83,146,154],
+    color:'#5cae5c', crianzaSem:18,
+    crianza:[
+      [1,.04,.1,8,12],[2,.095,.155,14,18],[3,.16,.22,20,24],
+      [4,.24,.3,26,30],[5,.333,.393,32,36],[6,.445,.505,39,43],
+      [7,.559,.619,44,48],[8,.664,.724,50,54],[9,.759,.819,55,59],
+      [10,.85,.91,59,63],[11,.937,.997,62,66],[12,1.022,1.082,64,68],
+      [13,1.104,1.164,65,69],[14,1.183,1.243,67,71],[15,1.261,1.321,69,73],
+      [16,1.337,1.397,72,76],[17,1.41,1.47,76,80],[18,1.486,1.546,79,83],
     ],
-    postura: [
-      [19,1.576,1.616,10.0,45.0,113,118,205,218],[20,1.655,1.695,45.0,47.6,113,118,205,218],
-      [21,1.730,1.770,67.6,50.0,113,118,205,218],[22,1.790,1.830,81.0,52.2,113,118,205,218],
-      [23,1.830,1.870,89.0,54.1,113,118,205,218],[24,1.862,1.902,92.5,55.8,113,118,205,218],
-      [25,1.877,1.917,93.7,57.2,113,118,205,218],[26,1.888,1.928,94.4,58.4,113,118,205,218],
-      [27,1.894,1.934,94.8,59.2,113,118,205,218],[28,1.898,1.938,95.1,59.9,113,118,205,218],
-      [29,1.902,1.942,95.4,60.5,113,118,205,218],[30,1.905,1.945,95.6,61.0,113,118,205,218],
-      [31,1.908,1.948,95.7,61.5,113,118,205,218],[32,1.911,1.951,95.8,61.9,113,118,205,218],
-      [33,1.914,1.954,95.8,62.3,113,118,205,218],[34,1.917,1.957,95.8,62.6,113,118,205,218],
-      [35,1.920,1.960,95.7,62.8,113,118,205,218],[36,1.923,1.963,95.6,63.0,113,118,205,218],
-      [37,1.926,1.966,95.5,63.2,113,118,205,218],[38,1.929,1.969,95.4,63.4,113,118,205,218],
-      [39,1.932,1.972,95.3,63.5,113,118,205,218],[40,1.935,1.975,95.1,63.7,113,118,205,218],
-      [41,1.938,1.978,94.9,63.8,113,118,205,218],[42,1.941,1.981,94.7,63.9,113,118,205,218],
-      [43,1.944,1.984,94.4,64.0,113,118,205,218],[44,1.947,1.987,94.2,64.1,113,118,205,218],
-      [45,1.950,1.990,94.0,64.2,113,118,205,218],[46,1.953,1.993,93.7,64.3,113,118,205,218],
-      [47,1.956,1.996,93.5,64.4,113,118,205,218],[48,1.959,1.999,93.2,64.5,113,118,205,218],
-      [49,1.962,2.002,92.9,64.6,113,118,205,218],[50,1.965,2.005,92.6,64.7,113,118,205,218],
-      [51,1.968,2.008,92.3,64.8,113,118,205,218],[52,1.971,2.011,92.0,64.9,113,118,205,218],
-      [53,1.974,2.014,91.7,65.0,113,118,205,218],[54,1.977,2.017,91.3,65.1,113,118,205,218],
-      [55,1.979,2.019,91.0,65.2,113,118,205,218],[56,1.981,2.021,90.6,65.3,113,118,205,218],
-      [57,1.983,2.023,90.2,65.3,113,118,205,218],[58,1.985,2.025,89.9,65.4,113,118,205,218],
-      [59,1.987,2.027,89.5,65.5,113,118,205,218],[60,1.989,2.029,89.0,65.6,113,118,205,218],
-      [61,1.991,2.031,88.6,65.7,113,118,205,218],[62,1.993,2.033,88.2,65.8,113,118,205,218],
-      [63,1.995,2.035,87.8,65.8,113,118,205,218],[64,1.997,2.037,87.3,65.9,113,118,205,218],
-      [65,1.999,2.039,86.8,66.0,113,118,205,218],[66,2.001,2.041,86.4,66.1,113,118,205,218],
-      [67,2.003,2.043,85.9,66.1,113,118,205,218],[68,2.005,2.045,85.4,66.2,113,118,205,218],
-      [69,2.007,2.047,84.9,66.3,113,118,205,218],[70,2.009,2.049,84.4,66.4,113,118,205,218],
-      [71,2.011,2.051,83.9,66.4,113,118,205,218],[72,2.013,2.053,83.3,66.5,113,118,205,218],
-      [73,2.015,2.055,82.8,66.6,113,118,205,218],[74,2.017,2.057,82.2,66.6,113,118,205,218],
-      [75,2.019,2.059,81.7,66.7,113,118,205,218],[76,2.021,2.061,81.1,66.7,113,118,205,218],
-      [77,2.023,2.063,80.5,66.8,113,118,205,218],[78,2.025,2.065,79.9,66.9,113,118,205,218],
-      [79,2.028,2.068,79.3,66.9,113,118,205,218],[80,2.030,2.070,78.7,67.0,113,118,205,218],
+    postura:[
+      [19,10.0,113,118],[20,45.0,113,118],[21,67.6,113,118],[22,81.0,113,118],
+      [23,89.0,113,118],[24,92.5,113,118],[25,93.7,113,118],[26,94.4,113,118],
+      [27,94.8,113,118],[28,95.1,113,118],[29,95.4,113,118],[30,95.6,113,118],
+      [31,95.7,113,118],[32,95.8,113,118],[33,95.8,113,118],[34,95.8,113,118],
+      [35,95.7,113,118],[36,95.6,113,118],[37,95.5,113,118],[38,95.4,113,118],
+      [39,95.3,113,118],[40,95.1,113,118],[41,94.9,113,118],[42,94.7,113,118],
+      [43,94.4,113,118],[44,94.2,113,118],[45,94.0,113,118],[46,93.7,113,118],
+      [47,93.5,113,118],[48,93.2,113,118],[49,92.9,113,118],[50,92.6,113,118],
+      [51,92.3,113,118],[52,92.0,113,118],[53,91.7,113,118],[54,91.3,113,118],
+      [55,91.0,113,118],[56,90.6,113,118],[57,90.2,113,118],[58,89.9,113,118],
+      [59,89.5,113,118],[60,89.0,113,118],[61,88.6,113,118],[62,88.2,113,118],
+      [63,87.8,113,118],[64,87.3,113,118],[65,86.8,113,118],[66,86.4,113,118],
+      [67,85.9,113,118],[68,85.4,113,118],[69,84.9,113,118],[70,84.4,113,118],
+      [71,83.9,113,118],[72,83.3,113,118],[73,82.8,113,118],[74,82.2,113,118],
+      [75,81.7,113,118],[76,81.1,113,118],[77,80.5,113,118],[78,79.9,113,118],
+      [79,79.3,113,118],[80,78.7,113,118],[81,78.1,113,118],[82,77.5,113,118],
+      [83,76.8,113,118],[84,76.2,113,118],[85,75.5,113,118],[86,74.9,113,118],
+      [87,74.2,113,118],[88,73.5,113,118],[89,72.8,113,118],[90,72.1,113,118],
+      [91,71.4,113,118],[92,70.7,113,118],[93,70.0,113,118],[94,69.3,113,118],
+      [95,68.5,113,118],[96,67.8,113,118],[97,67.1,113,118],[98,66.3,113,118],
+      [99,65.6,113,118],[100,64.9,113,118],
     ],
   },
-
   'Dekalb Brown': {
-    color: '#b5651d', crianzaSem: 17,
-    crianza: [
-      [1,0.059,0.062,9,11,16,20],[2,0.112,0.118,15,17,27,31],[3,0.166,0.174,23,25,41,45],
-      [4,0.234,0.246,30,32,54,58],[5,0.322,0.338,35,37,63,67],[6,0.419,0.441,40,42,72,76],
-      [7,0.517,0.543,44,46,79,83],[8,0.605,0.636,48,50,86,90],[9,0.692,0.728,52,54,94,97],
-      [10,0.780,0.820,56,58,101,104],[11,0.868,0.912,59,61,106,110],[12,0.960,1.010,62,64,112,115],
-      [13,1.053,1.107,65,67,117,121],[14,1.136,1.194,68,70,122,126],[15,1.219,1.281,71,73,128,131],
-      [16,1.302,1.368,75,77,135,139],[17,1.375,1.445,81,83,146,149],
+    color:'#b5651d', crianzaSem:17,
+    crianza:[
+      [1,.059,.062,9,11],[2,.112,.118,15,17],[3,.166,.174,23,25],
+      [4,.234,.246,30,32],[5,.322,.338,35,37],[6,.419,.441,40,42],
+      [7,.517,.543,44,46],[8,.605,.636,48,50],[9,.692,.728,52,54],
+      [10,.78,.82,56,58],[11,.868,.912,59,61],[12,.96,1.01,62,64],
+      [13,1.053,1.107,65,67],[14,1.136,1.194,68,70],[15,1.219,1.281,71,73],
+      [16,1.302,1.368,75,77],[17,1.375,1.445,81,83],
     ],
-    postura: [
-      [18,1.440,1.480,4.0,41.1,87,91,157,163],[19,1.505,1.545,15.9,44.7,93,97,167,175],
-      [20,1.575,1.615,41.8,47.8,98,102,176,184],[21,1.630,1.670,67.9,50.4,102,106,184,191],
-      [22,1.675,1.715,86.4,52.5,105,109,189,196],[23,1.710,1.750,94.8,54.4,107,111,193,200],
-      [24,1.735,1.775,96.3,53.9,109,113,196,203],[25,1.755,1.795,96.8,57.2,110,114,198,205],
-      [26,1.770,1.810,96.9,58.3,111,115,200,207],[27,1.780,1.820,97.0,59.2,112,116,202,209],
-      [28,1.789,1.829,97.0,59.7,113,117,203,211],[29,1.797,1.837,97.0,60.3,113,117,203,211],
-      [30,1.804,1.844,96.9,60.8,113,117,203,211],[31,1.810,1.850,96.8,61.0,113,117,203,211],
-      [32,1.815,1.855,96.7,61.0,113,117,203,211],[33,1.820,1.860,96.5,61.4,113,117,203,211],
-      [34,1.825,1.865,96.4,61.6,113,117,203,211],[35,1.830,1.870,96.2,61.8,113,117,203,211],
-      [36,1.834,1.874,96.0,61.9,113,117,203,211],[37,1.838,1.878,95.8,62.1,113,117,203,211],
-      [38,1.842,1.882,95.5,62.1,113,117,203,211],[39,1.845,1.885,95.3,62.1,113,117,203,211],
-      [40,1.848,1.888,95.1,62.3,113,117,203,211],[41,1.850,1.890,94.8,62.4,113,117,203,211],
-      [42,1.852,1.892,94.6,62.4,113,117,203,211],[43,1.854,1.894,94.4,62.4,113,117,203,211],
-      [44,1.856,1.896,94.1,62.4,113,117,203,211],[45,1.858,1.898,93.9,62.4,113,117,203,211],
-      [46,1.860,1.900,93.7,62.5,113,117,203,211],[47,1.862,1.902,93.4,62.5,113,117,203,211],
-      [48,1.864,1.904,93.2,62.5,113,117,203,211],[49,1.866,1.906,92.9,62.5,113,117,203,211],
-      [50,1.868,1.908,92.6,62.6,113,117,203,211],[51,1.870,1.910,92.2,62.6,113,117,203,211],
-      [52,1.872,1.912,92.0,62.7,113,117,203,211],[53,1.874,1.914,91.7,62.6,113,117,203,211],
-      [54,1.876,1.916,91.4,62.7,113,117,203,211],[55,1.878,1.918,91.1,62.7,113,117,203,211],
-      [56,1.880,1.920,90.8,62.7,113,117,203,211],[57,1.882,1.922,90.6,62.8,113,117,203,211],
-      [58,1.884,1.924,90.3,62.8,113,117,203,211],[59,1.886,1.926,90.0,62.8,113,117,203,211],
-      [60,1.888,1.928,89.7,62.8,113,117,203,211],[61,1.890,1.930,89.4,62.9,113,117,203,211],
-      [62,1.892,1.932,89.1,62.9,113,117,203,211],[63,1.894,1.934,88.8,62.9,113,117,203,211],
-      [64,1.896,1.936,88.6,63.0,113,117,203,211],[65,1.898,1.938,88.3,63.0,113,117,203,211],
-      [66,1.900,1.940,88.0,63.0,113,117,203,211],[67,1.902,1.942,87.7,63.0,113,117,203,211],
-      [68,1.904,1.944,87.4,63.0,113,117,203,211],[69,1.906,1.946,87.1,63.1,113,117,203,211],
-      [70,1.908,1.948,86.7,63.1,113,117,203,211],[71,1.910,1.950,86.4,63.1,113,117,203,211],
-      [72,1.912,1.952,86.1,63.2,113,117,203,211],[73,1.914,1.954,85.8,63.2,113,117,203,211],
-      [74,1.916,1.956,85.5,63.2,113,117,203,211],[75,1.918,1.958,85.2,63.2,113,117,203,211],
-      [76,1.920,1.960,84.9,63.3,113,117,203,211],[77,1.921,1.961,84.5,63.3,113,117,203,211],
-      [78,1.922,1.962,84.2,63.3,113,117,203,211],[79,1.923,1.963,83.9,63.3,113,117,203,211],
-      [80,1.924,1.964,83.6,63.4,113,117,203,211],
+    postura:[
+      [18,4.0,87,91],[19,15.9,93,97],[20,41.8,98,102],[21,67.9,102,106],
+      [22,86.4,105,109],[23,94.8,107,111],[24,96.3,109,113],[25,96.8,110,114],
+      [26,96.9,111,115],[27,97.0,112,116],[28,97.0,113,117],[29,97.0,113,117],
+      [30,96.9,113,117],[31,96.8,113,117],[32,96.7,113,117],[33,96.5,113,117],
+      [34,96.4,113,117],[35,96.2,113,117],[36,96.0,113,117],[37,95.8,113,117],
+      [38,95.5,113,117],[39,95.3,113,117],[40,95.1,113,117],[41,94.8,113,117],
+      [42,94.6,113,117],[43,94.4,113,117],[44,94.1,113,117],[45,93.9,113,117],
+      [46,93.7,113,117],[47,93.4,113,117],[48,93.2,113,117],[49,92.9,113,117],
+      [50,92.6,113,117],[51,92.2,113,117],[52,92.0,113,117],[53,91.7,113,117],
+      [54,91.4,113,117],[55,91.1,113,117],[56,90.8,113,117],[57,90.6,113,117],
+      [58,90.3,113,117],[59,90.0,113,117],[60,89.7,113,117],[61,89.4,113,117],
+      [62,89.1,113,117],[63,88.8,113,117],[64,88.6,113,117],[65,88.3,113,117],
+      [66,88.0,113,117],[67,87.7,113,117],[68,87.4,113,117],[69,87.1,113,117],
+      [70,86.7,113,117],[71,86.4,113,117],[72,86.1,113,117],[73,85.8,113,117],
+      [74,85.5,113,117],[75,85.2,113,117],[76,84.9,113,117],[77,84.5,113,117],
+      [78,84.2,113,117],[79,83.9,113,117],[80,83.6,113,117],[81,83.2,113,117],
+      [82,82.9,113,117],[83,82.6,113,117],[84,82.2,113,117],[85,81.9,113,117],
+      [86,81.6,113,117],[87,81.2,113,117],[88,80.9,113,117],[89,80.6,113,117],
+      [90,80.2,113,117],[91,79.9,113,117],[92,79.5,113,117],[93,79.2,113,117],
+      [94,78.9,113,117],[95,78.6,113,117],[96,78.2,113,117],[97,77.9,113,117],
+      [98,77.6,113,117],[99,77.2,113,117],[100,76.9,113,117],
     ],
   },
 };
@@ -600,7 +552,7 @@ const LINEAS = {
    MORTALIDAD — curva semanal de referencia
    ════════════════════════════════════════════════════════════ */
 const MORTALIDAD = {
-  0:0,1:0.004,2:0.0015,3:0.001,4:0.001,5:0.001,6:0.001,7:0.001,
+  1:0.004,2:0.0015,3:0.001,4:0.001,5:0.001,6:0.001,7:0.001,
   8:0.001,9:0.001,10:0.001,11:0.001,12:0.002,13:0.0008,14:0.0007,
   15:0.0008,16:0.0007,17:0.0015,18:0.0003,19:0.0005,20:0.0007,
   21:0.0007,22:0.0007,23:0.0006,24:0.0006,25:0.0004,26:0.0005,
@@ -614,6 +566,10 @@ const MORTALIDAD = {
   69:0.0013,70:0.0015,71:0.0015,72:0.0025,73:0.0015,74:0.0015,
   75:0.0015,76:0.0025,77:0.0015,78:0.0015,79:0.0015,80:0.0015,
 };
+// semanas 81-130: estabilización
+for (let s = 81; s <= 130; s++) MORTALIDAD[s] = 0.0015;
+
+const DIAS_CICLO = 910; // 130 semanas
 
 /* ════════════════════════════════════════════════════════════
    HELPERS DE CURVAS
@@ -630,24 +586,34 @@ function dietaId(sem) {
 
 function buildCurvas(geneticaNombre) {
   const L = LINEAS[geneticaNombre] || LINEAS['Lohmann Brown'];
-  const posMap     = {};
+  const posMap = {};
   const consumoMap = {};
 
-  L.crianza.forEach(([sem,,, alMin, alMax]) => {
+  // Crianza: semanas 1 a crianzaSem — solo consumo, postura = 0
+  L.crianza.forEach(([sem,,,alMin,alMax]) => {
     consumoMap[sem] = { gr: (alMin + alMax) / 2, dieta: dietaId(sem) };
   });
-  L.postura.forEach(([sem,,, pct,, alMin, alMax]) => {
+
+  // Postura: la fila simplificada es [sem, pct, alMin, alMax]
+  L.postura.forEach(([sem, pct, alMin, alMax]) => {
     posMap[sem]     = pct;
     consumoMap[sem] = { gr: (alMin + alMax) / 2, dieta: dietaId(sem) };
   });
 
-  const maxSem = Math.max(...Object.keys(consumoMap).map(Number));
-  const fallback = consumoMap[maxSem];
+  // Extensión 101-130: decae 1%/sem, mínimo 50%
+  const maxSem = Math.max(...Object.keys(posMap).map(Number));
+  const maxCons = consumoMap[maxSem] || { gr: 112, dieta: 7 };
+  let ultimaPct = posMap[maxSem] || 50;
+  for (let s = maxSem + 1; s <= 130; s++) {
+    ultimaPct = Math.max(50, ultimaPct - 1);
+    posMap[s]     = ultimaPct;
+    consumoMap[s] = maxCons;
+  }
 
+  const fallback = consumoMap[maxSem] || { gr: 112, dieta: 7 };
   return {
-    posMap,
-    getConsumo(sem) { return consumoMap[sem] || fallback; },
     getPos(sem)     { return posMap[sem] ?? 0; },
+    getConsumo(sem) { return consumoMap[sem] || fallback; },
   };
 }
 
@@ -655,17 +621,25 @@ function buildCurvas(geneticaNombre) {
    MOTOR DE PROYECCIÓN
    ════════════════════════════════════════════════════════════ */
 function proyectar(lote) {
-  const curvas      = buildCurvas(lote.genetica || 'Lohmann Brown');
-  const preciosMes  = lote.preciosHuevoPorMes || {};
-  const precioBase  = +lote.precioHuevo;
-  const gastoMes    = +lote.gastosMes;
-  const costoDieta  = lote.costoDieta;
-  const fn          = new Date(lote.fechaNacimiento + 'T12:00:00');
-  let aves          = +lote.nAves;
-  const dias        = [];
+  const curvas     = buildCurvas(lote.genetica || 'Lohmann Brown');
+  const preciosMes = lote.preciosHuevoPorMes || {};
+  const precioBase = +lote.precioHuevo;
+  const gastoMes   = +lote.gastosMes;
+  const costoDieta = lote.costoDieta;
+  const fn         = new Date(lote.fechaNacimiento + 'T12:00:00');
 
-  for (let n = 0; n < 560; n++) {
-    const f    = new Date(fn); f.setDate(fn.getDate() + n);
+  // Gastos especiales indexados por semana → monto total (se aplica el 1er día de esa semana)
+  const gastosXSem = {};
+  (lote.gastosEspeciales || []).forEach(g => {
+    const s = +g.semana;
+    gastosXSem[s] = (gastosXSem[s] || 0) + +g.monto;
+  });
+
+  let aves = +lote.nAves;
+  const dias = [];
+
+  for (let n = 0; n < DIAS_CICLO; n++) {
+    const f     = new Date(fn); f.setDate(fn.getDate() + n);
     const fecha = f.toISOString().slice(0, 10);
     const mes   = fecha.slice(0, 7);
     const sem   = Math.floor(n / 7) + 1;
@@ -681,7 +655,10 @@ function proyectar(lote) {
     const huevos    = Math.round(aves * pos / 100);
     const ingreso   = huevos * precio;
     const gastoDia  = gastoMes / 30;
-    const resultado = ingreso - costoAlim - gastoDia;
+
+    // Gasto especial: solo el primer día de cada semana (n%7===0)
+    const gastoEsp  = (n % 7 === 0) ? (gastosXSem[sem] || 0) : 0;
+    const resultado = ingreso - costoAlim - gastoDia - gastoEsp;
 
     dias.push({
       fecha, n: n + 1, sem, mes, precio,
@@ -691,6 +668,7 @@ function proyectar(lote) {
       dieta:     cons.dieta,
       costoAlim: Math.round(costoAlim),
       gastoDia:  Math.round(gastoDia),
+      gastoEsp:  Math.round(gastoEsp),
       ingreso:   Math.round(ingreso),
       resultado: Math.round(resultado),
     });
@@ -706,24 +684,14 @@ function proyectar(lote) {
    ALMACENAMIENTO
    ════════════════════════════════════════════════════════════ */
 const CLAVE = 'avivet_presupuesto_v1';
-
 function getLotes() { return JSON.parse(localStorage.getItem(CLAVE) || '[]'); }
 function setLotes(l) { localStorage.setItem(CLAVE, JSON.stringify(l)); }
 function getLote(id) { return getLotes().find(l => l.id === id); }
-
 function saveLote(lote) {
   const arr = getLotes();
   const idx = arr.findIndex(l => l.id === lote.id);
   if (idx >= 0) arr[idx] = lote; else arr.push(lote);
   setLotes(arr);
-}
-
-function guardarRegistroDia(loteId, fecha, datos) {
-  const lote = getLote(loteId);
-  if (!lote) return;
-  lote.registros = lote.registros || {};
-  lote.registros[fecha] = datos;
-  saveLote(lote);
 }
 
 /* ════════════════════════════════════════════════════════════
@@ -735,22 +703,26 @@ const HOY  = new Date().toISOString().slice(0, 10);
 let charts = {};
 
 const NUM = v => v == null ? '—' : Math.round(v).toLocaleString('es-CL');
-const PCT = v => v == null ? '—' : (+v).toFixed(1) + '%';
 const MN  = v => v == null ? '—' : '$' + Math.round(v).toLocaleString('es-CL');
+const PCT = v => v == null ? '—' : (+v).toFixed(1) + '%';
 
 const GEN_COLORES = {
-  'Hy-Line Brown':  '#f0a500',
-  'Hy-Line W-80':   '#4a90a4',
-  'Lohmann Brown':  '#e05c5c',
-  'Nick Brown':     '#5cae5c',
-  'Dekalb Brown':   '#b5651d',
+  'Hy-Line Brown':'#f0a500','Hy-Line W-80':'#4a90a4',
+  'Lohmann Brown':'#e05c5c','Nick Brown':'#5cae5c','Dekalb Brown':'#b5651d',
+};
+const CAT_INFO = {
+  pollas:    { label:'Pollas',     cls:'cat-pollas' },
+  inversion: { label:'Inversión',  cls:'cat-inversion' },
+  vacuna:    { label:'Vacuna',     cls:'cat-vacuna' },
+  viruta:    { label:'Viruta',     cls:'cat-viruta' },
+  otro:      { label:'Otro',       cls:'cat-otro' },
 };
 
 /* ════════════════════════════════════════════════════════════
    INIT
    ════════════════════════════════════════════════════════════ */
 (function init() {
-  const hoy = new Date().toLocaleDateString('es-CL', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
+  const hoy = new Date().toLocaleDateString('es-CL',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
   document.getElementById('fecha-hoy').textContent = hoy;
   document.getElementById('fecha-pie').textContent = hoy;
   cargarSelector();
@@ -763,16 +735,13 @@ function cargarSelector() {
   lotes.forEach(l => {
     const o  = document.createElement('option');
     o.value  = l.id;
-    const fn = new Date(l.fechaNacimiento + 'T12:00:00').toLocaleDateString('es-CL', {day:'2-digit', month:'short', year:'numeric'});
+    const fn = new Date(l.fechaNacimiento + 'T12:00:00').toLocaleDateString('es-CL',{day:'2-digit',month:'short',year:'numeric'});
     const gen = l.genetica || 'Lohmann Brown';
     o.textContent = `${l.nombre}  ·  ${gen}  ·  ${(+l.nAves).toLocaleString('es-CL')} aves  ·  nac. ${fn}`;
     sel.appendChild(o);
   });
   if (loteId) sel.value = loteId;
-  if (!loteId && lotes.length === 1) {
-    sel.value = lotes[0].id;
-    selLote(lotes[0].id);
-  }
+  if (!loteId && lotes.length === 1) { sel.value = lotes[0].id; selLote(lotes[0].id); }
 }
 
 function selLote(id) {
@@ -783,7 +752,7 @@ function selLote(id) {
   const gen = lote.genetica || 'Lohmann Brown';
   const col = GEN_COLORES[gen] || '#1b4332';
   document.getElementById('lote-nombre-txt').textContent = lote.nombre;
-  const fn = new Date(lote.fechaNacimiento + 'T12:00:00').toLocaleDateString('es-CL', {day:'numeric', month:'long', year:'numeric'});
+  const fn = new Date(lote.fechaNacimiento + 'T12:00:00').toLocaleDateString('es-CL',{day:'numeric',month:'long',year:'numeric'});
   document.getElementById('lote-meta-txt').textContent =
     `${(+lote.nAves).toLocaleString('es-CL')} aves · nacimiento ${fn}`;
   document.getElementById('lote-gen-badge').innerHTML =
@@ -796,14 +765,19 @@ function selLote(id) {
    DASHBOARD
    ════════════════════════════════════════════════════════════ */
 function renderDashboard(lote) {
-  const dHoy = proy.find(d => d.fecha === HOY) || proy[proy.length - 1];
-  const regs = Object.keys(lote.registros || {});
-  const gen  = lote.genetica || 'Lohmann Brown';
-  const col  = GEN_COLORES[gen] || '#1b4332';
+  const dHoy  = proy.find(d => d.fecha === HOY) || proy[proy.length - 1];
+  const regs  = Object.keys(lote.registros || {});
+  const gen   = lote.genetica || 'Lohmann Brown';
+  const col   = GEN_COLORES[gen] || '#1b4332';
+  const gastos = lote.gastosEspeciales || [];
+  const invTotal = gastos.reduce((a, g) => a + +g.monto, 0);
 
+  // KPIs hero
   document.getElementById('kpi-sem').textContent  = `Sem ${dHoy.sem}`;
   document.getElementById('kpi-pos').textContent  = `${dHoy.pos.toFixed(1)}%`;
   document.getElementById('kpi-aves').textContent = NUM(dHoy.aves);
+  document.getElementById('kpi-ginv').textContent = MN(invTotal);
+  document.getElementById('kpi-ginv-sub').textContent = `${gastos.length} gasto${gastos.length!==1?'s':''} especial${gastos.length!==1?'es':''}`;
   const res = dHoy.acum;
   const elRes = document.getElementById('kpi-res');
   elRes.textContent = '$' + Math.abs(res).toLocaleString('es-CL');
@@ -816,15 +790,16 @@ function renderDashboard(lote) {
     <p class="bloque-desc">
       <strong>${lote.nombre}</strong>
       · <span style="font-weight:600;color:${col}">${gen}</span>
-      · semana ${dHoy.sem} · ${regs.length} día${regs.length!==1?'s':''} con datos reales.
+      · semana ${dHoy.sem} de ${DIAS_CICLO/7} · ${regs.length} día${regs.length!==1?'s':''} con datos reales.
       <button class="btn btn-ok btn-sm" style="margin-left:16px" onclick="exportarExcel()">↓ Exportar Excel</button>
     </p>
 
     <div class="tabs">
-      <button class="tab activo" onclick="setTab(event,'t-graficos')">Gráficos</button>
-      <button class="tab" onclick="setTab(event,'t-tabla')">Tabla diaria</button>
-      <button class="tab" onclick="setTab(event,'t-precios')">Precios por mes</button>
-      <button class="tab" onclick="setTab(event,'t-config')">Configuración</button>
+      <button class="tab activo" data-tab="t-graficos" onclick="setTab(event,'t-graficos')">Gráficos</button>
+      <button class="tab" data-tab="t-tabla"   onclick="setTab(event,'t-tabla')">Tabla diaria</button>
+      <button class="tab" data-tab="t-precios" onclick="setTab(event,'t-precios')">Precios mes</button>
+      <button class="tab" data-tab="t-gastos"  onclick="setTab(event,'t-gastos')">Gastos especiales</button>
+      <button class="tab" data-tab="t-config"  onclick="setTab(event,'t-config')">Configuración</button>
     </div>
 
     <!-- GRÁFICOS -->
@@ -833,9 +808,9 @@ function renderDashboard(lote) {
         <div class="grafico-wrap">
           <div class="grafico-titulo">Ingreso y costo semanal ($)</div>
           <div class="leyenda">
-            <span class="leyenda-item"><span class="cuad" style="background:#1b4332;opacity:.7"></span>Ingreso proyectado</span>
+            <span class="leyenda-item"><span class="cuad" style="background:#1b4332;opacity:.7"></span>Ingreso proy.</span>
             <span class="leyenda-item"><span class="cuad" style="background:#f0a500"></span>Ingreso real</span>
-            <span class="leyenda-item"><span class="cuad" style="background:rgba(183,28,28,.4)"></span>Costo total proyectado</span>
+            <span class="leyenda-item"><span class="cuad" style="background:rgba(183,28,28,.4)"></span>Costo total proy.</span>
           </div>
           <div class="grafico-canvas"><canvas id="cFin"></canvas></div>
         </div>
@@ -864,9 +839,8 @@ function renderDashboard(lote) {
           <th>Sem</th><th>Aves</th>
           <th>% Post.Proy</th><th class="th-real">% Post.Real</th>
           <th>Huevos Proy</th><th class="th-real">Huevos Real</th>
-          <th>$/huevo</th>
-          <th>Ingreso Proy</th><th class="th-real">Ingreso Real</th>
-          <th>Resultado</th>
+          <th>$/huevo</th><th>Ing. Proy</th><th class="th-real">Ing. Real</th>
+          <th>G.Esp</th><th>Resultado</th>
         </tr></thead>
         <tbody id="tbody"></tbody>
       </table></div>
@@ -875,6 +849,11 @@ function renderDashboard(lote) {
     <!-- PRECIOS POR MES -->
     <div id="t-precios" class="tab-panel" style="display:none">
       <div id="precios-panel"></div>
+    </div>
+
+    <!-- GASTOS ESPECIALES -->
+    <div id="t-gastos" class="tab-panel" style="display:none">
+      <div id="gastos-panel"></div>
     </div>
 
     <!-- CONFIGURACIÓN -->
@@ -892,7 +871,7 @@ function renderDashboard(lote) {
           ${[1,2,3,4,5,6,7].map(d=>`
           <div class="cfg-field"><span>Dieta ${d}</span><input type="number" id="cfg-d${d}" value="${lote.costoDieta[d]||''}"></div>`).join('')}
           <hr class="cfg-sep">
-          <div style="grid-column:1/-1;display:flex;gap:10px">
+          <div style="grid-column:1/-1;display:flex;gap:10px;flex-wrap:wrap">
             <button class="btn btn-acento" onclick="aplicarConfig()">Guardar y recalcular</button>
             <button class="btn btn-linea" style="color:var(--mal);border-color:var(--mal)" onclick="confirmarEliminar()">Eliminar lote</button>
           </div>
@@ -907,6 +886,7 @@ function renderDashboard(lote) {
   renderGraficos(lote);
   renderTabla(lote);
   renderPreciosMes(lote);
+  renderGastosEspeciales(lote);
 }
 
 /* ── Tabs ── */
@@ -920,6 +900,14 @@ function setTab(e, id) {
   if (id === 't-graficos') renderGraficos(getLote(loteId));
   if (id === 't-tabla')    renderTabla(getLote(loteId));
   if (id === 't-precios')  renderPreciosMes(getLote(loteId));
+  if (id === 't-gastos')   renderGastosEspeciales(getLote(loteId));
+}
+
+function activarTab(id) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('activo', t.dataset.tab === id));
+  document.querySelectorAll('.tab-panel').forEach(p => { p.classList.remove('activo'); p.style.display = 'none'; });
+  const p = document.getElementById(id);
+  if (p) { p.classList.add('activo'); p.style.display = 'block'; }
 }
 
 function toggleCfg() {
@@ -936,49 +924,38 @@ function toggleCfg() {
 function renderPreciosMes(lote) {
   const panel = document.getElementById('precios-panel');
   if (!panel || !proy) return;
-
   const precioBase = +lote.precioHuevo;
   const preciosMes = lote.preciosHuevoPorMes || {};
-
-  // Recopilar todos los mes-año únicos del ciclo
   const meses = [...new Set(proy.map(d => d.mes))];
-
   const mesNombre = m => {
     const [y, mo] = m.split('-');
-    return new Date(+y, +mo - 1, 1).toLocaleDateString('es-CL', {month:'short', year:'numeric'});
+    return new Date(+y, +mo - 1, 1).toLocaleDateString('es-CL',{month:'short',year:'numeric'});
   };
-
   const items = meses.map(m => {
-    const val  = preciosMes[m] != null ? preciosMes[m] : precioBase;
-    const mod  = preciosMes[m] != null && +preciosMes[m] !== precioBase;
+    const val = preciosMes[m] != null ? preciosMes[m] : precioBase;
+    const mod = preciosMes[m] != null && +preciosMes[m] !== precioBase;
     return `<div class="pm-item${mod?' modificado':''}" id="pm-wrap-${m}">
       <span>${mesNombre(m)}</span>
       <input type="number" id="pm-${m}" value="${val}" min="1"
         oninput="marcarMesMod('${m}',${precioBase})">
     </div>`;
   }).join('');
-
   panel.innerHTML = `
-    <div style="margin-bottom:16px">
-      <p style="font-size:14px;color:var(--suave);margin-bottom:8px">
-        Asigna un precio de venta diferente para cada mes del ciclo.
-        Los meses en <span style="color:var(--acento);font-weight:600">dorado</span> tienen precio personalizado.
-        Los demás usan el precio base (<strong>${MN(precioBase)}/ud.</strong>).
-      </p>
-    </div>
+    <p style="font-size:14px;color:var(--suave);margin-bottom:16px">
+      Precio base: <strong>${MN(precioBase)}/ud.</strong> — meses en dorado tienen precio personalizado.
+    </p>
     <div class="precios-mes-grid">${items}</div>
     <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap">
-      <button class="btn btn-acento" onclick="guardarPreciosMes()">Guardar precios y recalcular</button>
-      <button class="btn btn-linea btn-sm" onclick="resetPreciosMes()">Resetear todo al precio base</button>
+      <button class="btn btn-acento" onclick="guardarPreciosMes()">Guardar y recalcular</button>
+      <button class="btn btn-linea btn-sm" onclick="resetPreciosMes()">Resetear al precio base</button>
     </div>`;
 }
 
-function marcarMesMod(mes, precioBase) {
+function marcarMesMod(mes, base) {
   const input = document.getElementById(`pm-${mes}`);
   const wrap  = document.getElementById(`pm-wrap-${mes}`);
   if (!input || !wrap) return;
-  const mod = +input.value !== precioBase && input.value !== '';
-  wrap.classList.toggle('modificado', mod);
+  wrap.classList.toggle('modificado', +input.value !== base && input.value !== '');
 }
 
 function guardarPreciosMes() {
@@ -986,29 +963,15 @@ function guardarPreciosMes() {
   if (!lote) return;
   const precioBase = +lote.precioHuevo;
   const preciosMes = {};
-  const meses = [...new Set(proy.map(d => d.mes))];
-  meses.forEach(m => {
+  [...new Set(proy.map(d => d.mes))].forEach(m => {
     const el = document.getElementById(`pm-${m}`);
-    if (el) {
-      const v = +el.value;
-      if (!isNaN(v) && v > 0 && v !== precioBase) preciosMes[m] = v;
-    }
+    if (el) { const v = +el.value; if (!isNaN(v) && v > 0 && v !== precioBase) preciosMes[m] = v; }
   });
   lote.preciosHuevoPorMes = preciosMes;
   saveLote(lote);
   proy = proyectar(lote);
   renderDashboard(lote);
-  // Volver al tab precios
-  document.querySelectorAll('.tab').forEach((t,i) => {
-    const target = ['t-graficos','t-tabla','t-precios','t-config'][i];
-    t.classList.toggle('activo', target === 't-precios');
-  });
-  document.querySelectorAll('.tab-panel').forEach(p => {
-    p.classList.remove('activo');
-    p.style.display = 'none';
-  });
-  const tp = document.getElementById('t-precios');
-  if (tp) { tp.classList.add('activo'); tp.style.display = 'block'; }
+  activarTab('t-precios');
   renderPreciosMes(lote);
 }
 
@@ -1019,45 +982,181 @@ function resetPreciosMes() {
   saveLote(lote);
   proy = proyectar(lote);
   renderDashboard(lote);
-  const tp = document.getElementById('t-precios');
-  if (tp) { tp.classList.add('activo'); tp.style.display = 'block'; }
+  activarTab('t-precios');
   renderPreciosMes(lote);
+}
+
+/* ════════════════════════════════════════════════════════════
+   GASTOS ESPECIALES
+   ════════════════════════════════════════════════════════════ */
+function renderGastosEspeciales(lote) {
+  const panel = document.getElementById('gastos-panel');
+  if (!panel) return;
+  const gastos = lote.gastosEspeciales || [];
+  const total  = gastos.reduce((a, g) => a + +g.monto, 0);
+
+  const filas = gastos.length ? gastos.map(g => {
+    const ci = CAT_INFO[g.categoria] || CAT_INFO.otro;
+    return `<tr>
+      <td><span class="gasto-cat ${ci.cls}">${ci.label}</span></td>
+      <td>${g.descripcion}</td>
+      <td style="text-align:center">Sem ${g.semana}</td>
+      <td style="text-align:right;font-family:var(--fm)">${MN(g.monto)}</td>
+      <td style="text-align:center">
+        <button class="btn-ico" onclick="eliminarGasto('${g.id}')" title="Eliminar">✕</button>
+      </td>
+    </tr>`;
+  }).join('') : `<tr><td colspan="5" style="text-align:center;color:var(--tenue);padding:20px">Sin gastos especiales registrados</td></tr>`;
+
+  // Calcular fecha fin para "siguiente ciclo"
+  const fechaFin = new Date(lote.fechaNacimiento + 'T12:00:00');
+  fechaFin.setDate(fechaFin.getDate() + DIAS_CICLO);
+  const fechaFinStr = fechaFin.toISOString().slice(0, 10);
+  const fechaFinLeg = fechaFin.toLocaleDateString('es-CL',{day:'numeric',month:'long',year:'numeric'});
+
+  panel.innerHTML = `
+    <div style="margin-bottom:16px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+      <p style="font-size:14px;color:var(--suave)">
+        Total inversión: <strong style="color:var(--prim);font-size:16px">${MN(total)}</strong>
+      </p>
+    </div>
+
+    <div style="overflow-x:auto;background:var(--papel);border:1px solid var(--linea)">
+      <table class="gastos-tabla">
+        <thead><tr>
+          <th style="width:90px">Categoría</th><th>Descripción</th>
+          <th style="width:80px;text-align:center">Semana</th>
+          <th style="width:110px;text-align:right">Monto ($)</th>
+          <th style="width:40px"></th>
+        </tr></thead>
+        <tbody>${filas}</tbody>
+      </table>
+    </div>
+
+    <!-- FORMULARIO AGREGAR -->
+    <div class="gasto-form">
+      <div class="gasto-form-field" style="grid-column:1/-1">
+        <label>Categoría</label>
+        <select id="ng-cat">
+          <option value="pollas">Compra de pollas</option>
+          <option value="inversion">Inversión inicial / equipos</option>
+          <option value="vacuna">Vacuna</option>
+          <option value="viruta">Viruta</option>
+          <option value="otro">Otro</option>
+        </select>
+      </div>
+      <div class="gasto-form-field" style="grid-column:1/3">
+        <label>Descripción</label>
+        <input type="text" id="ng-desc" placeholder="Ej: Viruta 2a reposición">
+      </div>
+      <div class="gasto-form-field">
+        <label>Semana</label>
+        <input type="number" id="ng-sem" value="1" min="1" max="130">
+      </div>
+      <div class="gasto-form-field">
+        <label>Monto ($)</label>
+        <input type="number" id="ng-monto" placeholder="0" min="0">
+      </div>
+      <div style="display:flex;align-items:flex-end">
+        <button class="btn btn-acento btn-sm" onclick="agregarGasto()">+ Agregar</button>
+      </div>
+    </div>
+
+    <!-- SIGUIENTE CICLO -->
+    <div class="ciclo-siguiente">
+      <h3>Proyectar siguiente ciclo</h3>
+      <p>
+        Este ciclo finaliza el <strong>${fechaFinLeg}</strong> (semana 130).
+        Puedes crear un nuevo lote con esa fecha de ingreso de pollitas,
+        manteniendo la misma genética y parámetros de costos.
+      </p>
+      <button class="btn btn-prim" onclick="abrirSiguienteCiclo('${fechaFinStr}')">
+        ↻ Crear siguiente ciclo
+      </button>
+    </div>`;
+}
+
+function agregarGasto() {
+  const cat   = document.getElementById('ng-cat').value;
+  const desc  = document.getElementById('ng-desc').value.trim();
+  const sem   = +document.getElementById('ng-sem').value;
+  const monto = +document.getElementById('ng-monto').value;
+  if (!desc || isNaN(monto) || monto <= 0 || sem < 1) {
+    alert('Ingresa descripción, semana y monto válidos.'); return;
+  }
+  const lote = getLote(loteId);
+  if (!lote) return;
+  lote.gastosEspeciales = lote.gastosEspeciales || [];
+  lote.gastosEspeciales.push({ id: `g${Date.now()}`, categoria: cat, descripcion: desc, semana: sem, monto });
+  saveLote(lote);
+  proy = proyectar(lote);
+  renderDashboard(lote);
+  activarTab('t-gastos');
+  renderGastosEspeciales(lote);
+}
+
+function eliminarGasto(id) {
+  const lote = getLote(loteId);
+  if (!lote) return;
+  lote.gastosEspeciales = (lote.gastosEspeciales || []).filter(g => g.id !== id);
+  saveLote(lote);
+  proy = proyectar(lote);
+  renderDashboard(lote);
+  activarTab('t-gastos');
+  renderGastosEspeciales(lote);
+}
+
+function abrirSiguienteCiclo(fechaFin) {
+  const loteActual = getLote(loteId);
+  // Pre-llenar modal para el siguiente ciclo
+  modoEditar = null;
+  const form = document.getElementById('form-lote');
+  form.reset();
+  form.nombre.value          = (loteActual.nombre + ' — Ciclo 2').replace(' — Ciclo 1', '').replace(/ — Ciclo (\d+)/, (m,n) => ` — Ciclo ${+n+1}`);
+  form.genetica.value        = loteActual.genetica || 'Lohmann Brown';
+  form.fechaNacimiento.value = fechaFin;
+  form.nAves.value           = loteActual.nAves;
+  form.precioHuevo.value     = loteActual.precioHuevo;
+  form.gastosMes.value       = loteActual.gastosMes;
+  [1,2,3,4,5,6,7].forEach(d => form[`d${d}`].value = loteActual.costoDieta[d] || '');
+  document.getElementById('modal-titulo').textContent = 'Nuevo ciclo — siguiente lote';
+  // Mostrar campos de gastos iniciales
+  ['fi-pollas','fi-inversion','fi-vacunas','fi-viruta','sec-gi','sep-gi'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = '';
+  });
+  document.getElementById('modal').classList.add('abierto');
 }
 
 /* ════════════════════════════════════════════════════════════
    GRÁFICOS
    ════════════════════════════════════════════════════════════ */
 function semData(lote) {
-  const m    = {};
+  const m = {};
   const regs = lote.registros || {};
   proy.forEach(d => {
     const s = d.sem;
-    if (!m[s]) m[s] = {s, ingP:0, costoP:0, acumP:0, postP:0, ingR:null, acumR:null, postR:null};
-    m[s].ingP   += d.ingreso;
-    m[s].costoP += d.ingreso - d.resultado;
-    m[s].acumP   = d.acum;
-    m[s].postP   = d.pos;
+    if (!m[s]) m[s] = {s, ingP:0, costoP:0, gastoEspP:0, acumP:0, postP:0, ingR:null, acumR:null, postR:null};
+    m[s].ingP     += d.ingreso;
+    m[s].costoP   += d.costoAlim + d.gastoDia;
+    m[s].gastoEspP += d.gastoEsp;
+    m[s].acumP     = d.acum;
+    m[s].postP     = d.pos;
     const reg = regs[d.fecha];
     if (reg?.huevosReal != null) {
-      const precio = d.precio;
-      m[s].ingR  = (m[s].ingR||0) + (reg.huevosReal * precio);
+      m[s].ingR  = (m[s].ingR||0) + reg.huevosReal * d.precio;
       m[s].postR = reg.posturaReal;
-    }
-    if (reg?.huevosReal != null) {
-      const ingR = reg.huevosReal * d.precio;
-      const resR = ingR - d.costoAlim - d.gastoDia;
+      const resR = reg.huevosReal * d.precio - d.costoAlim - d.gastoDia - d.gastoEsp;
       m[s].acumR = (m[s].acumR||0) + resR;
     }
   });
   let ar = 0;
-  Object.values(m).sort((a,b)=>a.s-b.s).forEach(v => {
-    if (v.acumR != null) { ar += v.acumR; v.acumR = ar; }
-  });
-  return Object.values(m).sort((a,b) => a.s - b.s);
+  Object.values(m).sort((a,b)=>a.s-b.s).forEach(v => { if (v.acumR != null) { ar += v.acumR; v.acumR = ar; } });
+  return Object.values(m).sort((a,b)=>a.s-b.s);
 }
 
-const tFont = { font: { size: 10, family: "'IBM Plex Mono', monospace" } };
-const gridColor = '#e0ddd5';
+const tFont = { font:{ size:10, family:"'IBM Plex Mono', monospace" } };
+const gColor = '#e0ddd5';
 function dc(id) { if (charts[id]) { charts[id].destroy(); delete charts[id]; } }
 
 function renderGraficos(lote) {
@@ -1068,45 +1167,43 @@ function renderGraficos(lote) {
   dc('fin');
   const cFin = document.getElementById('cFin');
   if (cFin) charts.fin = new Chart(cFin, {
-    type: 'bar',
-    data: { labels: lbs, datasets: [
-      { label:'Costo total',        data: sems.map(s=>s.costoP), backgroundColor:'rgba(183,28,28,.38)', stack:'p' },
-      { label:'Ingreso proyectado', data: sems.map(s=>s.ingP),   backgroundColor:'rgba(27,67,50,.65)',  stack:'p' },
-      { label:'Ingreso real',       data: sems.map(s=>s.ingR),   backgroundColor:'#f0a500',             stack:'r' },
+    type:'bar',
+    data:{ labels:lbs, datasets:[
+      { label:'Costo total',        data:sems.map(s=>s.costoP+s.gastoEspP), backgroundColor:'rgba(183,28,28,.38)', stack:'p' },
+      { label:'Ingreso proyectado', data:sems.map(s=>s.ingP),               backgroundColor:'rgba(27,67,50,.65)',  stack:'p' },
+      { label:'Ingreso real',       data:sems.map(s=>s.ingR),               backgroundColor:'#f0a500',             stack:'r' },
     ]},
-    options: { responsive:true, maintainAspectRatio:false,
+    options:{ responsive:true, maintainAspectRatio:false,
       plugins:{ legend:{ labels:{ font:{size:11} } } },
-      scales:{ x:{ stacked:true, ticks:tFont, grid:{color:gridColor} },
-               y:{ ticks:{...tFont, callback:v=>'$'+Math.round(v/1000)+'k'}, grid:{color:gridColor} } } }
+      scales:{ x:{ stacked:true, ticks:tFont, grid:{color:gColor} },
+               y:{ ticks:{...tFont, callback:v=>'$'+Math.round(v/1000)+'k'}, grid:{color:gColor} } } }
   });
 
   dc('pos');
   const cPos = document.getElementById('cPos');
   if (cPos) charts.pos = new Chart(cPos, {
-    type: 'line',
-    data: { labels: lbs, datasets: [
+    type:'line',
+    data:{ labels:lbs, datasets:[
       { label:'Proyectado', data:sems.map(s=>s.postP), borderColor:'#1b4332', backgroundColor:'rgba(27,67,50,.08)', fill:true, tension:.3, pointRadius:0, borderWidth:2 },
       { label:'Real',       data:sems.map(s=>s.postR!=null?s.postR:null), borderColor:'#f0a500', borderWidth:2.5, pointRadius:3, spanGaps:false, tension:.2 },
     ]},
-    options: { responsive:true, maintainAspectRatio:false,
+    options:{ responsive:true, maintainAspectRatio:false,
       plugins:{ legend:{ labels:{ font:{size:11} } } },
-      scales:{ x:{ ticks:tFont, grid:{color:gridColor} },
-               y:{ min:0, max:100, ticks:{...tFont, callback:v=>v+'%'}, grid:{color:gridColor} } } }
+      scales:{ x:{ ticks:tFont, grid:{color:gColor} }, y:{ min:0, max:100, ticks:{...tFont, callback:v=>v+'%'}, grid:{color:gColor} } } }
   });
 
   dc('acum');
   const cAcum = document.getElementById('cAcum');
   if (cAcum) charts.acum = new Chart(cAcum, {
-    type: 'line',
-    data: { labels: lbs, datasets: [
+    type:'line',
+    data:{ labels:lbs, datasets:[
       { label:'Proyectado', data:sems.map(s=>s.acumP),                    borderColor:'#1b4332', fill:false, tension:.3, pointRadius:0, borderWidth:2 },
       { label:'Real',       data:sems.map(s=>s.acumR!=null?s.acumR:null), borderColor:'#f0a500', borderWidth:2.5, pointRadius:3, spanGaps:false, tension:.2 },
       { label:'Break-even', data:sems.map(()=>0),                         borderColor:'#aaa', borderDash:[4,4], borderWidth:1, pointRadius:0 },
     ]},
-    options: { responsive:true, maintainAspectRatio:false,
+    options:{ responsive:true, maintainAspectRatio:false,
       plugins:{ legend:{ labels:{ font:{size:11} } } },
-      scales:{ x:{ ticks:tFont, grid:{color:gridColor} },
-               y:{ ticks:{...tFont, callback:v=>'$'+Math.round(v/1e6)+'M'}, grid:{color:gridColor} } } }
+      scales:{ x:{ ticks:tFont, grid:{color:gColor} }, y:{ ticks:{...tFont, callback:v=>'$'+Math.round(v/1e6)+'M'}, grid:{color:gColor} } } }
   });
 }
 
@@ -1135,6 +1232,7 @@ function renderTabla(lote) {
       <td style="font-family:var(--fm);font-size:11px">${MN(d.precio)}</td>
       <td>${MN(d.ingreso)}</td>
       <td class="${tieneR?'real':''}">${tieneR?MN(ingR):'—'}</td>
+      <td style="font-family:var(--fm);font-size:11px;color:var(--mal)">${d.gastoEsp>0?MN(d.gastoEsp):'—'}</td>
       <td class="${rc}">${MN(d.resultado)}</td>
     </tr>`;
   }).join('');
@@ -1149,6 +1247,12 @@ function abrirModal(id) {
   modoEditar = id || null;
   const form = document.getElementById('form-lote');
   document.getElementById('modal-titulo').textContent = id ? 'Editar lote' : 'Nuevo lote';
+  // Campos de gastos iniciales: solo al crear
+  const mostrarGI = !id;
+  ['fi-pollas','fi-inversion','fi-vacunas','fi-viruta','sec-gi','sep-gi'].forEach(elId => {
+    const el = document.getElementById(elId);
+    if (el) el.style.display = mostrarGI ? '' : 'none';
+  });
   if (id) {
     const l = getLote(id);
     form.nombre.value          = l.nombre;
@@ -1173,17 +1277,34 @@ function guardarLote(e) {
   const f = e.target;
   const costoDieta = {};
   [1,2,3,4,5,6,7].forEach(d => costoDieta[d] = +(f[`d${d}`].value) || 520);
+
+  // Gastos iniciales (solo al crear)
+  let gastosEspeciales = modoEditar ? (getLote(modoEditar)?.gastosEspeciales || []) : [];
+  if (!modoEditar) {
+    const mapGI = [
+      {name:'gi_pollas',    cat:'pollas',    desc:'Compra de pollas'},
+      {name:'gi_inversion', cat:'inversion', desc:'Inversión inicial'},
+      {name:'gi_vacunas',   cat:'vacuna',    desc:'Vacunas iniciales'},
+      {name:'gi_viruta',    cat:'viruta',    desc:'Viruta'},
+    ];
+    mapGI.forEach(({name, cat, desc}) => {
+      const v = +(f[name]?.value || 0);
+      if (v > 0) gastosEspeciales.push({ id:`gi_${cat}_${Date.now()}`, categoria:cat, descripcion:desc, semana:1, monto:v });
+    });
+  }
+
   const lote = {
-    id:               modoEditar || `l${Date.now()}`,
-    nombre:           f.nombre.value.trim(),
-    genetica:         f.genetica.value || 'Lohmann Brown',
-    fechaNacimiento:  f.fechaNacimiento.value,
-    nAves:            +f.nAves.value,
-    precioHuevo:      +f.precioHuevo.value,
+    id:                 modoEditar || `l${Date.now()}`,
+    nombre:             f.nombre.value.trim(),
+    genetica:           f.genetica.value || 'Lohmann Brown',
+    fechaNacimiento:    f.fechaNacimiento.value,
+    nAves:              +f.nAves.value,
+    precioHuevo:        +f.precioHuevo.value,
     preciosHuevoPorMes: modoEditar ? (getLote(modoEditar)?.preciosHuevoPorMes || {}) : {},
-    gastosMes:        +f.gastosMes.value,
+    gastosMes:          +f.gastosMes.value,
     costoDieta,
-    registros:        modoEditar ? (getLote(modoEditar)?.registros || {}) : {},
+    gastosEspeciales,
+    registros:          modoEditar ? (getLote(modoEditar)?.registros || {}) : {},
   };
   saveLote(lote);
   loteId = lote.id;
@@ -1228,11 +1349,10 @@ function guardarReg(btn) {
   const postura = parseFloat(document.getElementById('r-postura').value);
   const nota    = document.getElementById('r-nota').value;
   if (!fecha || isNaN(huevos)) { alert('Ingresa fecha y N° de huevos'); return; }
-  guardarRegistroDia(loteId, fecha, {
-    huevosReal:  huevos,
-    posturaReal: isNaN(postura) ? null : postura,
-    nota,
-  });
+  const lote = getLote(loteId);
+  lote.registros = lote.registros || {};
+  lote.registros[fecha] = { huevosReal:huevos, posturaReal:isNaN(postura)?null:postura, nota };
+  saveLote(lote);
   btn.closest('.modal-bg').remove();
   selLote(loteId);
 }
@@ -1262,11 +1382,13 @@ function confirmarEliminar() {
   </div>`;
   document.getElementById('metodo').style.display = 'none';
   document.getElementById('pie').style.display    = 'none';
-  ['kpi-sem','kpi-pos','kpi-aves','kpi-res'].forEach(id => document.getElementById(id).textContent = '—');
-  document.getElementById('kpi-res-sub').textContent = '';
+  ['kpi-sem','kpi-pos','kpi-aves','kpi-ginv','kpi-res'].forEach(id => {
+    document.getElementById(id).textContent = '—';
+  });
+  ['kpi-res-sub','kpi-ginv-sub'].forEach(id => document.getElementById(id).textContent = '');
   document.getElementById('lote-nombre-txt').textContent = '';
-  document.getElementById('lote-meta-txt').textContent = '';
-  document.getElementById('lote-gen-badge').innerHTML = '';
+  document.getElementById('lote-meta-txt').textContent   = '';
+  document.getElementById('lote-gen-badge').innerHTML    = '';
 }
 
 /* ════════════════════════════════════════════════════════════
@@ -1279,92 +1401,78 @@ function exportarExcel() {
   const wb      = XLSX.utils.book_new();
   const HOY_STR = new Date().toLocaleDateString('es-CL');
   const gen     = lote.genetica || 'Lohmann Brown';
+  const gastos  = lote.gastosEspeciales || [];
 
-  // Hoja 1: Resumen
+  // Resumen
   const resData = [
-    ['Presupuesto Avícola — Resumen', ''],
-    ['Lote / Cliente',          lote.nombre],
-    ['Genética',                gen],
-    ['Fecha de nacimiento',     lote.fechaNacimiento],
-    ['N° aves iniciales',       +lote.nAves],
+    ['Presupuesto Avícola — Resumen',''],
+    ['Lote / Cliente',   lote.nombre],
+    ['Genética',         gen],
+    ['Fecha nacimiento', lote.fechaNacimiento],
+    ['N° aves iniciales',+lote.nAves],
     ['Precio huevo base ($/ud.)',+lote.precioHuevo],
-    ['Gastos fijos / mes ($)',  +lote.gastosMes],
-    ['Semanas proyectadas',      80],
-    ['Días proyectados',         proy.length],
-    ['Días con datos reales',    Object.keys(regs).length],
+    ['Gastos fijos / mes ($)',+lote.gastosMes],
+    ['Semanas proyectadas', DIAS_CICLO/7],
+    ['Días proyectados', proy.length],
+    ['Días con datos reales', Object.keys(regs).length],
+    ['Total gastos especiales ($)', gastos.reduce((a,g)=>a+(+g.monto),0)],
     ['Resultado acum. proyectado (fin ciclo)', proy[proy.length-1].acum],
     ['Generado', HOY_STR],
   ];
   XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(resData), 'Resumen');
 
-  // Hoja 2: Precios por mes
-  const pmRows = [['Mes', 'Precio ($/ud.)', 'Tipo']];
+  // Gastos especiales
+  const geRows = [['Categoría','Descripción','Semana','Monto ($)']];
+  gastos.forEach(g => geRows.push([g.categoria, g.descripcion, g.semana, +g.monto]));
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(geRows), 'Gastos Especiales');
+
+  // Precios por mes
   const preciosMes = lote.preciosHuevoPorMes || {};
-  const meses = [...new Set(proy.map(d => d.mes))];
-  meses.forEach(m => {
-    const v = preciosMes[m] != null ? +preciosMes[m] : +lote.precioHuevo;
-    const tipo = preciosMes[m] != null ? 'Personalizado' : 'Base';
-    pmRows.push([m, v, tipo]);
+  const pmRows = [['Mes','Precio ($/ud.)','Tipo']];
+  [...new Set(proy.map(d=>d.mes))].forEach(m => {
+    const v = preciosMes[m]!=null ? +preciosMes[m] : +lote.precioHuevo;
+    pmRows.push([m, v, preciosMes[m]!=null?'Personalizado':'Base']);
   });
   XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(pmRows), 'Precios por Mes');
 
-  // Hoja 3: Proyección semanal
+  // Proyección semanal
   const semMap = {};
   proy.forEach(d => {
     const s = d.sem;
-    if (!semMap[s]) semMap[s] = {s, fecha:d.fecha, aves:0, pos:0, huevos:0, consumo:0, costo:0, ingreso:0, gasto:0, res:0, acum:0};
-    semMap[s].huevos  += d.huevos;
-    semMap[s].consumo += d.consumoKg;
-    semMap[s].costo   += d.costoAlim;
-    semMap[s].ingreso += d.ingreso;
-    semMap[s].gasto   += d.gastoDia;
-    semMap[s].res     += d.resultado;
-    semMap[s].aves     = d.aves;
-    semMap[s].pos      = d.pos;
-    semMap[s].acum     = d.acum;
+    if (!semMap[s]) semMap[s] = {s,fecha:d.fecha,aves:0,pos:0,huevos:0,consumo:0,costo:0,gastoEsp:0,ingreso:0,gasto:0,res:0,acum:0};
+    semMap[s].huevos  += d.huevos;  semMap[s].consumo += d.consumoKg;
+    semMap[s].costo   += d.costoAlim; semMap[s].gastoEsp += d.gastoEsp;
+    semMap[s].ingreso += d.ingreso; semMap[s].gasto   += d.gastoDia;
+    semMap[s].res     += d.resultado; semMap[s].aves = d.aves;
+    semMap[s].pos = d.pos; semMap[s].acum = d.acum;
   });
-  const semRows = [['Semana','Fecha','Aves','% Postura','Huevos/sem','Consumo kg','Costo alimento','Ingresos','Gastos fijos','Resultado','Acumulado']];
-  Object.values(semMap).sort((a,b)=>a.s-b.s).forEach(s => {
-    semRows.push([s.s, s.fecha, Math.round(s.aves), s.pos/100, Math.round(s.huevos), Math.round(s.consumo), Math.round(s.costo), Math.round(s.ingreso), Math.round(s.gasto), Math.round(s.res), Math.round(s.acum)]);
-  });
+  const semRows = [['Semana','Fecha','Aves','% Postura','Huevos/sem','Consumo kg','Costo alimento','Gastos fijos','Gastos especiales','Ingresos','Resultado','Acumulado']];
+  Object.values(semMap).sort((a,b)=>a.s-b.s).forEach(s =>
+    semRows.push([s.s,s.fecha,Math.round(s.aves),s.pos/100,Math.round(s.huevos),Math.round(s.consumo),Math.round(s.costo),Math.round(s.gasto),Math.round(s.gastoEsp),Math.round(s.ingreso),Math.round(s.res),Math.round(s.acum)]));
   const wsSem = XLSX.utils.aoa_to_sheet(semRows);
-  for (let r = 2; r <= semRows.length; r++) wsSem[XLSX.utils.encode_cell({r:r-1,c:3})].z = '0.0%';
+  for (let r=2;r<=semRows.length;r++) { const c=wsSem[XLSX.utils.encode_cell({r:r-1,c:3})]; if(c) c.z='0.0%'; }
   XLSX.utils.book_append_sheet(wb, wsSem, 'Proyección Semanal');
 
-  // Hoja 4: Real vs Proyectado
-  const rvpRows = [['Fecha','Sem','Aves','% Post.Proy','Huevos Proy','$/huevo','Ingreso Proy','% Post.Real','Huevos Real','Ingreso Real','Resultado Proy','Resultado Real','Nota']];
+  // Real vs Proyectado
+  const rvpRows = [['Fecha','Sem','Aves','% Post.Proy','Huevos Proy','$/huevo','Ing.Proy','% Post.Real','Huevos Real','Ing.Real','G.Especial','Resultado Proy','Resultado Real','Nota']];
   proy.forEach(d => {
-    const reg    = regs[d.fecha];
-    const tieneR = reg?.huevosReal != null;
-    const ingR   = tieneR ? reg.huevosReal * d.precio : null;
-    const resR   = tieneR ? ingR - d.costoAlim - d.gastoDia : null;
-    rvpRows.push([
-      d.fecha, d.sem, Math.round(d.aves), d.pos/100,
-      d.huevos, d.precio, d.ingreso,
-      tieneR ? (reg.posturaReal??null)/100 : null,
-      tieneR ? reg.huevosReal : null,
-      ingR, d.resultado, resR, reg?.nota || '',
-    ]);
+    const reg = regs[d.fecha];
+    const tr  = reg?.huevosReal!=null;
+    const ingR= tr ? reg.huevosReal*d.precio : null;
+    const resR= tr ? ingR-d.costoAlim-d.gastoDia-d.gastoEsp : null;
+    rvpRows.push([d.fecha,d.sem,Math.round(d.aves),d.pos/100,d.huevos,d.precio,d.ingreso,
+      tr?(reg.posturaReal??null)/100:null, tr?reg.huevosReal:null, ingR,
+      d.gastoEsp||null, d.resultado, resR, reg?.nota||'']);
   });
   const wsRvp = XLSX.utils.aoa_to_sheet(rvpRows);
-  ['D','H'].forEach((col, ci) => {
-    const colIdx = ci === 0 ? 3 : 7;
-    for (let r = 2; r <= rvpRows.length; r++) {
-      const cell = wsRvp[XLSX.utils.encode_cell({r:r-1, c:colIdx})];
-      if (cell) cell.z = '0.0%';
-    }
-  });
+  [3,7].forEach(ci => { for(let r=2;r<=rvpRows.length;r++){const c=wsRvp[XLSX.utils.encode_cell({r:r-1,c:ci})];if(c)c.z='0.0%';} });
   XLSX.utils.book_append_sheet(wb, wsRvp, 'Real vs Proyectado');
 
-  // Hoja 5: Proyección diaria completa
-  const diaRows = [['Fecha','Día','Sem','Aves','% Postura','Huevos','Consumo kg','Dieta','Costo alim.','Gastos','$/huevo','Ingresos','Resultado','Acumulado']];
-  proy.forEach(d => diaRows.push([
-    d.fecha, d.n, d.sem, Math.round(d.aves), d.pos/100,
-    d.huevos, d.consumoKg, d.dieta,
-    d.costoAlim, d.gastoDia, d.precio, d.ingreso, d.resultado, d.acum
-  ]));
-  const wsDia = XLSX.utils.aoa_to_sheet(diaRows);
-  for (let r = 2; r <= diaRows.length; r++) { const c = wsDia[XLSX.utils.encode_cell({r:r-1,c:4})]; if(c) c.z='0.0%'; }
+  // Proyección diaria completa
+  const dRows=[['Fecha','Día','Sem','Aves','% Postura','Huevos','Consumo kg','Dieta','Costo alim.','Gastos fijos','Gasto especial','$/huevo','Ingresos','Resultado','Acumulado']];
+  proy.forEach(d=>dRows.push([d.fecha,d.n,d.sem,Math.round(d.aves),d.pos/100,d.huevos,d.consumoKg,d.dieta,d.costoAlim,d.gastoDia,d.gastoEsp||0,d.precio,d.ingreso,d.resultado,d.acum]));
+  const wsDia = XLSX.utils.aoa_to_sheet(dRows);
+  for(let r=2;r<=dRows.length;r++){const c=wsDia[XLSX.utils.encode_cell({r:r-1,c:4})];if(c)c.z='0.0%';}
   XLSX.utils.book_append_sheet(wb, wsDia, 'Proyección Diaria');
 
   const nombre = lote.nombre.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]/g,'').replace(/\s+/g,'_');
