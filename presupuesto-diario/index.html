@@ -224,6 +224,7 @@ td.real { background: rgba(27,94,32,.07) !important; font-weight: 600; }
       <a href="#graficos">Gráficos</a>
       <a href="#tabla">Tabla</a>
       <a href="#metodo">Metodología</a>
+      <button class="btn-cab" onclick="abrirCalcAlimento()" style="background:rgba(240,165,0,.15);border-color:rgba(240,165,0,.6)">Calc. Alimento</button>
       <button class="btn-cab" onclick="abrirModal()">+ Nuevo lote</button>
     </div>
   </div>
@@ -405,6 +406,52 @@ td.real { background: rgba(27,94,32,.07) !important; font-weight: 600; }
         </div>
       </div>
     </form>
+  </div>
+</div>
+
+<!-- MODAL CALCULADORA DE CONSUMO DE ALIMENTO -->
+<div class="modal-bg" id="modal-calc">
+  <div class="modal" style="max-width:780px">
+    <button class="modal-close" onclick="cerrarCalcAlimento()">×</button>
+    <h2>Calculadora de consumo de alimento</h2>
+    <p style="font-size:13px;color:var(--suave);margin-bottom:20px;margin-top:-10px">
+      Proyecta el consumo de alimento de un lote según genética y edad. Útil para estimar costos en proyectos en ejecución.
+    </p>
+    <div class="modal-grid">
+      <div class="modal-field">
+        <label>Genética</label>
+        <select id="calc-genetica">
+          <option value="Lohmann Brown">Lohmann Brown</option>
+          <option value="Hy-Line Brown">Hy-Line Brown</option>
+          <option value="Hy-Line W-80">Hy-Line W-80 (huevo blanco)</option>
+          <option value="Nick Brown">Nick Brown</option>
+          <option value="Dekalb Brown">Dekalb Brown</option>
+        </select>
+      </div>
+      <div class="modal-field">
+        <label>Semana de vida inicial</label>
+        <input type="number" id="calc-sem-ini" value="1" min="1" max="130">
+      </div>
+      <div class="modal-field">
+        <label>N° de aves</label>
+        <input type="number" id="calc-naves" value="1000" min="1" oninput="fmtNum(this)">
+        <small class="fmt-hint">1.000</small>
+      </div>
+      <div class="modal-field">
+        <label>Semanas a proyectar</label>
+        <input type="number" id="calc-semanas" value="20" min="1" max="130">
+      </div>
+      <div class="modal-field">
+        <label>Costo alimento ($/kg) — opcional</label>
+        <input type="number" id="calc-costo" value="" min="0" placeholder="Ej: 520" oninput="fmtNum(this)">
+        <small class="fmt-hint"></small>
+      </div>
+      <div class="modal-acciones">
+        <button class="btn btn-acento" onclick="calcularConsumoAlimento()">Calcular</button>
+        <button class="btn btn-linea" onclick="cerrarCalcAlimento()">Cerrar</button>
+      </div>
+    </div>
+    <div id="calc-resultado" style="margin-top:24px"></div>
   </div>
 </div>
 
@@ -1384,9 +1431,11 @@ function renderTablaProyeccion(lote) {
   let html = '';
   if (tablaVista === 'sem') {
     const sems = semData(lote);
-    const cols = '<th style="text-align:left;padding-left:10px">Sem</th><th>Inicio</th><th>Aves</th><th>% Post.</th><th>% Mort.</th><th>Huevos prod.</th><th>Huevos vend.</th><th>Alim. kg</th><th>$ Alim+Fijos</th><th>$ Envase</th><th>G.Esp</th><th>Ingresos</th><th>Resultado</th><th>Acumulado</th>';
+    const nIni = +lote.nAves;
+    const cols = '<th style="text-align:left;padding-left:10px">Sem</th><th>Inicio</th><th>Aves</th><th>% Post.</th><th>% Mort.</th><th>Mort. acum.</th><th>Huevos prod.</th><th>Huevos vend.</th><th>Alim. kg</th><th>$ Alim+Fijos</th><th>$ Envase</th><th>G.Esp</th><th>Ingresos</th><th>Resultado</th><th>Acumulado</th>';
     const filas = sems.map(s => {
-      const mort  = s.avesIni > 0 ? ((s.avesIni - s.aves) / s.avesIni * 100) : 0;
+      const mort     = s.avesIni > 0 ? ((s.avesIni - s.aves) / s.avesIni * 100) : 0;
+      const mortAcum = nIni > 0 ? ((nIni - s.aves) / nIni * 100) : 0;
       const rc    = s.resP  >= 0 ? 'ok' : 'mal';
       const ac    = s.acumP >= 0 ? 'ok' : 'mal';
       const beRow = (be && s.s === be.sem) ? ' style="background:#e6f4e8"' : '';
@@ -1398,6 +1447,7 @@ function renderTablaProyeccion(lote) {
         <td>${NUM(s.aves)}</td>
         <td>${PCT(s.postP)}</td>
         <td style="font-family:var(--fm);font-size:11px;color:var(--suave)">${mort.toFixed(3)}%</td>
+        <td style="font-family:var(--fm);font-size:11px;color:var(--mal)">${mortAcum.toFixed(2)}%</td>
         <td style="color:var(--suave)">${NUM(s.huevos)}</td>
         <td style="font-weight:600">${NUM(s.huevosVendibles)}</td>
         <td>${(+s.consumo).toFixed(0)}</td>
@@ -1423,9 +1473,10 @@ function renderTablaProyeccion(lote) {
     });
     const meses = Object.values(m).sort((a,b)=>a.k.localeCompare(b.k));
     const mesNom = k => { const [y,mo]=k.split('-'); return new Date(+y,+mo-1,1).toLocaleDateString('es-CL',{month:'short',year:'numeric'}); };
-    const cols = '<th style="text-align:left;padding-left:10px">Mes</th><th>Aves fin</th><th>% Post.prom</th><th>% Mort.mes</th><th>Huevos</th><th>Alim. kg</th><th>$ Costo total</th><th>G.Esp</th><th>Ingresos</th><th>Resultado</th><th>Acumulado</th>';
+    const cols = '<th style="text-align:left;padding-left:10px">Mes</th><th>Aves fin</th><th>% Post.prom</th><th>% Mort.mes</th><th>Mort. acum.</th><th>Huevos</th><th>Alim. kg</th><th>$ Costo total</th><th>G.Esp</th><th>Ingresos</th><th>Resultado</th><th>Acumulado</th>';
     const filas = meses.map(s => {
-      const mort = s.avesIni > 0 ? ((s.avesIni - s.aves) / s.avesIni * 100) : 0;
+      const mort     = s.avesIni > 0 ? ((s.avesIni - s.aves) / s.avesIni * 100) : 0;
+      const mortAcum = nIni > 0 ? ((nIni - s.aves) / nIni * 100) : 0;
       const postAvg = s.postSum / s.dias;
       const rc = s.resP  >= 0 ? 'ok' : 'mal';
       const ac = s.acumP >= 0 ? 'ok' : 'mal';
@@ -1435,6 +1486,7 @@ function renderTablaProyeccion(lote) {
         <td>${NUM(s.aves)}</td>
         <td>${PCT(postAvg)}</td>
         <td style="font-family:var(--fm);font-size:11px;color:var(--suave)">${mort.toFixed(2)}%</td>
+        <td style="font-family:var(--fm);font-size:11px;color:var(--mal)">${mortAcum.toFixed(2)}%</td>
         <td>${NUM(s.huevos)}</td>
         <td>${(+s.consumo).toFixed(0)}</td>
         <td>${MN(s.costoP)}</td>
@@ -1457,9 +1509,10 @@ function renderTablaProyeccion(lote) {
       a[k].resP += d.resultado; a[k].dias++;
     });
     const años = Object.values(a).sort((a,b)=>a.k.localeCompare(b.k));
-    const cols = '<th style="text-align:left;padding-left:10px">Año</th><th>Aves fin</th><th>% Post.prom</th><th>% Mort.año</th><th>Huevos</th><th>$ Costo total</th><th>G.Esp</th><th>Ingresos</th><th>Resultado</th><th>Acumulado</th>';
+    const cols = '<th style="text-align:left;padding-left:10px">Año</th><th>Aves fin</th><th>% Post.prom</th><th>% Mort.año</th><th>Mort. acum.</th><th>Huevos</th><th>$ Costo total</th><th>G.Esp</th><th>Ingresos</th><th>Resultado</th><th>Acumulado</th>';
     const filas = años.map(s => {
-      const mort = s.avesIni > 0 ? ((s.avesIni - s.aves) / s.avesIni * 100) : 0;
+      const mort     = s.avesIni > 0 ? ((s.avesIni - s.aves) / s.avesIni * 100) : 0;
+      const mortAcum = nIni > 0 ? ((nIni - s.aves) / nIni * 100) : 0;
       const postAvg = s.postSum / s.dias;
       const rc = s.resP  >= 0 ? 'ok' : 'mal';
       const ac = s.acumP >= 0 ? 'ok' : 'mal';
@@ -1469,6 +1522,7 @@ function renderTablaProyeccion(lote) {
         <td>${NUM(s.aves)}</td>
         <td>${PCT(postAvg)}</td>
         <td style="font-family:var(--fm);font-size:11px;color:var(--suave)">${mort.toFixed(2)}%</td>
+        <td style="font-family:var(--fm);font-size:11px;color:var(--mal)">${mortAcum.toFixed(2)}%</td>
         <td>${NUM(s.huevos)}</td>
         <td>${MN(s.costoP)}</td>
         ${espStr}
@@ -1678,6 +1732,133 @@ function exportarExcel() {
 
   const nombre = lote.nombre.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]/g,'').replace(/\s+/g,'_');
   XLSX.writeFile(wb, `Presupuesto_${gen.replace(/\s/g,'_')}_${nombre}_${HOY}.xlsx`);
+}
+
+/* ════════════════════════════════════════════════════════════
+   CALCULADORA DE CONSUMO DE ALIMENTO
+   ════════════════════════════════════════════════════════════ */
+function abrirCalcAlimento() {
+  document.getElementById('modal-calc').classList.add('abierto');
+}
+
+function cerrarCalcAlimento() {
+  document.getElementById('modal-calc').classList.remove('abierto');
+  document.getElementById('calc-resultado').innerHTML = '';
+}
+
+function calcularConsumoAlimento() {
+  const gen    = document.getElementById('calc-genetica').value;
+  const semIni = +document.getElementById('calc-sem-ini').value;
+  const nAves  = +document.getElementById('calc-naves').value;
+  const nSems  = +document.getElementById('calc-semanas').value;
+  const costo  = +document.getElementById('calc-costo').value || 0;
+
+  if (!nAves || nAves < 1 || !nSems || nSems < 1 || semIni < 1 || semIni > 130) {
+    alert('Ingresa valores válidos: aves ≥ 1, semana inicial 1–130, semanas a proyectar ≥ 1.'); return;
+  }
+
+  const curvas = buildCurvas(gen);
+  const rows = [];
+  let totalKg = 0, totalCosto = 0;
+  const semFin = Math.min(semIni + nSems - 1, 130);
+
+  for (let s = semIni; s <= semFin; s++) {
+    const cons     = curvas.getConsumo(s);
+    const pos      = curvas.getPos(s);
+    const kgDia    = nAves * cons.gr / 1000;
+    const kgSem    = kgDia * 7;
+    const costSem  = costo > 0 ? kgSem * costo : null;
+    totalKg       += kgSem;
+    if (costSem != null) totalCosto += costSem;
+    rows.push({ s, pos, grAve: cons.gr, dieta: cons.dieta, kgDia, kgSem, costSem });
+  }
+
+  const conCosto = costo > 0;
+  const thCosto  = conCosto ? '<th>Costo sem ($)</th>' : '';
+  const cols = `<th style="text-align:left;padding-left:10px">Sem</th><th>Dieta</th><th>g/ave/día</th><th>kg/día total</th><th>kg/sem total</th>${thCosto}<th>% Postura</th>`;
+
+  const filas = rows.map(r => {
+    const tdCosto = conCosto ? `<td style="font-family:var(--fm);font-size:11px;color:var(--mal)">${MN(r.costSem)}</td>` : '';
+    const posStr  = r.pos > 0 ? `<td style="color:var(--prim);font-weight:600">${r.pos.toFixed(1)}%</td>` : '<td style="color:var(--tenue)">—</td>';
+    return `<tr>
+      <td style="text-align:left;padding-left:10px;font-weight:600">${r.s}</td>
+      <td><span style="font-size:10px;font-weight:600;padding:2px 6px;border-radius:3px;background:var(--acento-cl);color:#7a5700">D${r.dieta}</span></td>
+      <td style="font-family:var(--fm)">${r.grAve.toFixed(0)}</td>
+      <td style="font-family:var(--fm)">${r.kgDia.toFixed(1)}</td>
+      <td style="font-family:var(--fm);font-weight:600">${r.kgSem.toFixed(1)}</td>
+      ${tdCosto}
+      ${posStr}
+    </tr>`;
+  }).join('');
+
+  const tdTotCosto = conCosto ? `<td style="font-family:var(--fm);font-weight:700;color:var(--mal)">${MN(totalCosto)}</td>` : '';
+  const totalRow = `<tr style="background:var(--acento-cl)">
+    <td colspan="4" style="text-align:left;padding-left:10px;font-weight:700;color:var(--prim)">TOTAL — ${rows.length} sem</td>
+    <td style="font-family:var(--fm);font-weight:700;color:var(--prim)">${totalKg.toFixed(1)} kg</td>
+    ${tdTotCosto}
+    <td>—</td>
+  </tr>`;
+
+  const resumenExtra = conCosto ? `
+    <div>
+      <div style="font-size:11px;color:var(--tenue);text-transform:uppercase;letter-spacing:.05em">Costo total estimado</div>
+      <div style="font-family:var(--fm);font-weight:700;font-size:18px;color:var(--mal)">${MN(totalCosto)}</div>
+      <div style="font-size:11px;color:var(--tenue);margin-top:2px">${(totalCosto/totalKg).toFixed(0)} $/kg prom.</div>
+    </div>` : '';
+
+  document.getElementById('calc-resultado').innerHTML = `
+    <div style="margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+      <span style="font-size:12px;font-weight:600;color:var(--prim);text-transform:uppercase;letter-spacing:.05em">${gen} · Sem ${semIni}–${semFin} · ${NUM(nAves)} aves</span>
+      <button class="btn btn-ok btn-sm" onclick="exportarCalcAlimento()">↓ Exportar Excel</button>
+    </div>
+    <div class="tabla-wrap" style="max-height:380px">
+      <table><thead><tr>${cols}</tr></thead><tbody>${filas}${totalRow}</tbody></table>
+    </div>
+    <div style="margin-top:16px;display:flex;gap:32px;flex-wrap:wrap">
+      <div>
+        <div style="font-size:11px;color:var(--tenue);text-transform:uppercase;letter-spacing:.05em">Consumo total</div>
+        <div style="font-family:var(--fm);font-weight:700;font-size:18px;color:var(--prim)">${totalKg.toFixed(0)} kg</div>
+        <div style="font-size:11px;color:var(--tenue);margin-top:2px">${(totalKg / rows.length).toFixed(1)} kg/sem promedio</div>
+      </div>
+      ${resumenExtra}
+    </div>`;
+
+  window._calcData = { gen, semIni, semFin, nAves, costo, rows, totalKg, totalCosto };
+}
+
+function exportarCalcAlimento() {
+  const d = window._calcData;
+  if (!d) return;
+  const wb = XLSX.utils.book_new();
+  const headers = ['Semana','Dieta','g/ave/día','kg/día total','kg/semana total'];
+  if (d.costo > 0) headers.push('Costo sem ($)');
+  headers.push('% Postura');
+  const rows = [headers];
+  d.rows.forEach(r => {
+    const row = [r.s, `D${r.dieta}`, +r.grAve.toFixed(0), +r.kgDia.toFixed(1), +r.kgSem.toFixed(1)];
+    if (d.costo > 0) row.push(Math.round(r.costSem));
+    row.push(r.pos > 0 ? r.pos : '—');
+    rows.push(row);
+  });
+  const tot = ['TOTAL','','','', +d.totalKg.toFixed(1)];
+  if (d.costo > 0) tot.push(Math.round(d.totalCosto));
+  tot.push('—');
+  rows.push(tot);
+  const ws = XLSX.utils.aoa_to_sheet(rows);
+  const resumen = [
+    ['Parámetros',''],
+    ['Genética', d.gen],
+    ['Semana inicial', d.semIni],
+    ['Semana final', d.semFin],
+    ['N° aves', d.nAves],
+    ['Costo $/kg', d.costo || 'No ingresado'],
+    ['Consumo total kg', +d.totalKg.toFixed(1)],
+    ['Costo total ($)', d.costo > 0 ? Math.round(d.totalCosto) : 'N/A'],
+    ['Generado', new Date().toLocaleDateString('es-CL')],
+  ];
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(resumen), 'Resumen');
+  XLSX.utils.book_append_sheet(wb, ws, 'Consumo Semanal');
+  XLSX.writeFile(wb, `Consumo_${d.gen.replace(/\s/g,'_')}_S${d.semIni}-${d.semFin}_${new Date().toISOString().slice(0,10)}.xlsx`);
 }
 </script>
 </body>
