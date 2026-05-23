@@ -128,6 +128,7 @@ td.real { background: rgba(27,94,32,.07) !important; font-weight: 600; }
 .pm-item input { font-family: var(--fm); font-size: 13px; padding: 5px 8px; border: 1px solid var(--linea-f); border-radius: 4px; background: var(--fondo); color: var(--tinta); width: 100%; }
 .pm-item input:focus { outline: 2px solid var(--acento); outline-offset: 1px; border-color: transparent; }
 .pm-item.modificado input { border-color: var(--acento); background: var(--acento-cl); }
+.fmt-hint { font-size: 11px; color: var(--acento); font-family: var(--fm); display: block; min-height: 14px; margin-top: 2px; }
 
 /* ── Gastos especiales ── */
 .gastos-tabla { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 8px; }
@@ -247,6 +248,11 @@ td.real { background: rgba(27,94,32,.07) !important; font-weight: 600; }
         <span class="ficha-lbl">resultado acum. proyectado</span>
         <span class="ficha-sub" id="kpi-res-sub"></span>
       </div>
+      <div class="ficha">
+        <span class="ficha-num" id="kpi-roi">—</span>
+        <span class="ficha-lbl">recuperación inversión</span>
+        <span class="ficha-sub" id="kpi-roi-sub"></span>
+      </div>
     </div>
   </section>
 
@@ -320,15 +326,18 @@ td.real { background: rgba(27,94,32,.07) !important; font-weight: 600; }
         </div>
         <div class="modal-field">
           <label>N° aves iniciales</label>
-          <input type="number" name="nAves" value="1500" min="1" required>
+          <input type="number" name="nAves" value="1500" min="1" required oninput="fmtNum(this)">
+          <small class="fmt-hint">1.500</small>
         </div>
         <div class="modal-field">
           <label>Precio huevo base ($/ud.)</label>
-          <input type="number" name="precioHuevo" value="130" min="1" required>
+          <input type="number" name="precioHuevo" value="130" min="1" required oninput="fmtNum(this)">
+          <small class="fmt-hint"></small>
         </div>
         <div class="modal-field">
           <label>Gastos fijos / mes ($)</label>
-          <input type="number" name="gastosMes" value="2441000" min="0" required>
+          <input type="number" name="gastosMes" value="2441000" min="0" required oninput="fmtNum(this)">
+          <small class="fmt-hint">2.441.000</small>
         </div>
 
         <!-- Gastos iniciales — solo al crear -->
@@ -336,19 +345,23 @@ td.real { background: rgba(27,94,32,.07) !important; font-weight: 600; }
         <div class="modal-sec" id="sec-gi">Gastos iniciales (semana 1) — opcional</div>
         <div class="modal-field" id="fi-pollas">
           <label>Compra de pollas ($)</label>
-          <input type="number" name="gi_pollas" value="0" min="0">
+          <input type="number" name="gi_pollas" value="0" min="0" oninput="fmtNum(this)">
+          <small class="fmt-hint"></small>
         </div>
         <div class="modal-field" id="fi-inversion">
           <label>Inversión inicial / equipos ($)</label>
-          <input type="number" name="gi_inversion" value="0" min="0">
+          <input type="number" name="gi_inversion" value="0" min="0" oninput="fmtNum(this)">
+          <small class="fmt-hint"></small>
         </div>
         <div class="modal-field" id="fi-vacunas">
           <label>Vacunas iniciales ($)</label>
-          <input type="number" name="gi_vacunas" value="0" min="0">
+          <input type="number" name="gi_vacunas" value="0" min="0" oninput="fmtNum(this)">
+          <small class="fmt-hint"></small>
         </div>
         <div class="modal-field" id="fi-viruta">
           <label>Viruta inicial ($)</label>
-          <input type="number" name="gi_viruta" value="0" min="0">
+          <input type="number" name="gi_viruta" value="0" min="0" oninput="fmtNum(this)">
+          <small class="fmt-hint"></small>
         </div>
 
         <hr class="modal-sep">
@@ -719,6 +732,25 @@ const CAT_INFO = {
 };
 
 /* ════════════════════════════════════════════════════════════
+   UTILIDADES
+   ════════════════════════════════════════════════════════════ */
+function fmtNum(input) {
+  const v = Math.round(+input.value);
+  const hint = input.nextElementSibling;
+  if (hint && hint.classList.contains('fmt-hint'))
+    hint.textContent = (isNaN(v) || input.value === '') ? '' : v.toLocaleString('es-CL');
+}
+
+function calcBreakEven(proyData) {
+  let wasNeg = false;
+  for (const d of proyData) {
+    if (d.acum < 0) wasNeg = true;
+    if (wasNeg && d.acum >= 0) return d;
+  }
+  return null;
+}
+
+/* ════════════════════════════════════════════════════════════
    INIT
    ════════════════════════════════════════════════════════════ */
 (function init() {
@@ -765,8 +797,8 @@ function selLote(id) {
    DASHBOARD
    ════════════════════════════════════════════════════════════ */
 function renderDashboard(lote) {
-  const dHoy  = proy.find(d => d.fecha === HOY) || proy[proy.length - 1];
-  const regs  = Object.keys(lote.registros || {});
+  const dFin  = proy[proy.length - 1];
+  const dHoy  = proy.find(d => d.fecha === HOY) || dFin;
   const gen   = lote.genetica || 'Lohmann Brown';
   const col   = GEN_COLORES[gen] || '#1b4332';
   const gastos = lote.gastosEspeciales || [];
@@ -778,25 +810,42 @@ function renderDashboard(lote) {
   document.getElementById('kpi-aves').textContent = NUM(dHoy.aves);
   document.getElementById('kpi-ginv').textContent = MN(invTotal);
   document.getElementById('kpi-ginv-sub').textContent = `${gastos.length} gasto${gastos.length!==1?'s':''} especial${gastos.length!==1?'es':''}`;
-  const res = dHoy.acum;
+  const res = dFin.acum;
   const elRes = document.getElementById('kpi-res');
   elRes.textContent = '$' + Math.abs(res).toLocaleString('es-CL');
   elRes.className   = 'ficha-num ' + (res >= 0 ? 'ok' : 'mal');
-  document.getElementById('kpi-res-sub').textContent = res >= 0 ? 'superávit' : 'déficit';
+  document.getElementById('kpi-res-sub').textContent = (res >= 0 ? 'superávit al fin ciclo' : 'déficit al fin ciclo');
+
+  const be = calcBreakEven(proy);
+  const elRoi = document.getElementById('kpi-roi');
+  if (elRoi) {
+    if (be) {
+      elRoi.textContent = `Sem ${be.sem}`;
+      elRoi.className = 'ficha-num ok';
+      document.getElementById('kpi-roi-sub').textContent =
+        new Date(be.fecha + 'T12:00:00').toLocaleDateString('es-CL',{day:'numeric',month:'short',year:'numeric'});
+    } else if (invTotal === 0) {
+      elRoi.textContent = '—'; elRoi.className = 'ficha-num';
+      document.getElementById('kpi-roi-sub').textContent = 'sin inversión registrada';
+    } else {
+      elRoi.textContent = 'Sin retorno'; elRoi.className = 'ficha-num mal';
+      document.getElementById('kpi-roi-sub').textContent = 'en 130 semanas';
+    }
+  }
 
   document.getElementById('contenido').innerHTML = `
   <section id="graficos" class="bloque">
-    <h2>Proyección vs Real</h2>
+    <h2>Proyección financiera</h2>
     <p class="bloque-desc">
       <strong>${lote.nombre}</strong>
       · <span style="font-weight:600;color:${col}">${gen}</span>
-      · semana ${dHoy.sem} de ${DIAS_CICLO/7} · ${regs.length} día${regs.length!==1?'s':''} con datos reales.
+      · ${DIAS_CICLO/7} semanas · ${NUM(+lote.nAves)} aves iniciales.
       <button class="btn btn-ok btn-sm" style="margin-left:16px" onclick="exportarExcel()">↓ Exportar Excel</button>
     </p>
 
     <div class="tabs">
       <button class="tab activo" data-tab="t-graficos" onclick="setTab(event,'t-graficos')">Gráficos</button>
-      <button class="tab" data-tab="t-tabla"   onclick="setTab(event,'t-tabla')">Tabla diaria</button>
+      <button class="tab" data-tab="t-tabla"   onclick="setTab(event,'t-tabla')">Proyección</button>
       <button class="tab" data-tab="t-precios" onclick="setTab(event,'t-precios')">Precios mes</button>
       <button class="tab" data-tab="t-gastos"  onclick="setTab(event,'t-gastos')">Gastos especiales</button>
       <button class="tab" data-tab="t-config"  onclick="setTab(event,'t-config')">Configuración</button>
@@ -827,23 +876,9 @@ function renderDashboard(lote) {
       </div>
     </div>
 
-    <!-- TABLA -->
+    <!-- TABLA PROYECCIÓN -->
     <div id="t-tabla" class="tab-panel" style="display:none">
-      <div class="tabla-controles">
-        <span>Últimos 30 días y próximos 7</span>
-        <button class="btn btn-ok btn-sm" style="margin-left:auto" onclick="abrirRegistro()">+ Ingresar datos reales</button>
-      </div>
-      <div class="tabla-wrap"><table>
-        <thead><tr>
-          <th style="text-align:left;padding-left:12px">Fecha</th>
-          <th>Sem</th><th>Aves</th>
-          <th>% Post.Proy</th><th class="th-real">% Post.Real</th>
-          <th>Huevos Proy</th><th class="th-real">Huevos Real</th>
-          <th>$/huevo</th><th>Ing. Proy</th><th class="th-real">Ing. Real</th>
-          <th>G.Esp</th><th>Resultado</th>
-        </tr></thead>
-        <tbody id="tbody"></tbody>
-      </table></div>
+      <div id="tabla-proy-panel"></div>
     </div>
 
     <!-- PRECIOS POR MES -->
@@ -864,8 +899,8 @@ function renderDashboard(lote) {
       </div>
       <div class="config-body" id="cfg-body">
         <div class="config-grid">
-          <div class="cfg-field"><span>Precio huevo base ($/ud.)</span><input type="number" id="cfg-precio" value="${lote.precioHuevo}"></div>
-          <div class="cfg-field"><span>Gastos fijos / mes ($)</span><input type="number" id="cfg-gastos" value="${lote.gastosMes}"></div>
+          <div class="cfg-field"><span>Precio huevo base ($/ud.)</span><input type="number" id="cfg-precio" value="${lote.precioHuevo}" oninput="fmtNum(this)"><small class="fmt-hint"></small></div>
+          <div class="cfg-field"><span>Gastos fijos / mes ($)</span><input type="number" id="cfg-gastos" value="${lote.gastosMes}" oninput="fmtNum(this)"><small class="fmt-hint">${(+lote.gastosMes).toLocaleString('es-CL')}</small></div>
           <hr class="cfg-sep">
           <div class="cfg-sec">Costo alimento por periodo ($/kg)</div>
           ${[1,2,3,4,5,6,7].map(d=>`
@@ -884,7 +919,7 @@ function renderDashboard(lote) {
   document.getElementById('pie').style.display    = 'block';
 
   renderGraficos(lote);
-  renderTabla(lote);
+  renderTablaProyeccion(lote);
   renderPreciosMes(lote);
   renderGastosEspeciales(lote);
 }
@@ -898,7 +933,7 @@ function setTab(e, id) {
   panel.classList.add('activo');
   panel.style.display = 'block';
   if (id === 't-graficos') renderGraficos(getLote(loteId));
-  if (id === 't-tabla')    renderTabla(getLote(loteId));
+  if (id === 't-tabla')    renderTablaProyeccion(getLote(loteId));
   if (id === 't-precios')  renderPreciosMes(getLote(loteId));
   if (id === 't-gastos')   renderGastosEspeciales(getLote(loteId));
 }
@@ -1055,7 +1090,8 @@ function renderGastosEspeciales(lote) {
       </div>
       <div class="gasto-form-field">
         <label>Monto ($)</label>
-        <input type="number" id="ng-monto" placeholder="0" min="0">
+        <input type="number" id="ng-monto" placeholder="0" min="0" oninput="fmtNum(this)">
+        <small class="fmt-hint"></small>
       </div>
       <div style="display:flex;align-items:flex-end">
         <button class="btn btn-acento btn-sm" onclick="agregarGasto()">+ Agregar</button>
@@ -1133,26 +1169,24 @@ function abrirSiguienteCiclo(fechaFin) {
    ════════════════════════════════════════════════════════════ */
 function semData(lote) {
   const m = {};
-  const regs = lote.registros || {};
-  proy.forEach(d => {
+  const nIni = +lote.nAves;
+  proy.forEach((d, i) => {
     const s = d.sem;
-    if (!m[s]) m[s] = {s, ingP:0, costoP:0, gastoEspP:0, acumP:0, postP:0, ingR:null, acumR:null, postR:null};
-    m[s].ingP     += d.ingreso;
-    m[s].costoP   += d.costoAlim + d.gastoDia;
+    const avesIni = i === 0 ? nIni : proy[i-1].aves;
+    if (!m[s]) m[s] = { s, fecha: d.fecha, avesIni, aves: 0,
+      ingP: 0, costoP: 0, gastoEspP: 0, acumP: 0, postP: 0,
+      huevos: 0, consumo: 0, resP: 0 };
+    m[s].ingP      += d.ingreso;
+    m[s].costoP    += d.costoAlim + d.gastoDia;
     m[s].gastoEspP += d.gastoEsp;
-    m[s].acumP     = d.acum;
-    m[s].postP     = d.pos;
-    const reg = regs[d.fecha];
-    if (reg?.huevosReal != null) {
-      m[s].ingR  = (m[s].ingR||0) + reg.huevosReal * d.precio;
-      m[s].postR = reg.posturaReal;
-      const resR = reg.huevosReal * d.precio - d.costoAlim - d.gastoDia - d.gastoEsp;
-      m[s].acumR = (m[s].acumR||0) + resR;
-    }
+    m[s].acumP      = d.acum;
+    m[s].postP      = d.pos;
+    m[s].aves       = d.aves;
+    m[s].huevos    += d.huevos;
+    m[s].consumo   += d.consumoKg;
+    m[s].resP      += d.resultado;
   });
-  let ar = 0;
-  Object.values(m).sort((a,b)=>a.s-b.s).forEach(v => { if (v.acumR != null) { ar += v.acumR; v.acumR = ar; } });
-  return Object.values(m).sort((a,b)=>a.s-b.s);
+  return Object.values(m).sort((a, b) => a.s - b.s);
 }
 
 const tFont = { font:{ size:10, family:"'IBM Plex Mono', monospace" } };
@@ -1169,9 +1203,8 @@ function renderGraficos(lote) {
   if (cFin) charts.fin = new Chart(cFin, {
     type:'bar',
     data:{ labels:lbs, datasets:[
-      { label:'Costo total',        data:sems.map(s=>s.costoP+s.gastoEspP), backgroundColor:'rgba(183,28,28,.38)', stack:'p' },
-      { label:'Ingreso proyectado', data:sems.map(s=>s.ingP),               backgroundColor:'rgba(27,67,50,.65)',  stack:'p' },
-      { label:'Ingreso real',       data:sems.map(s=>s.ingR),               backgroundColor:'#f0a500',             stack:'r' },
+      { label:'Costo total (alim+fijos+esp)', data:sems.map(s=>s.costoP+s.gastoEspP), backgroundColor:'rgba(183,28,28,.38)', stack:'p' },
+      { label:'Ingreso proyectado',           data:sems.map(s=>s.ingP),               backgroundColor:'rgba(27,67,50,.65)',  stack:'p' },
     ]},
     options:{ responsive:true, maintainAspectRatio:false,
       plugins:{ legend:{ labels:{ font:{size:11} } } },
@@ -1184,8 +1217,7 @@ function renderGraficos(lote) {
   if (cPos) charts.pos = new Chart(cPos, {
     type:'line',
     data:{ labels:lbs, datasets:[
-      { label:'Proyectado', data:sems.map(s=>s.postP), borderColor:'#1b4332', backgroundColor:'rgba(27,67,50,.08)', fill:true, tension:.3, pointRadius:0, borderWidth:2 },
-      { label:'Real',       data:sems.map(s=>s.postR!=null?s.postR:null), borderColor:'#f0a500', borderWidth:2.5, pointRadius:3, spanGaps:false, tension:.2 },
+      { label:'% Postura', data:sems.map(s=>s.postP), borderColor:'#1b4332', backgroundColor:'rgba(27,67,50,.08)', fill:true, tension:.3, pointRadius:0, borderWidth:2 },
     ]},
     options:{ responsive:true, maintainAspectRatio:false,
       plugins:{ legend:{ labels:{ font:{size:11} } } },
@@ -1197,9 +1229,8 @@ function renderGraficos(lote) {
   if (cAcum) charts.acum = new Chart(cAcum, {
     type:'line',
     data:{ labels:lbs, datasets:[
-      { label:'Proyectado', data:sems.map(s=>s.acumP),                    borderColor:'#1b4332', fill:false, tension:.3, pointRadius:0, borderWidth:2 },
-      { label:'Real',       data:sems.map(s=>s.acumR!=null?s.acumR:null), borderColor:'#f0a500', borderWidth:2.5, pointRadius:3, spanGaps:false, tension:.2 },
-      { label:'Break-even', data:sems.map(()=>0),                         borderColor:'#aaa', borderDash:[4,4], borderWidth:1, pointRadius:0 },
+      { label:'Resultado acumulado', data:sems.map(s=>s.acumP), borderColor:'#1b4332', fill:false, tension:.3, pointRadius:0, borderWidth:2 },
+      { label:'Break-even',          data:sems.map(()=>0),       borderColor:'#f0a500', borderDash:[4,4], borderWidth:1.5, pointRadius:0 },
     ]},
     options:{ responsive:true, maintainAspectRatio:false,
       plugins:{ legend:{ labels:{ font:{size:11} } } },
@@ -1208,34 +1239,127 @@ function renderGraficos(lote) {
 }
 
 /* ════════════════════════════════════════════════════════════
-   TABLA DIARIA
+   TABLA PROYECCIÓN SEMANAL / MENSUAL / ANUAL
    ════════════════════════════════════════════════════════════ */
-function renderTabla(lote) {
-  const tbody = document.getElementById('tbody');
-  if (!tbody || !proy) return;
-  const regs  = lote.registros || {};
-  const idx   = proy.findIndex(d => d.fecha >= HOY);
-  const slice = proy.slice(Math.max(0, idx-30), Math.min(proy.length, idx+7)).reverse();
-  tbody.innerHTML = slice.map(d => {
-    const esHoy  = d.fecha === HOY;
-    const reg    = regs[d.fecha];
-    const tieneR = reg?.huevosReal != null;
-    const ingR   = tieneR ? reg.huevosReal * d.precio : null;
-    const rc     = d.resultado >= 0 ? 'ok' : 'mal';
-    return `<tr${esHoy?' style="background:var(--acento-cl)"':''}>
-      <td class="fecha">${d.fecha}${esHoy?' <b>· hoy</b>':''}</td>
-      <td>${d.sem}</td><td>${NUM(d.aves)}</td>
-      <td>${PCT(d.pos)}</td>
-      <td class="${tieneR?'real':''}">${tieneR?PCT(reg.posturaReal):'—'}</td>
-      <td>${NUM(d.huevos)}</td>
-      <td class="${tieneR?'real':''}">${tieneR?NUM(reg.huevosReal):'—'}</td>
-      <td style="font-family:var(--fm);font-size:11px">${MN(d.precio)}</td>
-      <td>${MN(d.ingreso)}</td>
-      <td class="${tieneR?'real':''}">${tieneR?MN(ingR):'—'}</td>
-      <td style="font-family:var(--fm);font-size:11px;color:var(--mal)">${d.gastoEsp>0?MN(d.gastoEsp):'—'}</td>
-      <td class="${rc}">${MN(d.resultado)}</td>
-    </tr>`;
-  }).join('');
+let tablaVista = 'sem';
+
+function renderTablaProyeccion(lote) {
+  const panel = document.getElementById('tabla-proy-panel');
+  if (!panel || !proy) return;
+  const be = calcBreakEven(proy);
+  const beAcum = be ? be.acum : null;
+
+  const btnCls = v => `btn btn-sm ${tablaVista===v?'btn-prim':'btn-linea'}`;
+  const ctrl = `<div class="tabla-controles">
+    <span style="font-weight:600;color:var(--prim)">Vista:</span>
+    <button class="${btnCls('sem')}"  onclick="setTablaVista('sem')">Semanal</button>
+    <button class="${btnCls('mes')}"  onclick="setTablaVista('mes')">Mensual</button>
+    <button class="${btnCls('año')}"  onclick="setTablaVista('año')">Anual</button>
+    ${be ? `<span style="margin-left:auto;font-size:12px;color:var(--ok);font-weight:600">✓ Break-even en sem ${be.sem} (${new Date(be.fecha+'T12:00:00').toLocaleDateString('es-CL',{day:'numeric',month:'short',year:'numeric'})})</span>` : ''}
+  </div>`;
+
+  let html = '';
+  if (tablaVista === 'sem') {
+    const sems = semData(lote);
+    const cols = '<th style="text-align:left;padding-left:10px">Sem</th><th>Inicio</th><th>Aves</th><th>% Post.</th><th>% Mort.</th><th>Huevos</th><th>Alim. kg</th><th>$ Costos</th><th>G.Esp</th><th>Ingresos</th><th>Resultado</th><th>Acumulado</th>';
+    const filas = sems.map(s => {
+      const mort = s.avesIni > 0 ? ((s.avesIni - s.aves) / s.avesIni * 100) : 0;
+      const rc   = s.resP  >= 0 ? 'ok' : 'mal';
+      const ac   = s.acumP >= 0 ? 'ok' : 'mal';
+      const beRow = (be && s.s === be.sem) ? ' style="background:#e6f4e8"' : '';
+      const espStr = s.gastoEspP > 0 ? `<td style="color:var(--mal);font-family:var(--fm);font-size:11px">${MN(s.gastoEspP)}</td>` : '<td>—</td>';
+      return `<tr${beRow}>
+        <td style="text-align:left;padding-left:10px;font-weight:600">${s.s}</td>
+        <td class="fecha">${s.fecha}</td>
+        <td>${NUM(s.aves)}</td>
+        <td>${PCT(s.postP)}</td>
+        <td style="font-family:var(--fm);font-size:11px;color:var(--suave)">${mort.toFixed(3)}%</td>
+        <td>${NUM(s.huevos)}</td>
+        <td>${(+s.consumo).toFixed(0)}</td>
+        <td>${MN(s.costoP)}</td>
+        ${espStr}
+        <td>${MN(s.ingP)}</td>
+        <td class="${rc}">${MN(s.resP)}</td>
+        <td class="${ac}">${MN(s.acumP)}</td>
+      </tr>`;
+    }).join('');
+    html = `<div class="tabla-wrap"><table><thead><tr>${cols}</tr></thead><tbody>${filas}</tbody></table></div>`;
+
+  } else if (tablaVista === 'mes') {
+    const m = {}; const nIni = +lote.nAves;
+    proy.forEach((d, i) => {
+      const k = d.mes; const avesIni = i === 0 ? nIni : proy[i-1].aves;
+      if (!m[k]) m[k] = { k, avesIni, aves: 0, ingP: 0, costoP: 0, espP: 0, acumP: 0, postSum: 0, huevos: 0, consumo: 0, resP: 0, dias: 0 };
+      m[k].ingP += d.ingreso; m[k].costoP += d.costoAlim + d.gastoDia;
+      m[k].espP += d.gastoEsp; m[k].acumP = d.acum; m[k].postSum += d.pos;
+      m[k].aves = d.aves; m[k].huevos += d.huevos; m[k].consumo += d.consumoKg;
+      m[k].resP += d.resultado; m[k].dias++;
+    });
+    const meses = Object.values(m).sort((a,b)=>a.k.localeCompare(b.k));
+    const mesNom = k => { const [y,mo]=k.split('-'); return new Date(+y,+mo-1,1).toLocaleDateString('es-CL',{month:'short',year:'numeric'}); };
+    const cols = '<th style="text-align:left;padding-left:10px">Mes</th><th>Aves fin</th><th>% Post.prom</th><th>% Mort.mes</th><th>Huevos</th><th>Alim. kg</th><th>$ Costo total</th><th>G.Esp</th><th>Ingresos</th><th>Resultado</th><th>Acumulado</th>';
+    const filas = meses.map(s => {
+      const mort = s.avesIni > 0 ? ((s.avesIni - s.aves) / s.avesIni * 100) : 0;
+      const postAvg = s.postSum / s.dias;
+      const rc = s.resP  >= 0 ? 'ok' : 'mal';
+      const ac = s.acumP >= 0 ? 'ok' : 'mal';
+      const espStr = s.espP > 0 ? `<td style="color:var(--mal);font-family:var(--fm);font-size:11px">${MN(s.espP)}</td>` : '<td>—</td>';
+      return `<tr>
+        <td style="text-align:left;padding-left:10px;font-weight:600">${mesNom(s.k)}</td>
+        <td>${NUM(s.aves)}</td>
+        <td>${PCT(postAvg)}</td>
+        <td style="font-family:var(--fm);font-size:11px;color:var(--suave)">${mort.toFixed(2)}%</td>
+        <td>${NUM(s.huevos)}</td>
+        <td>${(+s.consumo).toFixed(0)}</td>
+        <td>${MN(s.costoP)}</td>
+        ${espStr}
+        <td>${MN(s.ingP)}</td>
+        <td class="${rc}">${MN(s.resP)}</td>
+        <td class="${ac}">${MN(s.acumP)}</td>
+      </tr>`;
+    }).join('');
+    html = `<div class="tabla-wrap"><table><thead><tr>${cols}</tr></thead><tbody>${filas}</tbody></table></div>`;
+
+  } else {
+    const a = {}; const nIni = +lote.nAves;
+    proy.forEach((d, i) => {
+      const k = d.fecha.slice(0,4); const avesIni = i === 0 ? nIni : proy[i-1].aves;
+      if (!a[k]) a[k] = { k, avesIni, aves: 0, ingP: 0, costoP: 0, espP: 0, acumP: 0, postSum: 0, huevos: 0, consumo: 0, resP: 0, dias: 0 };
+      a[k].ingP += d.ingreso; a[k].costoP += d.costoAlim + d.gastoDia;
+      a[k].espP += d.gastoEsp; a[k].acumP = d.acum; a[k].postSum += d.pos;
+      a[k].aves = d.aves; a[k].huevos += d.huevos; a[k].consumo += d.consumoKg;
+      a[k].resP += d.resultado; a[k].dias++;
+    });
+    const años = Object.values(a).sort((a,b)=>a.k.localeCompare(b.k));
+    const cols = '<th style="text-align:left;padding-left:10px">Año</th><th>Aves fin</th><th>% Post.prom</th><th>% Mort.año</th><th>Huevos</th><th>$ Costo total</th><th>G.Esp</th><th>Ingresos</th><th>Resultado</th><th>Acumulado</th>';
+    const filas = años.map(s => {
+      const mort = s.avesIni > 0 ? ((s.avesIni - s.aves) / s.avesIni * 100) : 0;
+      const postAvg = s.postSum / s.dias;
+      const rc = s.resP  >= 0 ? 'ok' : 'mal';
+      const ac = s.acumP >= 0 ? 'ok' : 'mal';
+      const espStr = s.espP > 0 ? `<td style="color:var(--mal);font-family:var(--fm);font-size:11px">${MN(s.espP)}</td>` : '<td>—</td>';
+      return `<tr>
+        <td style="text-align:left;padding-left:10px;font-weight:600">${s.k}</td>
+        <td>${NUM(s.aves)}</td>
+        <td>${PCT(postAvg)}</td>
+        <td style="font-family:var(--fm);font-size:11px;color:var(--suave)">${mort.toFixed(2)}%</td>
+        <td>${NUM(s.huevos)}</td>
+        <td>${MN(s.costoP)}</td>
+        ${espStr}
+        <td>${MN(s.ingP)}</td>
+        <td class="${rc}">${MN(s.resP)}</td>
+        <td class="${ac}">${MN(s.acumP)}</td>
+      </tr>`;
+    }).join('');
+    html = `<div class="tabla-wrap"><table><thead><tr>${cols}</tr></thead><tbody>${filas}</tbody></table></div>`;
+  }
+
+  panel.innerHTML = ctrl + html;
+}
+
+function setTablaVista(vista) {
+  tablaVista = vista;
+  renderTablaProyeccion(getLote(loteId));
 }
 
 /* ════════════════════════════════════════════════════════════
@@ -1304,7 +1428,6 @@ function guardarLote(e) {
     gastosMes:          +f.gastosMes.value,
     costoDieta,
     gastosEspeciales,
-    registros:          modoEditar ? (getLote(modoEditar)?.registros || {}) : {},
   };
   saveLote(lote);
   loteId = lote.id;
@@ -1313,49 +1436,6 @@ function guardarLote(e) {
   cerrarModal();
 }
 
-/* ════════════════════════════════════════════════════════════
-   REGISTRO DIARIO REAL
-   ════════════════════════════════════════════════════════════ */
-function abrirRegistro(fecha) {
-  fecha = fecha || HOY;
-  const lote = getLote(loteId);
-  const reg  = lote?.registros?.[fecha] || {};
-  const overlay = document.createElement('div');
-  overlay.className = 'modal-bg abierto';
-  overlay.innerHTML = `<div class="modal">
-    <button class="modal-close" onclick="this.closest('.modal-bg').remove()">×</button>
-    <h2>Registro diario real</h2>
-    <div class="modal-grid">
-      <div class="modal-field full"><label>Fecha</label>
-        <input type="date" id="r-fecha" value="${fecha}"></div>
-      <div class="modal-field"><label>N° huevos producidos</label>
-        <input type="number" id="r-huevos" min="0" placeholder="Ej: 1 200" value="${reg.huevosReal??''}"></div>
-      <div class="modal-field"><label>% Postura real</label>
-        <input type="number" id="r-postura" step="0.1" min="0" max="100" placeholder="Ej: 85.5" value="${reg.posturaReal??''}"></div>
-      <div class="modal-field full"><label>Nota (opcional)</label>
-        <input type="text" id="r-nota" placeholder="Ej: vacunación, cambio de dieta…" value="${reg.nota??''}"></div>
-      <div class="modal-acciones">
-        <button class="btn btn-ok" onclick="guardarReg(this)">Guardar</button>
-        <button class="btn btn-linea" onclick="this.closest('.modal-bg').remove()">Cancelar</button>
-      </div>
-    </div>
-  </div>`;
-  document.body.appendChild(overlay);
-}
-
-function guardarReg(btn) {
-  const fecha   = document.getElementById('r-fecha').value;
-  const huevos  = parseFloat(document.getElementById('r-huevos').value);
-  const postura = parseFloat(document.getElementById('r-postura').value);
-  const nota    = document.getElementById('r-nota').value;
-  if (!fecha || isNaN(huevos)) { alert('Ingresa fecha y N° de huevos'); return; }
-  const lote = getLote(loteId);
-  lote.registros = lote.registros || {};
-  lote.registros[fecha] = { huevosReal:huevos, posturaReal:isNaN(postura)?null:postura, nota };
-  saveLote(lote);
-  btn.closest('.modal-bg').remove();
-  selLote(loteId);
-}
 
 /* ════════════════════════════════════════════════════════════
    CONFIGURACIÓN
@@ -1397,7 +1477,6 @@ function confirmarEliminar() {
 function exportarExcel() {
   if (!proy) return;
   const lote    = getLote(loteId);
-  const regs    = lote.registros || {};
   const wb      = XLSX.utils.book_new();
   const HOY_STR = new Date().toLocaleDateString('es-CL');
   const gen     = lote.genetica || 'Lohmann Brown';
@@ -1414,7 +1493,6 @@ function exportarExcel() {
     ['Gastos fijos / mes ($)',+lote.gastosMes],
     ['Semanas proyectadas', DIAS_CICLO/7],
     ['Días proyectados', proy.length],
-    ['Días con datos reales', Object.keys(regs).length],
     ['Total gastos especiales ($)', gastos.reduce((a,g)=>a+(+g.monto),0)],
     ['Resultado acum. proyectado (fin ciclo)', proy[proy.length-1].acum],
     ['Generado', HOY_STR],
@@ -1452,21 +1530,6 @@ function exportarExcel() {
   const wsSem = XLSX.utils.aoa_to_sheet(semRows);
   for (let r=2;r<=semRows.length;r++) { const c=wsSem[XLSX.utils.encode_cell({r:r-1,c:3})]; if(c) c.z='0.0%'; }
   XLSX.utils.book_append_sheet(wb, wsSem, 'Proyección Semanal');
-
-  // Real vs Proyectado
-  const rvpRows = [['Fecha','Sem','Aves','% Post.Proy','Huevos Proy','$/huevo','Ing.Proy','% Post.Real','Huevos Real','Ing.Real','G.Especial','Resultado Proy','Resultado Real','Nota']];
-  proy.forEach(d => {
-    const reg = regs[d.fecha];
-    const tr  = reg?.huevosReal!=null;
-    const ingR= tr ? reg.huevosReal*d.precio : null;
-    const resR= tr ? ingR-d.costoAlim-d.gastoDia-d.gastoEsp : null;
-    rvpRows.push([d.fecha,d.sem,Math.round(d.aves),d.pos/100,d.huevos,d.precio,d.ingreso,
-      tr?(reg.posturaReal??null)/100:null, tr?reg.huevosReal:null, ingR,
-      d.gastoEsp||null, d.resultado, resR, reg?.nota||'']);
-  });
-  const wsRvp = XLSX.utils.aoa_to_sheet(rvpRows);
-  [3,7].forEach(ci => { for(let r=2;r<=rvpRows.length;r++){const c=wsRvp[XLSX.utils.encode_cell({r:r-1,c:ci})];if(c)c.z='0.0%';} });
-  XLSX.utils.book_append_sheet(wb, wsRvp, 'Real vs Proyectado');
 
   // Proyección diaria completa
   const dRows=[['Fecha','Día','Sem','Aves','% Postura','Huevos','Consumo kg','Dieta','Costo alim.','Gastos fijos','Gasto especial','$/huevo','Ingresos','Resultado','Acumulado']];
