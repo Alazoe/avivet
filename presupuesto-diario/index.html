@@ -710,10 +710,14 @@ function saveLote(lote) {
 /* ════════════════════════════════════════════════════════════
    ESTADO GLOBAL
    ════════════════════════════════════════════════════════════ */
-let loteId = null;
-let proy   = null;
-const HOY  = new Date().toISOString().slice(0, 10);
-let charts = {};
+let loteId     = null;
+let proy       = null;
+let modoEditar = null;
+let charts     = {};
+let tablaVista = 'sem';
+const HOY      = new Date().toISOString().slice(0, 10);
+const tFont    = { font:{ size:10, family:"'IBM Plex Mono', monospace" } };
+const gColor   = '#e0ddd5';
 
 const NUM = v => v == null ? '—' : Math.round(v).toLocaleString('es-CL');
 const MN  = v => v == null ? '—' : '$' + Math.round(v).toLocaleString('es-CL');
@@ -1197,8 +1201,6 @@ function semData(lote) {
   return Object.values(m).sort((a, b) => a.s - b.s);
 }
 
-const tFont = { font:{ size:10, family:"'IBM Plex Mono', monospace" } };
-const gColor = '#e0ddd5';
 function dc(id) { if (charts[id]) { charts[id].destroy(); delete charts[id]; } }
 
 function renderGraficos(lote) {
@@ -1249,8 +1251,6 @@ function renderGraficos(lote) {
 /* ════════════════════════════════════════════════════════════
    TABLA PROYECCIÓN SEMANAL / MENSUAL / ANUAL
    ════════════════════════════════════════════════════════════ */
-let tablaVista = 'sem';
-
 function renderTablaProyeccion(lote) {
   const panel = document.getElementById('tabla-proy-panel');
   if (!panel || !proy) return;
@@ -1372,8 +1372,6 @@ function setTablaVista(vista) {
 /* ════════════════════════════════════════════════════════════
    MODAL — NUEVO / EDITAR LOTE
    ════════════════════════════════════════════════════════════ */
-let modoEditar = null;
-
 function abrirModal(id) {
   modoEditar = id || null;
   const form = document.getElementById('form-lote');
