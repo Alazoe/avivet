@@ -239,13 +239,13 @@ td.real { background: rgba(27,94,32,.07) !important; font-weight: 600; }
       Precio de huevo por mes, gastos iniciales (pollas, vacunas, viruta, inversión) y continuación de ciclos.
     </p>
     <div class="hero-fichas">
-      <div class="ficha"><span class="ficha-num" id="kpi-sem">—</span><span class="ficha-lbl">semana de vida</span></div>
-      <div class="ficha"><span class="ficha-num" id="kpi-pos">—</span><span class="ficha-lbl">% postura proyectado</span></div>
-      <div class="ficha"><span class="ficha-num" id="kpi-aves">—</span><span class="ficha-lbl">aves proyectadas</span></div>
+      <div class="ficha"><span class="ficha-num" id="kpi-huevos">—</span><span class="ficha-lbl">huevos totales ciclo</span><span class="ficha-sub" id="kpi-huevos-sub"></span></div>
+      <div class="ficha"><span class="ficha-num" id="kpi-pos">—</span><span class="ficha-lbl">pico de postura</span><span class="ficha-sub" id="kpi-pos-sub"></span></div>
+      <div class="ficha"><span class="ficha-num" id="kpi-aves">—</span><span class="ficha-lbl">aves al fin del ciclo</span><span class="ficha-sub" id="kpi-aves-sub"></span></div>
       <div class="ficha"><span class="ficha-num" id="kpi-ginv">—</span><span class="ficha-lbl">inversión inicial</span><span class="ficha-sub" id="kpi-ginv-sub"></span></div>
       <div class="ficha">
         <span class="ficha-num" id="kpi-res">—</span>
-        <span class="ficha-lbl">resultado acum. proyectado</span>
+        <span class="ficha-lbl">resultado acum. al fin ciclo</span>
         <span class="ficha-sub" id="kpi-res-sub"></span>
       </div>
       <div class="ficha">
@@ -804,12 +804,20 @@ function renderDashboard(lote) {
   const gastos = lote.gastosEspeciales || [];
   const invTotal = gastos.reduce((a, g) => a + +g.monto, 0);
 
-  // KPIs hero
-  document.getElementById('kpi-sem').textContent  = `Sem ${dHoy.sem}`;
-  document.getElementById('kpi-pos').textContent  = `${dHoy.pos.toFixed(1)}%`;
-  document.getElementById('kpi-aves').textContent = NUM(dHoy.aves);
-  document.getElementById('kpi-ginv').textContent = MN(invTotal);
-  document.getElementById('kpi-ginv-sub').textContent = `${gastos.length} gasto${gastos.length!==1?'s':''} especial${gastos.length!==1?'es':''}`;
+  // KPIs hero — resumen del ciclo completo
+  const totalHuevos = proy.reduce((a, d) => a + d.huevos, 0);
+  const porcPico    = Math.max(...proy.map(d => d.pos));
+  const semPico     = proy.find(d => d.pos === porcPico)?.sem || '—';
+  const totalIng    = proy.reduce((a, d) => a + d.ingreso, 0);
+
+  document.getElementById('kpi-huevos').textContent    = NUM(totalHuevos);
+  document.getElementById('kpi-huevos-sub').textContent = `Ingresos: ${MN(totalIng)}`;
+  document.getElementById('kpi-pos').textContent       = `${porcPico.toFixed(1)}%`;
+  document.getElementById('kpi-pos-sub').textContent   = `semana ${semPico}`;
+  document.getElementById('kpi-aves').textContent      = NUM(dFin.aves);
+  document.getElementById('kpi-aves-sub').textContent  = `de ${NUM(+lote.nAves)} iniciales`;
+  document.getElementById('kpi-ginv').textContent      = MN(invTotal);
+  document.getElementById('kpi-ginv-sub').textContent  = `${gastos.length} gasto${gastos.length!==1?'s':''} especial${gastos.length!==1?'es':''}`;
   const res = dFin.acum;
   const elRes = document.getElementById('kpi-res');
   elRes.textContent = '$' + Math.abs(res).toLocaleString('es-CL');
@@ -857,16 +865,15 @@ function renderDashboard(lote) {
         <div class="grafico-wrap">
           <div class="grafico-titulo">Ingreso y costo semanal ($)</div>
           <div class="leyenda">
-            <span class="leyenda-item"><span class="cuad" style="background:#1b4332;opacity:.7"></span>Ingreso proy.</span>
-            <span class="leyenda-item"><span class="cuad" style="background:#f0a500"></span>Ingreso real</span>
-            <span class="leyenda-item"><span class="cuad" style="background:rgba(183,28,28,.4)"></span>Costo total proy.</span>
+            <span class="leyenda-item"><span class="cuad" style="background:#1b4332;opacity:.7"></span>Ingreso proyectado</span>
+            <span class="leyenda-item"><span class="cuad" style="background:rgba(183,28,28,.4)"></span>Costo total (alim+fijos+esp)</span>
           </div>
           <div class="grafico-canvas"><canvas id="cFin"></canvas></div>
         </div>
       </div>
       <div class="graficos-grid">
         <div class="grafico-wrap">
-          <div class="grafico-titulo">% Postura — proyectado vs real</div>
+          <div class="grafico-titulo">% Postura proyectada</div>
           <div class="grafico-canvas"><canvas id="cPos"></canvas></div>
         </div>
         <div class="grafico-wrap">
@@ -908,6 +915,7 @@ function renderDashboard(lote) {
           <hr class="cfg-sep">
           <div style="grid-column:1/-1;display:flex;gap:10px;flex-wrap:wrap">
             <button class="btn btn-acento" onclick="aplicarConfig()">Guardar y recalcular</button>
+            <button class="btn btn-prim" onclick="abrirModal(loteId)">Editar lote completo</button>
             <button class="btn btn-linea" style="color:var(--mal);border-color:var(--mal)" onclick="confirmarEliminar()">Eliminar lote</button>
           </div>
         </div>
@@ -1247,7 +1255,6 @@ function renderTablaProyeccion(lote) {
   const panel = document.getElementById('tabla-proy-panel');
   if (!panel || !proy) return;
   const be = calcBreakEven(proy);
-  const beAcum = be ? be.acum : null;
 
   const btnCls = v => `btn btn-sm ${tablaVista===v?'btn-prim':'btn-linea'}`;
   const ctrl = `<div class="tabla-controles">
@@ -1462,10 +1469,12 @@ function confirmarEliminar() {
   </div>`;
   document.getElementById('metodo').style.display = 'none';
   document.getElementById('pie').style.display    = 'none';
-  ['kpi-sem','kpi-pos','kpi-aves','kpi-ginv','kpi-res'].forEach(id => {
-    document.getElementById(id).textContent = '—';
+  ['kpi-huevos','kpi-pos','kpi-aves','kpi-ginv','kpi-res','kpi-roi'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.textContent = '—';
   });
-  ['kpi-res-sub','kpi-ginv-sub'].forEach(id => document.getElementById(id).textContent = '');
+  ['kpi-huevos-sub','kpi-pos-sub','kpi-aves-sub','kpi-res-sub','kpi-ginv-sub','kpi-roi-sub'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.textContent = '';
+  });
   document.getElementById('lote-nombre-txt').textContent = '';
   document.getElementById('lote-meta-txt').textContent   = '';
   document.getElementById('lote-gen-badge').innerHTML    = '';
