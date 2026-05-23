@@ -1763,38 +1763,42 @@ function calcularConsumoAlimento() {
   const semFin = Math.min(semIni + nSems - 1, 130);
 
   for (let s = semIni; s <= semFin; s++) {
-    const cons     = curvas.getConsumo(s);
-    const pos      = curvas.getPos(s);
-    const kgDia    = nAves * cons.gr / 1000;
-    const kgSem    = kgDia * 7;
-    const costSem  = costo > 0 ? kgSem * costo : null;
-    totalKg       += kgSem;
+    const cons    = curvas.getConsumo(s);
+    const pos     = curvas.getPos(s);
+    const kgDia   = nAves * cons.gr / 1000;
+    const kgSem   = kgDia * 7;
+    const costSem = costo > 0 ? kgSem * costo : null;
+    totalKg      += kgSem;
     if (costSem != null) totalCosto += costSem;
-    rows.push({ s, pos, grAve: cons.gr, dieta: cons.dieta, kgDia, kgSem, costSem });
+    rows.push({ s, pos, grAve: cons.gr, grOrig: cons.gr, dieta: cons.dieta, kgDia, kgSem, costSem });
   }
 
   const conCosto = costo > 0;
   const thCosto  = conCosto ? '<th>Costo sem ($)</th>' : '';
-  const cols = `<th style="text-align:left;padding-left:10px">Sem</th><th>Dieta</th><th>g/ave/día</th><th>kg/día total</th><th>kg/sem total</th>${thCosto}<th>% Postura</th>`;
+  const cols = `<th style="text-align:left;padding-left:10px">Sem</th><th>Dieta</th><th title="Editable: haz clic para modificar el consumo real de tu lote">g/ave/día ✎</th><th>kg/día total</th><th>kg/sem total</th>${thCosto}<th>% Postura</th>`;
 
-  const filas = rows.map(r => {
-    const tdCosto = conCosto ? `<td style="font-family:var(--fm);font-size:11px;color:var(--mal)">${MN(r.costSem)}</td>` : '';
+  const filas = rows.map((r, i) => {
+    const grInput = `<input type="number" id="calc-gr-${i}" value="${r.grAve.toFixed(0)}" min="1" max="500" step="1"
+      style="width:56px;font-family:var(--fm);font-size:12px;text-align:center;border:1px solid var(--linea-f);border-radius:3px;padding:2px 5px;background:var(--fondo);color:var(--tinta)"
+      oninput="actualizarConsumoFila(${i},this.value)"
+      title="Valor curva oficial: ${r.grAve.toFixed(0)} g — editable">`;
+    const tdCosto = conCosto ? `<td id="calc-costo-${i}" style="font-family:var(--fm);font-size:11px;color:var(--mal)">${MN(r.costSem)}</td>` : '';
     const posStr  = r.pos > 0 ? `<td style="color:var(--prim);font-weight:600">${r.pos.toFixed(1)}%</td>` : '<td style="color:var(--tenue)">—</td>';
     return `<tr>
       <td style="text-align:left;padding-left:10px;font-weight:600">${r.s}</td>
       <td><span style="font-size:10px;font-weight:600;padding:2px 6px;border-radius:3px;background:var(--acento-cl);color:#7a5700">D${r.dieta}</span></td>
-      <td style="font-family:var(--fm)">${r.grAve.toFixed(0)}</td>
-      <td style="font-family:var(--fm)">${r.kgDia.toFixed(1)}</td>
-      <td style="font-family:var(--fm);font-weight:600">${r.kgSem.toFixed(1)}</td>
+      <td style="padding:4px 8px">${grInput}</td>
+      <td id="calc-kgdia-${i}" style="font-family:var(--fm)">${r.kgDia.toFixed(1)}</td>
+      <td id="calc-kgsem-${i}" style="font-family:var(--fm);font-weight:600">${r.kgSem.toFixed(1)}</td>
       ${tdCosto}
       ${posStr}
     </tr>`;
   }).join('');
 
-  const tdTotCosto = conCosto ? `<td style="font-family:var(--fm);font-weight:700;color:var(--mal)">${MN(totalCosto)}</td>` : '';
+  const tdTotCosto = conCosto ? `<td id="calc-total-costo" style="font-family:var(--fm);font-weight:700;color:var(--mal)">${MN(totalCosto)}</td>` : '';
   const totalRow = `<tr style="background:var(--acento-cl)">
     <td colspan="4" style="text-align:left;padding-left:10px;font-weight:700;color:var(--prim)">TOTAL — ${rows.length} sem</td>
-    <td style="font-family:var(--fm);font-weight:700;color:var(--prim)">${totalKg.toFixed(1)} kg</td>
+    <td id="calc-total-kg" style="font-family:var(--fm);font-weight:700;color:var(--prim)">${totalKg.toFixed(1)} kg</td>
     ${tdTotCosto}
     <td>—</td>
   </tr>`;
@@ -1802,28 +1806,68 @@ function calcularConsumoAlimento() {
   const resumenExtra = conCosto ? `
     <div>
       <div style="font-size:11px;color:var(--tenue);text-transform:uppercase;letter-spacing:.05em">Costo total estimado</div>
-      <div style="font-family:var(--fm);font-weight:700;font-size:18px;color:var(--mal)">${MN(totalCosto)}</div>
-      <div style="font-size:11px;color:var(--tenue);margin-top:2px">${(totalCosto/totalKg).toFixed(0)} $/kg prom.</div>
+      <div id="calc-resumen-costo" style="font-family:var(--fm);font-weight:700;font-size:18px;color:var(--mal)">${MN(totalCosto)}</div>
+      <div id="calc-resumen-costopx" style="font-size:11px;color:var(--tenue);margin-top:2px">${(totalCosto/totalKg).toFixed(0)} $/kg prom.</div>
     </div>` : '';
 
   document.getElementById('calc-resultado').innerHTML = `
-    <div style="margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+    <div style="margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
       <span style="font-size:12px;font-weight:600;color:var(--prim);text-transform:uppercase;letter-spacing:.05em">${gen} · Sem ${semIni}–${semFin} · ${NUM(nAves)} aves</span>
       <button class="btn btn-ok btn-sm" onclick="exportarCalcAlimento()">↓ Exportar Excel</button>
     </div>
+    <p style="font-size:11px;color:var(--tenue);margin-bottom:10px">
+      Los valores de <strong>g/ave/día</strong> son editables — modifícalos si el consumo real de tu lote difiere de la curva oficial.
+    </p>
     <div class="tabla-wrap" style="max-height:380px">
       <table><thead><tr>${cols}</tr></thead><tbody>${filas}${totalRow}</tbody></table>
     </div>
     <div style="margin-top:16px;display:flex;gap:32px;flex-wrap:wrap">
       <div>
         <div style="font-size:11px;color:var(--tenue);text-transform:uppercase;letter-spacing:.05em">Consumo total</div>
-        <div style="font-family:var(--fm);font-weight:700;font-size:18px;color:var(--prim)">${totalKg.toFixed(0)} kg</div>
-        <div style="font-size:11px;color:var(--tenue);margin-top:2px">${(totalKg / rows.length).toFixed(1)} kg/sem promedio</div>
+        <div id="calc-resumen-kg" style="font-family:var(--fm);font-weight:700;font-size:18px;color:var(--prim)">${totalKg.toFixed(0)} kg</div>
+        <div id="calc-resumen-prom" style="font-size:11px;color:var(--tenue);margin-top:2px">${(totalKg / rows.length).toFixed(1)} kg/sem promedio</div>
       </div>
       ${resumenExtra}
     </div>`;
 
   window._calcData = { gen, semIni, semFin, nAves, costo, rows, totalKg, totalCosto };
+}
+
+function actualizarConsumoFila(idx, val) {
+  const d = window._calcData;
+  if (!d) return;
+  const gr = +val;
+  if (isNaN(gr) || gr <= 0) return;
+
+  const r  = d.rows[idx];
+  r.grAve  = gr;
+  r.kgDia  = d.nAves * gr / 1000;
+  r.kgSem  = r.kgDia * 7;
+  r.costSem = d.costo > 0 ? r.kgSem * d.costo : null;
+
+  const kgDiaEl = document.getElementById(`calc-kgdia-${idx}`);
+  const kgSemEl = document.getElementById(`calc-kgsem-${idx}`);
+  const costoEl = document.getElementById(`calc-costo-${idx}`);
+  if (kgDiaEl) kgDiaEl.textContent = r.kgDia.toFixed(1);
+  if (kgSemEl) kgSemEl.textContent = r.kgSem.toFixed(1);
+  if (costoEl && r.costSem != null) costoEl.textContent = MN(r.costSem);
+
+  d.totalKg    = d.rows.reduce((a, r) => a + r.kgSem, 0);
+  d.totalCosto = d.costo > 0 ? d.rows.reduce((a, r) => a + (r.costSem || 0), 0) : 0;
+
+  const totKgEl    = document.getElementById('calc-total-kg');
+  const totCostoEl = document.getElementById('calc-total-costo');
+  if (totKgEl)    totKgEl.textContent    = d.totalKg.toFixed(1) + ' kg';
+  if (totCostoEl) totCostoEl.textContent = MN(d.totalCosto);
+
+  const resKgEl      = document.getElementById('calc-resumen-kg');
+  const resPromEl    = document.getElementById('calc-resumen-prom');
+  const resCostoEl   = document.getElementById('calc-resumen-costo');
+  const resCostoPxEl = document.getElementById('calc-resumen-costopx');
+  if (resKgEl)      resKgEl.textContent      = d.totalKg.toFixed(0) + ' kg';
+  if (resPromEl)    resPromEl.textContent    = (d.totalKg / d.rows.length).toFixed(1) + ' kg/sem promedio';
+  if (resCostoEl)   resCostoEl.textContent   = MN(d.totalCosto);
+  if (resCostoPxEl) resCostoPxEl.textContent = (d.totalCosto / d.totalKg).toFixed(0) + ' $/kg prom.';
 }
 
 function exportarCalcAlimento() {
