@@ -292,7 +292,8 @@ td.real { background: rgba(27,94,32,.07) !important; font-weight: 600; }
       <li><strong>Gastos especiales:</strong> compra de pollas, inversión inicial, vacunas y viruta se aplican en la semana especificada como costo de única vez.</li>
       <li><strong>Precio huevo por mes:</strong> precio personalizado por mes-año; meses sin asignar usan el precio base.</li>
       <li><strong>Gastos fijos:</strong> sueldo + luz + agua + gas + combustible + viruta + insumos, distribuidos en 30 días/mes.</li>
-      <li><strong>Resultado diario:</strong> Ingreso − Costo alimento − Gastos fijos − Gastos especiales de ese día.</li>
+      <li><strong>Empaque y merma:</strong> el % de huevo no vendible (roto, sucio, mal formado) se descuenta de la producción antes de calcular el ingreso. El costo de bandeja (30 huevos) y caja (180 huevos) se aplica sobre los huevos vendibles y se resta del resultado diario.</li>
+      <li><strong>Resultado diario:</strong> Ingreso (huevos vendibles × precio) − Costo alimento − Gastos fijos − Costo envase − Gastos especiales de ese día.</li>
       <li><strong>Retorno sobre la inversión (ROI):</strong> el acumulado parte negativo (inversión inicial + crianza sin ingresos). La <em>recuperación de inversión</em> es la semana en que el acumulado vuelve a cero — desde ahí el negocio genera ganancia real. El resultado al fin del ciclo es la utilidad bruta del lote.</li>
       <li><strong>Costo de reposición:</strong> para continuar produciendo al terminar el ciclo hay que invertir en un nuevo lote. Se estima como: compra de pollitas + alimentación semanas 1–20 (crianza sin ingresos, según curva genética) + gastos fijos de esas 20 semanas. El <em>Resultado neto</em> descuenta este costo del resultado bruto, mostrando la rentabilidad real considerando la continuidad del negocio.</li>
       <li><strong>Siguiente ciclo:</strong> al finalizar el ciclo se puede crear un nuevo lote con fecha de nacimiento calculada automáticamente.</li>
@@ -368,6 +369,23 @@ td.real { background: rgba(27,94,32,.07) !important; font-weight: 600; }
         <div class="modal-field" id="fi-viruta">
           <label>Viruta inicial ($)</label>
           <input type="number" name="gi_viruta" value="0" min="0" oninput="fmtNum(this)">
+          <small class="fmt-hint"></small>
+        </div>
+
+        <hr class="modal-sep">
+        <div class="modal-sec">Empaque y merma</div>
+        <div class="modal-field">
+          <label>% Huevo no vendible (roto, sucio…)</label>
+          <input type="number" name="pctNoVendible" value="2" min="0" max="30" step="0.1">
+        </div>
+        <div class="modal-field">
+          <label>Costo bandeja 30 uds. ($)</label>
+          <input type="number" name="costoBandeja" value="20" min="0" oninput="fmtNum(this)">
+          <small class="fmt-hint"></small>
+        </div>
+        <div class="modal-field">
+          <label>Costo caja 180 uds. ($)</label>
+          <input type="number" name="costoCaja" value="150" min="0" oninput="fmtNum(this)">
           <small class="fmt-hint"></small>
         </div>
 
@@ -641,14 +659,16 @@ function buildCurvas(geneticaNombre) {
    MOTOR DE PROYECCIÓN
    ════════════════════════════════════════════════════════════ */
 function proyectar(lote) {
-  const curvas     = buildCurvas(lote.genetica || 'Lohmann Brown');
-  const preciosMes = lote.preciosHuevoPorMes || {};
-  const precioBase = +lote.precioHuevo;
-  const gastoMes   = +lote.gastosMes;
-  const costoDieta = lote.costoDieta;
-  const fn         = new Date(lote.fechaNacimiento + 'T12:00:00');
+  const curvas       = buildCurvas(lote.genetica || 'Lohmann Brown');
+  const preciosMes   = lote.preciosHuevoPorMes || {};
+  const precioBase   = +lote.precioHuevo;
+  const gastoMes     = +lote.gastosMes;
+  const costoDieta   = lote.costoDieta;
+  const fn           = new Date(lote.fechaNacimiento + 'T12:00:00');
+  const pctNV        = +(lote.pctNoVendible ?? 0);
+  const cBandeja     = +(lote.costoBandeja  ?? 0);
+  const cCaja        = +(lote.costoCaja     ?? 0);
 
-  // Gastos especiales indexados por semana → monto total (se aplica el 1er día de esa semana)
   const gastosXSem = {};
   (lote.gastosEspeciales || []).forEach(g => {
     const s = +g.semana;
@@ -668,29 +688,33 @@ function proyectar(lote) {
     const cons  = curvas.getConsumo(sem);
     const precio = preciosMes[mes] != null ? +preciosMes[mes] : precioBase;
 
-    const mortDia   = aves * mort;
-    const avesFin   = aves - mortDia;
-    const consumoKg = aves * cons.gr / 1000;
-    const costoAlim = consumoKg * (+costoDieta[cons.dieta] || 520);
-    const huevos    = Math.round(aves * pos / 100);
-    const ingreso   = huevos * precio;
-    const gastoDia  = gastoMes / 30;
+    const mortDia        = aves * mort;
+    const avesFin        = aves - mortDia;
+    const consumoKg      = aves * cons.gr / 1000;
+    const costoAlim      = consumoKg * (+costoDieta[cons.dieta] || 520);
+    const huevos         = Math.round(aves * pos / 100);
+    const huevosVendibles = Math.round(huevos * (1 - pctNV / 100));
+    const bandejas       = huevos > 0 ? Math.ceil(huevosVendibles / 30)  : 0;
+    const cajas          = huevos > 0 ? Math.ceil(huevosVendibles / 180) : 0;
+    const costoEnvase    = bandejas * cBandeja + cajas * cCaja;
+    const ingreso        = huevosVendibles * precio;
+    const gastoDia       = gastoMes / 30;
 
-    // Gasto especial: solo el primer día de cada semana (n%7===0)
     const gastoEsp  = (n % 7 === 0) ? (gastosXSem[sem] || 0) : 0;
-    const resultado = ingreso - costoAlim - gastoDia - gastoEsp;
+    const resultado = ingreso - costoAlim - gastoDia - gastoEsp - costoEnvase;
 
     dias.push({
       fecha, n: n + 1, sem, mes, precio,
-      aves:      Math.round(avesFin * 10) / 10,
-      pos, huevos,
-      consumoKg: Math.round(consumoKg * 10) / 10,
-      dieta:     cons.dieta,
-      costoAlim: Math.round(costoAlim),
-      gastoDia:  Math.round(gastoDia),
-      gastoEsp:  Math.round(gastoEsp),
-      ingreso:   Math.round(ingreso),
-      resultado: Math.round(resultado),
+      aves:            Math.round(avesFin * 10) / 10,
+      pos, huevos, huevosVendibles,
+      consumoKg:       Math.round(consumoKg * 10) / 10,
+      dieta:           cons.dieta,
+      costoAlim:       Math.round(costoAlim),
+      costoEnvase:     Math.round(costoEnvase),
+      gastoDia:        Math.round(gastoDia),
+      gastoEsp:        Math.round(gastoEsp),
+      ingreso:         Math.round(ingreso),
+      resultado:       Math.round(resultado),
     });
     aves = avesFin;
   }
@@ -837,13 +861,16 @@ function renderDashboard(lote) {
   const invTotal = gastos.reduce((a, g) => a + +g.monto, 0);
 
   // KPIs hero — resumen del ciclo completo
-  const totalHuevos = proy.reduce((a, d) => a + d.huevos, 0);
-  const porcPico    = Math.max(...proy.map(d => d.pos));
-  const semPico     = proy.find(d => d.pos === porcPico)?.sem || '—';
-  const totalIng    = proy.reduce((a, d) => a + d.ingreso, 0);
+  const totalHuevos    = proy.reduce((a, d) => a + d.huevos, 0);
+  const totalVendibles = proy.reduce((a, d) => a + d.huevosVendibles, 0);
+  const porcPico       = Math.max(...proy.map(d => d.pos));
+  const semPico        = proy.find(d => d.pos === porcPico)?.sem || '—';
+  const totalIng       = proy.reduce((a, d) => a + d.ingreso, 0);
+  const pctNVLote      = +(lote.pctNoVendible ?? 0);
 
-  document.getElementById('kpi-huevos').textContent    = NUM(totalHuevos);
-  document.getElementById('kpi-huevos-sub').textContent = `Ingresos: ${MN(totalIng)}`;
+  document.getElementById('kpi-huevos').textContent     = NUM(totalVendibles);
+  document.getElementById('kpi-huevos-sub').textContent =
+    `${NUM(totalHuevos)} prod.${pctNVLote>0?' · '+pctNVLote+'% merma':''} · Ing: ${MN(totalIng)}`;
   document.getElementById('kpi-pos').textContent       = `${porcPico.toFixed(1)}%`;
   document.getElementById('kpi-pos-sub').textContent   = `semana ${semPico}`;
   document.getElementById('kpi-aves').textContent      = NUM(dFin.aves);
@@ -948,6 +975,11 @@ function renderDashboard(lote) {
         <div class="config-grid">
           <div class="cfg-field"><span>Precio huevo base ($/ud.)</span><input type="number" id="cfg-precio" value="${lote.precioHuevo}" oninput="fmtNum(this)"><small class="fmt-hint"></small></div>
           <div class="cfg-field"><span>Gastos fijos / mes ($)</span><input type="number" id="cfg-gastos" value="${lote.gastosMes}" oninput="fmtNum(this)"><small class="fmt-hint">${(+lote.gastosMes).toLocaleString('es-CL')}</small></div>
+          <hr class="cfg-sep">
+          <div class="cfg-sec">Empaque y merma</div>
+          <div class="cfg-field"><span>% Huevo no vendible</span><input type="number" id="cfg-pctNV" value="${lote.pctNoVendible??2}" min="0" max="30" step="0.1"></div>
+          <div class="cfg-field"><span>Costo bandeja 30 uds. ($)</span><input type="number" id="cfg-bandeja" value="${lote.costoBandeja??20}" min="0" oninput="fmtNum(this)"><small class="fmt-hint"></small></div>
+          <div class="cfg-field"><span>Costo caja 180 uds. ($)</span><input type="number" id="cfg-caja" value="${lote.costoCaja??150}" min="0" oninput="fmtNum(this)"><small class="fmt-hint"></small></div>
           <hr class="cfg-sep">
           <div class="cfg-sec">Costo alimento por periodo ($/kg)</div>
           ${[1,2,3,4,5,6,7].map(d=>`
@@ -1268,17 +1300,19 @@ function semData(lote) {
     const s = d.sem;
     const avesIni = i === 0 ? nIni : proy[i-1].aves;
     if (!m[s]) m[s] = { s, fecha: d.fecha, avesIni, aves: 0,
-      ingP: 0, costoP: 0, gastoEspP: 0, acumP: 0, postP: 0,
-      huevos: 0, consumo: 0, resP: 0 };
-    m[s].ingP      += d.ingreso;
-    m[s].costoP    += d.costoAlim + d.gastoDia;
-    m[s].gastoEspP += d.gastoEsp;
-    m[s].acumP      = d.acum;
-    m[s].postP      = d.pos;
-    m[s].aves       = d.aves;
-    m[s].huevos    += d.huevos;
-    m[s].consumo   += d.consumoKg;
-    m[s].resP      += d.resultado;
+      ingP: 0, costoP: 0, gastoEspP: 0, envaseP: 0, acumP: 0, postP: 0,
+      huevos: 0, huevosVendibles: 0, consumo: 0, resP: 0 };
+    m[s].ingP            += d.ingreso;
+    m[s].costoP          += d.costoAlim + d.gastoDia;
+    m[s].gastoEspP       += d.gastoEsp;
+    m[s].envaseP         += d.costoEnvase;
+    m[s].acumP            = d.acum;
+    m[s].postP            = d.pos;
+    m[s].aves             = d.aves;
+    m[s].huevos          += d.huevos;
+    m[s].huevosVendibles += d.huevosVendibles;
+    m[s].consumo         += d.consumoKg;
+    m[s].resP            += d.resultado;
   });
   return Object.values(m).sort((a, b) => a.s - b.s);
 }
@@ -1350,22 +1384,25 @@ function renderTablaProyeccion(lote) {
   let html = '';
   if (tablaVista === 'sem') {
     const sems = semData(lote);
-    const cols = '<th style="text-align:left;padding-left:10px">Sem</th><th>Inicio</th><th>Aves</th><th>% Post.</th><th>% Mort.</th><th>Huevos</th><th>Alim. kg</th><th>$ Costos</th><th>G.Esp</th><th>Ingresos</th><th>Resultado</th><th>Acumulado</th>';
+    const cols = '<th style="text-align:left;padding-left:10px">Sem</th><th>Inicio</th><th>Aves</th><th>% Post.</th><th>% Mort.</th><th>Huevos prod.</th><th>Huevos vend.</th><th>Alim. kg</th><th>$ Alim+Fijos</th><th>$ Envase</th><th>G.Esp</th><th>Ingresos</th><th>Resultado</th><th>Acumulado</th>';
     const filas = sems.map(s => {
-      const mort = s.avesIni > 0 ? ((s.avesIni - s.aves) / s.avesIni * 100) : 0;
-      const rc   = s.resP  >= 0 ? 'ok' : 'mal';
-      const ac   = s.acumP >= 0 ? 'ok' : 'mal';
+      const mort  = s.avesIni > 0 ? ((s.avesIni - s.aves) / s.avesIni * 100) : 0;
+      const rc    = s.resP  >= 0 ? 'ok' : 'mal';
+      const ac    = s.acumP >= 0 ? 'ok' : 'mal';
       const beRow = (be && s.s === be.sem) ? ' style="background:#e6f4e8"' : '';
-      const espStr = s.gastoEspP > 0 ? `<td style="color:var(--mal);font-family:var(--fm);font-size:11px">${MN(s.gastoEspP)}</td>` : '<td>—</td>';
+      const espStr   = s.gastoEspP > 0 ? `<td style="color:var(--mal);font-family:var(--fm);font-size:11px">${MN(s.gastoEspP)}</td>` : '<td>—</td>';
+      const envStr   = s.envaseP   > 0 ? `<td style="font-family:var(--fm);font-size:11px;color:var(--suave)">${MN(s.envaseP)}</td>` : '<td>—</td>';
       return `<tr${beRow}>
         <td style="text-align:left;padding-left:10px;font-weight:600">${s.s}</td>
         <td class="fecha">${s.fecha}</td>
         <td>${NUM(s.aves)}</td>
         <td>${PCT(s.postP)}</td>
         <td style="font-family:var(--fm);font-size:11px;color:var(--suave)">${mort.toFixed(3)}%</td>
-        <td>${NUM(s.huevos)}</td>
+        <td style="color:var(--suave)">${NUM(s.huevos)}</td>
+        <td style="font-weight:600">${NUM(s.huevosVendibles)}</td>
         <td>${(+s.consumo).toFixed(0)}</td>
         <td>${MN(s.costoP)}</td>
+        ${envStr}
         ${espStr}
         <td>${MN(s.ingP)}</td>
         <td class="${rc}">${MN(s.resP)}</td>
@@ -1466,12 +1503,15 @@ function abrirModal(id) {
   });
   if (id) {
     const l = getLote(id);
-    form.nombre.value          = l.nombre;
-    form.genetica.value        = l.genetica || 'Lohmann Brown';
-    form.fechaNacimiento.value = l.fechaNacimiento;
-    form.nAves.value           = l.nAves;
-    form.precioHuevo.value     = l.precioHuevo;
-    form.gastosMes.value       = l.gastosMes;
+    form.nombre.value           = l.nombre;
+    form.genetica.value         = l.genetica || 'Lohmann Brown';
+    form.fechaNacimiento.value  = l.fechaNacimiento;
+    form.nAves.value            = l.nAves;
+    form.precioHuevo.value      = l.precioHuevo;
+    form.gastosMes.value        = l.gastosMes;
+    form.pctNoVendible.value    = l.pctNoVendible ?? 2;
+    form.costoBandeja.value     = l.costoBandeja  ?? 20;
+    form.costoCaja.value        = l.costoCaja     ?? 150;
     [1,2,3,4,5,6,7].forEach(d => form[`d${d}`].value = l.costoDieta[d] || '');
   } else {
     form.reset();
@@ -1513,6 +1553,9 @@ function guardarLote(e) {
     precioHuevo:        +f.precioHuevo.value,
     preciosHuevoPorMes: modoEditar ? (getLote(modoEditar)?.preciosHuevoPorMes || {}) : {},
     gastosMes:          +f.gastosMes.value,
+    pctNoVendible:      +(f.pctNoVendible?.value ?? 2),
+    costoBandeja:       +(f.costoBandeja?.value  ?? 20),
+    costoCaja:          +(f.costoCaja?.value      ?? 150),
     costoDieta,
     gastosEspeciales,
   };
@@ -1529,8 +1572,11 @@ function guardarLote(e) {
    ════════════════════════════════════════════════════════════ */
 function aplicarConfig() {
   const lote = getLote(loteId);
-  lote.precioHuevo = +document.getElementById('cfg-precio').value;
-  lote.gastosMes   = +document.getElementById('cfg-gastos').value;
+  lote.precioHuevo   = +document.getElementById('cfg-precio').value;
+  lote.gastosMes     = +document.getElementById('cfg-gastos').value;
+  lote.pctNoVendible = +document.getElementById('cfg-pctNV').value;
+  lote.costoBandeja  = +document.getElementById('cfg-bandeja').value;
+  lote.costoCaja     = +document.getElementById('cfg-caja').value;
   [1,2,3,4,5,6,7].forEach(d => lote.costoDieta[d] = +document.getElementById(`cfg-d${d}`).value || 520);
   saveLote(lote);
   proy = proyectar(lote);
@@ -1582,6 +1628,9 @@ function exportarExcel() {
     ['Gastos fijos / mes ($)',+lote.gastosMes],
     ['Semanas proyectadas', DIAS_CICLO/7],
     ['Días proyectados', proy.length],
+    ['% Huevo no vendible', lote.pctNoVendible ?? 0],
+    ['Costo bandeja 30 uds. ($)', lote.costoBandeja ?? 0],
+    ['Costo caja 180 uds. ($)', lote.costoCaja ?? 0],
     ['Total gastos especiales ($)', gastos.reduce((a,g)=>a+(+g.monto),0)],
     ['Resultado acum. proyectado (fin ciclo)', proy[proy.length-1].acum],
     ['Generado', HOY_STR],
@@ -1621,8 +1670,8 @@ function exportarExcel() {
   XLSX.utils.book_append_sheet(wb, wsSem, 'Proyección Semanal');
 
   // Proyección diaria completa
-  const dRows=[['Fecha','Día','Sem','Aves','% Postura','Huevos','Consumo kg','Dieta','Costo alim.','Gastos fijos','Gasto especial','$/huevo','Ingresos','Resultado','Acumulado']];
-  proy.forEach(d=>dRows.push([d.fecha,d.n,d.sem,Math.round(d.aves),d.pos/100,d.huevos,d.consumoKg,d.dieta,d.costoAlim,d.gastoDia,d.gastoEsp||0,d.precio,d.ingreso,d.resultado,d.acum]));
+  const dRows=[['Fecha','Día','Sem','Aves','% Postura','Huevos prod.','Huevos vend.','Consumo kg','Dieta','Costo alim.','Costo envase','Gastos fijos','Gasto especial','$/huevo','Ingresos','Resultado','Acumulado']];
+  proy.forEach(d=>dRows.push([d.fecha,d.n,d.sem,Math.round(d.aves),d.pos/100,d.huevos,d.huevosVendibles,d.consumoKg,d.dieta,d.costoAlim,d.costoEnvase||0,d.gastoDia,d.gastoEsp||0,d.precio,d.ingreso,d.resultado,d.acum]));
   const wsDia = XLSX.utils.aoa_to_sheet(dRows);
   for(let r=2;r<=dRows.length;r++){const c=wsDia[XLSX.utils.encode_cell({r:r-1,c:4})];if(c)c.z='0.0%';}
   XLSX.utils.book_append_sheet(wb, wsDia, 'Proyección Diaria');
