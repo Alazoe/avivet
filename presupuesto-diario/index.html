@@ -400,6 +400,19 @@ td.real { background: rgba(27,94,32,.07) !important; font-weight: 600; }
         </div>
 
         <hr class="modal-sep">
+        <div class="modal-sec">Escenario de proyección</div>
+        <div class="modal-field">
+          <label>% postura respecto a curva oficial</label>
+          <input type="number" name="factorPostura" value="100" min="50" max="110" step="1">
+          <small style="font-size:10px;color:var(--tenue)">100 = curva oficial · 85 = postura baja</small>
+        </div>
+        <div class="modal-field">
+          <label>Factor mortalidad (1.0 = normal)</label>
+          <input type="number" name="factorMortalidad" value="1.0" min="0.5" max="5.0" step="0.1">
+          <small style="font-size:10px;color:var(--tenue)">1.5 = 50% más muertes que la curva</small>
+        </div>
+
+        <hr class="modal-sep">
         <div class="modal-sec">Costo alimento por periodo ($/kg)</div>
         <div class="modal-field"><label>Dieta 1 · crianza 1–3 sem</label><input type="number" name="d1" value="450"></div>
         <div class="modal-field"><label>Dieta 2 · crianza 4–6 sem</label><input type="number" name="d2" value="470"></div>
@@ -731,8 +744,10 @@ function proyectar(lote) {
     gastosXSem[s] = (gastosXSem[s] || 0) + +g.monto;
   });
 
-  const semanasCiclo = Math.min(+(lote.semanasCiclo || 100), 130);
-  const diasCiclo    = semanasCiclo * 7;
+  const semanasCiclo  = Math.min(+(lote.semanasCiclo || 100), 130);
+  const diasCiclo     = semanasCiclo * 7;
+  const factorPost    = (lote.factorPostura    ?? 100) / 100;
+  const factorMort    = lote.factorMortalidad  ?? 1.0;
 
   let aves = +lote.nAves;
   const dias = [];
@@ -742,8 +757,8 @@ function proyectar(lote) {
     const fecha = f.toISOString().slice(0, 10);
     const mes   = fecha.slice(0, 7);
     const sem   = Math.floor(n / 7) + 1;
-    const mort  = (MORTALIDAD[sem] ?? 0.0015) / 7; // tasa semanal → diaria
-    const pos   = curvas.getPos(sem);
+    const mort  = ((MORTALIDAD[sem] ?? 0.0015) / 7) * factorMort;
+    const pos   = Math.min(curvas.getPos(sem) * factorPost, 100);
     const cons  = curvas.getConsumo(sem);
     const precio = preciosMes[mes] != null ? +preciosMes[mes] : precioBase;
 
@@ -992,6 +1007,7 @@ function renderDashboard(lote) {
     <div class="tabs">
       <button class="tab activo" data-tab="t-graficos" onclick="setTab(event,'t-graficos')">Gráficos</button>
       <button class="tab" data-tab="t-tabla"   onclick="setTab(event,'t-tabla')">Proyección</button>
+      <button class="tab" data-tab="t-curvas"  onclick="setTab(event,'t-curvas')">Curvas ref.</button>
       <button class="tab" data-tab="t-precios" onclick="setTab(event,'t-precios')">Precios mes</button>
       <button class="tab" data-tab="t-gastos"  onclick="setTab(event,'t-gastos')">Gastos especiales</button>
       <button class="tab" data-tab="t-config"  onclick="setTab(event,'t-config')">Configuración</button>
@@ -1026,6 +1042,11 @@ function renderDashboard(lote) {
       <div id="tabla-proy-panel"></div>
     </div>
 
+    <!-- CURVAS REFERENCIA -->
+    <div id="t-curvas" class="tab-panel" style="display:none">
+      <div id="curvas-panel"></div>
+    </div>
+
     <!-- PRECIOS POR MES -->
     <div id="t-precios" class="tab-panel" style="display:none">
       <div id="precios-panel"></div>
@@ -1045,6 +1066,8 @@ function renderDashboard(lote) {
       <div class="config-body" id="cfg-body">
         <div class="config-grid">
           <div class="cfg-field"><span>Duración ciclo (semanas)</span><input type="number" id="cfg-semanas" value="${lote.semanasCiclo||100}" min="18" max="130"></div>
+          <div class="cfg-field"><span>% postura (100 = curva oficial)</span><input type="number" id="cfg-factPost" value="${lote.factorPostura??100}" min="50" max="110" step="1"><small style="font-size:10px;color:var(--tenue)">85 = postura baja · 95 = bajo normal</small></div>
+          <div class="cfg-field"><span>Factor mortalidad (1.0 = normal)</span><input type="number" id="cfg-factMort" value="${lote.factorMortalidad??1.0}" min="0.5" max="5.0" step="0.1"><small style="font-size:10px;color:var(--tenue)">1.5 = 50% más muertes · 2.0 = doble</small></div>
           <div class="cfg-field"><span>Precio huevo base ($/ud.)</span><input type="number" id="cfg-precio" value="${lote.precioHuevo}" oninput="fmtNum(this)"><small class="fmt-hint"></small></div>
           <div class="cfg-field"><span>Gastos fijos / mes ($)</span><input type="number" id="cfg-gastos" value="${lote.gastosMes}" oninput="fmtNum(this)"><small class="fmt-hint">${(+lote.gastosMes).toLocaleString('es-CL')}</small></div>
           <hr class="cfg-sep">
@@ -1086,6 +1109,7 @@ function setTab(e, id) {
   panel.style.display = 'block';
   if (id === 't-graficos') renderGraficos(getLote(loteId));
   if (id === 't-tabla')    renderTablaProyeccion(getLote(loteId));
+  if (id === 't-curvas')   renderCurvasRef(getLote(loteId));
   if (id === 't-precios')  renderPreciosMes(getLote(loteId));
   if (id === 't-gastos')   renderGastosEspeciales(getLote(loteId));
 }
@@ -1350,9 +1374,11 @@ function abrirSiguienteCiclo(fechaFin) {
   form.nombre.value          = (loteActual.nombre + ' — Ciclo 2').replace(' — Ciclo 1', '').replace(/ — Ciclo (\d+)/, (m,n) => ` — Ciclo ${+n+1}`);
   form.genetica.value        = loteActual.genetica || 'Lohmann Brown';
   form.fechaNacimiento.value = fechaFin;
-  form.nAves.value           = loteActual.nAves;
-  form.semanasCiclo.value    = loteActual.semanasCiclo || 100;
-  form.precioHuevo.value     = loteActual.precioHuevo;
+  form.nAves.value            = loteActual.nAves;
+  form.semanasCiclo.value     = loteActual.semanasCiclo    || 100;
+  form.factorPostura.value    = loteActual.factorPostura    ?? 100;
+  form.factorMortalidad.value = loteActual.factorMortalidad ?? 1.0;
+  form.precioHuevo.value      = loteActual.precioHuevo;
   form.gastosMes.value       = loteActual.gastosMes;
   [1,2,3,4,5,6,7].forEach(d => form[`d${d}`].value = loteActual.costoDieta[d] || '');
   document.getElementById('modal-titulo').textContent = 'Nuevo ciclo — siguiente lote';
@@ -1588,7 +1614,9 @@ function abrirModal(id) {
     form.genetica.value         = l.genetica || 'Lohmann Brown';
     form.fechaNacimiento.value  = l.fechaNacimiento;
     form.nAves.value            = l.nAves;
-    form.semanasCiclo.value     = l.semanasCiclo || 100;
+    form.semanasCiclo.value     = l.semanasCiclo    || 100;
+    form.factorPostura.value    = l.factorPostura    ?? 100;
+    form.factorMortalidad.value = l.factorMortalidad ?? 1.0;
     form.precioHuevo.value      = l.precioHuevo;
     form.gastosMes.value        = l.gastosMes;
     form.pctNoVendible.value    = l.pctNoVendible ?? 2;
@@ -1633,6 +1661,8 @@ function guardarLote(e) {
     fechaNacimiento:    f.fechaNacimiento.value,
     nAves:              +f.nAves.value,
     semanasCiclo:       Math.min(+(f.semanasCiclo?.value || 100), 130),
+    factorPostura:      Math.min(+(f.factorPostura?.value ?? 100), 110),
+    factorMortalidad:   +(f.factorMortalidad?.value ?? 1.0),
     precioHuevo:        +f.precioHuevo.value,
     preciosHuevoPorMes: modoEditar ? (getLote(modoEditar)?.preciosHuevoPorMes || {}) : {},
     gastosMes:          +f.gastosMes.value,
@@ -1655,8 +1685,10 @@ function guardarLote(e) {
    ════════════════════════════════════════════════════════════ */
 function aplicarConfig() {
   const lote = getLote(loteId);
-  lote.semanasCiclo  = Math.min(+(document.getElementById('cfg-semanas').value) || 100, 130);
-  lote.precioHuevo   = +document.getElementById('cfg-precio').value;
+  lote.semanasCiclo    = Math.min(+(document.getElementById('cfg-semanas').value) || 100, 130);
+  lote.factorPostura   = Math.min(+(document.getElementById('cfg-factPost').value) || 100, 110);
+  lote.factorMortalidad = +(document.getElementById('cfg-factMort').value) || 1.0;
+  lote.precioHuevo     = +document.getElementById('cfg-precio').value;
   lote.gastosMes     = +document.getElementById('cfg-gastos').value;
   lote.pctNoVendible = +document.getElementById('cfg-pctNV').value;
   lote.costoBandeja  = +document.getElementById('cfg-bandeja').value;
@@ -1688,6 +1720,153 @@ function confirmarEliminar() {
   document.getElementById('lote-nombre-txt').textContent = '';
   document.getElementById('lote-meta-txt').textContent   = '';
   document.getElementById('lote-gen-badge').innerHTML    = '';
+}
+
+/* ════════════════════════════════════════════════════════════
+   CURVAS DE REFERENCIA
+   ════════════════════════════════════════════════════════════ */
+function renderCurvasRef(lote) {
+  const panel = document.getElementById('curvas-panel');
+  if (!panel) return;
+  const gen          = lote.genetica || 'Lohmann Brown';
+  const col          = GEN_COLORES[gen] || '#1b4332';
+  const curvas       = buildCurvas(gen);
+  const factPost     = (lote.factorPostura    ?? 100) / 100;
+  const factMort     = lote.factorMortalidad  ?? 1.0;
+  const semanasCiclo = lote.semanasCiclo || 100;
+  const ajustado     = factPost !== 1.0 || factMort !== 1.0;
+  const L            = LINEAS[gen] || LINEAS['Lohmann Brown'];
+
+  // Calcular mortalidad acumulada semana a semana
+  let avesRef = 1000;
+  const filas = [];
+  for (let s = 1; s <= semanasCiclo; s++) {
+    const mortSem  = (MORTALIDAD[s] ?? 0.0015);          // tasa semanal oficial
+    const mortAdj  = mortSem * factMort;                 // ajustada
+    avesRef        = avesRef * (1 - mortAdj);
+    const mortAcum = ((1000 - avesRef) / 1000 * 100);
+
+    const posOfic = curvas.getPos(s);
+    const posAdj  = Math.min(posOfic * factPost, 100);
+    const cons    = curvas.getConsumo(s);
+    const etapa   = posOfic === 0 ? 'Crianza' : (s <= L.crianzaSem + 3 ? 'Inicio postura' : 'Postura');
+
+    const esCrianza   = posOfic === 0;
+    const esBreak     = proy && (()=>{
+      const be = calcBreakEven(proy);
+      return be && be.sem === s;
+    })();
+
+    filas.push({ s, etapa, posOfic, posAdj, gr: cons.gr, dieta: cons.dieta,
+                 mortSem: mortSem*100, mortAdj: mortAdj*100, mortAcum,
+                 aves: Math.round(avesRef), esCrianza, esBreak });
+  }
+
+  const be = proy ? calcBreakEven(proy) : null;
+
+  // Info break-even
+  const infoBreakEven = `
+    <div style="background:var(--papel);border:1px solid var(--linea);border-left:4px solid var(--acento);padding:20px 22px;margin-bottom:28px">
+      <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--tenue);margin-bottom:10px">¿Qué es el break-even?</div>
+      <p style="font-size:14px;color:var(--suave);line-height:1.7;margin-bottom:10px">
+        El <strong style="color:var(--prim)">break-even</strong> (punto de equilibrio) es la semana en que el
+        <strong>resultado acumulado</strong> del lote cruza desde negativo a cero.
+        Antes de ese punto el lote está pagando la inversión inicial (pollas, equipos, crianza sin ingresos).
+        A partir de ese punto <em>cada peso de ingreso es ganancia real</em>.
+      </p>
+      <p style="font-size:13px;color:var(--suave);line-height:1.6">
+        <strong>¿Por qué el acumulado parte negativo?</strong>
+        En las semanas 1–${L.crianzaSem ?? 17} de crianza las aves no producen huevos pero generan
+        costos diarios (alimento, gastos fijos, compra de pollas). El resultado acumulado cae fuertemente.
+        Al entrar a postura los ingresos superan los costos diarios y el acumulado sube gradualmente
+        hasta recuperar toda la inversión inicial — eso es el break-even.
+      </p>
+      ${be
+        ? `<div style="margin-top:14px;display:flex;gap:24px;flex-wrap:wrap">
+            <div style="background:var(--acento-cl);padding:10px 16px;border-radius:5px">
+              <div style="font-size:11px;color:var(--tenue);text-transform:uppercase;letter-spacing:.05em">Break-even este lote</div>
+              <div style="font-family:var(--fm);font-size:18px;font-weight:700;color:var(--ok)">Semana ${be.sem}</div>
+              <div style="font-size:12px;color:var(--suave)">${new Date(be.fecha+'T12:00:00').toLocaleDateString('es-CL',{day:'numeric',month:'long',year:'numeric'})}</div>
+            </div>
+            <div style="padding:10px 0;font-size:13px;color:var(--suave);max-width:40ch;line-height:1.6">
+              Desde la semana ${be.sem} en adelante el lote genera <strong style="color:var(--ok)">ganancia neta</strong>.
+              El resultado al fin del ciclo (sem ${semanasCiclo}) es la utilidad total acumulada después de recuperar toda la inversión.
+            </div>
+          </div>`
+        : '<div style="margin-top:10px;font-size:13px;color:var(--mal);font-weight:600">⚠ Este lote no alcanza break-even en el ciclo proyectado.</div>'
+      }
+    </div>`;
+
+  // Info escenarios
+  const infoEscenario = ajustado ? `
+    <div style="background:#fff8e1;border:1px solid #f0d080;border-left:4px solid var(--acento);padding:14px 18px;margin-bottom:20px;font-size:13px;color:#7a5700">
+      <strong>Escenario ajustado:</strong>
+      ${factPost !== 1.0 ? `postura al <strong>${lote.factorPostura}%</strong> de la curva oficial (−${(100-lote.factorPostura).toFixed(0)}%)` : ''}
+      ${factPost !== 1.0 && factMort !== 1.0 ? ' · ' : ''}
+      ${factMort !== 1.0 ? `mortalidad ×<strong>${factMort}</strong> respecto a tabla (${factMort>1?'+':''}${((factMort-1)*100).toFixed(0)}%)` : ''}
+      — Los valores ajustados están marcados en la tabla.
+    </div>` : '';
+
+  const thAdj = ajustado
+    ? `<th style="background:rgba(240,165,0,.25)">% Post. ajustada</th><th style="background:rgba(183,28,28,.2)">% Mort. ajust./sem</th>`
+    : '';
+
+  const filaHtml = filas.map(r => {
+    const bg    = r.esBreak ? ' style="background:#e6f4e8;outline:2px solid var(--ok)"'
+                : r.esCrianza ? ' style="background:#f8f6f1"' : '';
+    const beTag = r.esBreak ? ` <span style="font-size:9px;font-weight:700;color:var(--ok);background:#e6f4e8;border:1px solid var(--ok);padding:1px 5px;border-radius:3px">BREAK-EVEN</span>` : '';
+    const tdAdj = ajustado
+      ? `<td style="font-family:var(--fm);font-size:11px;background:rgba(240,165,0,.1);color:${r.posAdj < r.posOfic ? 'var(--mal)' : 'var(--tinta)'};font-weight:600">${r.posAdj.toFixed(1)}%</td>
+         <td style="font-family:var(--fm);font-size:11px;background:rgba(183,28,28,.06);color:var(--mal)">${r.mortAdj.toFixed(4)}%</td>`
+      : '';
+    return `<tr${bg}>
+      <td style="text-align:left;padding-left:10px;font-weight:600">${r.s}${beTag}</td>
+      <td style="font-size:11px;color:var(--tenue)">${r.etapa}</td>
+      <td style="font-family:var(--fm);font-size:12px;${r.posOfic===0?'color:var(--tenue)':''}">${r.posOfic > 0 ? r.posOfic.toFixed(1)+'%' : '—'}</td>
+      ${tdAdj}
+      <td style="font-family:var(--fm);font-size:11px">${r.gr.toFixed(0)}</td>
+      <td style="font-size:10px;font-weight:600;padding:2px 8px"><span style="background:var(--acento-cl);color:#7a5700;padding:2px 6px;border-radius:3px">D${r.dieta}</span></td>
+      <td style="font-family:var(--fm);font-size:11px;color:var(--suave)">${r.mortSem.toFixed(4)}%</td>
+      <td style="font-family:var(--fm);font-size:11px;color:${r.mortAcum > 15 ? 'var(--mal)' : r.mortAcum > 8 ? '#b85c00' : 'var(--suave)'};font-weight:${r.mortAcum > 10 ? '600' : '400'}">${r.mortAcum.toFixed(2)}%</td>
+      <td style="font-family:var(--fm);font-size:11px;color:var(--suave)">${r.aves}</td>
+    </tr>`;
+  }).join('');
+
+  const thAdjHead = ajustado
+    ? `<th style="background:rgba(240,165,0,.35)">% Post. ajust.</th><th style="background:rgba(183,28,28,.3)">% Mort. ajust.</th>`
+    : '';
+
+  panel.innerHTML = `
+    <div style="margin-bottom:18px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+      <div>
+        <span style="font-family:var(--ft);font-size:20px;font-weight:700;color:${col}">${gen}</span>
+        <span style="font-size:12px;color:var(--tenue);margin-left:10px">· ${semanasCiclo} semanas proyectadas</span>
+      </div>
+    </div>
+    ${infoBreakEven}
+    ${infoEscenario}
+    <div style="font-size:11px;color:var(--tenue);margin-bottom:10px">
+      <strong>Mortalidad acumulada</strong> se calcula sobre base 1.000 aves de referencia.
+      Postura oficial de manuales Hy-Line, Lohmann, Nick Brown y Dekalb.
+    </div>
+    <div class="tabla-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="text-align:left;padding-left:10px">Sem</th>
+            <th>Etapa</th>
+            <th>% Post. oficial</th>
+            ${thAdjHead}
+            <th>g/ave/día</th>
+            <th>Dieta</th>
+            <th>% Mort./sem (oficial)</th>
+            <th>Mort. acum.</th>
+            <th>Aves vivas/1000</th>
+          </tr>
+        </thead>
+        <tbody>${filaHtml}</tbody>
+      </table>
+    </div>`;
 }
 
 /* ════════════════════════════════════════════════════════════
