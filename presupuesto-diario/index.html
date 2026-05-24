@@ -259,6 +259,11 @@ td.real { background: rgba(27,94,32,.07) !important; font-weight: 600; }
         <span class="ficha-lbl">costo reposición est.</span>
         <span class="ficha-sub" id="kpi-repos-sub">pollas + alim sem 1–20 + fijos</span>
       </div>
+      <div class="ficha">
+        <span class="ficha-num" id="kpi-ebitda">—</span>
+        <span class="ficha-lbl">EBITDA ciclo</span>
+        <span class="ficha-sub" id="kpi-ebitda-sub">ingresos − alim − fijos − envase</span>
+      </div>
     </div>
   </section>
 
@@ -337,6 +342,10 @@ td.real { background: rgba(27,94,32,.07) !important; font-weight: 600; }
           <label>N° aves iniciales</label>
           <input type="number" name="nAves" value="1500" min="1" required oninput="fmtNum(this)">
           <small class="fmt-hint">1.500</small>
+        </div>
+        <div class="modal-field">
+          <label>Duración del ciclo (semanas)</label>
+          <input type="number" name="semanasCiclo" value="100" min="18" max="130">
         </div>
         <div class="modal-field">
           <label>Precio huevo base ($/ud.)</label>
@@ -722,15 +731,18 @@ function proyectar(lote) {
     gastosXSem[s] = (gastosXSem[s] || 0) + +g.monto;
   });
 
+  const semanasCiclo = Math.min(+(lote.semanasCiclo || 100), 130);
+  const diasCiclo    = semanasCiclo * 7;
+
   let aves = +lote.nAves;
   const dias = [];
 
-  for (let n = 0; n < DIAS_CICLO; n++) {
+  for (let n = 0; n < diasCiclo; n++) {
     const f     = new Date(fn); f.setDate(fn.getDate() + n);
     const fecha = f.toISOString().slice(0, 10);
     const mes   = fecha.slice(0, 7);
     const sem   = Math.floor(n / 7) + 1;
-    const mort  = MORTALIDAD[sem] ?? 0.0015;
+    const mort  = (MORTALIDAD[sem] ?? 0.0015) / 7; // tasa semanal → diaria
     const pos   = curvas.getPos(sem);
     const cons  = curvas.getConsumo(sem);
     const precio = preciosMes[mes] != null ? +preciosMes[mes] : precioBase;
@@ -914,6 +926,8 @@ function renderDashboard(lote) {
   const semPico        = proy.find(d => d.pos === porcPico)?.sem || '—';
   const totalIng       = proy.reduce((a, d) => a + d.ingreso, 0);
   const pctNVLote      = +(lote.pctNoVendible ?? 0);
+  const totalEBITDA    = proy.reduce((a, d) => a + d.ingreso - d.costoAlim - d.gastoDia - d.costoEnvase, 0);
+  const ebitdaMargen   = totalIng > 0 ? (totalEBITDA / totalIng * 100) : 0;
 
   document.getElementById('kpi-huevos').textContent     = NUM(totalVendibles);
   document.getElementById('kpi-huevos-sub').textContent =
@@ -951,9 +965,19 @@ function renderDashboard(lote) {
       document.getElementById('kpi-roi-sub').textContent = 'sin inversión registrada';
     } else {
       elRoi.textContent = 'Sin retorno'; elRoi.className = 'ficha-num mal';
-      document.getElementById('kpi-roi-sub').textContent = 'en 130 semanas';
+      document.getElementById('kpi-roi-sub').textContent = `en ${lote.semanasCiclo || 100} semanas`;
     }
   }
+
+  const elEBITDA = document.getElementById('kpi-ebitda');
+  if (elEBITDA) {
+    elEBITDA.textContent = MN(totalEBITDA);
+    elEBITDA.className   = 'ficha-num ' + (totalEBITDA >= 0 ? 'ok' : 'mal');
+    document.getElementById('kpi-ebitda-sub').textContent =
+      `Margen ${ebitdaMargen.toFixed(1)}% · excluye gastos especiales`;
+  }
+
+  const semCicloActual = lote.semanasCiclo || 100;
 
   document.getElementById('contenido').innerHTML = `
   <section id="graficos" class="bloque">
@@ -961,7 +985,7 @@ function renderDashboard(lote) {
     <p class="bloque-desc">
       <strong>${lote.nombre}</strong>
       · <span style="font-weight:600;color:${col}">${gen}</span>
-      · ${DIAS_CICLO/7} semanas · ${NUM(+lote.nAves)} aves iniciales.
+      · ${semCicloActual} semanas · ${NUM(+lote.nAves)} aves iniciales.
       <button class="btn btn-ok btn-sm" style="margin-left:16px" onclick="exportarExcel()">↓ Exportar Excel</button>
     </p>
 
@@ -1020,6 +1044,7 @@ function renderDashboard(lote) {
       </div>
       <div class="config-body" id="cfg-body">
         <div class="config-grid">
+          <div class="cfg-field"><span>Duración ciclo (semanas)</span><input type="number" id="cfg-semanas" value="${lote.semanasCiclo||100}" min="18" max="130"></div>
           <div class="cfg-field"><span>Precio huevo base ($/ud.)</span><input type="number" id="cfg-precio" value="${lote.precioHuevo}" oninput="fmtNum(this)"><small class="fmt-hint"></small></div>
           <div class="cfg-field"><span>Gastos fijos / mes ($)</span><input type="number" id="cfg-gastos" value="${lote.gastosMes}" oninput="fmtNum(this)"><small class="fmt-hint">${(+lote.gastosMes).toLocaleString('es-CL')}</small></div>
           <hr class="cfg-sep">
@@ -1174,8 +1199,9 @@ function renderGastosEspeciales(lote) {
   }).join('') : `<tr><td colspan="5" style="text-align:center;color:var(--tenue);padding:20px">Sin gastos especiales registrados</td></tr>`;
 
   // Calcular fecha fin para "siguiente ciclo"
+  const diasCicloLote = (lote.semanasCiclo || 100) * 7;
   const fechaFin = new Date(lote.fechaNacimiento + 'T12:00:00');
-  fechaFin.setDate(fechaFin.getDate() + DIAS_CICLO);
+  fechaFin.setDate(fechaFin.getDate() + diasCicloLote);
   const fechaFinStr = fechaFin.toISOString().slice(0, 10);
   const fechaFinLeg = fechaFin.toLocaleDateString('es-CL',{day:'numeric',month:'long',year:'numeric'});
 
@@ -1232,7 +1258,7 @@ function renderGastosEspeciales(lote) {
     <div class="ciclo-siguiente">
       <h3>Proyectar siguiente ciclo</h3>
       <p>
-        Este ciclo finaliza el <strong>${fechaFinLeg}</strong> (semana 130).
+        Este ciclo finaliza el <strong>${fechaFinLeg}</strong> (semana ${lote.semanasCiclo || 100}).
         Para continuar produciendo debes reponer el lote: comprar nuevas pollitas y
         financiar la etapa de crianza (semanas 1–20) antes de que generen ingresos.
       </p>
@@ -1325,6 +1351,7 @@ function abrirSiguienteCiclo(fechaFin) {
   form.genetica.value        = loteActual.genetica || 'Lohmann Brown';
   form.fechaNacimiento.value = fechaFin;
   form.nAves.value           = loteActual.nAves;
+  form.semanasCiclo.value    = loteActual.semanasCiclo || 100;
   form.precioHuevo.value     = loteActual.precioHuevo;
   form.gastosMes.value       = loteActual.gastosMes;
   [1,2,3,4,5,6,7].forEach(d => form[`d${d}`].value = loteActual.costoDieta[d] || '');
@@ -1561,6 +1588,7 @@ function abrirModal(id) {
     form.genetica.value         = l.genetica || 'Lohmann Brown';
     form.fechaNacimiento.value  = l.fechaNacimiento;
     form.nAves.value            = l.nAves;
+    form.semanasCiclo.value     = l.semanasCiclo || 100;
     form.precioHuevo.value      = l.precioHuevo;
     form.gastosMes.value        = l.gastosMes;
     form.pctNoVendible.value    = l.pctNoVendible ?? 2;
@@ -1604,6 +1632,7 @@ function guardarLote(e) {
     genetica:           f.genetica.value || 'Lohmann Brown',
     fechaNacimiento:    f.fechaNacimiento.value,
     nAves:              +f.nAves.value,
+    semanasCiclo:       Math.min(+(f.semanasCiclo?.value || 100), 130),
     precioHuevo:        +f.precioHuevo.value,
     preciosHuevoPorMes: modoEditar ? (getLote(modoEditar)?.preciosHuevoPorMes || {}) : {},
     gastosMes:          +f.gastosMes.value,
@@ -1626,6 +1655,7 @@ function guardarLote(e) {
    ════════════════════════════════════════════════════════════ */
 function aplicarConfig() {
   const lote = getLote(loteId);
+  lote.semanasCiclo  = Math.min(+(document.getElementById('cfg-semanas').value) || 100, 130);
   lote.precioHuevo   = +document.getElementById('cfg-precio').value;
   lote.gastosMes     = +document.getElementById('cfg-gastos').value;
   lote.pctNoVendible = +document.getElementById('cfg-pctNV').value;
@@ -1649,10 +1679,10 @@ function confirmarEliminar() {
   </div>`;
   document.getElementById('metodo').style.display = 'none';
   document.getElementById('pie').style.display    = 'none';
-  ['kpi-huevos','kpi-pos','kpi-aves','kpi-ginv','kpi-res','kpi-roi','kpi-repos'].forEach(id => {
+  ['kpi-huevos','kpi-pos','kpi-aves','kpi-ginv','kpi-res','kpi-roi','kpi-repos','kpi-ebitda'].forEach(id => {
     const el = document.getElementById(id); if (el) el.textContent = '—';
   });
-  ['kpi-huevos-sub','kpi-pos-sub','kpi-aves-sub','kpi-res-sub','kpi-ginv-sub','kpi-roi-sub','kpi-repos-sub'].forEach(id => {
+  ['kpi-huevos-sub','kpi-pos-sub','kpi-aves-sub','kpi-res-sub','kpi-ginv-sub','kpi-roi-sub','kpi-repos-sub','kpi-ebitda-sub'].forEach(id => {
     const el = document.getElementById(id); if (el) el.textContent = '';
   });
   document.getElementById('lote-nombre-txt').textContent = '';
