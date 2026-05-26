@@ -149,6 +149,16 @@ tbody tr:hover{background:var(--acento-cl)}
 .pie{margin-top:48px;padding:24px 0;border-top:1px solid var(--linea);font-size:13px;color:var(--tenue);text-align:center;line-height:1.7}
 .pie strong{color:var(--prim)}
 
+/* ── Botón exportar ─────────────────────────────────────────────────── */
+.btn-exportar{
+  font-family:var(--fuente-c);font-size:13px;font-weight:600;
+  padding:7px 16px;border:2px solid var(--acento);border-radius:6px;
+  background:transparent;color:var(--acento);cursor:pointer;transition:all .18s;
+  display:flex;align-items:center;gap:6px;white-space:nowrap;
+}
+.btn-exportar:hover{background:var(--acento);color:#1a1a1a}
+.btn-exportar svg{width:14px;height:14px;fill:currentColor;flex-shrink:0}
+
 /* ── Responsive ─────────────────────────────────────────────────────── */
 @media(max-width:900px){
   .graficos-grid,.graficos-full,.graficos-postura{grid-template-columns:1fr}
@@ -229,6 +239,14 @@ tbody tr:hover{background:var(--acento-cl)}
     <div class="cfg-aves">
       <label for="inp-aves">N° de aves</label>
       <input id="inp-aves" type="number" value="2000" min="100" step="100" onchange="cambiarAves()">
+    </div>
+    <div class="cfg-sep"></div>
+    <div>
+      <div class="cfg-lbl" style="margin-bottom:10px">Exportar</div>
+      <button class="btn-exportar" onclick="exportarExcel()">
+        <svg viewBox="0 0 16 16"><path d="M8 1v8.793L5.854 7.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 9.793V1a.5.5 0 0 0-1 0zM2 13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5v-2a.5.5 0 0 0-1 0v2z"/></svg>
+        Descargar Excel
+      </button>
     </div>
   </div>
 
@@ -321,6 +339,7 @@ tbody tr:hover{background:var(--acento-cl)}
 
 </main>
 
+<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 <script src="app.js"></script>
 <script>
   // sync el número de aves en el título del equipamiento

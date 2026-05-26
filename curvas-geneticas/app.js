@@ -868,3 +868,83 @@ function calcularEdad() {
 
   res.style.display = 'flex';
 }
+
+// ── EXPORTAR A EXCEL ───────────────────────────────────────────────────
+function exportarExcel() {
+  const L  = LINEAS[lineaSel];
+  const wb = XLSX.utils.book_new();
+
+  // ── Hoja 1: Crianza ──────────────────────────────────────────────────
+  const crianzaData = [
+    ['Línea genética:', lineaSel],
+    ['Fuente:', L.fuente],
+    [],
+    ['Semana', 'Peso mín (kg)', 'Peso máx (kg)',
+     'Alimento mín (g/ave/día)', 'Alimento máx (g/ave/día)',
+     'Agua mín (ml/ave/día)', 'Agua máx (ml/ave/día)'],
+  ];
+  L.crianza.forEach(r => crianzaData.push([r[0], r[1], r[2], r[3], r[4], r[5], r[6]]));
+  const wsCrianza = XLSX.utils.aoa_to_sheet(crianzaData);
+  wsCrianza['!cols'] = [8,14,14,22,22,22,22].map(w => ({ wch: w }));
+  XLSX.utils.book_append_sheet(wb, wsCrianza, 'Crianza');
+
+  // ── Hoja 2: Postura ──────────────────────────────────────────────────
+  const posturaData = [
+    ['Línea genética:', lineaSel],
+    ['Fuente:', L.fuente],
+    [],
+    ['Semana', 'Peso mín (kg)', 'Peso máx (kg)', '% Postura', 'Peso huevo (g)',
+     'Alimento mín (g/ave/día)', 'Alimento máx (g/ave/día)',
+     'Agua mín (ml/ave/día)', 'Agua máx (ml/ave/día)'],
+  ];
+  L.postura.forEach(r => posturaData.push([r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8]]));
+  const wsPostura = XLSX.utils.aoa_to_sheet(posturaData);
+  wsPostura['!cols'] = [8,14,14,12,15,22,22,22,22].map(w => ({ wch: w }));
+  XLSX.utils.book_append_sheet(wb, wsPostura, 'Postura');
+
+  // ── Hoja 3: Equipamiento ─────────────────────────────────────────────
+  const n           = nAves;
+  const mCrianza    = Math.ceil(n * 0.14);
+  const perchasC    = Math.ceil(n * 15 / 100);
+  const bebC        = Math.ceil(n / 125);
+  const nipC        = Math.ceil(n / 12.5);
+  const comC        = Math.ceil(n * 2 / 100);
+  const nidosInd    = Math.ceil(n / 5);
+  const nidosComM   = Math.ceil(n / 120);
+  const bebP        = Math.ceil(n / 100);
+  const nipP        = Math.ceil(n / 12);
+  const comP        = Math.ceil(n * 4 / 100);
+  const perchasP    = Math.ceil(n * 15 / 100);
+  const perchasEl   = Math.ceil(perchasP * 0.20);
+  const extM2       = Math.ceil(n * 0.19);
+
+  const eqData = [
+    ['N° de aves:', n],
+    [],
+    ['CRIANZA'],
+    ['Ítem', 'Valor', 'Unidad', 'Ratio'],
+    ['Superficie galpón',  mCrianza,   'm²',          `${(n / mCrianza).toFixed(1)} aves/m²`],
+    ['Perchas',            perchasC,   'm lineales',   '15 cm/ave'],
+    ['Bebederos campana',  bebC,       'unidades',     '1 c/125 aves'],
+    ['Nipples',            nipC,       'unidades',     '1 c/12 aves'],
+    ['Comederos lineales', comC,       'm',            '2 cm/ave'],
+    [],
+    ['POSTURA'],
+    ['Ítem', 'Valor', 'Unidad', 'Ratio'],
+    ['Nidos individuales', nidosInd,   'unidades',     '1 c/5 aves'],
+    ['Nidos comunitarios', nidosComM,  'm lineales',   '1 m c/120 aves'],
+    ['Bebederos campana',  bebP,       'unidades',     '1 c/100 aves'],
+    ['Nipples',            nipP,       'unidades',     '1 c/12 aves'],
+    ['Comederos lineales', comP,       'm',            '4 cm/ave'],
+    ['Perchas totales',    perchasP,   'm lineales',   '15 cm/ave'],
+    ['Perchas elevadas',   perchasEl,  'm lineales',   '≥ 20% del total'],
+    ['Acceso exterior',    extM2,      'm²',           '0,19 m²/ave'],
+  ];
+  const wsEq = XLSX.utils.aoa_to_sheet(eqData);
+  wsEq['!cols'] = [22, 10, 14, 18].map(w => ({ wch: w }));
+  XLSX.utils.book_append_sheet(wb, wsEq, 'Equipamiento');
+
+  const fecha    = new Date().toISOString().slice(0, 10);
+  const nombreFn = `curva-genetica_${lineaSel.replace(/[\s/]/g, '-')}_${fecha}.xlsx`;
+  XLSX.writeFile(wb, nombreFn);
+}
