@@ -1897,23 +1897,50 @@ function renderCurvasRef(lote) {
    ════════════════════════════════════════════════════════════ */
 function exportarExcel() {
   if (!proy) return;
-  const lote    = getLote(loteId);
-  const wb      = XLSX.utils.book_new();
-  const HOY_STR = new Date().toLocaleDateString('es-CL');
-  const gen     = lote.genetica || 'Lohmann Brown';
-  const gastos  = lote.gastosEspeciales || [];
-  const nIni    = +lote.nAves;
-  const be      = calcBreakEven(proy);
-  const totalEBITDA = proy.reduce((a, d) => a + d.ingreso - d.costoAlim - d.gastoDia - d.costoEnvase, 0);
+  const lote         = getLote(loteId);
+  const wb           = XLSX.utils.book_new();
+  const HOY_STR      = new Date().toLocaleDateString('es-CL');
+  const gen          = lote.genetica || 'Lohmann Brown';
+  const gastos       = lote.gastosEspeciales || [];
+  const nIni         = +lote.nAves;
+  const be           = calcBreakEven(proy);
+  const totalEBITDA  = proy.reduce((a, d) => a + d.ingreso - d.costoAlim - d.gastoDia - d.costoEnvase, 0);
+  const curvas       = buildCurvas(gen);
+  const factPost     = (lote.factorPostura   ?? 100) / 100;
+  const factMort     = lote.factorMortalidad ?? 1.0;
+  const semanasCiclo = lote.semanasCiclo || 100;
+  const grDieta      = lote.consumoGrDieta || {};
 
-  // Resumen
+  // ══ PARÁMETROS (hoja editable — actúa como panel de control para Curvas Referencia) ══
+  const paramData = [
+    ['Parámetro', 'Valor', 'Descripción'],
+    ['Factor postura (%)', lote.factorPostura ?? 100, '100 = curva oficial · 95 = 5% menor'],
+    ['Factor mortalidad',  lote.factorMortalidad ?? 1.0, '1.0 = oficial · 1.2 = 20% más mortalidad'],
+    ['Precio huevo base ($/ud.)', +lote.precioHuevo, ''],
+    ['Gastos fijos / mes ($)',    +lote.gastosMes,   ''],
+    ['% Huevo no vendible',       lote.pctNoVendible ?? 0, 'Ingresa el porcentaje (ej: 2 = 2%)'],
+    ['Costo bandeja 30 uds. ($)', lote.costoBandeja ?? 0,  ''],
+    ['Costo caja 180 uds. ($)',   lote.costoCaja ?? 0,     ''],
+    ['', '', ''],
+    ['Consumo g/ave/día por dieta', '0 = usar curva oficial', 'Modifica estos valores y recalcula Curvas Referencia'],
+    ['Dieta 1 · sem 1–3',    grDieta[1] || 0, ''],
+    ['Dieta 2 · sem 4–5',    grDieta[2] || 0, ''],
+    ['Dieta 3 · sem 6–17',   grDieta[3] || 0, ''],
+    ['Dieta 4 · sem 18–35',  grDieta[4] || 0, ''],
+    ['Dieta 5 · sem 36–65',  grDieta[5] || 0, ''],
+    ['Dieta 6 · sem 66–100', grDieta[6] || 0, ''],
+    ['Dieta 7 · sem 101–130',grDieta[7] || 0, ''],
+  ];
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(paramData), 'Parametros');
+
+  // ══ RESUMEN ══
   const resData = [
     ['Presupuesto Avícola — Resumen',''],
     ['Lote / Cliente',   lote.nombre],
     ['Genética',         gen],
     ['Fecha nacimiento', lote.fechaNacimiento],
     ['N° aves iniciales',nIni],
-    ['Semanas proyectadas', lote.semanasCiclo || 100],
+    ['Semanas proyectadas', semanasCiclo],
     ['Precio huevo base ($/ud.)',+lote.precioHuevo],
     ['Gastos fijos / mes ($)',+lote.gastosMes],
     ['% Huevo no vendible', lote.pctNoVendible ?? 0],
@@ -1925,16 +1952,19 @@ function exportarExcel() {
     ['Resultado acum. fin ciclo ($)', proy[proy.length-1].acum],
     ['EBITDA operacional ($)', Math.round(totalEBITDA)],
     ['Break-even (semana)', be ? be.sem : 'Sin retorno'],
+    ['', ''],
+    ['→ Para modificar postura/mortalidad/consumo, edita la hoja "Parametros"',''],
+    ['→ "Curvas Referencia" se recalcula automáticamente con esas celdas',''],
     ['Generado', HOY_STR],
   ];
   XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(resData), 'Resumen');
 
-  // Gastos especiales
+  // ══ GASTOS ESPECIALES ══
   const geRows = [['Categoría','Descripción','Semana','Monto ($)']];
   gastos.forEach(g => geRows.push([g.categoria, g.descripcion, g.semana, +g.monto]));
   XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(geRows), 'Gastos Especiales');
 
-  // Precios por mes
+  // ══ PRECIOS POR MES ══
   const preciosMes = lote.preciosHuevoPorMes || {};
   const pmRows = [['Mes','Precio ($/ud.)','Tipo']];
   [...new Set(proy.map(d=>d.mes))].forEach(m => {
@@ -1943,7 +1973,7 @@ function exportarExcel() {
   });
   XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(pmRows), 'Precios por Mes');
 
-  // Proyección semanal con mortalidad acumulada
+  // ══ PROYECCIÓN SEMANAL ══
   const semMap = {};
   proy.forEach(d => {
     const s = d.sem;
@@ -1966,7 +1996,7 @@ function exportarExcel() {
   }
   XLSX.utils.book_append_sheet(wb, wsSem, 'Proyección Semanal');
 
-  // Proyección diaria completa
+  // ══ PROYECCIÓN DIARIA ══
   const dRows=[['Fecha','Día','Sem','Aves','Mort. acum. %','% Postura','Huevos prod.','Huevos vend.','Consumo kg','Dieta','Costo alim.','Costo envase','Gastos fijos','Gasto especial','$/huevo','Ingresos','Resultado','Acumulado']];
   proy.forEach(d => {
     const mortAcum = nIni > 0 ? (nIni - d.aves) / nIni : 0;
@@ -1979,14 +2009,12 @@ function exportarExcel() {
   }
   XLSX.utils.book_append_sheet(wb, wsDia, 'Proyección Diaria');
 
-  // Curvas de referencia (postura + mortalidad acumulada)
-  const curvas       = buildCurvas(gen);
-  const factPost     = (lote.factorPostura    ?? 100) / 100;
-  const factMort     = lote.factorMortalidad  ?? 1.0;
-  const semanasCiclo = lote.semanasCiclo || 100;
-  const grDieta      = lote.consumoGrDieta || {};
+  // ══ CURVAS REFERENCIA (con fórmulas vinculadas a hoja Parametros) ══
+  // Columnas: A=Sem B=Etapa C=%PostOfic D=%PostAdj* E=g/díaCurva F=g/díaReal* G=Dieta H=%MortSemOfic I=%MortSemAdj* J=MortAcum%* K=Aves/1000*
+  // (* = fórmula que referencia Parametros: B2=factPost, B3=factMort, B11-B17=grDieta 1-7)
   const cvHead = ['Semana','Etapa','% Postura oficial','% Postura ajustada','g/ave/día curva','g/ave/día real','Dieta','% Mort. sem. oficial','% Mort. sem. ajustada','Mort. acum. %','Aves/1000'];
   const cvRows = [cvHead];
+  const cvDietas = [];
   let avesRef = 1000;
   for (let s = 1; s <= semanasCiclo; s++) {
     const mortSem = MORTALIDAD[s] ?? 0.0015;
@@ -1996,9 +2024,10 @@ function exportarExcel() {
     const posOfic = curvas.getPos(s);
     const etapa   = posOfic === 0 ? 'Crianza' : 'Postura';
     const grReal  = +grDieta[cons.dieta] > 0 ? +grDieta[cons.dieta] : cons.gr;
+    cvDietas.push(cons.dieta);
     cvRows.push([
       s, etapa,
-      posOfic/100, (Math.min(posOfic * factPost, 100))/100,
+      posOfic / 100, (Math.min(posOfic * factPost, 100)) / 100,
       cons.gr, grReal, `D${cons.dieta}`,
       mortSem, mortAdj,
       (1000 - avesRef) / 1000,
@@ -2006,11 +2035,40 @@ function exportarExcel() {
     ]);
   }
   const wsCurvas = XLSX.utils.aoa_to_sheet(cvRows);
-  for (let r = 2; r <= cvRows.length; r++) {
-    [2,3,7,8,9].forEach(c => {
-      const cell = wsCurvas[XLSX.utils.encode_cell({r:r-1,c})];
-      if (cell) cell.z = '0.00%';
-    });
+
+  // Aplicar formatos y fórmulas por fila de datos
+  for (let i = 0; i < cvDietas.length; i++) {
+    const r    = i + 2;           // fila Excel (1-indexed, 2=primera fila datos)
+    const ridx = i + 1;           // fila SheetJS (0-indexed)
+    const paramRowGr = 10 + cvDietas[i]; // B11=D1, B12=D2, ..., B17=D7
+
+    // C: % Postura oficial — solo formato
+    const cC = wsCurvas[XLSX.utils.encode_cell({r:ridx, c:2})];
+    if (cC) cC.z = '0.00%';
+
+    // D: % Postura ajustada = C * factorPostura/100
+    const cD = wsCurvas[XLSX.utils.encode_cell({r:ridx, c:3})];
+    if (cD) { cD.f = `C${r}*Parametros!$B$2/100`; cD.t = 'n'; cD.z = '0.00%'; }
+
+    // F: g/ave/día real = IF(override>0, override, curva)
+    const cF = wsCurvas[XLSX.utils.encode_cell({r:ridx, c:5})];
+    if (cF) { cF.f = `IF(Parametros!$B$${paramRowGr}>0,Parametros!$B$${paramRowGr},E${r})`; cF.t = 'n'; }
+
+    // H: % Mort. sem. oficial — solo formato
+    const cH = wsCurvas[XLSX.utils.encode_cell({r:ridx, c:7})];
+    if (cH) cH.z = '0.00%';
+
+    // I: % Mort. sem. ajustada = H * factorMortalidad
+    const cI = wsCurvas[XLSX.utils.encode_cell({r:ridx, c:8})];
+    if (cI) { cI.f = `H${r}*Parametros!$B$3`; cI.t = 'n'; cI.z = '0.00%'; }
+
+    // J: Mortalidad acumulada (fórmula acumulativa)
+    const cJ = wsCurvas[XLSX.utils.encode_cell({r:ridx, c:9})];
+    if (cJ) { cJ.f = i === 0 ? `I${r}` : `1-(1-J${r-1})*(1-I${r})`; cJ.t = 'n'; cJ.z = '0.00%'; }
+
+    // K: Aves/1000 (fórmula acumulativa)
+    const cK = wsCurvas[XLSX.utils.encode_cell({r:ridx, c:10})];
+    if (cK) { cK.f = i === 0 ? `ROUND(1000*(1-I${r}),0)` : `ROUND(K${r-1}*(1-I${r}),0)`; cK.t = 'n'; }
   }
   XLSX.utils.book_append_sheet(wb, wsCurvas, 'Curvas Referencia');
 
@@ -2027,11 +2085,39 @@ function generarPDF() {
   const gen  = lote.genetica || 'Lohmann Brown';
   const col  = GEN_COLORES[gen] || '#1b4332';
 
-  // Asegurar gráficos renderizados y capturar como PNG
-  renderGraficos(lote);
-  const imgFin  = document.getElementById('cFin')?.toDataURL('image/png')  || '';
-  const imgPos  = document.getElementById('cPos')?.toDataURL('image/png')  || '';
-  const imgAcum = document.getElementById('cAcum')?.toDataURL('image/png') || '';
+  // Renderizar gráficos en canvases fuera de pantalla (sin animación) para captura confiable
+  const sems = semData(lote);
+  const lbs  = sems.map(s => `S${s.s}`);
+  const noAnim = { animation: false, responsive: false, maintainAspectRatio: false };
+
+  const mkCanvas = () => { const c = document.createElement('canvas'); c.width = 900; c.height = 260; return c; };
+
+  const cFin_ = mkCanvas();
+  const chFin = new Chart(cFin_, { type:'bar', data:{ labels:lbs, datasets:[
+    { label:'Costo total (alim+fijos+esp)', data:sems.map(s=>s.costoP+s.gastoEspP), backgroundColor:'rgba(183,28,28,.38)', stack:'p' },
+    { label:'Ingreso proyectado',           data:sems.map(s=>s.ingP),               backgroundColor:'rgba(27,67,50,.65)',  stack:'p' },
+  ]}, options:{ ...noAnim, plugins:{ legend:{ labels:{ font:{size:11} } } },
+    scales:{ x:{ stacked:true, ticks:tFont, grid:{color:gColor} },
+             y:{ ticks:{...tFont, callback:v=>'$'+Math.round(v/1000)+'k'}, grid:{color:gColor} } } } });
+  const imgFin = cFin_.toDataURL('image/png');
+  chFin.destroy();
+
+  const cPos_ = mkCanvas();
+  const chPos = new Chart(cPos_, { type:'line', data:{ labels:lbs, datasets:[
+    { label:'% Postura', data:sems.map(s=>s.postP), borderColor:'#1b4332', backgroundColor:'rgba(27,67,50,.08)', fill:true, tension:.3, pointRadius:0, borderWidth:2 },
+  ]}, options:{ ...noAnim, plugins:{ legend:{ labels:{ font:{size:11} } } },
+    scales:{ x:{ ticks:tFont, grid:{color:gColor} }, y:{ min:0, max:100, ticks:{...tFont, callback:v=>v+'%'}, grid:{color:gColor} } } } });
+  const imgPos = cPos_.toDataURL('image/png');
+  chPos.destroy();
+
+  const cAcum_ = mkCanvas();
+  const chAcum = new Chart(cAcum_, { type:'line', data:{ labels:lbs, datasets:[
+    { label:'Resultado acumulado', data:sems.map(s=>s.acumP), borderColor:'#1b4332', fill:false, tension:.3, pointRadius:0, borderWidth:2 },
+    { label:'Break-even',          data:sems.map(()=>0),       borderColor:'#f0a500', borderDash:[4,4], borderWidth:1.5, pointRadius:0 },
+  ]}, options:{ ...noAnim, plugins:{ legend:{ labels:{ font:{size:11} } } },
+    scales:{ x:{ ticks:tFont, grid:{color:gColor} }, y:{ ticks:{...tFont, callback:v=>'$'+Math.round(v/1e6)+'M'}, grid:{color:gColor} } } } });
+  const imgAcum = cAcum_.toDataURL('image/png');
+  chAcum.destroy();
 
   const nIni         = +lote.nAves;
   const semanasCiclo = lote.semanasCiclo || 100;
