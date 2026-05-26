@@ -1598,7 +1598,7 @@ function renderTablaProyeccion(lote) {
     }).join('');
     html = `<div class="tabla-wrap"><table><thead><tr>${cols}</tr></thead><tbody>${filas}</tbody></table></div>`;
 
-  } else {
+  } else if (tablaVista === 'año') {
     const a = {}; const nIni = +lote.nAves;
     proy.forEach((d, i) => {
       const k = d.fecha.slice(0,4); const avesIni = i === 0 ? nIni : proy[i-1].aves;
@@ -1634,70 +1634,56 @@ function renderTablaProyeccion(lote) {
     html = `<div class="tabla-wrap"><table><thead><tr>${cols}</tr></thead><tbody>${filas}</tbody></table></div>`;
 
   } else if (tablaVista === 'huevo') {
-    // Vista de desagregación de costos por huevo vendible
+    // Desagregación: precio venta / costo alimento / resto de costos / margen
     const sems = semData(lote);
-    const FH = v => v > 0 ? `<span style="font-family:var(--fm);font-size:11px">$${v.toFixed(1)}</span>` : '<span style="color:var(--tenue)">—</span>';
-    const FHB = v => `<span style="font-family:var(--fm);font-size:11px;font-weight:600">$${v.toFixed(1)}</span>`;
+    const F1 = v => `<span style="font-family:var(--fm);font-size:11px">$${v.toFixed(1)}</span>`;
 
-    // Totales ciclo para fila resumen
     const totVend  = proy.reduce((a,d)=>a+d.huevosVendibles,0);
     const totAlim  = proy.reduce((a,d)=>a+d.costoAlim,0);
-    const totEnv   = proy.reduce((a,d)=>a+d.costoEnvase,0);
-    const totDesp  = proy.reduce((a,d)=>a+(d.costoDespacho||0),0);
-    const totFijos = proy.reduce((a,d)=>a+d.gastoDia,0);
+    const totResto = proy.reduce((a,d)=>a+d.costoEnvase+(d.costoDespacho||0)+d.gastoDia,0);
     const totIng   = proy.reduce((a,d)=>a+d.ingreso,0);
-    const avgPrecio = totVend > 0 ? totIng / totVend : 0;
-    const avgAlim   = totVend > 0 ? totAlim  / totVend : 0;
-    const avgEnv    = totVend > 0 ? totEnv   / totVend : 0;
-    const avgDesp   = totVend > 0 ? totDesp  / totVend : 0;
-    const avgFijos  = totVend > 0 ? totFijos / totVend : 0;
-    const avgMargen = avgPrecio - avgAlim - avgEnv - avgDesp - avgFijos;
+    const avgP   = totVend > 0 ? totIng    / totVend : 0;
+    const avgA   = totVend > 0 ? totAlim   / totVend : 0;
+    const avgR   = totVend > 0 ? totResto  / totVend : 0;
+    const avgM   = avgP - avgA - avgR;
 
     const cols = `<th style="text-align:left;padding-left:10px">Sem</th>
       <th>Huevos vend.</th>
-      <th title="Precio promedio de venta">$/huevo venta</th>
-      <th title="Costo alimento por huevo vendible" style="color:#b71c1c">$/h alimento</th>
-      <th title="Bandeja + caja + etiqueta + otros por huevo">$/h envase</th>
-      <th title="Despacho mensual prorrateado por huevo">$/h despacho</th>
-      <th title="Gastos fijos mensuales prorrateados por huevo">$/h gastos fijos</th>
-      <th title="Precio − todos los costos" style="color:#1b4332">Margen/huevo</th>`;
+      <th title="Precio promedio de venta por huevo">Precio/huevo</th>
+      <th title="Costo alimento por huevo vendible" style="color:#b71c1c">Alimento/h</th>
+      <th title="Envase + despacho + gastos fijos por huevo">Resto costos/h</th>
+      <th title="Precio − alimento − resto" style="color:#1b4332">Margen/huevo</th>`;
 
     const filas = sems.map(s => {
-      const vend  = s.huevosVendibles || 0;
+      const vend = s.huevosVendibles || 0;
       if (vend === 0) return '';
-      const pHuevo  = s.ingP / vend;
       const diasSem = proy.filter(d => d.sem === s.s);
-      const alimH  = diasSem.reduce((a,d)=>a+d.costoAlim,0)       / vend;
-      const envH   = diasSem.reduce((a,d)=>a+d.costoEnvase,0)     / vend;
-      const despH  = diasSem.reduce((a,d)=>a+(d.costoDespacho||0),0) / vend;
-      const fijosH = diasSem.reduce((a,d)=>a+d.gastoDia,0)        / vend;
-      const margen = pHuevo - alimH - envH - despH - fijosH;
-      const mc = margen >= 0 ? 'color:var(--ok)' : 'color:var(--mal)';
+      const pH  = s.ingP / vend;
+      const aH  = diasSem.reduce((a,d)=>a+d.costoAlim,0) / vend;
+      const rH  = diasSem.reduce((a,d)=>a+d.costoEnvase+(d.costoDespacho||0)+d.gastoDia,0) / vend;
+      const mH  = pH - aH - rH;
+      const mc  = mH >= 0 ? 'color:var(--ok)' : 'color:var(--mal)';
       return `<tr>
         <td style="text-align:left;padding-left:10px;font-weight:600">${s.s}</td>
         <td style="font-family:var(--fm);font-size:11px">${NUM(vend)}</td>
-        <td>${FHB(pHuevo)}</td>
-        <td style="color:var(--mal)">${FH(alimH)}</td>
-        <td>${FH(envH)}</td>
-        <td>${FH(despH)}</td>
-        <td>${FH(fijosH)}</td>
-        <td style="${mc};font-weight:600;font-family:var(--fm);font-size:11px">$${margen.toFixed(1)}</td>
+        <td>${F1(pH)}</td>
+        <td style="color:var(--mal)">${F1(aH)}</td>
+        <td>${F1(rH)}</td>
+        <td style="${mc};font-weight:600;font-family:var(--fm);font-size:11px">${mH>=0?'+':''}$${mH.toFixed(1)}</td>
       </tr>`;
     }).join('');
 
     const resumen = `<tr style="background:#f0f7f0;font-weight:600;border-top:2px solid #1b4332">
       <td style="text-align:left;padding-left:10px">CICLO</td>
       <td style="font-family:var(--fm);font-size:11px">${NUM(totVend)}</td>
-      <td>${FHB(avgPrecio)}</td>
-      <td style="color:var(--mal)">${FH(avgAlim)}</td>
-      <td>${FH(avgEnv)}</td>
-      <td>${FH(avgDesp)}</td>
-      <td>${FH(avgFijos)}</td>
-      <td style="${avgMargen>=0?'color:var(--ok)':'color:var(--mal)'};font-weight:700;font-family:var(--fm)">${avgMargen>=0?'+':''}$${avgMargen.toFixed(1)}</td>
+      <td>${F1(avgP)}</td>
+      <td style="color:var(--mal)">${F1(avgA)}</td>
+      <td>${F1(avgR)}</td>
+      <td style="${avgM>=0?'color:var(--ok)':'color:var(--mal)'};font-weight:700;font-family:var(--fm);font-size:12px">${avgM>=0?'+':''}$${avgM.toFixed(1)}</td>
     </tr>`;
 
     html = `<div style="font-size:11px;color:var(--tenue);margin-bottom:6px;padding:0 4px">
-      Todos los valores son promedios semanales por huevo vendible. Fila CICLO = promedio ponderado del ciclo completo.
+      $/huevo vendible. "Resto costos" incluye envase, despacho y gastos fijos. Fila CICLO = promedio ponderado total.
     </div>
     <div class="tabla-wrap"><table>
       <thead><tr>${cols}</tr></thead>
