@@ -143,6 +143,9 @@ const LINEAS = {
       [99,  1.960,  2.100,  71.2,  65.4, 108, 116, 163, 232],
       [100, 1.960,  2.100,  70.9,  65.5, 108, 116, 163, 232],
     ],
+    // mort. acumulada por fase (%) — estimado (*) basado en perfil W-80
+    mortCrianza: [1.0, 1.3, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.0, 2.2, 2.2, 2.3, 2.4, 2.6, 2.7, 2.8, 3.0],
+    mortPostura: [0.0, 0.0, 0.2, 0.5, 0.6, 0.8, 0.9, 1.1, 1.2, 1.3, 1.4, 1.6, 1.7, 1.9, 2.0, 2.2, 2.3, 2.5, 2.6, 2.8, 2.9, 3.0, 3.2, 3.3, 3.4, 3.5, 3.6, 3.6, 3.8, 3.9, 4.0, 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7, 4.8, 4.9, 4.9, 5.0, 5.1, 5.2, 5.3, 5.4, 5.6, 5.7, 5.8, 6.0, 6.0, 6.2, 6.3, 6.4, 6.6, 6.7, 6.8, 7.0, 7.1, 7.3, 7.4, 7.6, 7.7, 7.9, 8.0, 8.1, 8.3, 8.4, 8.5, 8.6, 8.8, 8.9, 9.1, 9.2, 9.4, 9.5, 9.7, 9.8, 10.0, 10.1, 10.3, 10.5, 10.6],
   },
 
   'Hy-Line W-80': {
@@ -257,6 +260,9 @@ const LINEAS = {
       [99,  1.600,  1.700,  80.7,  62.7, 103, 110, 155, 220],
       [100, 1.600,  1.700,  80.4,  62.7, 103, 110, 155, 220],
     ],
+    // mort. acumulada por fase (%) — oficial Hy-Line W-80 Management Guide, Ene 2024
+    mortCrianza: [1.0, 1.3, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.0, 2.2, 2.2, 2.3, 2.4, 2.6, 2.7, 2.8, 3.0, 3.2],
+    mortPostura: [0.0, 0.2, 0.5, 0.6, 0.8, 0.9, 1.1, 1.2, 1.3, 1.4, 1.6, 1.7, 1.9, 2.0, 2.2, 2.3, 2.5, 2.6, 2.8, 2.9, 3.0, 3.2, 3.3, 3.4, 3.5, 3.6, 3.6, 3.8, 3.9, 4.0, 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7, 4.8, 4.9, 4.9, 5.0, 5.1, 5.2, 5.3, 5.4, 5.6, 5.7, 5.8, 6.0, 6.0, 6.2, 6.3, 6.4, 6.6, 6.7, 6.8, 7.0, 7.1, 7.3, 7.4, 7.6, 7.7, 7.9, 8.0, 8.1, 8.3, 8.4, 8.5, 8.6, 8.8, 8.9, 9.1, 9.2, 9.4, 9.5, 9.7, 9.8, 10.0, 10.1, 10.3, 10.5, 10.6],
   },
 
   'Lohmann Brown': {
@@ -372,6 +378,9 @@ const LINEAS = {
       [99,  1.963,  2.085,  68.0,  65.8, 109, 115, 202, 213],
       [100, 1.963,  2.085,  67.3,  65.8, 109, 115, 202, 213],
     ],
+    // mort. acumulada por fase (%) — estimado (*) basado en perfil W-80
+    mortCrianza: [1.0, 1.3, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.0, 2.2, 2.2, 2.3, 2.4, 2.6, 2.7, 2.8, 3.0, 3.2],
+    mortPostura: [0.0, 0.2, 0.5, 0.6, 0.8, 0.9, 1.1, 1.2, 1.3, 1.4, 1.6, 1.7, 1.9, 2.0, 2.2, 2.3, 2.5, 2.6, 2.8, 2.9, 3.0, 3.2, 3.3, 3.4, 3.5, 3.6, 3.6, 3.8, 3.9, 4.0, 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7, 4.8, 4.9, 4.9, 5.0, 5.1, 5.2, 5.3, 5.4, 5.6, 5.7, 5.8, 6.0, 6.0, 6.2, 6.3, 6.4, 6.6, 6.7, 6.8, 7.0, 7.1, 7.3, 7.4, 7.6, 7.7, 7.9, 8.0, 8.1, 8.3, 8.4, 8.5, 8.6, 8.8, 8.9, 9.1, 9.2, 9.4, 9.5, 9.7, 9.8, 10.0, 10.1, 10.3, 10.5, 10.6],
   },
 
   'Nick Brown': {
@@ -487,6 +496,9 @@ const LINEAS = {
       [99,  2.068,  2.108,  65.6,  67.8, 113, 118, 205, 218],
       [100, 2.070,  2.110,  64.9,  67.8, 113, 118, 205, 218],
     ],
+    // mort. acumulada por fase (%) — estimado (*) basado en perfil W-80
+    mortCrianza: [1.0, 1.3, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.0, 2.2, 2.2, 2.3, 2.4, 2.6, 2.7, 2.8, 3.0, 3.2],
+    mortPostura: [0.0, 0.2, 0.5, 0.6, 0.8, 0.9, 1.1, 1.2, 1.3, 1.4, 1.6, 1.7, 1.9, 2.0, 2.2, 2.3, 2.5, 2.6, 2.8, 2.9, 3.0, 3.2, 3.3, 3.4, 3.5, 3.6, 3.6, 3.8, 3.9, 4.0, 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7, 4.8, 4.9, 4.9, 5.0, 5.1, 5.2, 5.3, 5.4, 5.6, 5.7, 5.8, 6.0, 6.0, 6.2, 6.3, 6.4, 6.6, 6.7, 6.8, 7.0, 7.1, 7.3, 7.4, 7.6, 7.7, 7.9, 8.0, 8.1, 8.3, 8.4, 8.5, 8.6, 8.8, 8.9, 9.1, 9.2, 9.4, 9.5, 9.7, 9.8, 10.0, 10.1, 10.3, 10.5, 10.6],
   },
 
   'Dekalb Brown': {
@@ -602,6 +614,9 @@ const LINEAS = {
       [99,  1.930,  1.970,  77.2,  63.9,  113,  117, 203, 211],
       [100, 1.930,  1.970,  76.9,  63.9,  113,  117, 203, 211],
     ],
+    // mort. acumulada por fase (%) — estimado (*) basado en perfil W-80
+    mortCrianza: [1.0, 1.3, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.0, 2.2, 2.2, 2.3, 2.4, 2.6, 2.7, 2.8, 3.0],
+    mortPostura: [0.0, 0.0, 0.2, 0.5, 0.6, 0.8, 0.9, 1.1, 1.2, 1.3, 1.4, 1.6, 1.7, 1.9, 2.0, 2.2, 2.3, 2.5, 2.6, 2.8, 2.9, 3.0, 3.2, 3.3, 3.4, 3.5, 3.6, 3.6, 3.8, 3.9, 4.0, 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7, 4.8, 4.9, 4.9, 5.0, 5.1, 5.2, 5.3, 5.4, 5.6, 5.7, 5.8, 6.0, 6.0, 6.2, 6.3, 6.4, 6.6, 6.7, 6.8, 7.0, 7.1, 7.3, 7.4, 7.6, 7.7, 7.9, 8.0, 8.1, 8.3, 8.4, 8.5, 8.6, 8.8, 8.9, 9.1, 9.2, 9.4, 9.5, 9.7, 9.8, 10.0, 10.1, 10.3, 10.5, 10.6],
   },
 };
 
@@ -660,10 +675,17 @@ function actualizarTodo() {
   renderEquipamiento();
 }
 
+// ── HELPER MORTALIDAD ─────────────────────────────────────────────────
+function mortSem(arr, i) {
+  if (!arr || arr[i] == null) return null;
+  return i === 0 ? arr[0] : Math.max(0, parseFloat((arr[i] - arr[i - 1]).toFixed(2)));
+}
+
 // ── CRIANZA ────────────────────────────────────────────────────────────
 function renderCrianza() {
   const L = LINEAS[lineaSel];
   const datos = L.crianza;
+  const mC = L.mortCrianza || null;
 
   // Graficos
   renderLinea('svg-c-peso',    datos, 1, 2, 'Peso corporal (kg)',         0, null, L.color);
@@ -673,11 +695,15 @@ function renderCrianza() {
   // Tabla
   const th = `<tr><th>Sem</th><th>Peso mín (kg)</th><th>Peso máx (kg)</th>
     <th>Alimento mín (g/día)</th><th>Alimento máx (g/día)</th>
-    <th>Agua mín (ml/día)</th><th>Agua máx (ml/día)</th></tr>`;
-  const filas = datos.map(r =>
-    `<tr><td>${r[0]}</td><td>${r[1].toFixed(3)}</td><td>${r[2].toFixed(3)}</td>
-     <td>${r[3]}</td><td>${r[4]}</td><td>${r[5]}</td><td>${r[6]}</td></tr>`
-  ).join('');
+    <th>Agua mín (ml/día)</th><th>Agua máx (ml/día)</th>
+    ${mC ? '<th>Mort. semanal (%)</th><th>Mort. acumulada (%)</th>' : ''}</tr>`;
+  const filas = datos.map((r, i) => {
+    const mA = mC ? mC[i].toFixed(1) : null;
+    const mS = mC ? mortSem(mC, i).toFixed(2) : null;
+    return `<tr><td>${r[0]}</td><td>${r[1].toFixed(3)}</td><td>${r[2].toFixed(3)}</td>
+     <td>${r[3]}</td><td>${r[4]}</td><td>${r[5]}</td><td>${r[6]}</td>
+     ${mC ? `<td>${mS}</td><td>${mA}</td>` : ''}</tr>`;
+  }).join('');
   document.querySelector('#tabla-crianza thead').innerHTML = th;
   document.querySelector('#tabla-crianza tbody').innerHTML = filas;
 }
@@ -686,6 +712,7 @@ function renderCrianza() {
 function renderPostura() {
   const L = LINEAS[lineaSel];
   const datos = L.postura;
+  const mP = L.mortPostura || null;
 
   // Postura array: [sem, pesoMin, pesoMax, pct, pesoHuevo, alMin, alMax, aguaMin, aguaMax]
   //                  0     1        2      3     4          5      6      7        8
@@ -698,12 +725,16 @@ function renderPostura() {
   const th = `<tr><th>Sem</th><th>Peso mín (kg)</th><th>Peso máx (kg)</th>
     <th>% Postura</th><th>Peso huevo (g)</th>
     <th>Alimento mín (g/día)</th><th>Alimento máx (g/día)</th>
-    <th>Agua mín (ml/día)</th><th>Agua máx (ml/día)</th></tr>`;
-  const filas = datos.map(r =>
-    `<tr><td>${r[0]}</td><td>${r[1].toFixed(3)}</td><td>${r[2].toFixed(3)}</td>
+    <th>Agua mín (ml/día)</th><th>Agua máx (ml/día)</th>
+    ${mP ? '<th>Mort. semanal (%)</th><th>Mort. acumulada (%)</th>' : ''}</tr>`;
+  const filas = datos.map((r, i) => {
+    const mA = mP ? mP[i].toFixed(1) : null;
+    const mS = mP ? mortSem(mP, i).toFixed(2) : null;
+    return `<tr><td>${r[0]}</td><td>${r[1].toFixed(3)}</td><td>${r[2].toFixed(3)}</td>
      <td>${r[3].toFixed(1)}</td><td>${r[4].toFixed(1)}</td>
-     <td>${r[5]}</td><td>${r[6]}</td><td>${r[7]}</td><td>${r[8]}</td></tr>`
-  ).join('');
+     <td>${r[5]}</td><td>${r[6]}</td><td>${r[7]}</td><td>${r[8]}</td>
+     ${mP ? `<td>${mS}</td><td>${mA}</td>` : ''}</tr>`;
+  }).join('');
   document.querySelector('#tabla-postura thead').innerHTML = th;
   document.querySelector('#tabla-postura tbody').innerHTML = filas;
 }
@@ -874,32 +905,47 @@ function exportarExcel() {
   const L  = LINEAS[lineaSel];
   const wb = XLSX.utils.book_new();
 
+  const mC = L.mortCrianza || null;
+  const mP = L.mortPostura || null;
+
   // ── Hoja 1: Crianza ──────────────────────────────────────────────────
+  const mortNotaC = mC && lineaSel !== 'Hy-Line W-80' ? ' (*) Mortalidad estimada basada en perfil W-80.' : '';
   const crianzaData = [
     ['Línea genética:', lineaSel],
-    ['Fuente:', L.fuente],
+    ['Fuente:', L.fuente + mortNotaC],
     [],
     ['Semana', 'Peso mín (kg)', 'Peso máx (kg)',
      'Alimento mín (g/ave/día)', 'Alimento máx (g/ave/día)',
-     'Agua mín (ml/ave/día)', 'Agua máx (ml/ave/día)'],
+     'Agua mín (ml/ave/día)', 'Agua máx (ml/ave/día)',
+     ...(mC ? ['Mort. semanal (%)', 'Mort. acumulada (%)'] : [])],
   ];
-  L.crianza.forEach(r => crianzaData.push([r[0], r[1], r[2], r[3], r[4], r[5], r[6]]));
+  L.crianza.forEach((r, i) => {
+    const mA = mC ? mC[i] : null;
+    const mS = mC ? mortSem(mC, i) : null;
+    crianzaData.push([r[0], r[1], r[2], r[3], r[4], r[5], r[6], ...(mC ? [mS, mA] : [])]);
+  });
   const wsCrianza = XLSX.utils.aoa_to_sheet(crianzaData);
-  wsCrianza['!cols'] = [8,14,14,22,22,22,22].map(w => ({ wch: w }));
+  wsCrianza['!cols'] = [8,14,14,22,22,22,22,...(mC ? [18,18] : [])].map(w => ({ wch: w }));
   XLSX.utils.book_append_sheet(wb, wsCrianza, 'Crianza');
 
   // ── Hoja 2: Postura ──────────────────────────────────────────────────
+  const mortNotaP = mP && lineaSel !== 'Hy-Line W-80' ? ' (*) Mortalidad estimada basada en perfil W-80.' : '';
   const posturaData = [
     ['Línea genética:', lineaSel],
-    ['Fuente:', L.fuente],
+    ['Fuente:', L.fuente + mortNotaP],
     [],
     ['Semana', 'Peso mín (kg)', 'Peso máx (kg)', '% Postura', 'Peso huevo (g)',
      'Alimento mín (g/ave/día)', 'Alimento máx (g/ave/día)',
-     'Agua mín (ml/ave/día)', 'Agua máx (ml/ave/día)'],
+     'Agua mín (ml/ave/día)', 'Agua máx (ml/ave/día)',
+     ...(mP ? ['Mort. semanal (%)', 'Mort. acumulada (%)'] : [])],
   ];
-  L.postura.forEach(r => posturaData.push([r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8]]));
+  L.postura.forEach((r, i) => {
+    const mA = mP ? mP[i] : null;
+    const mS = mP ? mortSem(mP, i) : null;
+    posturaData.push([r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8], ...(mP ? [mS, mA] : [])]);
+  });
   const wsPostura = XLSX.utils.aoa_to_sheet(posturaData);
-  wsPostura['!cols'] = [8,14,14,12,15,22,22,22,22].map(w => ({ wch: w }));
+  wsPostura['!cols'] = [8,14,14,12,15,22,22,22,22,...(mP ? [18,18] : [])].map(w => ({ wch: w }));
   XLSX.utils.book_append_sheet(wb, wsPostura, 'Postura');
 
   // ── Hoja 3: Equipamiento ─────────────────────────────────────────────
