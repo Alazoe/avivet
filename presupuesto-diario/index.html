@@ -889,6 +889,10 @@ let proy       = null;
 let modoEditar = null;
 let charts     = {};
 let tablaVista = 'sem';
+let sensibEsc  = {
+  pes: { precioPct: -20, factorPost:  85, factorMort: 1.5, alimentoPct:  15 },
+  opt: { precioPct:  15, factorPost: 105, factorMort: 0.8, alimentoPct: -10 },
+};
 const HOY      = new Date().toISOString().slice(0, 10);
 const tFont    = { font:{ size:10, family:"'IBM Plex Mono', monospace" } };
 const gColor   = '#e0ddd5';
@@ -995,6 +999,37 @@ function selLote(id) {
 /* ════════════════════════════════════════════════════════════
    DASHBOARD
    ════════════════════════════════════════════════════════════ */
+/* ════════════════════════════════════════════════════════════
+   SENSIBILIDAD — helpers
+   ════════════════════════════════════════════════════════════ */
+function proyectarEscenario(lote, {precioPct=0, factorPost=null, factorMort=null, alimentoPct=0}={}) {
+  const pm = 1 + precioPct / 100;
+  const am = 1 + alimentoPct / 100;
+  const l = {
+    ...lote,
+    precioHuevo:          +lote.precioHuevo * pm,
+    preciosHuevoPorMes:   Object.fromEntries(
+      Object.entries(lote.preciosHuevoPorMes || {}).map(([m, v]) => [m, +v * pm])
+    ),
+    factorPostura:        factorPost  ?? lote.factorPostura   ?? 100,
+    factorMortalidad:     factorMort  ?? lote.factorMortalidad ?? 1.0,
+    costoDieta:           Object.fromEntries(
+      [1,2,3,4,5,6,7].map(d => [d, (+(lote.costoDieta?.[d] || 520)) * am])
+    ),
+  };
+  return proyectar(l);
+}
+
+function kpisEsc(p) {
+  const dFin     = p[p.length - 1];
+  const ingresos = p.reduce((a, d) => a + d.ingreso, 0);
+  const ebitda   = p.reduce((a, d) => a + d.ingreso - d.costoAlim - d.gastoDia - (d.costoDespacho||0) - d.costoEnvase, 0);
+  const be       = calcBreakEven(p);
+  const huevosV  = p.reduce((a, d) => a + d.huevosVendibles, 0);
+  const margenH  = huevosV > 0 ? dFin.acum / huevosV : 0;
+  return { resultado: dFin.acum, ebitda, be, ingresos, huevosV, margenH };
+}
+
 /* ════════════════════════════════════════════════════════════
    FLUJO DEL CICLO — timeline de etapas e hitos financieros
    ════════════════════════════════════════════════════════════ */
@@ -1184,9 +1219,10 @@ function renderDashboard(lote) {
     </p>
 
     <div class="tabs">
-      <button class="tab activo" data-tab="t-graficos" onclick="setTab(event,'t-graficos')">Gráficos</button>
-      <button class="tab" data-tab="t-tabla"   onclick="setTab(event,'t-tabla')">Proyección</button>
-      <button class="tab" data-tab="t-curvas"  onclick="setTab(event,'t-curvas')">Curvas ref.</button>
+      <button class="tab activo" data-tab="t-graficos"  onclick="setTab(event,'t-graficos')">Gráficos</button>
+      <button class="tab" data-tab="t-tabla"    onclick="setTab(event,'t-tabla')">Proyección</button>
+      <button class="tab" data-tab="t-sensib"   onclick="setTab(event,'t-sensib')">Sensibilidad</button>
+      <button class="tab" data-tab="t-curvas"   onclick="setTab(event,'t-curvas')">Curvas ref.</button>
       <button class="tab" data-tab="t-precios" onclick="setTab(event,'t-precios')">Precios mes</button>
       <button class="tab" data-tab="t-gastos"  onclick="setTab(event,'t-gastos')">Gastos especiales</button>
       <button class="tab" data-tab="t-config"  onclick="setTab(event,'t-config')">Configuración</button>
@@ -1219,6 +1255,11 @@ function renderDashboard(lote) {
     <!-- TABLA PROYECCIÓN -->
     <div id="t-tabla" class="tab-panel" style="display:none">
       <div id="tabla-proy-panel"></div>
+    </div>
+
+    <!-- SENSIBILIDAD -->
+    <div id="t-sensib" class="tab-panel" style="display:none">
+      <div id="sensib-panel"></div>
     </div>
 
     <!-- CURVAS REFERENCIA -->
@@ -1312,6 +1353,7 @@ function renderDashboard(lote) {
 
   renderGraficos(lote);
   renderTablaProyeccion(lote);
+  renderSensibilidad(lote);
   renderPreciosMes(lote);
   renderGastosEspeciales(lote);
 }
@@ -1326,6 +1368,7 @@ function setTab(e, id) {
   panel.style.display = 'block';
   if (id === 't-graficos') renderGraficos(getLote(loteId));
   if (id === 't-tabla')    renderTablaProyeccion(getLote(loteId));
+  if (id === 't-sensib')   renderSensibilidad(getLote(loteId));
   if (id === 't-curvas')   renderCurvasRef(getLote(loteId));
   if (id === 't-precios')  renderPreciosMes(getLote(loteId));
   if (id === 't-gastos')   renderGastosEspeciales(getLote(loteId));
@@ -1684,6 +1727,175 @@ function renderGraficos(lote) {
       plugins:{ legend:{ labels:{ font:{size:11} } } },
       scales:{ x:{ ticks:tFont, grid:{color:gColor} }, y:{ ticks:{...tFont, callback:v=>'$'+Math.round(v/1e6)+'M'}, grid:{color:gColor} } } }
   });
+}
+
+/* ════════════════════════════════════════════════════════════
+   ANÁLISIS DE SENSIBILIDAD
+   ════════════════════════════════════════════════════════════ */
+function renderSensibilidad(lote) {
+  const panel = document.getElementById('sensib-panel');
+  if (!panel || !proy) return;
+
+  // Leer inputs del DOM (persistir en sensibEsc)
+  const gv = (id, fb) => { const el = document.getElementById(id); return el ? +el.value : fb; };
+  const pes = {
+    precioPct:   gv('se-precio-pes',  sensibEsc.pes.precioPct),
+    factorPost:  gv('se-post-pes',    sensibEsc.pes.factorPost),
+    factorMort:  gv('se-mort-pes',    sensibEsc.pes.factorMort),
+    alimentoPct: gv('se-alim-pes',    sensibEsc.pes.alimentoPct),
+  };
+  const opt = {
+    precioPct:   gv('se-precio-opt',  sensibEsc.opt.precioPct),
+    factorPost:  gv('se-post-opt',    sensibEsc.opt.factorPost),
+    factorMort:  gv('se-mort-opt',    sensibEsc.opt.factorMort),
+    alimentoPct: gv('se-alim-opt',    sensibEsc.opt.alimentoPct),
+  };
+  sensibEsc.pes = pes;
+  sensibEsc.opt = opt;
+
+  // Calcular los tres escenarios
+  const pPes = proyectarEscenario(lote, pes);
+  const pOpt = proyectarEscenario(lote, opt);
+  const kP   = kpisEsc(pPes);
+  const kB   = kpisEsc(proy);   // base = proyección actual
+  const kO   = kpisEsc(pOpt);
+
+  // Helpers de formato
+  const cls  = v => v >= 0 ? 'ok' : 'mal';
+  const fmtR = (v, bold=false) =>
+    `<span class="${cls(v)}" style="font-family:var(--fm);font-weight:${bold?'800':'600'};font-size:${bold?'15':'13'}px">${MN(v)}</span>`;
+  const fmtH = v =>
+    `<span class="${cls(v)}" style="font-family:var(--fm);font-weight:600;font-size:12px">${v>=0?'+':''}$${v.toFixed(1)}/h</span>`;
+  const beStr = be => be ? `Sem ${be.sem}` : 'Sin retorno';
+  const beCls = (be, beB) => !be ? 'mal' : (be.sem <= (beB?.sem ?? 999) ? 'ok' : '');
+  const deltaStr = (v, b, big=false) => {
+    const d = v - b;
+    if (!big && Math.abs(d) < 500) return '';
+    const color = d > 0 ? '#2e7d32' : '#c62828';
+    return ` <small style="color:${color};font-size:10px">(${d>0?'+':''}${MN(d)})</small>`;
+  };
+
+  // Input helper
+  const inp = (id, val, step) =>
+    `<input id="${id}" type="number" value="${val}" step="${step}"
+     style="width:76px;padding:5px 8px;border:1px solid var(--linea);border-radius:3px;
+            font-family:var(--fm);font-size:12px;text-align:center;background:white"
+     oninput="recalcSensib()">`;
+
+  // Fila de parámetro
+  const paramRow = (lbl, hint, idP, valP, baseVal, idO, valO, step) =>
+    `<tr>
+       <td style="padding:8px 12px 8px 0;font-size:12px;color:var(--texto);border-bottom:1px solid var(--linea)">
+         ${lbl}<br><small style="color:var(--tenue)">${hint}</small>
+       </td>
+       <td style="padding:8px 14px;text-align:center;border-bottom:1px solid var(--linea);background:#fff8f8">${inp(idP,valP,step)}</td>
+       <td style="padding:8px 14px;text-align:center;border-bottom:1px solid var(--linea);background:#f4f8f4;color:var(--suave);font-family:var(--fm);font-size:12px">${baseVal}</td>
+       <td style="padding:8px 14px;text-align:center;border-bottom:1px solid var(--linea);background:#f0f7f0">${inp(idO,valO,step)}</td>
+     </tr>`;
+
+  // Fila de resultado
+  const resRow = (lbl, vP, vB, vO, border=true) =>
+    `<tr>
+       <td style="padding:10px 12px 10px 0;font-size:12px;color:var(--texto)${border?';border-bottom:1px solid var(--linea)':''}">${lbl}</td>
+       <td style="padding:10px 14px;text-align:center;background:#fff8f8${border?';border-bottom:1px solid var(--linea)':''}">${vP}</td>
+       <td style="padding:10px 14px;text-align:center;background:#f4f8f4${border?';border-bottom:1px solid var(--linea)':''}">${vB}</td>
+       <td style="padding:10px 14px;text-align:center;background:#f0f7f0${border?';border-bottom:1px solid var(--linea)':''}">${vO}</td>
+     </tr>`;
+
+  // Encabezado de tabla compartido
+  const thead = `<thead><tr>
+    <th style="text-align:left;padding:8px 0 10px;font-size:11px;color:var(--tenue);text-transform:uppercase;letter-spacing:.06em;border-bottom:2px solid var(--linea)">·</th>
+    <th style="padding:8px 14px 10px;font-size:11px;color:#c62828;text-transform:uppercase;letter-spacing:.06em;border-bottom:2px solid #ffcdd2;background:#fff8f8">🔴 Pesimista</th>
+    <th style="padding:8px 14px 10px;font-size:11px;color:#1b4332;text-transform:uppercase;letter-spacing:.06em;border-bottom:2px solid #a5d6a7;background:#f4f8f4">⬤ Base actual</th>
+    <th style="padding:8px 14px 10px;font-size:11px;color:#1b5e20;text-transform:uppercase;letter-spacing:.06em;border-bottom:2px solid #80cbc4;background:#f0f7f0">🟢 Optimista</th>
+  </tr></thead>`;
+
+  // Espectro visual del resultado
+  const vals = [kP.resultado, kB.resultado, kO.resultado];
+  const minV = Math.min(...vals), maxV = Math.max(...vals), rng = maxV - minV || 1;
+  const sp = v => Math.round((v - minV) / rng * 100);
+  const specHtml = `
+    <div style="margin-top:28px;padding:18px 14px;background:var(--fondo);border:1px solid var(--linea);border-radius:4px">
+      <div style="font-size:11px;color:var(--tenue);text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px">
+        Espectro · Resultado acumulado al fin del ciclo
+      </div>
+      <div style="position:relative;height:6px;background:linear-gradient(to right,#ffcdd2 0%,#e8f5e9 100%);border-radius:3px;margin:14px 6px 10px">
+        ${['pes','base','opt'].map((k,i) => {
+          const v = [kP,kB,kO][i].resultado;
+          const col = ['#c62828','#1b4332','#1b5e20'][i];
+          const lbl = ['Pesimista','Base','Optimista'][i];
+          const p = sp(v);
+          const side = p < 20 ? 'left:0;transform:none' : p > 80 ? 'right:0;left:auto;transform:none' : `left:${p}%;transform:translateX(-50%)`;
+          return `<div style="position:absolute;top:-12px;${side};text-align:center">
+            <div style="width:14px;height:14px;border-radius:50%;background:${col};border:2px solid white;margin:0 auto;box-shadow:0 1px 3px rgba(0,0,0,.2)"></div>
+            <div style="font-size:9.5px;font-weight:600;color:${col};white-space:nowrap;margin-top:8px">${lbl}</div>
+            <div style="font-size:9px;color:var(--suave);white-space:nowrap">${MN(v)}</div>
+          </div>`;
+        }).join('')}
+      </div>
+      <div style="height:36px"></div>
+    </div>`;
+
+  panel.innerHTML = `
+    <p style="font-size:13px;color:var(--suave);margin-bottom:20px">
+      Ajusta los parámetros de cada escenario — los resultados se recalculan automáticamente.
+      Los valores base corresponden a la configuración actual del lote.
+    </p>
+
+    <!-- Parámetros -->
+    <div style="font-size:11px;font-weight:600;color:var(--prim);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Parámetros de escenario</div>
+    <table style="width:100%;border-collapse:collapse;margin-bottom:28px">
+      ${thead}
+      <tbody>
+        ${paramRow('Precio huevo (Δ%)','se aplica sobre precio base y precios por mes',
+          'se-precio-pes', pes.precioPct, `$${(+lote.precioHuevo).toLocaleString('es-CL')}/ud.`,
+          'se-precio-opt', opt.precioPct, '1')}
+        ${paramRow('Factor postura (%)','% de la curva oficial de postura a proyectar',
+          'se-post-pes', pes.factorPost, `${lote.factorPostura??100}% base`,
+          'se-post-opt', opt.factorPost, '1')}
+        ${paramRow('Factor mortalidad (×)','multiplicador sobre tabla de mortalidad semanal',
+          'se-mort-pes', pes.factorMort, `${lote.factorMortalidad??1.0}× base`,
+          'se-mort-opt', opt.factorMort, '0.1')}
+        ${paramRow('Costo alimento (Δ%)','variación sobre $/kg de todas las dietas',
+          'se-alim-pes', pes.alimentoPct, 'dietas 1–7 base',
+          'se-alim-opt', opt.alimentoPct, '1')}
+      </tbody>
+    </table>
+
+    <!-- Resultados -->
+    <div style="font-size:11px;font-weight:600;color:var(--prim);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Resultados proyectados</div>
+    <table style="width:100%;border-collapse:collapse">
+      ${thead}
+      <tbody>
+        ${resRow('Resultado acumulado fin ciclo',
+          fmtR(kP.resultado) + deltaStr(kP.resultado, kB.resultado),
+          fmtR(kB.resultado, true),
+          fmtR(kO.resultado) + deltaStr(kO.resultado, kB.resultado))}
+        ${resRow('EBITDA operacional',
+          fmtR(kP.ebitda) + deltaStr(kP.ebitda, kB.ebitda),
+          fmtR(kB.ebitda, true),
+          fmtR(kO.ebitda) + deltaStr(kO.ebitda, kB.ebitda))}
+        ${resRow('Break-even (inversión)',
+          `<span class="${beCls(kP.be, kB.be)}" style="font-family:var(--fm);font-size:13px">${beStr(kP.be)}</span>`,
+          `<span style="font-family:var(--fm);font-size:13px;font-weight:700;color:var(--prim)">${beStr(kB.be)}</span>`,
+          `<span class="${beCls(kO.be, kB.be)}" style="font-family:var(--fm);font-size:13px">${beStr(kO.be)}</span>`)}
+        ${resRow('Ingresos totales',
+          `<span style="font-family:var(--fm);font-size:12px">${MN(kP.ingresos)}</span>`,
+          `<span style="font-family:var(--fm);font-size:12px;font-weight:700">${MN(kB.ingresos)}</span>`,
+          `<span style="font-family:var(--fm);font-size:12px">${MN(kO.ingresos)}</span>`)}
+        ${resRow('Huevos vendibles',
+          `<span style="font-family:var(--fm);font-size:12px">${NUM(kP.huevosV)}</span>`,
+          `<span style="font-family:var(--fm);font-size:12px;font-weight:700">${NUM(kB.huevosV)}</span>`,
+          `<span style="font-family:var(--fm);font-size:12px">${NUM(kO.huevosV)}</span>`)}
+        ${resRow('Margen promedio/huevo', fmtH(kP.margenH), fmtH(kB.margenH), fmtH(kO.margenH), false)}
+      </tbody>
+    </table>
+    ${specHtml}`;
+}
+
+function recalcSensib() {
+  const lote = getLote(loteId);
+  if (lote) renderSensibilidad(lote);
 }
 
 /* ════════════════════════════════════════════════════════════
