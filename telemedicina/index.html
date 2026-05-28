@@ -187,6 +187,37 @@
     .modal-box p  { font-size: 10pt; color: #555; margin-bottom: 20px; }
     .btn-modal { background: #2e7d32; color: #fff; border: none; border-radius: 6px; padding: 10px 28px; font-size: 11pt; font-weight: 700; cursor: pointer; }
 
+    /* ── NOTA INICIAL ── */
+    .form-intro {
+      background: #e8f5e9; border-left: 4px solid #2e7d32;
+      padding: 10px 14px; border-radius: 0 5px 5px 0;
+      margin-bottom: 20px; font-size: 9.5pt; color: #1b5e20; line-height: 1.6;
+    }
+    .form-intro strong { font-weight: 700; }
+
+    /* ── NOTA LOTE ── */
+    .lote-note {
+      background: #fff8e1; border-left: 4px solid #ffa000;
+      padding: 8px 12px; border-radius: 0 4px 4px 0;
+      margin-bottom: 12px; font-size: 8.5pt; color: #5d4037; line-height: 1.5;
+    }
+
+    /* ── UPLOAD FOTOS ── */
+    .upload-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .upload-item { border: 1.5px dashed #81c784; border-radius: 6px; padding: 12px; background: #fafafa; }
+    .upload-label { display: block; font-size: 9pt; font-weight: 700; color: #2e7d32; margin-bottom: 6px; text-transform: uppercase; letter-spacing: .3px; }
+    .upload-input {
+      width: 100%; font-size: 9.5pt; font-family: inherit;
+      padding: 5px 0; color: #333; cursor: pointer;
+    }
+    .upload-input::file-selector-button {
+      background: #2e7d32; color: #fff; border: none; border-radius: 4px;
+      padding: 4px 12px; font-size: 9pt; cursor: pointer; margin-right: 8px;
+    }
+    .upload-preview { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .upload-preview img { width: 56px; height: 56px; object-fit: cover; border-radius: 4px; border: 1px solid #ccc; }
+    .upload-count { font-size: 8pt; color: #2e7d32; font-weight: 600; margin-top: 4px; }
+
     /* ── FOOTER ── */
     .footer { text-align: center; font-size: 8pt; color: #999; margin-top: 24px; padding-top: 12px; border-top: 1px solid #eee; }
     .footer a { color: #2e7d32; text-decoration: none; }
@@ -234,6 +265,11 @@
   </div>
 
   <form id="planilla-form" onsubmit="enviarFormulario(event)">
+
+    <div class="form-intro">
+      <strong>Nota:</strong> Complete solo la información que tenga disponible en este momento.
+      Los campos vacíos serán consultados durante o después de la sesión de telemedicina.
+    </div>
 
     <!-- 1. IDENTIFICACIÓN -->
     <div class="section">
@@ -597,8 +633,8 @@
             <input type="text" name="comederos_cantidad" placeholder="ej. 20 uds / 40 m">
           </div>
           <div class="field">
-            <label>cm comedero / ave</label>
-            <input type="text" name="cm_comedero_ave" placeholder="">
+            <label>Diámetro comedero circular (cm)</label>
+            <input type="number" name="diametro_comedero" min="0" step="0.5" placeholder="ej. 38">
           </div>
           <div class="field">
             <label>Estado comederos</label>
@@ -627,10 +663,6 @@
           <div class="field">
             <label>N° bebederos / puntos de agua</label>
             <input type="number" name="n_bebederos" min="0" placeholder="">
-          </div>
-          <div class="field">
-            <label>Aves por bebedero / niple</label>
-            <input type="text" name="aves_por_bebedero" placeholder="">
           </div>
           <div class="field">
             <label>Fuente de agua</label>
@@ -702,8 +734,22 @@
           Ingrese los valores reales del lote para identificar desviaciones.
         </div>
 
+        <div class="lote-note">
+          Si tiene aves de la misma edad alojadas en distintos pabellones o en sistemas diferentes
+          (ej. jaulas y piso), regístrelas como <strong>lotes separados</strong> y envíe una planilla por cada uno.
+        </div>
+
         <div class="subsection">Identificación del lote</div>
         <div class="grid g4">
+          <div class="field">
+            <label>N° de lotes en el plantel</label>
+            <input type="number" name="n_lotes" min="1" placeholder="ej. 2">
+          </div>
+          <div class="field">
+            <label>N° de este lote</label>
+            <input type="number" name="num_lote" min="1" placeholder="ej. 1">
+          </div>
+          <div class="field span2"><!-- spacer --></div>
           <div class="field">
             <label>Línea genética</label>
             <select name="linea_genetica">
@@ -941,34 +987,39 @@
 
     <!-- 9. FOTOS -->
     <div class="section">
-      <div class="section-title"><span class="num">9</span> Fotos solicitadas — lista de verificación</div>
+      <div class="section-title"><span class="num">9</span> Fotos</div>
       <div class="section-body">
-        <p style="font-size:9pt;color:#555;margin-bottom:12px;">
-          Marque las fotos que ya tiene listas para enviar. <strong>Buena iluminación, sin contraluz.</strong>
-          Envíe por WhatsApp o correo antes de la sesión.
+        <p style="font-size:9pt;color:#555;margin-bottom:14px;">
+          Adjunte las fotos directamente aquí. Se guardarán en Google Drive junto con sus datos.
+          <strong>Buena iluminación, sin contraluz.</strong>
         </p>
-        <div class="photo-grid">
-          <div class="photo-item"><input type="checkbox" name="foto_exterior" id="f1"><label for="f1">Vista exterior del pabellón (frente y lado)<span>Orientación, ventanas, cortinas</span></label></div>
-          <div class="photo-item"><input type="checkbox" name="foto_interior" id="f2"><label for="f2">Vista interior general (largo completo)<span>Pasillo central, de punta a punta</span></label></div>
-          <div class="photo-item"><input type="checkbox" name="foto_jaulas" id="f3"><label for="f3">Sistema de jaulas (frontal, mostrando pisos)<span>Comedero y bebederos visibles</span></label></div>
-          <div class="photo-item"><input type="checkbox" name="foto_cama" id="f4"><label for="f4">Cama / piso (estado general)<span>Color, humedad, textura</span></label></div>
-          <div class="photo-item"><input type="checkbox" name="foto_comederos" id="f5"><label for="f5">Comederos (llenos y vacíos)<span>Nivel de alimento, estado de la tolva</span></label></div>
-          <div class="photo-item"><input type="checkbox" name="foto_bebederos" id="f6"><label for="f6">Bebederos / niples (detalle)<span>Flujo, fugas, estado de la línea</span></label></div>
-          <div class="photo-item"><input type="checkbox" name="foto_aves_sanas" id="f7"><label for="f7">Aves representativas del lote (3–5 fotos)<span>Estado corporal, plumaje, cresta, cloaca</span></label></div>
-          <div class="photo-item"><input type="checkbox" name="foto_aves_enfermas" id="f8"><label for="f8">Aves con signos clínicos evidentes<span>Si hay aves enfermas o con lesiones</span></label></div>
-          <div class="photo-item"><input type="checkbox" name="foto_huevos" id="f9"><label for="f9">Huevos (selección representativa)<span>Calidad de cáscara, forma, color</span></label></div>
-          <div class="photo-item"><input type="checkbox" name="foto_fecas" id="f10"><label for="f10">Fecas en cama o debajo de jaula<span>Color, consistencia, sangre, parásitos</span></label></div>
-          <div class="photo-item"><input type="checkbox" name="foto_nidales" id="f11"><label for="f11">Nidales (si aplica)<span>Estado, material, huevos en piso vs. nidal</span></label></div>
-          <div class="photo-item"><input type="checkbox" name="foto_alimento" id="f12"><label for="f12">Etiqueta del alimento (bolsa o saco)<span>Marca, composición, fecha de fabricación</span></label></div>
-          <div class="photo-item"><input type="checkbox" name="foto_registro" id="f13"><label for="f13">Registro productivo<span>Última semana de postura y mortalidad</span></label></div>
-          <div class="photo-item"><input type="checkbox" name="foto_ventilacion" id="f14"><label for="f14">Sistema de ventilación<span>Extractores, ventanas, cortinas</span></label></div>
-          <div class="photo-item"><input type="checkbox" name="foto_iluminacion" id="f15"><label for="f15">Iluminación interior<span>Distribución y tipo de focos</span></label></div>
-          <div class="photo-item"><input type="checkbox" name="foto_mortalidades" id="f16"><label for="f16">Mortalidades recientes (si hay)<span>Canal entera + órganos si hizo necropsia</span></label></div>
+
+        <div class="upload-grid">
+          <div class="upload-item">
+            <label class="upload-label" for="foto_cama">Condición de la cama / piso</label>
+            <input type="file" id="foto_cama" accept="image/*" multiple class="upload-input" onchange="previsualizarFotos(this, 'prev_cama')">
+            <div class="upload-preview" id="prev_cama"></div>
+          </div>
+          <div class="upload-item">
+            <label class="upload-label" for="foto_nidos">Nidales</label>
+            <input type="file" id="foto_nidos" accept="image/*" multiple class="upload-input" onchange="previsualizarFotos(this, 'prev_nidos')">
+            <div class="upload-preview" id="prev_nidos"></div>
+          </div>
+          <div class="upload-item">
+            <label class="upload-label" for="foto_ventilacion_entr">Ventilación y entrada del pabellón</label>
+            <input type="file" id="foto_ventilacion_entr" accept="image/*" multiple class="upload-input" onchange="previsualizarFotos(this, 'prev_ventilacion')">
+            <div class="upload-preview" id="prev_ventilacion"></div>
+          </div>
+          <div class="upload-item" style="border-color:#ef9a9a; background:#fff5f5;">
+            <label class="upload-label" style="color:#c62828;" for="foto_enfermedad">Sospecha de enfermedad (si corresponde)</label>
+            <input type="file" id="foto_enfermedad" accept="image/*" multiple class="upload-input" onchange="previsualizarFotos(this, 'prev_enfermedad')">
+            <div class="upload-preview" id="prev_enfermedad"></div>
+          </div>
         </div>
 
         <div class="field" style="margin-top:14px;">
-          <label>Otras fotos / videos enviados</label>
-          <textarea name="otras_fotos" placeholder="ej. video de comportamiento del lote en la mañana, foto del termómetro…" style="min-height:50px;"></textarea>
+          <label>Observaciones sobre las fotos</label>
+          <textarea name="obs_fotos" placeholder="Describa brevemente lo que muestran las fotos si lo considera necesario…" style="min-height:50px;"></textarea>
         </div>
       </div>
     </div>
@@ -1110,45 +1161,101 @@
     document.getElementById('m2_por_ave').value  = m2_a > 0 ? m2_a.toFixed(2) : '';
   }
 
+  // ── PREVISUALIZACIÓN DE FOTOS ────────────────────────────
+  function previsualizarFotos(input, previewId) {
+    const container = document.getElementById(previewId);
+    container.innerHTML = '';
+    Array.from(input.files).forEach(file => {
+      const img = document.createElement('img');
+      img.src = URL.createObjectURL(file);
+      img.onload = () => URL.revokeObjectURL(img.src);
+      container.appendChild(img);
+    });
+    const count = input.files.length;
+    if (count > 0) {
+      const span = document.createElement('div');
+      span.className = 'upload-count';
+      span.textContent = count + (count === 1 ? ' foto seleccionada' : ' fotos seleccionadas');
+      container.appendChild(span);
+    }
+  }
+
+  // ── COMPRESIÓN DE IMAGEN ──────────────────────────────────
+  function comprimirImagen(file, maxWidth = 1200, quality = 0.72) {
+    return new Promise(resolve => {
+      const img = new Image();
+      const url = URL.createObjectURL(file);
+      img.onload = () => {
+        URL.revokeObjectURL(url);
+        let { width, height } = img;
+        if (width > maxWidth) { height = Math.round(height * maxWidth / width); width = maxWidth; }
+        const canvas = document.createElement('canvas');
+        canvas.width = width; canvas.height = height;
+        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+        resolve({ nombre: file.name, base64: canvas.toDataURL('image/jpeg', quality).split(',')[1] });
+      };
+      img.onerror = () => resolve(null);
+      img.src = url;
+    });
+  }
+
   // ── RECOLECCIÓN DE DATOS ──────────────────────────────────
   function recolectarDatos() {
     const form = document.getElementById('planilla-form');
     const data = {};
-
     form.querySelectorAll('[name]').forEach(el => {
-      if (el.type === 'checkbox') {
-        data[el.name] = el.checked ? 'Sí' : 'No';
-      } else {
-        data[el.name] = el.value || '';
-      }
+      data[el.name] = el.value || '';
     });
-
     return data;
+  }
+
+  async function recolectarImagenes() {
+    const inputs = [
+      { id: 'foto_cama',           etiqueta: 'cama' },
+      { id: 'foto_nidos',          etiqueta: 'nidos' },
+      { id: 'foto_ventilacion_entr', etiqueta: 'ventilacion_entrada' },
+      { id: 'foto_enfermedad',     etiqueta: 'enfermedad' },
+    ];
+    const imagenes = [];
+    for (const { id, etiqueta } of inputs) {
+      const files = document.getElementById(id)?.files || [];
+      for (let i = 0; i < files.length; i++) {
+        const compressed = await comprimirImagen(files[i]);
+        if (compressed) {
+          compressed.etiqueta = etiqueta;
+          imagenes.push(compressed);
+        }
+      }
+    }
+    return imagenes;
   }
 
   // ── ENVÍO ─────────────────────────────────────────────────
   async function enviarFormulario(e) {
     e.preventDefault();
 
-    if (APPS_SCRIPT_URL === 'REEMPLAZAR_CON_TU_URL_DE_APPS_SCRIPT') {
-      mostrarModal('⚠️', 'Apps Script no configurado', 'Edita el archivo HTML y reemplaza APPS_SCRIPT_URL con la URL de tu Web App. Consulta el archivo apps-script.gs para las instrucciones.');
-      return;
-    }
-
     const btn = document.getElementById('btn-submit');
     btn.disabled = true;
-    btn.textContent = 'Enviando…';
+
+    const totalFotos = ['foto_cama','foto_nidos','foto_ventilacion_entr','foto_enfermedad']
+      .reduce((sum, id) => sum + (document.getElementById(id)?.files?.length || 0), 0);
 
     try {
+      btn.textContent = totalFotos > 0 ? 'Comprimiendo fotos…' : 'Enviando…';
+      const datos = recolectarDatos();
+      const imagenes = await recolectarImagenes();
+      const payload = { ...datos, imagenes };
+
+      btn.textContent = 'Enviando…';
       await fetch(APPS_SCRIPT_URL, {
         method: 'POST',
         mode: 'no-cors',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(recolectarDatos())
+        body: JSON.stringify(payload)
       });
-      mostrarModal('✅', 'Planilla enviada', 'Los datos fueron guardados en la base de datos. Muchas gracias.');
+      mostrarModal('✅', 'Planilla enviada', 'Los datos' + (imagenes.length > 0 ? ' y ' + imagenes.length + ' foto(s)' : '') + ' fueron guardados correctamente. Muchas gracias.');
     } catch (err) {
-      mostrarModal('❌', 'Error de conexión', 'No fue posible enviar los datos. Revise su conexión e intente nuevamente. (' + err.message + ')');
+      mostrarModal('❌', 'Error de conexión', 'No fue posible enviar. Revise su conexión e intente nuevamente. (' + err.message + ')');
     } finally {
       btn.disabled = false;
       btn.textContent = 'Enviar planilla';

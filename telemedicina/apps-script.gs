@@ -80,11 +80,10 @@ const COLUMNAS = [
   // Equipamiento
   ['tipo_comedero',          'Tipo comedero'],
   ['comederos_cantidad',     'N° comederos / m lineales'],
-  ['cm_comedero_ave',        'cm comedero/ave'],
+  ['diametro_comedero',      'Diámetro comedero circular (cm)'],
   ['estado_comederos',       'Estado comederos'],
   ['tipo_bebedero',          'Tipo bebedero'],
   ['n_bebederos',            'N° bebederos'],
-  ['aves_por_bebedero',      'Aves por bebedero'],
   ['fuente_agua',            'Fuente de agua'],
   ['tratamiento_agua',       'Tratamiento agua'],
   ['analisis_agua',          'Análisis de agua'],
@@ -93,6 +92,8 @@ const COLUMNAS = [
   ['aves_por_nidal',         'Aves por nidal'],
   ['material_nidal',         'Material nidal'],
   // Lote
+  ['n_lotes',                'N° lotes en el plantel'],
+  ['num_lote',               'N° de este lote'],
   ['linea_genetica',         'Línea genética'],
   ['fecha_nacimiento',       'Fecha nacimiento / llegada'],
   ['semana_edad',            'Semana de edad'],
@@ -133,27 +134,36 @@ const COLUMNAS = [
   ['descripcion_problema',   'Descripción del problema'],
   ['tratamientos_aplicados', 'Tratamientos aplicados'],
   // Fotos
-  ['foto_exterior',          'Foto exterior pabellón'],
-  ['foto_interior',          'Foto interior general'],
-  ['foto_jaulas',            'Foto jaulas'],
-  ['foto_cama',              'Foto cama/piso'],
-  ['foto_comederos',         'Foto comederos'],
-  ['foto_bebederos',         'Foto bebederos'],
-  ['foto_aves_sanas',        'Foto aves representativas'],
-  ['foto_aves_enfermas',     'Foto aves con signos clínicos'],
-  ['foto_huevos',            'Foto huevos'],
-  ['foto_fecas',             'Foto fecas'],
-  ['foto_nidales',           'Foto nidales'],
-  ['foto_alimento',          'Foto etiqueta alimento'],
-  ['foto_registro',          'Foto registro productivo'],
-  ['foto_ventilacion',       'Foto ventilación'],
-  ['foto_iluminacion',       'Foto iluminación'],
-  ['foto_mortalidades',      'Foto mortalidades'],
-  ['otras_fotos',            'Otras fotos / videos'],
+  ['obs_fotos',              'Observaciones fotos'],
+  ['fotos_drive_url',        'Fotos en Drive (URL carpeta)'],
   ['obs_adicionales',        'Observaciones adicionales'],
 ];
 
 // ─────────────────────────────────────────────────────────────────────
+// Guarda las imágenes en Drive y devuelve la URL de la carpeta
+function guardarImagenesEnDrive(imagenes, productor, fecha) {
+  const parentName = 'AviVet Telemedicina Fotos';
+  let parentFolder;
+  const search = DriveApp.getFoldersByName(parentName);
+  parentFolder = search.hasNext() ? search.next() : DriveApp.createFolder(parentName);
+
+  const safe = (productor || 'sin_nombre').replace(/[^a-zA-Z0-9áéíóúñÁÉÍÓÚÑ _-]/g, '').trim().substring(0, 40);
+  const folderName = (fecha || Utilities.formatDate(new Date(), 'America/Santiago', 'yyyy-MM-dd')) + '_' + safe;
+  const folder = parentFolder.createFolder(folderName);
+
+  imagenes.forEach((img, i) => {
+    try {
+      const decoded = Utilities.base64Decode(img.base64);
+      const nombre  = (img.etiqueta || 'foto') + '_' + (i + 1) + '.jpg';
+      const blob    = Utilities.newBlob(decoded, 'image/jpeg', nombre);
+      folder.createFile(blob);
+    } catch (_) {}
+  });
+
+  folder.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+  return folder.getUrl();
+}
+
 function doPost(e) {
   try {
     const data = JSON.parse(e.postData.contents);
@@ -171,6 +181,12 @@ function doPost(e) {
            .setFontColor('#ffffff');
       sheet.setFrozenRows(1);
     }
+
+    // Guardar fotos en Drive si vienen adjuntas
+    if (Array.isArray(data.imagenes) && data.imagenes.length > 0) {
+      data.fotos_drive_url = guardarImagenesEnDrive(data.imagenes, data.productor, data.fecha_consulta);
+    }
+    delete data.imagenes;
 
     // Construir fila en el orden definido en COLUMNAS
     const keys = COLUMNAS.map(c => c[0]);
