@@ -831,7 +831,9 @@ function proyectar(lote) {
     const huevosVendibles = Math.round(huevos * (1 - pctNV / 100));
     const bandejas       = huevos > 0 ? Math.ceil(huevosVendibles / 30)  : 0;
     const cajas          = huevos > 0 ? Math.ceil(huevosVendibles / 180) : 0;
-    const costoEnvase    = bandejas * (cBandeja + cEtiqueta + cOtrosEnvase) + cajas * cCaja;
+    const envBandeja     = bandejas * (cBandeja + cEtiqueta + cOtrosEnvase);
+    const envCaja        = cajas * cCaja;
+    const costoEnvase    = envBandeja + envCaja;
     const ingreso        = huevosVendibles * precio;
     const gastoDia       = gastoMes / 30;
     const costoDespacho  = cDespachoMes / 30;
@@ -847,6 +849,10 @@ function proyectar(lote) {
       dieta:           cons.dieta,
       costoAlim:       Math.round(costoAlim),
       costoEnvase:     Math.round(costoEnvase),
+      envBandeja:      Math.round(envBandeja),
+      envCaja:         Math.round(envCaja),
+      bandejas,
+      cajas,
       gastoDia:        Math.round(gastoDia),
       costoDespacho:   Math.round(costoDespacho),
       gastoEsp:        Math.round(gastoEsp),
@@ -1082,7 +1088,17 @@ function renderDashboard(lote) {
   const totalHuevos    = proy.reduce((a, d) => a + d.huevos, 0);
   const totalVendibles = proy.reduce((a, d) => a + d.huevosVendibles, 0);
   const porcPico       = Math.max(...proy.map(d => d.pos));
-  const semPico        = proy.find(d => d.pos === porcPico)?.sem || '—';
+  const semPico        = proy.find(d => d.pos === porcPico)?.sem || 1;
+
+  // Datos de envase para semana pico (preview de cálculo en config)
+  const diasPico      = proy.filter(d => d.sem === semPico);
+  const _bdPico       = diasPico.reduce((a,d)=>a+d.bandejas,0);
+  const _cajPico      = diasPico.reduce((a,d)=>a+d.cajas,0);
+  const _hvPico       = diasPico.reduce((a,d)=>a+d.huevosVendibles,0);
+  const _eBPico       = diasPico.reduce((a,d)=>a+(d.envBandeja||0),0);
+  const _eCPico       = diasPico.reduce((a,d)=>a+(d.envCaja||0),0);
+  const _cXBdj        = (+(lote.costoBandeja??0)) + (+(lote.costoEtiqueta??0)) + (+(lote.costoOtrosEnvase??0));
+  const _envXh        = _hvPico > 0 ? ((_eBPico+_eCPico)/_hvPico).toFixed(2) : '0';
   const totalIng       = proy.reduce((a, d) => a + d.ingreso, 0);
   const pctNVLote      = +(lote.pctNoVendible ?? 0);
   const totalEBITDA    = proy.reduce((a, d) => a + d.ingreso - d.costoAlim - d.gastoDia - (d.costoDespacho||0) - d.costoEnvase, 0);
@@ -1243,6 +1259,35 @@ function renderDashboard(lote) {
           <hr class="cfg-sep">
           <div class="cfg-sec">Despacho</div>
           <div class="cfg-field"><span>Costo despacho / mes ($)</span><input type="number" id="cfg-despacho" value="${lote.costoDespachoMes??300000}" min="0" oninput="fmtNum(this)"><small class="fmt-hint">${(+(lote.costoDespachoMes??300000)).toLocaleString('es-CL')}</small></div>
+          <div style="grid-column:1/-1;background:#f8f6f1;border:1px solid #e0ddd5;border-radius:3px;padding:14px 16px;margin:2px 0">
+            <div style="font-size:11px;font-weight:600;color:var(--prim);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">
+              Cálculo de empaque · semana pico (sem ${semPico} · ${porcPico.toFixed(1)}% postura)
+            </div>
+            <table style="width:100%;font-size:11.5px;border-collapse:collapse;font-family:var(--fm)">
+              <tr>
+                <td style="color:var(--tenue);padding:3px 0">Huevos vendibles / semana</td>
+                <td style="text-align:right;font-weight:600">${NUM(_hvPico)}</td>
+                <td style="color:var(--tenue);padding-left:14px;font-size:10px">${porcPico.toFixed(1)}% postura · ${100-(+(lote.pctNoVendible??0))}% vendible</td>
+              </tr>
+              <tr>
+                <td style="color:var(--tenue);padding:3px 0">Bandejas · ⌈${NUM(_hvPico)} ÷ 30⌉</td>
+                <td style="text-align:right;font-weight:600">${NUM(_bdPico)}</td>
+                <td style="color:var(--tenue);padding-left:14px;font-size:10px">× $${_cXBdj}/bdj = <strong style="color:#7b4f2e">${MN(_eBPico)}</strong></td>
+              </tr>
+              <tr>
+                <td style="color:var(--tenue);padding:3px 0">Cajas · ⌈${NUM(_hvPico)} ÷ 180⌉</td>
+                <td style="text-align:right;font-weight:600">${NUM(_cajPico)}</td>
+                <td style="color:var(--tenue);padding-left:14px;font-size:10px">× $${+(lote.costoCaja??0)}/caja = <strong style="color:#a0522d">${MN(_eCPico)}</strong></td>
+              </tr>
+              <tr style="border-top:1px solid #e0ddd5">
+                <td style="padding:4px 0;font-weight:600;color:var(--texto)">Total envase / semana pico</td>
+                <td style="text-align:right;font-weight:700;color:var(--prim)" colspan="2">${MN(_eBPico+_eCPico)} → <span style="color:var(--suave)">$${_envXh}/huevo</span></td>
+              </tr>
+            </table>
+            <div style="font-size:10px;color:var(--tenue);margin-top:8px;line-height:1.6">
+              Insumo bandeja = $${+(lote.costoBandeja??0)} pulpa + $${+(lote.costoEtiqueta??0)} etiqueta + $${+(lote.costoOtrosEnvase??0)} otros = <strong>$${_cXBdj}/bandeja</strong>
+            </div>
+          </div>
           <hr class="cfg-sep">
           <div class="cfg-sec">Costo alimento por periodo ($/kg)</div>
           ${[1,2,3,4,5,6,7].map(d=>`
@@ -1572,12 +1617,16 @@ function semData(lote) {
     const s = d.sem;
     const avesIni = i === 0 ? nIni : proy[i-1].aves;
     if (!m[s]) m[s] = { s, fecha: d.fecha, avesIni, aves: 0,
-      ingP: 0, costoP: 0, gastoEspP: 0, envaseP: 0, despachoP: 0, acumP: 0, postP: 0,
+      ingP: 0, costoP: 0, gastoEspP: 0, envaseP: 0, envBandeja: 0, envCaja: 0, bandejas: 0, cajas: 0, despachoP: 0, acumP: 0, postP: 0,
       huevos: 0, huevosVendibles: 0, consumo: 0, resP: 0 };
     m[s].ingP            += d.ingreso;
     m[s].costoP          += d.costoAlim + d.gastoDia + (d.costoDespacho || 0);
     m[s].gastoEspP       += d.gastoEsp;
     m[s].envaseP         += d.costoEnvase;
+    m[s].envBandeja      += d.envBandeja || 0;
+    m[s].envCaja         += d.envCaja    || 0;
+    m[s].bandejas        += d.bandejas   || 0;
+    m[s].cajas           += d.cajas      || 0;
     m[s].despachoP       += d.costoDespacho || 0;
     m[s].acumP            = d.acum;
     m[s].postP            = d.pos;
@@ -1774,28 +1823,50 @@ function renderTablaProyeccion(lote) {
     const avgR   = totVend > 0 ? totResto  / totVend : 0;
     const avgM   = avgP - avgA - avgR;
 
+    // Totales envase separados
+    const totEnvB  = proy.reduce((a,d)=>a+(d.envBandeja||0),0);
+    const totEnvC  = proy.reduce((a,d)=>a+(d.envCaja||0),0);
+    const totDesp  = proy.reduce((a,d)=>a+(d.costoDespacho||0),0);
+    const totFijos = proy.reduce((a,d)=>a+d.gastoDia,0);
+    const avgEB    = totVend > 0 ? totEnvB  / totVend : 0;
+    const avgEC    = totVend > 0 ? totEnvC  / totVend : 0;
+    const avgD     = totVend > 0 ? totDesp  / totVend : 0;
+    const avgF     = totVend > 0 ? totFijos / totVend : 0;
+    const avgM     = avgP - avgA - avgEB - avgEC - avgD - avgF;
+
     const cols = `<th style="text-align:left;padding-left:10px">Sem</th>
-      <th>Huevos vend.</th>
-      <th title="Precio promedio de venta por huevo">Precio/huevo</th>
-      <th title="Costo alimento por huevo vendible" style="color:#b71c1c">Alimento/h</th>
-      <th title="Envase + despacho + gastos fijos por huevo">Resto costos/h</th>
-      <th title="Precio − alimento − resto" style="color:#1b4332">Margen/huevo</th>`;
+      <th>Hv. vend.</th>
+      <th title="Precio de venta por huevo">$/h venta</th>
+      <th title="Costo alimento por huevo" style="color:#b71c1c">Alimento/h</th>
+      <th title="Bandeja 30 uds. (pulpa+etiqueta+otros) / huevo">Bandeja/h</th>
+      <th title="Caja cartón 180 uds. / huevo">Caja/h</th>
+      <th title="Despacho mensual / huevo">Despacho/h</th>
+      <th title="Gastos fijos / huevo">Fijos/h</th>
+      <th title="Precio − todos los costos" style="color:#1b4332">Margen/h</th>`;
 
     const filas = sems.map(s => {
       const vend = s.huevosVendibles || 0;
       if (vend === 0) return '';
-      const diasSem = proy.filter(d => d.sem === s.s);
       const pH  = s.ingP / vend;
-      const aH  = diasSem.reduce((a,d)=>a+d.costoAlim,0) / vend;
-      const rH  = diasSem.reduce((a,d)=>a+d.costoEnvase+(d.costoDespacho||0)+d.gastoDia,0) / vend;
-      const mH  = pH - aH - rH;
+      const aH  = s.envBandeja !== undefined
+        ? proy.filter(d=>d.sem===s.s).reduce((a,d)=>a+d.costoAlim,0) / vend
+        : 0;
+      const ebH = (s.envBandeja || 0) / vend;
+      const ecH = (s.envCaja    || 0) / vend;
+      const dH  = (s.despachoP  || 0) / vend;
+      const fH  = proy.filter(d=>d.sem===s.s).reduce((a,d)=>a+d.gastoDia,0) / vend;
+      const alimH = proy.filter(d=>d.sem===s.s).reduce((a,d)=>a+d.costoAlim,0) / vend;
+      const mH  = pH - alimH - ebH - ecH - dH - fH;
       const mc  = mH >= 0 ? 'color:var(--ok)' : 'color:var(--mal)';
       return `<tr>
         <td style="text-align:left;padding-left:10px;font-weight:600">${s.s}</td>
         <td style="font-family:var(--fm);font-size:11px">${NUM(vend)}</td>
         <td>${F1(pH)}</td>
-        <td style="color:var(--mal)">${F1(aH)}</td>
-        <td>${F1(rH)}</td>
+        <td style="color:var(--mal)">${F1(alimH)}</td>
+        <td style="color:#7b4f2e">${F1(ebH)}</td>
+        <td style="color:#a0522d">${F1(ecH)}</td>
+        <td>${F1(dH)}</td>
+        <td>${F1(fH)}</td>
         <td style="${mc};font-weight:600;font-family:var(--fm);font-size:11px">${mH>=0?'+':''}$${mH.toFixed(1)}</td>
       </tr>`;
     }).join('');
@@ -1805,7 +1876,10 @@ function renderTablaProyeccion(lote) {
       <td style="font-family:var(--fm);font-size:11px">${NUM(totVend)}</td>
       <td>${F1(avgP)}</td>
       <td style="color:var(--mal)">${F1(avgA)}</td>
-      <td>${F1(avgR)}</td>
+      <td style="color:#7b4f2e">${F1(avgEB)}</td>
+      <td style="color:#a0522d">${F1(avgEC)}</td>
+      <td>${F1(avgD)}</td>
+      <td>${F1(avgF)}</td>
       <td style="${avgM>=0?'color:var(--ok)':'color:var(--mal)'};font-weight:700;font-family:var(--fm);font-size:12px">${avgM>=0?'+':''}$${avgM.toFixed(1)}</td>
     </tr>`;
 
