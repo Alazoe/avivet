@@ -2131,18 +2131,15 @@ function renderTablaProyeccion(lote) {
     html = `<div class="tabla-wrap"><table><thead><tr>${cols}</tr></thead><tbody>${filas}</tbody></table></div>`;
 
   } else if (tablaVista === 'huevo') {
-    // Desagregación: precio venta / costo alimento / resto de costos / margen
+    // Desagregación por componente: precio / alimento / bandeja / caja / despacho / fijos / margen
     const sems = semData(lote);
     const F1 = v => `<span style="font-family:var(--fm);font-size:11px">$${v.toFixed(1)}</span>`;
 
     const totVend  = proy.reduce((a,d)=>a+d.huevosVendibles,0);
     const totAlim  = proy.reduce((a,d)=>a+d.costoAlim,0);
-    const totResto = proy.reduce((a,d)=>a+d.costoEnvase+(d.costoDespacho||0)+d.gastoDia,0);
     const totIng   = proy.reduce((a,d)=>a+d.ingreso,0);
-    const avgP   = totVend > 0 ? totIng    / totVend : 0;
-    const avgA   = totVend > 0 ? totAlim   / totVend : 0;
-    const avgR   = totVend > 0 ? totResto  / totVend : 0;
-    const avgM   = avgP - avgA - avgR;
+    const avgP   = totVend > 0 ? totIng  / totVend : 0;
+    const avgA   = totVend > 0 ? totAlim / totVend : 0;
 
     // Totales envase separados
     const totEnvB  = proy.reduce((a,d)=>a+(d.envBandeja||0),0);
