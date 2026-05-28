@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AviVet – Planilla Telemedicina Avícola</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      font-size: 11pt;
+      color: #222;
+      background: #f5f5f5;
+    }
+
+    .page {
+      max-width: 820px;
+      margin: 20px auto;
+      background: #fff;
+      padding: 30px 36px;
+      border-radius: 8px;
+      box-shadow: 0 2px 12px rgba(0,0,0,.10);
+    }
+
+    /* ── HEADER ── */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 3px solid #2e7d32;
+      padding-bottom: 14px;
+      margin-bottom: 20px;
+    }
+    .header-brand { display: flex; align-items: center; gap: 12px; }
+    .logo-circle {
+      width: 52px; height: 52px; border-radius: 50%;
+      background: #2e7d32;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 22px; font-weight: 900; letter-spacing: -1px;
+    }
+    .brand-text h1 { font-size: 20px; color: #2e7d32; font-weight: 800; }
+    .brand-text p  { font-size: 9.5pt; color: #555; margin-top: 1px; }
+    .header-meta { text-align: right; font-size: 9pt; color: #666; line-height: 1.8; }
+    .header-meta strong { color: #2e7d32; }
+
+    /* ── SECCIONES ── */
+    .section {
+      margin-bottom: 22px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .section-title {
+      background: #2e7d32;
+      color: #fff;
+      font-size: 10.5pt;
+      font-weight: 700;
+      padding: 6px 14px;
+      letter-spacing: .3px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-title .num {
+      background: rgba(255,255,255,.25);
+      border-radius: 50%;
+      width: 22px; height: 22px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10pt; font-weight: 900;
+    }
+    .section-body { padding: 14px 16px; }
+
+    /* ── GRID ── */
+    .grid { display: grid; gap: 10px 18px; }
+    .g2 { grid-template-columns: 1fr 1fr; }
+    .g3 { grid-template-columns: 1fr 1fr 1fr; }
+    .g4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+    .span2 { grid-column: span 2; }
+    .span3 { grid-column: span 3; }
+    .span4 { grid-column: span 4; }
+
+    .field label {
+      display: block;
+      font-size: 8.5pt;
+      font-weight: 600;
+      color: #444;
+      margin-bottom: 3px;
+      text-transform: uppercase;
+      letter-spacing: .3px;
+    }
+    .field input[type="text"],
+    .field input[type="number"],
+    .field input[type="date"],
+    .field select,
+    .field textarea {
+      width: 100%;
+      border: 1px solid #bbb;
+      border-radius: 4px;
+      padding: 5px 8px;
+      font-size: 10.5pt;
+      font-family: inherit;
+      background: #fafafa;
+      color: #111;
+      transition: border-color .15s;
+    }
+    .field input:focus, .field select:focus, .field textarea:focus {
+      border-color: #2e7d32; outline: none; background: #fff;
+    }
+    .field textarea { resize: vertical; min-height: 60px; }
+
+    /* ── CALCULADORA ── */
+    .calc-box {
+      background: #f1f8e9;
+      border: 1.5px solid #81c784;
+      border-radius: 6px;
+      padding: 12px 14px;
+      margin-top: 12px;
+    }
+    .calc-box h4 {
+      font-size: 9.5pt; color: #2e7d32; font-weight: 700;
+      margin-bottom: 10px; text-transform: uppercase; letter-spacing: .3px;
+    }
+    .result-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-top: 10px; }
+    .result-badge {
+      background: #2e7d32; color: #fff; border-radius: 5px;
+      padding: 6px 14px; font-size: 11.5pt; font-weight: 800;
+      min-width: 100px; text-align: center;
+    }
+    .result-badge small { display: block; font-size: 7.5pt; font-weight: 400; opacity: .85; }
+    .ref-note { font-size: 8.5pt; color: #444; line-height: 1.5; }
+    .ref-note span { font-weight: 700; color: #2e7d32; }
+
+    /* ── CHECKLIST FOTOS ── */
+    .photo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 18px; }
+    .photo-item { display: flex; align-items: flex-start; gap: 8px; padding: 5px 0; border-bottom: 1px dotted #e0e0e0; }
+    .photo-item input[type="checkbox"] { margin-top: 2px; accent-color: #2e7d32; width: 15px; height: 15px; flex-shrink: 0; }
+    .photo-item label { font-size: 9.5pt; cursor: pointer; line-height: 1.4; }
+    .photo-item label span { display: block; font-size: 8pt; color: #777; }
+
+    /* ── TABS ── */
+    .tabs { display: flex; gap: 0; margin-bottom: 14px; border-radius: 5px; overflow: hidden; border: 1.5px solid #2e7d32; }
+    .tab-btn { flex: 1; padding: 7px; text-align: center; font-size: 9.5pt; font-weight: 700; cursor: pointer; background: #fff; color: #2e7d32; border: none; transition: background .15s; }
+    .tab-btn.active { background: #2e7d32; color: #fff; }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ── NOTA CURVAS ── */
+    .curves-note {
+      background: #fff8e1; border-left: 4px solid #ffa000;
+      padding: 8px 12px; border-radius: 0 4px 4px 0;
+      margin-bottom: 12px; font-size: 8.5pt; color: #5d4037; line-height: 1.5;
+    }
+    .curves-note a { color: #2e7d32; font-weight: 700; }
+
+    .subsection { font-size: 9pt; font-weight: 700; color: #2e7d32; margin: 12px 0 6px; text-transform: uppercase; letter-spacing: .3px; border-bottom: 1px solid #c8e6c9; padding-bottom: 3px; }
+
+    /* ── SUBMIT ── */
+    .submit-area { text-align: center; margin-top: 28px; margin-bottom: 8px; }
+    .btn-submit {
+      background: #2e7d32; color: #fff;
+      border: none; border-radius: 8px;
+      padding: 14px 48px; font-size: 13pt; font-weight: 800;
+      cursor: pointer; letter-spacing: .3px;
+      transition: background .2s, transform .1s;
+      box-shadow: 0 3px 10px rgba(46,125,50,.25);
+    }
+    .btn-submit:hover { background: #1b5e20; transform: translateY(-1px); }
+    .btn-submit:active { transform: translateY(0); }
+    .btn-submit:disabled { background: #aaa; cursor: not-allowed; transform: none; }
+    .submit-note { font-size: 8.5pt; color: #777; margin-top: 8px; }
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,.45); z-index: 1000;
+      align-items: center; justify-content: center;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-box {
+      background: #fff; border-radius: 10px; padding: 32px 36px;
+      max-width: 400px; width: 90%; text-align: center;
+      box-shadow: 0 8px 30px rgba(0,0,0,.2);
+    }
+    .modal-icon { font-size: 42px; margin-bottom: 12px; }
+    .modal-box h2 { font-size: 15pt; margin-bottom: 8px; }
+    .modal-box p  { font-size: 10pt; color: #555; margin-bottom: 20px; }
+    .btn-modal { background: #2e7d32; color: #fff; border: none; border-radius: 6px; padding: 10px 28px; font-size: 11pt; font-weight: 700; cursor: pointer; }
+
+    /* ── FOOTER ── */
+    .footer { text-align: center; font-size: 8pt; color: #999; margin-top: 24px; padding-top: 12px; border-top: 1px solid #eee; }
+    .footer a { color: #2e7d32; text-decoration: none; }
+
+    /* ── PRINT ── */
+    @media print {
+      body { background: #fff; font-size: 10pt; }
+      .page { box-shadow: none; margin: 0; padding: 15px 20px; border-radius: 0; }
+      .tabs { display: none; }
+      .tab-panel { display: block !important; }
+      .tab-panel::before { content: attr(data-label); font-weight: 700; color: #2e7d32; display: block; margin-bottom: 6px; }
+      .no-print, .submit-area, .modal-overlay { display: none !important; }
+      .section { page-break-inside: avoid; }
+      .calc-box { background: #f5f5f5 !important; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- MODAL ÉXITO / ERROR -->
+<div class="modal-overlay" id="modal">
+  <div class="modal-box">
+    <div class="modal-icon" id="modal-icon">✅</div>
+    <h2 id="modal-title">Datos enviados</h2>
+    <p id="modal-msg">La información fue guardada correctamente en la base de datos.</p>
+    <button class="btn-modal" onclick="cerrarModal()">Aceptar</button>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-brand">
+      <div class="logo-circle">AV</div>
+      <div class="brand-text">
+        <h1>AviVet</h1>
+        <p>Medicina Aviar — Sur de Chile</p>
+      </div>
+    </div>
+    <div class="header-meta">
+      <strong>Planilla Telemedicina Avícola</strong><br>
+      MV Andrés Lazo E. · <a href="https://avivet.cl" style="color:#2e7d32;">avivet.cl</a>
+    </div>
+  </div>
+
+  <form id="planilla-form" onsubmit="enviarFormulario(event)">
+
+    <!-- 1. IDENTIFICACIÓN -->
+    <div class="section">
+      <div class="section-title"><span class="num">1</span> Identificación del productor</div>
+      <div class="section-body">
+        <div class="grid g2">
+          <div class="field">
+            <label>Fecha de consulta</label>
+            <input type="date" name="fecha_consulta" id="fecha_consulta">
+          </div>
+          <div class="field">
+            <label>Tipo de sesión</label>
+            <select name="tipo_sesion">
+              <option value="">—</option>
+              <option>Previa a la sesión</option>
+              <option>Posterior a la sesión</option>
+              <option>Consulta autónoma</option>
+            </select>
+          </div>
+          <div class="field span2">
+            <label>Nombre del productor / empresa</label>
+            <input type="text" name="productor" placeholder="">
+          </div>
+          <div class="field">
+            <label>Teléfono / WhatsApp</label>
+            <input type="text" name="telefono" placeholder="+56 9 ...">
+          </div>
+          <div class="field">
+            <label>Correo electrónico</label>
+            <input type="text" name="email" placeholder="">
+          </div>
+          <div class="field">
+            <label>Localidad / comuna</label>
+            <input type="text" name="localidad" placeholder="">
+          </div>
+          <div class="field">
+            <label>Región</label>
+            <select name="region">
+              <option value="">— seleccionar —</option>
+              <option>Los Lagos</option>
+              <option>Los Ríos</option>
+              <option>La Araucanía</option>
+              <option>Aysén</option>
+              <option>Magallanes</option>
+              <option>Otra</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. PABELLÓN -->
+    <div class="section">
+      <div class="section-title"><span class="num">2</span> Pabellón / galpón</div>
+      <div class="section-body">
+        <div class="subsection">Dimensiones generales</div>
+        <div class="grid g4">
+          <div class="field">
+            <label>N° de pabellones</label>
+            <input type="number" name="n_pabellones" min="1" placeholder="1">
+          </div>
+          <div class="field">
+            <label>Largo (m)</label>
+            <input type="number" name="pab_largo" id="pab-largo" min="1" step="0.1" placeholder="ej. 50">
+          </div>
+          <div class="field">
+            <label>Ancho (m)</label>
+            <input type="number" name="pab_ancho" id="pab-ancho" min="1" step="0.1" placeholder="ej. 10">
+          </div>
+          <div class="field">
+            <label>Altura cumbrera (m)</label>
+            <input type="number" name="pab_altura" min="1" step="0.1" placeholder="ej. 3.5">
+          </div>
+          <div class="field">
+            <label>Orientación</label>
+            <select name="orientacion">
+              <option value="">—</option>
+              <option>Norte-Sur</option>
+              <option>Este-Oeste</option>
+              <option>Otra</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Tipo de cubierta</label>
+            <select name="cubierta">
+              <option value="">—</option>
+              <option>Zinc/plancha metálica</option>
+              <option>Fibrocemento</option>
+              <option>Policarbonato</option>
+              <option>Teja</option>
+              <option>Otro</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Tipo de muro</label>
+            <select name="muro">
+              <option value="">—</option>
+              <option>Madera</option>
+              <option>Ladrillo/bloque</option>
+              <option>Malla + cortina</option>
+              <option>Mixto</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Piso</label>
+            <select name="piso_tipo">
+              <option value="">—</option>
+              <option>Tierra</option>
+              <option>Hormigón</option>
+              <option>Hormigón con cama</option>
+              <option>Slat</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="subsection" style="margin-top:14px;">Ventilación e iluminación</div>
+        <div class="grid g3">
+          <div class="field">
+            <label>Tipo de ventilación</label>
+            <select name="ventilacion">
+              <option value="">—</option>
+              <option>Natural (ventanas/celosías)</option>
+              <option>Forzada (extractores)</option>
+              <option>Túnel</option>
+              <option>Mixta</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>N° extractores / ventiladores</label>
+            <input type="number" name="n_extractores" min="0" placeholder="0">
+          </div>
+          <div class="field">
+            <label>Tipo de iluminación</label>
+            <select name="tipo_iluminacion">
+              <option value="">—</option>
+              <option>Incandescente</option>
+              <option>Fluorescente</option>
+              <option>LED</option>
+              <option>Mixta / natural</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>N° focos / bombillas</label>
+            <input type="number" name="n_focos" min="0" placeholder="">
+          </div>
+          <div class="field">
+            <label>Horas luz artificial (h/día)</label>
+            <input type="number" name="horas_luz" min="0" max="24" step="0.5" placeholder="ej. 14">
+          </div>
+          <div class="field">
+            <label>Lux medidos (si disponible)</label>
+            <input type="text" name="lux_medidos" placeholder="ej. 20 lux a nivel ave">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. SISTEMA DE ALOJAMIENTO -->
+    <div class="section">
+      <div class="section-title"><span class="num">3</span> Sistema de alojamiento y densidad</div>
+      <div class="section-body">
+
+        <!-- SELECTOR VISIBLE (NO va a sheet, se captura via JS) -->
+        <div class="tabs no-print">
+          <button type="button" class="tab-btn active" onclick="switchTab('jaulas', this)">Jaulas en batería</button>
+          <button type="button" class="tab-btn" onclick="switchTab('piso', this)">Piso / cama</button>
+          <button type="button" class="tab-btn" onclick="switchTab('semilibertad', this)">Semilibertad / free range</button>
+        </div>
+        <!-- campo oculto que registra el sistema seleccionado -->
+        <input type="hidden" name="sistema_alojamiento" id="sistema_alojamiento" value="jaulas">
+
+        <!-- TAB: JAULAS -->
+        <div class="tab-panel active" id="tab-jaulas" data-label="Sistema: Jaulas en batería">
+          <div class="grid g3">
+            <div class="field">
+              <label>Marca / modelo de jaulas</label>
+              <input type="text" name="marca_jaulas" placeholder="ej. BigDutchman, artesanal">
+            </div>
+            <div class="field">
+              <label>N° de pisos por módulo</label>
+              <input type="number" name="j_pisos" id="j-pisos" min="1" placeholder="ej. 3">
+            </div>
+            <div class="field">
+              <label>N° de módulos (columnas)</label>
+              <input type="number" name="j_modulos" id="j-modulos" min="1" placeholder="">
+            </div>
+          </div>
+
+          <div class="subsection" style="margin-top:12px;">Dimensiones de una jaula individual</div>
+          <div class="grid g4">
+            <div class="field">
+              <label>Largo jaula (cm)</label>
+              <input type="number" name="j_largo" id="j-largo" min="1" step="0.5" placeholder="ej. 60" oninput="calcJaulas()">
+            </div>
+            <div class="field">
+              <label>Profundidad jaula (cm)</label>
+              <input type="number" name="j_prof" id="j-prof" min="1" step="0.5" placeholder="ej. 45" oninput="calcJaulas()">
+            </div>
+            <div class="field">
+              <label>Alto jaula (cm)</label>
+              <input type="number" name="j_alto" min="1" step="0.5" placeholder="ej. 40">
+            </div>
+            <div class="field">
+              <label>N° aves por jaula</label>
+              <input type="number" name="j_aves_jaula" id="j-aves" min="1" placeholder="ej. 4" oninput="calcJaulas()">
+            </div>
+          </div>
+
+          <!-- campos ocultos para guardar resultados calculados -->
+          <input type="hidden" name="area_jaula_cm2" id="area_jaula_cm2">
+          <input type="hidden" name="cm2_por_ave" id="cm2_por_ave">
+          <input type="hidden" name="eval_densidad_jaula" id="eval_densidad_jaula">
+
+          <div class="calc-box">
+            <h4>Calculadora de densidad — Jaulas</h4>
+            <div class="grid g3">
+              <div class="field">
+                <label>Área total de la jaula (cm²)</label>
+                <input type="text" id="res-area-jaula" readonly placeholder="—" style="background:#e8f5e9;font-weight:700;color:#2e7d32;">
+              </div>
+              <div class="field">
+                <label>Área por ave (cm²/ave)</label>
+                <input type="text" id="res-cm2-ave" readonly placeholder="—" style="background:#e8f5e9;font-weight:700;color:#2e7d32;">
+              </div>
+              <div class="field">
+                <label>Evaluación bienestar</label>
+                <input type="text" id="res-eval-jaula" readonly placeholder="—" style="background:#e8f5e9;font-weight:700;">
+              </div>
+            </div>
+            <div class="ref-note" style="margin-top:8px;">
+              Referencias: <span>Convencional mín. 450 cm²/ave</span> · <span>Enriquecida mín. 750 cm²/ave</span> · <span>Óptimo producción ≥ 550 cm²/ave</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: PISO -->
+        <div class="tab-panel" id="tab-piso" data-label="Sistema: Piso / cama">
+          <div class="grid g3">
+            <div class="field">
+              <label>Material de cama</label>
+              <select name="material_cama">
+                <option value="">—</option>
+                <option>Viruta de madera</option>
+                <option>Paja</option>
+                <option>Cáscara de arroz</option>
+                <option>Arena</option>
+                <option>Mezcla</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Profundidad de cama (cm)</label>
+              <input type="number" name="prof_cama" min="0" step="0.5" placeholder="ej. 8">
+            </div>
+            <div class="field">
+              <label>Estado de la cama</label>
+              <select name="estado_cama">
+                <option value="">—</option>
+                <option>Seca y suelta</option>
+                <option>Húmeda en sectores</option>
+                <option>Húmeda generalizada</option>
+                <option>Con costras</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="subsection" style="margin-top:12px;">Cálculo de densidad — piso</div>
+          <div class="grid g3">
+            <div class="field">
+              <label>Largo pabellón (m)</label>
+              <input type="number" name="p_largo" id="p-largo" min="1" step="0.1" placeholder="" oninput="calcPiso()">
+            </div>
+            <div class="field">
+              <label>Ancho pabellón (m)</label>
+              <input type="number" name="p_ancho" id="p-ancho" min="1" step="0.1" placeholder="" oninput="calcPiso()">
+            </div>
+            <div class="field">
+              <label>% área efectiva</label>
+              <input type="number" name="p_pct_area" id="p-pct" min="50" max="100" value="85" oninput="calcPiso()">
+            </div>
+            <div class="field">
+              <label>N° de aves en piso</label>
+              <input type="number" name="p_aves" id="p-aves" min="1" placeholder="" oninput="calcPiso()">
+            </div>
+          </div>
+
+          <input type="hidden" name="aves_por_m2" id="aves_por_m2">
+          <input type="hidden" name="m2_por_ave" id="m2_por_ave">
+
+          <div class="calc-box">
+            <h4>Calculadora de densidad — Piso</h4>
+            <div class="result-row">
+              <div class="result-badge"><span id="res-aves-m2">—</span><small>aves/m²</small></div>
+              <div class="result-badge"><span id="res-m2-ave">—</span><small>m²/ave</small></div>
+              <div class="ref-note">
+                Referencias: <span>Ponedoras piso ≤ 9 aves/m²</span><br>
+                Óptimo: <span>6–7 aves/m²</span> · Recría: <span>≤ 12 aves/m² etapas tempranas</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: SEMILIBERTAD -->
+        <div class="tab-panel" id="tab-semilibertad" data-label="Sistema: Semilibertad / free range">
+          <div class="grid g3">
+            <div class="field">
+              <label>Superficie interior (m²)</label>
+              <input type="number" name="sup_interior" min="1" step="0.1" placeholder="">
+            </div>
+            <div class="field">
+              <label>Superficie potrero / salida (m²)</label>
+              <input type="number" name="sup_potrero" min="1" step="1" placeholder="">
+            </div>
+            <div class="field">
+              <label>N° de aves</label>
+              <input type="number" name="sl_aves" min="1" placeholder="">
+            </div>
+            <div class="field">
+              <label>Horas de acceso exterior (h/día)</label>
+              <input type="number" name="horas_exterior" min="0" max="24" step="0.5" placeholder="ej. 8">
+            </div>
+            <div class="field">
+              <label>Tipo de potrero</label>
+              <select name="tipo_potrero">
+                <option value="">—</option>
+                <option>Pasto/pradera</option>
+                <option>Tierra / sin vegetación</option>
+                <option>Mixto</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Rotación de potrero</label>
+              <select name="rotacion_potrero">
+                <option value="">—</option>
+                <option>Sí, rotación periódica</option>
+                <option>No, acceso permanente</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 4. EQUIPAMIENTO -->
+    <div class="section">
+      <div class="section-title"><span class="num">4</span> Equipamiento</div>
+      <div class="section-body">
+
+        <div class="subsection">Alimentación</div>
+        <div class="grid g4">
+          <div class="field">
+            <label>Tipo de comedero</label>
+            <select name="tipo_comedero">
+              <option value="">—</option>
+              <option>Lineal manual</option>
+              <option>Circular colgante</option>
+              <option>Cadena automática</option>
+              <option>Tolva / ad libitum</option>
+              <option>Comedero de jaula (tolva lateral)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>N° comederos / metros lineales</label>
+            <input type="text" name="comederos_cantidad" placeholder="ej. 20 uds / 40 m">
+          </div>
+          <div class="field">
+            <label>cm comedero / ave</label>
+            <input type="text" name="cm_comedero_ave" placeholder="">
+          </div>
+          <div class="field">
+            <label>Estado comederos</label>
+            <select name="estado_comederos">
+              <option value="">—</option>
+              <option>Buen estado</option>
+              <option>Deteriorados / con óxido</option>
+              <option>Irregularidad en distribución</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="subsection" style="margin-top:12px;">Agua</div>
+        <div class="grid g4">
+          <div class="field">
+            <label>Tipo de bebedero</label>
+            <select name="tipo_bebedero">
+              <option value="">—</option>
+              <option>Niple / nipple</option>
+              <option>Taza / copa</option>
+              <option>Campana</option>
+              <option>Canal / canaleta</option>
+              <option>Bebedero de vacío manual</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>N° bebederos / puntos de agua</label>
+            <input type="number" name="n_bebederos" min="0" placeholder="">
+          </div>
+          <div class="field">
+            <label>Aves por bebedero / niple</label>
+            <input type="text" name="aves_por_bebedero" placeholder="">
+          </div>
+          <div class="field">
+            <label>Fuente de agua</label>
+            <select name="fuente_agua">
+              <option value="">—</option>
+              <option>Red pública (APR)</option>
+              <option>Pozo / noria</option>
+              <option>Estero / vertiente</option>
+              <option>Recolección lluvia</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Cloración / tratamiento</label>
+            <select name="tratamiento_agua">
+              <option value="">—</option>
+              <option>Sí, cloración regular</option>
+              <option>Sin tratamiento</option>
+              <option>Acidificación</option>
+              <option>Filtro UV</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Análisis de agua reciente</label>
+            <select name="analisis_agua">
+              <option value="">—</option>
+              <option>Sí (adjuntar)</option>
+              <option>No</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="subsection" style="margin-top:12px;">Nidales (si aplica — sistema piso)</div>
+        <div class="grid g4">
+          <div class="field">
+            <label>Tipo de nidal</label>
+            <select name="tipo_nidal">
+              <option value="">—</option>
+              <option>Individual manual</option>
+              <option>Comunitario manual</option>
+              <option>Automático con cinta</option>
+              <option>No aplica (jaulas)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>N° de nidales</label>
+            <input type="number" name="n_nidales" min="0" placeholder="">
+          </div>
+          <div class="field">
+            <label>Aves por nidal</label>
+            <input type="text" name="aves_por_nidal" placeholder="">
+          </div>
+          <div class="field">
+            <label>Material del nidal</label>
+            <input type="text" name="material_nidal" placeholder="ej. viruta, alfombra">
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 5. LOTE Y PARÁMETROS PRODUCTIVOS -->
+    <div class="section">
+      <div class="section-title"><span class="num">5</span> Lote y parámetros productivos</div>
+      <div class="section-body">
+
+        <div class="curves-note">
+          Estos datos se comparan con las curvas de referencia genética en
+          <a href="https://avivet.cl/avivet/curvas-geneticas/#equipamiento" target="_blank">avivet.cl/curvas-geneticas</a>.
+          Ingrese los valores reales del lote para identificar desviaciones.
+        </div>
+
+        <div class="subsection">Identificación del lote</div>
+        <div class="grid g4">
+          <div class="field">
+            <label>Línea genética</label>
+            <select name="linea_genetica">
+              <option value="">—</option>
+              <option>Hy-Line Brown</option>
+              <option>Hy-Line W-80</option>
+              <option>Lohmann Brown</option>
+              <option>Nick Brown</option>
+              <option>Otra</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Fecha de nacimiento / llegada</label>
+            <input type="date" name="fecha_nacimiento">
+          </div>
+          <div class="field">
+            <label>Semana de edad actual</label>
+            <input type="number" name="semana_edad" min="1" max="100" placeholder="ej. 35">
+          </div>
+          <div class="field">
+            <label>Etapa productiva</label>
+            <select name="etapa_productiva">
+              <option value="">—</option>
+              <option>Recría / pollas (0–16 sem)</option>
+              <option>Prevista / pico (17–30 sem)</option>
+              <option>Producción estable (31–70 sem)</option>
+              <option>Final postura (>70 sem)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>N° aves ingresadas</label>
+            <input type="number" name="n_aves_ingresadas" min="1" placeholder="">
+          </div>
+          <div class="field">
+            <label>N° aves actuales</label>
+            <input type="number" name="n_aves_actuales" min="1" placeholder="">
+          </div>
+          <div class="field">
+            <label>Mortalidad acumulada (%)</label>
+            <input type="number" name="mortalidad_pct" min="0" max="100" step="0.1" placeholder="">
+          </div>
+          <div class="field">
+            <label>Sem. inicio postura</label>
+            <input type="number" name="sem_inicio_postura" min="15" max="30" placeholder="ej. 18">
+          </div>
+        </div>
+
+        <div class="subsection" style="margin-top:12px;">Parámetros actuales vs. curva de referencia</div>
+        <div class="grid g4">
+          <div class="field">
+            <label>% postura actual</label>
+            <input type="number" name="pct_postura" min="0" max="100" step="0.1" placeholder="ej. 88">
+          </div>
+          <div class="field">
+            <label>Peso corporal prom. (g/ave)</label>
+            <input type="number" name="peso_corporal" min="800" max="2500" step="1" placeholder="ej. 1850">
+          </div>
+          <div class="field">
+            <label>Consumo alimento (g/ave/día)</label>
+            <input type="number" name="consumo_alimento" min="50" max="200" step="0.5" placeholder="ej. 115">
+          </div>
+          <div class="field">
+            <label>Consumo agua (mL/ave/día)</label>
+            <input type="number" name="consumo_agua" min="50" max="500" step="1" placeholder="ej. 230">
+          </div>
+          <div class="field">
+            <label>Peso promedio del huevo (g)</label>
+            <input type="number" name="peso_huevo" min="40" max="80" step="0.5" placeholder="ej. 62">
+          </div>
+          <div class="field">
+            <label>Huevos rotos + sucios (%)</label>
+            <input type="number" name="huevos_rotos_pct" min="0" max="30" step="0.1" placeholder="ej. 2">
+          </div>
+          <div class="field">
+            <label>Temperatura interna (°C)</label>
+            <input type="number" name="temperatura" min="-5" max="45" step="0.5" placeholder="ej. 18">
+          </div>
+          <div class="field">
+            <label>Humedad relativa (%)</label>
+            <input type="number" name="humedad" min="0" max="100" step="1" placeholder="ej. 65">
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 6. NUTRICIÓN -->
+    <div class="section">
+      <div class="section-title"><span class="num">6</span> Nutrición y alimentación</div>
+      <div class="section-body">
+        <div class="grid g3">
+          <div class="field">
+            <label>Tipo de alimento</label>
+            <select name="tipo_alimento">
+              <option value="">—</option>
+              <option>Alimento comercial peletizado</option>
+              <option>Alimento comercial harinoso</option>
+              <option>Mezcla artesanal propia</option>
+              <option>Mixto</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Marca / proveedor</label>
+            <input type="text" name="marca_alimento" placeholder="ej. AgroSuper, El Trébol…">
+          </div>
+          <div class="field">
+            <label>Fase / tipo de ración</label>
+            <select name="fase_racion">
+              <option value="">—</option>
+              <option>Iniciadora (0–6 sem)</option>
+              <option>Crecimiento (7–12 sem)</option>
+              <option>Desarrollo (13–16 sem)</option>
+              <option>Pre-postura</option>
+              <option>Postura pico</option>
+              <option>Postura mantenimiento</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Proteína declarada (%)</label>
+            <input type="number" name="proteina" min="10" max="30" step="0.1" placeholder="ej. 16">
+          </div>
+          <div class="field">
+            <label>Energía Metabolizable (kcal/kg)</label>
+            <input type="number" name="energia_kcal" min="2000" max="3200" step="1" placeholder="ej. 2750">
+          </div>
+          <div class="field">
+            <label>Calcio declarado (%)</label>
+            <input type="number" name="calcio" min="0" max="5" step="0.01" placeholder="ej. 3.5">
+          </div>
+          <div class="field span3">
+            <label>Observaciones / suplementos</label>
+            <textarea name="obs_alimentacion" placeholder="ej. suministra conchilla de ostras, vitaminas en agua los lunes…"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. SANIDAD -->
+    <div class="section">
+      <div class="section-title"><span class="num">7</span> Sanidad y manejo</div>
+      <div class="section-body">
+        <div class="grid g3">
+          <div class="field">
+            <label>¿Tiene programa de vacunación?</label>
+            <select name="programa_vacunacion">
+              <option value="">—</option>
+              <option>Sí, con registro</option>
+              <option>Sí, sin registro formal</option>
+              <option>No</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Última vacuna aplicada</label>
+            <input type="text" name="ultima_vacuna" placeholder="nombre + semana de aplicación">
+          </div>
+          <div class="field">
+            <label>Control de ectoparásitos</label>
+            <select name="control_ectoparasitos">
+              <option value="">—</option>
+              <option>Regular (mensual o más)</option>
+              <option>Ocasional</option>
+              <option>Sin control</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Limpieza y desinfección</label>
+            <select name="desinfeccion">
+              <option value="">—</option>
+              <option>Protocolo fijo entre lotes</option>
+              <option>Parcial entre lotes</option>
+              <option>Continua, sin vacío sanitario</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Registro productivo diario</label>
+            <select name="registro_productivo">
+              <option value="">—</option>
+              <option>Sí, en papel</option>
+              <option>Sí, digital</option>
+              <option>No</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Otras especies en el predio</label>
+            <input type="text" name="otras_especies" placeholder="ej. cerdos, bovinos, otras aves…">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8. MOTIVO DE CONSULTA -->
+    <div class="section">
+      <div class="section-title"><span class="num">8</span> Motivo de consulta</div>
+      <div class="section-body">
+        <div class="grid g2">
+          <div class="field">
+            <label>Problema principal</label>
+            <select name="motivo_consulta">
+              <option value="">—</option>
+              <option>Caída de postura</option>
+              <option>Problemas respiratorios</option>
+              <option>Problemas digestivos / diarrea</option>
+              <option>Comportamiento (picaje, canibalismo)</option>
+              <option>Mortalidad elevada</option>
+              <option>Calidad de huevo</option>
+              <option>Bajo peso corporal</option>
+              <option>Consulta preventiva / rutina</option>
+              <option>Planificación de manejo</option>
+              <option>Otro</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>¿Desde cuándo? / Semana de inicio</label>
+            <input type="text" name="desde_cuando" placeholder="ej. hace 2 semanas / semana 42">
+          </div>
+          <div class="field">
+            <label>% de aves afectadas (aprox.)</label>
+            <input type="number" name="pct_afectadas" min="0" max="100" step="1" placeholder="">
+          </div>
+          <div class="field">
+            <label>Diagnósticos previos</label>
+            <input type="text" name="diagnosticos_previos" placeholder="">
+          </div>
+          <div class="field span2">
+            <label>Descripción detallada del problema</label>
+            <textarea name="descripcion_problema" style="min-height:80px;" placeholder="Evolución, síntomas, aves afectadas, medidas tomadas hasta ahora…"></textarea>
+          </div>
+          <div class="field span2">
+            <label>Tratamientos aplicados (medicamento, dosis, duración)</label>
+            <textarea name="tratamientos_aplicados" placeholder=""></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 9. FOTOS -->
+    <div class="section">
+      <div class="section-title"><span class="num">9</span> Fotos solicitadas — lista de verificación</div>
+      <div class="section-body">
+        <p style="font-size:9pt;color:#555;margin-bottom:12px;">
+          Marque las fotos que ya tiene listas para enviar. <strong>Buena iluminación, sin contraluz.</strong>
+          Envíe por WhatsApp o correo antes de la sesión.
+        </p>
+        <div class="photo-grid">
+          <div class="photo-item"><input type="checkbox" name="foto_exterior" id="f1"><label for="f1">Vista exterior del pabellón (frente y lado)<span>Orientación, ventanas, cortinas</span></label></div>
+          <div class="photo-item"><input type="checkbox" name="foto_interior" id="f2"><label for="f2">Vista interior general (largo completo)<span>Pasillo central, de punta a punta</span></label></div>
+          <div class="photo-item"><input type="checkbox" name="foto_jaulas" id="f3"><label for="f3">Sistema de jaulas (frontal, mostrando pisos)<span>Comedero y bebederos visibles</span></label></div>
+          <div class="photo-item"><input type="checkbox" name="foto_cama" id="f4"><label for="f4">Cama / piso (estado general)<span>Color, humedad, textura</span></label></div>
+          <div class="photo-item"><input type="checkbox" name="foto_comederos" id="f5"><label for="f5">Comederos (llenos y vacíos)<span>Nivel de alimento, estado de la tolva</span></label></div>
+          <div class="photo-item"><input type="checkbox" name="foto_bebederos" id="f6"><label for="f6">Bebederos / niples (detalle)<span>Flujo, fugas, estado de la línea</span></label></div>
+          <div class="photo-item"><input type="checkbox" name="foto_aves_sanas" id="f7"><label for="f7">Aves representativas del lote (3–5 fotos)<span>Estado corporal, plumaje, cresta, cloaca</span></label></div>
+          <div class="photo-item"><input type="checkbox" name="foto_aves_enfermas" id="f8"><label for="f8">Aves con signos clínicos evidentes<span>Si hay aves enfermas o con lesiones</span></label></div>
+          <div class="photo-item"><input type="checkbox" name="foto_huevos" id="f9"><label for="f9">Huevos (selección representativa)<span>Calidad de cáscara, forma, color</span></label></div>
+          <div class="photo-item"><input type="checkbox" name="foto_fecas" id="f10"><label for="f10">Fecas en cama o debajo de jaula<span>Color, consistencia, sangre, parásitos</span></label></div>
+          <div class="photo-item"><input type="checkbox" name="foto_nidales" id="f11"><label for="f11">Nidales (si aplica)<span>Estado, material, huevos en piso vs. nidal</span></label></div>
+          <div class="photo-item"><input type="checkbox" name="foto_alimento" id="f12"><label for="f12">Etiqueta del alimento (bolsa o saco)<span>Marca, composición, fecha de fabricación</span></label></div>
+          <div class="photo-item"><input type="checkbox" name="foto_registro" id="f13"><label for="f13">Registro productivo<span>Última semana de postura y mortalidad</span></label></div>
+          <div class="photo-item"><input type="checkbox" name="foto_ventilacion" id="f14"><label for="f14">Sistema de ventilación<span>Extractores, ventanas, cortinas</span></label></div>
+          <div class="photo-item"><input type="checkbox" name="foto_iluminacion" id="f15"><label for="f15">Iluminación interior<span>Distribución y tipo de focos</span></label></div>
+          <div class="photo-item"><input type="checkbox" name="foto_mortalidades" id="f16"><label for="f16">Mortalidades recientes (si hay)<span>Canal entera + órganos si hizo necropsia</span></label></div>
+        </div>
+
+        <div class="field" style="margin-top:14px;">
+          <label>Otras fotos / videos enviados</label>
+          <textarea name="otras_fotos" placeholder="ej. video de comportamiento del lote en la mañana, foto del termómetro…" style="min-height:50px;"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- 10. OBSERVACIONES -->
+    <div class="section">
+      <div class="section-title"><span class="num">10</span> Observaciones adicionales</div>
+      <div class="section-body">
+        <div class="field">
+          <textarea name="obs_adicionales" style="min-height:90px;" placeholder="Cualquier información adicional que considere relevante para la consulta…"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUBMIT -->
+    <div class="submit-area">
+      <button type="submit" class="btn-submit" id="btn-submit">Enviar planilla</button>
+      <p class="submit-note">Los datos se guardan en la base de datos de AviVet. También puede imprimir esta página (Ctrl/Cmd + P).</p>
+    </div>
+
+  </form><!-- /form -->
+
+  <div class="footer">
+    AviVet · MV Andrés Lazo E. · <a href="https://avivet.cl">avivet.cl</a> ·
+    Curvas genéticas: <a href="https://avivet.cl/avivet/curvas-geneticas/">avivet.cl/avivet/curvas-geneticas/</a>
+  </div>
+
+</div><!-- /page -->
+
+<script>
+  // ─────────────────────────────────────────────────────────
+  // URL del Apps Script — reemplazar con la URL real al desplegar
+  // ─────────────────────────────────────────────────────────
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbysLTpZKj4y47xd9qXM_WsZYJegyDN27UDajZr0JVpAg7J67YGqMt_ixVr3GJCWJcyljw/exec';
+
+  // ── TABS ──────────────────────────────────────────────────
+  function switchTab(id, btn) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    btn.classList.add('active');
+    document.getElementById('sistema_alojamiento').value = id;
+  }
+
+  // ── CALCULADORA JAULAS ────────────────────────────────────
+  function calcJaulas() {
+    const largo = parseFloat(document.getElementById('j-largo').value) || 0;
+    const prof  = parseFloat(document.getElementById('j-prof').value)  || 0;
+    const aves  = parseFloat(document.getElementById('j-aves').value)  || 0;
+
+    const area = largo * prof;
+    const cm2  = aves > 0 ? area / aves : 0;
+
+    document.getElementById('res-area-jaula').value = area > 0 ? area.toFixed(0) + ' cm²' : '—';
+    document.getElementById('area_jaula_cm2').value  = area > 0 ? area.toFixed(0) : '';
+
+    if (cm2 > 0) {
+      document.getElementById('res-cm2-ave').value = cm2.toFixed(0) + ' cm²/ave';
+      document.getElementById('cm2_por_ave').value  = cm2.toFixed(0);
+      let txt, color;
+      if      (cm2 >= 750) { txt = 'Óptimo (≥750)';    color = '#2e7d32'; }
+      else if (cm2 >= 550) { txt = 'Adecuado (≥550)';  color = '#2e7d32'; }
+      else if (cm2 >= 450) { txt = 'Mínimo (450–549)'; color = '#f57c00'; }
+      else                 { txt = 'Bajo (<450)';       color = '#c62828'; }
+      const el = document.getElementById('res-eval-jaula');
+      el.value = txt; el.style.color = color; el.style.fontWeight = '800';
+      document.getElementById('eval_densidad_jaula').value = txt;
+    } else {
+      ['res-cm2-ave','res-eval-jaula'].forEach(id => { document.getElementById(id).value = '—'; });
+      ['cm2_por_ave','eval_densidad_jaula'].forEach(id => { document.getElementById(id).value = ''; });
+    }
+  }
+
+  // ── CALCULADORA PISO ──────────────────────────────────────
+  function calcPiso() {
+    const largo = parseFloat(document.getElementById('p-largo').value) || 0;
+    const ancho = parseFloat(document.getElementById('p-ancho').value) || 0;
+    const pct   = parseFloat(document.getElementById('p-pct').value)   || 85;
+    const aves  = parseFloat(document.getElementById('p-aves').value)  || 0;
+
+    const areaUtil = largo * ancho * (pct / 100);
+    const a_m2 = aves > 0 && areaUtil > 0 ? aves / areaUtil : 0;
+    const m2_a = aves > 0 && areaUtil > 0 ? areaUtil / aves : 0;
+
+    document.getElementById('res-aves-m2').textContent = a_m2 > 0 ? a_m2.toFixed(1) : '—';
+    document.getElementById('res-m2-ave').textContent  = m2_a > 0 ? m2_a.toFixed(2) : '—';
+    document.getElementById('aves_por_m2').value = a_m2 > 0 ? a_m2.toFixed(1) : '';
+    document.getElementById('m2_por_ave').value  = m2_a > 0 ? m2_a.toFixed(2) : '';
+  }
+
+  // ── RECOLECCIÓN DE DATOS ──────────────────────────────────
+  function recolectarDatos() {
+    const form = document.getElementById('planilla-form');
+    const data = {};
+
+    form.querySelectorAll('[name]').forEach(el => {
+      if (el.type === 'checkbox') {
+        data[el.name] = el.checked ? 'Sí' : 'No';
+      } else {
+        data[el.name] = el.value || '';
+      }
+    });
+
+    return data;
+  }
+
+  // ── ENVÍO ─────────────────────────────────────────────────
+  async function enviarFormulario(e) {
+    e.preventDefault();
+
+    if (APPS_SCRIPT_URL === 'REEMPLAZAR_CON_TU_URL_DE_APPS_SCRIPT') {
+      mostrarModal('⚠️', 'Apps Script no configurado', 'Edita el archivo HTML y reemplaza APPS_SCRIPT_URL con la URL de tu Web App. Consulta el archivo apps-script.gs para las instrucciones.');
+      return;
+    }
+
+    const btn = document.getElementById('btn-submit');
+    btn.disabled = true;
+    btn.textContent = 'Enviando…';
+
+    try {
+      await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(recolectarDatos())
+      });
+      mostrarModal('✅', 'Planilla enviada', 'Los datos fueron guardados en la base de datos. Muchas gracias.');
+    } catch (err) {
+      mostrarModal('❌', 'Error de conexión', 'No fue posible enviar los datos. Revise su conexión e intente nuevamente. (' + err.message + ')');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Enviar planilla';
+    }
+  }
+
+  // ── MODAL ─────────────────────────────────────────────────
+  function mostrarModal(icon, title, msg) {
+    document.getElementById('modal-icon').textContent  = icon;
+    document.getElementById('modal-title').textContent = title;
+    document.getElementById('modal-msg').textContent   = msg;
+    document.getElementById('modal').classList.add('active');
+  }
+  function cerrarModal() {
+    document.getElementById('modal').classList.remove('active');
+  }
+
+  // fecha por defecto = hoy
+  document.getElementById('fecha_consulta').valueAsDate = new Date();
+</script>
+</body>
+</html>
