@@ -2,7 +2,7 @@
 
 Formulario web para recopilar información de los productores antes o después de una sesión de telemedicina. Los datos se envían automáticamente a Google Sheets para construir una base de datos de consultas.
 
-**URL pública:** [avivet.cl/telemedicina](https://avivet.cl/telemedicina)
+**URL pública:** [avivet.cl/avivet/telemedicina](https://avivet.cl/avivet/telemedicina/)
 
 ---
 

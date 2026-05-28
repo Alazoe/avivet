@@ -12,6 +12,7 @@
 | **Auditoría SAG Bioseguridad** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/auditoria-sag/) | Pauta de verificación Res. 7695/2024 |
 | **Inventario de Huevos** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/inventario-huevos/) | Control de stock y ventas |
 | **Gestión de Rutas — La Campestre** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/campestre-rutas/) | Planificación y optimización de rutas de retiro de huevos |
+| **Planilla Telemedicina** | [🔗 Abrir herramienta](https://avivet.cl/avivet/telemedicina/) | Formulario pre/post consulta con envío automático a Google Sheets |
 
 ---
 
