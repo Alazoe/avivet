@@ -24,6 +24,7 @@
 
 const SHEET_ID   = '1NpAJJkV1k6U-q1ZOCGFFoK8oyBAIWGH6535Wc-bA8Yw';
 const SHEET_NAME = 'Consultas';
+const DATA_TOKEN = 'avivet2026'; // cambia esto por un código privado tuyo
 
 // Orden y etiquetas de las columnas en el Sheet
 const COLUMNAS = [
@@ -203,7 +204,27 @@ function doPost(e) {
   }
 }
 
-// Endpoint GET para verificar que el script está activo
+// Endpoint GET — devuelve datos del Sheet si el token es correcto
 function doGet(e) {
+  const params = e.parameter || {};
+
+  if (params.action === 'getData' && params.token === DATA_TOKEN) {
+    const ss    = SpreadsheetApp.openById(SHEET_ID);
+    const sheet = ss.getSheetByName(SHEET_NAME);
+    if (!sheet) {
+      return ContentService.createTextOutput('[]').setMimeType(ContentService.MimeType.JSON);
+    }
+    const data    = sheet.getDataRange().getValues();
+    const headers = data[0];
+    const rows    = data.slice(1).map(row => {
+      const obj = {};
+      headers.forEach((h, i) => { obj[h] = row[i] instanceof Date ? row[i].toISOString() : row[i]; });
+      return obj;
+    });
+    return ContentService
+      .createTextOutput(JSON.stringify(rows))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
   return ContentService.createTextOutput('AviVet Telemedicina API activa ✓');
 }
