@@ -446,6 +446,14 @@ td.real { background: rgba(27,94,32,.07) !important; font-weight: 600; }
         </div>
 
         <hr class="modal-sep">
+        <div class="modal-sec">Al fin de ciclo — liquidación</div>
+        <div class="modal-field">
+          <label>Precio gallina de descarte ($ / ave)</label>
+          <input type="number" name="precioGallinaDescarte" value="600" min="0" step="50" oninput="fmtNum(this)">
+          <small class="fmt-hint">600 · suma al resultado fin ciclo, excluye EBITDA</small>
+        </div>
+
+        <hr class="modal-sep">
         <div class="modal-sec">Escenario de proyección</div>
         <div class="modal-field">
           <label>% postura respecto a curva oficial</label>
@@ -794,9 +802,10 @@ function proyectar(lote) {
   const pctNV          = +(lote.pctNoVendible   ?? 0);
   const cBandeja       = +(lote.costoBandeja    ?? 0);
   const cCaja          = +(lote.costoCaja       ?? 0);
-  const cEtiqueta      = +(lote.costoEtiqueta   ?? 0);
-  const cOtrosEnvase   = +(lote.costoOtrosEnvase ?? 0);
-  const cDespachoMes   = +(lote.costoDespachoMes ?? 300000);
+  const cEtiqueta      = +(lote.costoEtiqueta       ?? 0);
+  const cOtrosEnvase   = +(lote.costoOtrosEnvase    ?? 0);
+  const cDespachoMes   = +(lote.costoDespachoMes    ?? 300000);
+  const precioGallina  = +(lote.precioGallinaDescarte ?? 600);
 
   const gastosXSem = {};
   (lote.gastosEspeciales || []).forEach(g => {
@@ -838,8 +847,9 @@ function proyectar(lote) {
     const gastoDia       = gastoMes / 30;
     const costoDespacho  = cDespachoMes / 30;
 
-    const gastoEsp  = (n % 7 === 0) ? (gastosXSem[sem] || 0) : 0;
-    const resultado = ingreso - costoAlim - gastoDia - costoDespacho - gastoEsp - costoEnvase;
+    const gastoEsp       = (n % 7 === 0) ? (gastosXSem[sem] || 0) : 0;
+    const ingresoGallinas = n === diasCiclo - 1 ? Math.round(avesFin * precioGallina) : 0;
+    const resultado      = ingreso - costoAlim - gastoDia - costoDespacho - gastoEsp - costoEnvase + ingresoGallinas;
 
     dias.push({
       fecha, n: n + 1, sem, mes, precio,
@@ -856,6 +866,7 @@ function proyectar(lote) {
       gastoDia:        Math.round(gastoDia),
       costoDespacho:   Math.round(costoDespacho),
       gastoEsp:        Math.round(gastoEsp),
+      ingresoGallinas,
       ingreso:         Math.round(ingreso),
       resultado:       Math.round(resultado),
     });
@@ -1035,9 +1046,11 @@ function kpisEsc(p) {
    ════════════════════════════════════════════════════════════ */
 function renderFlujoCiclo(lote) {
   const semMax  = lote.semanasCiclo || 100;
-  const gastos  = lote.gastosEspeciales || [];
-  const inv     = gastos.reduce((a,g)=>a+(+g.monto),0);
-  const repos   = calcCostoReposicion(lote);
+  const gastos        = lote.gastosEspeciales || [];
+  const inv           = gastos.reduce((a,g)=>a+(+g.monto),0);
+  const repos         = calcCostoReposicion(lote);
+  const gallinasVenta = Math.round((proy[proy.length-1]?.aves || 0) * (+(lote.precioGallinaDescarte ?? 600)));
+  const netLiq        = gallinasVenta - repos.total;
   const be      = calcBreakEven(proy);
   const pico    = Math.max(...proy.map(d=>d.pos));
   const semPico = proy.find(d=>d.pos===pico)?.sem || 0;
@@ -1106,7 +1119,9 @@ function renderFlujoCiclo(lote) {
       <div class="flujo-arr">→</div>
       ${card('✓','Recuperación inversión', be?'Sem '+be.sem:'Sin retorno', be?'ok':'mal', be?new Date(be.fecha+'T12:00:00').toLocaleDateString('es-CL',{day:'numeric',month:'short',year:'numeric'}):'')}
       <div class="flujo-arr">→</div>
-      ${card('↺','Reposición estimada', MN(repos.total), 'gold', `${MN(repos.pollas)} pollas · ${MN(repos.alim)} alim. · ${MN(repos.fijos)} fijos`)}
+      ${card('🐔','Venta gallinas descarte', MN(gallinasVenta), '', `${NUM(Math.round(proy[proy.length-1]?.aves||0))} aves · $${(+(lote.precioGallinaDescarte??600)).toLocaleString('es-CL')}/ave`)}
+      <div class="flujo-arr">→</div>
+      ${card('↺','Reposición estimada', MN(repos.total), '', `${MN(repos.pollas)} pollas · ${MN(repos.alim)} alim · ${MN(repos.fijos)} fijos`)}
     </div>
   </section>`;
 }
@@ -1149,10 +1164,13 @@ function renderDashboard(lote) {
   document.getElementById('kpi-ginv').textContent      = MN(invTotal);
   document.getElementById('kpi-ginv-sub').textContent  = `${gastos.length} gasto${gastos.length!==1?'s':''} especial${gastos.length!==1?'es':''}`;
   const res = dFin.acum;
+  const gallinasTotal = proy.reduce((a,d) => a + (d.ingresoGallinas||0), 0);
   const elRes = document.getElementById('kpi-res');
   elRes.textContent = '$' + Math.abs(res).toLocaleString('es-CL');
   elRes.className   = 'ficha-num ' + (res >= 0 ? 'ok' : 'mal');
-  document.getElementById('kpi-res-sub').textContent = (res >= 0 ? 'superávit al fin ciclo' : 'déficit al fin ciclo');
+  document.getElementById('kpi-res-sub').textContent =
+    (res >= 0 ? 'superávit' : 'déficit') +
+    (gallinasTotal > 0 ? ` · incl. ${MN(gallinasTotal)} gallinas` : '');
 
   const repos = calcCostoReposicion(lote);
   const elRepos = document.getElementById('kpi-repos');
@@ -1250,6 +1268,17 @@ function renderDashboard(lote) {
           <div class="grafico-canvas"><canvas id="cAcum"></canvas></div>
         </div>
       </div>
+      <div class="graficos-grid full" style="margin-top:4px">
+        <div class="grafico-wrap">
+          <div class="grafico-titulo">Cascada de costos por huevo vendible — promedio del ciclo</div>
+          <div class="leyenda">
+            <span class="leyenda-item"><span class="cuad" style="background:rgba(27,67,50,.75)"></span>Precio</span>
+            <span class="leyenda-item"><span class="cuad" style="background:rgba(183,28,28,.7)"></span>Costos</span>
+            <span class="leyenda-item"><span class="cuad" style="background:rgba(46,125,50,.8)"></span>Margen</span>
+          </div>
+          <div class="grafico-canvas" style="height:220px"><canvas id="cCascada"></canvas></div>
+        </div>
+      </div>
     </div>
 
     <!-- TABLA PROYECCIÓN -->
@@ -1329,6 +1358,9 @@ function renderDashboard(lote) {
               Insumo bandeja = $${+(lote.costoBandeja??0)} pulpa + $${+(lote.costoEtiqueta??0)} etiqueta + $${+(lote.costoOtrosEnvase??0)} otros = <strong>$${_cXBdj}/bandeja</strong>
             </div>
           </div>
+          <hr class="cfg-sep">
+          <div class="cfg-sec">Liquidación fin de ciclo</div>
+          <div class="cfg-field"><span>Precio gallina descarte ($/ave)</span><input type="number" id="cfg-gallina" value="${lote.precioGallinaDescarte??600}" min="0" step="50" oninput="fmtNum(this)"><small class="fmt-hint">${(+(lote.precioGallinaDescarte??600)).toLocaleString('es-CL')} · ${NUM(Math.round(proy[proy.length-1]?.aves||0))} aves ≈ ${MN(Math.round((proy[proy.length-1]?.aves||0)*(+(lote.precioGallinaDescarte??600))))}</small></div>
           <hr class="cfg-sep">
           <div class="cfg-sec">Costo alimento por periodo ($/kg)</div>
           ${[1,2,3,4,5,6,7].map(d=>`
@@ -1726,6 +1758,83 @@ function renderGraficos(lote) {
     options:{ responsive:true, maintainAspectRatio:false,
       plugins:{ legend:{ labels:{ font:{size:11} } } },
       scales:{ x:{ ticks:tFont, grid:{color:gColor} }, y:{ ticks:{...tFont, callback:v=>'$'+Math.round(v/1e6)+'M'}, grid:{color:gColor} } } }
+  });
+
+  dc('cascada');
+  renderCascada();
+}
+
+function renderCascada() {
+  const canvas = document.getElementById('cCascada');
+  if (!canvas || !proy) return;
+
+  const totVend = proy.reduce((a,d) => a + d.huevosVendibles, 0);
+  if (!totVend) return;
+
+  const precio  = proy.reduce((a,d) => a + d.ingreso, 0) / totVend;
+  const alimH   = proy.reduce((a,d) => a + d.costoAlim, 0) / totVend;
+  const envBH   = proy.reduce((a,d) => a + (d.envBandeja||0), 0) / totVend;
+  const envCH   = proy.reduce((a,d) => a + (d.envCaja||0), 0) / totVend;
+  const despH   = proy.reduce((a,d) => a + (d.costoDespacho||0), 0) / totVend;
+  const fijosH  = proy.reduce((a,d) => a + d.gastoDia, 0) / totVend;
+  const margenH = precio - alimH - envBH - envCH - despH - fijosH;
+
+  // Construir cascada: cada barra es [bottom, top] para Chart.js floating bars
+  const items = [
+    { lbl: ['Precio/h', `$${precio.toFixed(1)}`],           val: precio,  col: 'rgba(27,67,50,.8)',      isStart: true },
+    { lbl: ['Alimento', `-$${alimH.toFixed(1)}`],           val: alimH,   col: 'rgba(183,28,28,.75)'   },
+    { lbl: ['Bandeja',  `-$${envBH.toFixed(2)}`],           val: envBH,   col: 'rgba(121,85,72,.75)'   },
+    { lbl: ['Caja',     `-$${envCH.toFixed(2)}`],           val: envCH,   col: 'rgba(160,82,45,.75)'   },
+    { lbl: ['Despacho', `-$${despH.toFixed(2)}`],           val: despH,   col: 'rgba(230,81,0,.7)'     },
+    { lbl: ['G. fijos', `-$${fijosH.toFixed(2)}`],          val: fijosH,  col: 'rgba(240,165,0,.75)'   },
+    { lbl: ['Margen/h', `${margenH>=0?'+':''}$${margenH.toFixed(1)}`],
+      val: Math.abs(margenH), col: margenH >= 0 ? 'rgba(46,125,50,.85)' : 'rgba(183,28,28,.85)', isEnd: true },
+  ];
+
+  let top = precio;
+  const ranges = items.map(it => {
+    if (it.isStart) return [0, it.val];
+    if (it.isEnd)   return [Math.min(0, margenH), Math.max(0, margenH)];
+    const from = top - it.val;
+    top -= it.val;
+    return [from, from + it.val];
+  });
+
+  charts.cascada = new Chart(canvas, {
+    type: 'bar',
+    data: {
+      labels: items.map(i => i.lbl),
+      datasets: [{
+        data: ranges,
+        backgroundColor: items.map(i => i.col),
+        borderRadius: 3,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            title: ctx => ctx[0].label instanceof Array ? ctx[0].label[0] : ctx[0].label,
+            label: ctx => {
+              const [lo, hi] = ctx.raw;
+              const val = Math.abs(hi - lo);
+              const pct = precio > 0 ? (val / precio * 100).toFixed(1) : '0';
+              return [`$${val.toFixed(2)}/huevo`, `${pct}% del precio`];
+            }
+          }
+        }
+      },
+      scales: {
+        x: { ticks: { ...tFont, maxRotation: 0 }, grid: { color: gColor } },
+        y: {
+          ticks: { ...tFont, callback: v => '$' + v.toFixed(1) },
+          grid: { color: gColor }
+        }
+      }
+    }
   });
 }
 
@@ -2141,11 +2250,12 @@ function abrirModal(id) {
     form.precioHuevo.value      = l.precioHuevo;
     form.gastosMes.value        = l.gastosMes;
     form.pctNoVendible.value    = l.pctNoVendible ?? 2;
-    form.costoBandeja.value       = l.costoBandeja      ?? 20;
-    form.costoCaja.value          = l.costoCaja         ?? 150;
-    form.costoEtiqueta.value      = l.costoEtiqueta     ?? 0;
-    form.costoOtrosEnvase.value   = l.costoOtrosEnvase  ?? 0;
-    form.costoDespachoMes.value   = l.costoDespachoMes  ?? 300000;
+    form.costoBandeja.value            = l.costoBandeja          ?? 20;
+    form.costoCaja.value               = l.costoCaja             ?? 150;
+    form.costoEtiqueta.value           = l.costoEtiqueta         ?? 0;
+    form.costoOtrosEnvase.value        = l.costoOtrosEnvase      ?? 0;
+    form.costoDespachoMes.value        = l.costoDespachoMes      ?? 300000;
+    form.precioGallinaDescarte.value   = l.precioGallinaDescarte ?? 600;
     [1,2,3,4,5,6,7].forEach(d => form[`d${d}`].value = l.costoDieta[d] || '');
   } else {
     form.reset();
@@ -2194,9 +2304,10 @@ function guardarLote(e) {
     pctNoVendible:      +(f.pctNoVendible?.value    ?? 2),
     costoBandeja:       +(f.costoBandeja?.value     ?? 20),
     costoCaja:          +(f.costoCaja?.value         ?? 150),
-    costoEtiqueta:      +(f.costoEtiqueta?.value    ?? 0),
-    costoOtrosEnvase:   +(f.costoOtrosEnvase?.value ?? 0),
-    costoDespachoMes:   +(f.costoDespachoMes?.value ?? 300000),
+    costoEtiqueta:         +(f.costoEtiqueta?.value         ?? 0),
+    costoOtrosEnvase:      +(f.costoOtrosEnvase?.value      ?? 0),
+    costoDespachoMes:      +(f.costoDespachoMes?.value      ?? 300000),
+    precioGallinaDescarte: +(f.precioGallinaDescarte?.value ?? 600),
     costoDieta,
     gastosEspeciales,
   };
@@ -2221,9 +2332,10 @@ function aplicarConfig() {
   lote.pctNoVendible = +document.getElementById('cfg-pctNV').value;
   lote.costoBandeja      = +document.getElementById('cfg-bandeja').value;
   lote.costoCaja         = +document.getElementById('cfg-caja').value;
-  lote.costoEtiqueta     = +(document.getElementById('cfg-etiqueta')?.value    || 0);
-  lote.costoOtrosEnvase  = +(document.getElementById('cfg-otros-envase')?.value || 0);
-  lote.costoDespachoMes  = +(document.getElementById('cfg-despacho')?.value    || 300000);
+  lote.costoEtiqueta          = +(document.getElementById('cfg-etiqueta')?.value         || 0);
+  lote.costoOtrosEnvase       = +(document.getElementById('cfg-otros-envase')?.value      || 0);
+  lote.costoDespachoMes       = +(document.getElementById('cfg-despacho')?.value          || 300000);
+  lote.precioGallinaDescarte  = +(document.getElementById('cfg-gallina')?.value           || 600);
   [1,2,3,4,5,6,7].forEach(d => lote.costoDieta[d] = +document.getElementById(`cfg-d${d}`).value || 520);
   lote.consumoGrDieta = Object.fromEntries([1,2,3,4,5,6,7].map(d => [d, +(document.getElementById(`cfg-gr${d}`)?.value) || 0]));
   saveLote(lote);
@@ -2667,6 +2779,39 @@ function generarPDF() {
   const imgAcum = cAcum_.toDataURL('image/png');
   chAcum.destroy();
 
+  // Cascada de costos (waterfall)
+  const totVendPDF = proy.reduce((a,d)=>a+d.huevosVendibles,0);
+  let imgCascada = '';
+  if (totVendPDF > 0) {
+    const prH  = proy.reduce((a,d)=>a+d.ingreso,0)/totVendPDF;
+    const alH  = proy.reduce((a,d)=>a+d.costoAlim,0)/totVendPDF;
+    const ebH  = proy.reduce((a,d)=>a+(d.envBandeja||0),0)/totVendPDF;
+    const ecH  = proy.reduce((a,d)=>a+(d.envCaja||0),0)/totVendPDF;
+    const dpH  = proy.reduce((a,d)=>a+(d.costoDespacho||0),0)/totVendPDF;
+    const fjH  = proy.reduce((a,d)=>a+d.gastoDia,0)/totVendPDF;
+    const mgH  = prH - alH - ebH - ecH - dpH - fjH;
+    const wItems = [
+      { lbl:['Precio/h',`$${prH.toFixed(1)}`], val:prH, col:'rgba(27,67,50,.8)', isStart:true },
+      { lbl:['Alimento',`-$${alH.toFixed(1)}`], val:alH, col:'rgba(183,28,28,.75)' },
+      { lbl:['Bandeja',`-$${ebH.toFixed(2)}`],  val:ebH, col:'rgba(121,85,72,.75)' },
+      { lbl:['Caja',`-$${ecH.toFixed(2)}`],     val:ecH, col:'rgba(160,82,45,.75)' },
+      { lbl:['Despacho',`-$${dpH.toFixed(2)}`], val:dpH, col:'rgba(230,81,0,.7)'   },
+      { lbl:['G. fijos',`-$${fjH.toFixed(2)}`], val:fjH, col:'rgba(240,165,0,.75)' },
+      { lbl:['Margen/h',`${mgH>=0?'+':''}$${mgH.toFixed(1)}`], val:Math.abs(mgH), col:mgH>=0?'rgba(46,125,50,.85)':'rgba(183,28,28,.85)', isEnd:true },
+    ];
+    let topW = prH;
+    const wRanges = wItems.map(it => {
+      if (it.isStart) return [0, it.val];
+      if (it.isEnd)   return [Math.min(0,mgH), Math.max(0,mgH)];
+      const f = topW - it.val; topW -= it.val; return [f, f+it.val];
+    });
+    const cW = mkCanvas(); cW.height = 220;
+    const chW = new Chart(cW, { type:'bar', data:{ labels:wItems.map(i=>i.lbl), datasets:[{ data:wRanges, backgroundColor:wItems.map(i=>i.col), borderRadius:3, borderSkipped:false }]},
+      options:{ ...noAnim, plugins:{ legend:{display:false} }, scales:{ x:{ ticks:{...tFont,maxRotation:0}, grid:{color:gColor} }, y:{ ticks:{...tFont,callback:v=>'$'+v.toFixed(1)}, grid:{color:gColor} } } } });
+    imgCascada = cW.toDataURL('image/png');
+    chW.destroy();
+  }
+
   const nIni         = +lote.nAves;
   const semanasCiclo = lote.semanasCiclo || 100;
   const factPost     = (lote.factorPostura    ?? 100) / 100;
@@ -2760,6 +2905,7 @@ ${gastos.length ? `<div style="margin-bottom:16px;font-size:10pt;color:#555">
 ${imgFin  ? `<div><div style="font-size:8pt;color:#888;margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em">Ingreso y costo semanal</div><img class="ch" src="${imgFin}"></div>` : ''}
 ${imgPos  ? `<div><div style="font-size:8pt;color:#888;margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em">% Postura proyectada</div><img class="ch" src="${imgPos}"></div>` : ''}
 ${imgAcum ? `<div><div style="font-size:8pt;color:#888;margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em">Resultado neto acumulado</div><img class="ch" src="${imgAcum}"></div>` : ''}
+${imgCascada ? `<div><div style="font-size:8pt;color:#888;margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em">Cascada de costos por huevo (promedio ciclo)</div><img class="ch" src="${imgCascada}"></div>` : ''}
 
 <h2>Curvas de referencia — ${gen}</h2>
 <div style="font-size:8pt;color:#888;margin-bottom:6px">
