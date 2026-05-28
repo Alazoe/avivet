@@ -293,7 +293,7 @@
         <div class="grid g4">
           <div class="field">
             <label>N° de pabellones</label>
-            <input type="number" name="n_pabellones" min="1" placeholder="1">
+            <input type="number" name="n_pabellones" id="n_pabellones" min="1" placeholder="1" oninput="checkMultiplePabellones()">
           </div>
           <div class="field">
             <label>Largo (m)</label>
@@ -349,6 +349,14 @@
           </div>
         </div>
 
+        <!-- Dimensiones pabellones adicionales (aparece cuando N° > 1) -->
+        <div id="multi-pab-section" style="display:none; margin-top:14px;">
+          <div class="subsection">Dimensiones pabellones adicionales</div>
+          <p style="font-size:8.5pt;color:#666;margin-bottom:10px;">Completar solo si difieren del Pabellón 1.</p>
+          <div id="multi-pab-rows"></div>
+          <input type="hidden" name="pabellones_adicionales" id="pabellones_adicionales">
+        </div>
+
         <div class="subsection" style="margin-top:14px;">Ventilación e iluminación</div>
         <div class="grid g3">
           <div class="field">
@@ -360,10 +368,6 @@
               <option>Túnel</option>
               <option>Mixta</option>
             </select>
-          </div>
-          <div class="field">
-            <label>N° extractores / ventiladores</label>
-            <input type="number" name="n_extractores" min="0" placeholder="0">
           </div>
           <div class="field">
             <label>Tipo de iluminación</label>
@@ -463,9 +467,6 @@
                 <input type="text" id="res-eval-jaula" readonly placeholder="—" style="background:#e8f5e9;font-weight:700;">
               </div>
             </div>
-            <div class="ref-note" style="margin-top:8px;">
-              Referencias: <span>Convencional mín. 450 cm²/ave</span> · <span>Enriquecida mín. 750 cm²/ave</span> · <span>Óptimo producción ≥ 550 cm²/ave</span>
-            </div>
           </div>
         </div>
 
@@ -527,10 +528,6 @@
             <div class="result-row">
               <div class="result-badge"><span id="res-aves-m2">—</span><small>aves/m²</small></div>
               <div class="result-badge"><span id="res-m2-ave">—</span><small>m²/ave</small></div>
-              <div class="ref-note">
-                Referencias: <span>Ponedoras piso ≤ 9 aves/m²</span><br>
-                Óptimo: <span>6–7 aves/m²</span> · Recría: <span>≤ 12 aves/m² etapas tempranas</span>
-              </div>
             </div>
           </div>
         </div>
@@ -1006,6 +1003,57 @@
   // URL del Apps Script — reemplazar con la URL real al desplegar
   // ─────────────────────────────────────────────────────────
   const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbysLTpZKj4y47xd9qXM_WsZYJegyDN27UDajZr0JVpAg7J67YGqMt_ixVr3GJCWJcyljw/exec';
+
+  // ── PABELLONES MÚLTIPLES ─────────────────────────────────
+  function checkMultiplePabellones() {
+    const n = parseInt(document.getElementById('n_pabellones').value) || 1;
+    const section = document.getElementById('multi-pab-section');
+    const container = document.getElementById('multi-pab-rows');
+
+    if (n < 2) {
+      section.style.display = 'none';
+      container.innerHTML = '';
+      document.getElementById('pabellones_adicionales').value = '';
+      return;
+    }
+
+    section.style.display = 'block';
+    container.innerHTML = '';
+
+    for (let i = 2; i <= Math.min(n, 8); i++) {
+      const row = document.createElement('div');
+      row.style.cssText = 'display:grid;grid-template-columns:auto 1fr 1fr 1fr;gap:8px 14px;align-items:center;margin-bottom:10px;padding-bottom:10px;border-bottom:1px dotted #ddd;';
+      row.innerHTML = `
+        <div style="font-size:9pt;font-weight:700;color:#2e7d32;white-space:nowrap;">Pabellón ${i}</div>
+        <div class="field">
+          <label>Largo (m)</label>
+          <input type="number" id="pab${i}_largo" min="1" step="0.1" placeholder="ej. 50" oninput="serializePabellones()">
+        </div>
+        <div class="field">
+          <label>Ancho (m)</label>
+          <input type="number" id="pab${i}_ancho" min="1" step="0.1" placeholder="ej. 10" oninput="serializePabellones()">
+        </div>
+        <div class="field">
+          <label>Altura cumbrera (m)</label>
+          <input type="number" id="pab${i}_altura" min="1" step="0.1" placeholder="ej. 3.5" oninput="serializePabellones()">
+        </div>`;
+      container.appendChild(row);
+    }
+  }
+
+  function serializePabellones() {
+    const n = parseInt(document.getElementById('n_pabellones').value) || 1;
+    const result = [];
+    for (let i = 2; i <= Math.min(n, 8); i++) {
+      const largo  = document.getElementById('pab' + i + '_largo')?.value  || '';
+      const ancho  = document.getElementById('pab' + i + '_ancho')?.value  || '';
+      const altura = document.getElementById('pab' + i + '_altura')?.value || '';
+      if (largo || ancho || altura) {
+        result.push('Pab' + i + ': ' + [largo, ancho, altura].join('×') + ' m');
+      }
+    }
+    document.getElementById('pabellones_adicionales').value = result.join(' | ');
+  }
 
   // ── TABS ──────────────────────────────────────────────────
   function switchTab(id, btn) {
