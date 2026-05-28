@@ -85,6 +85,24 @@ body {
 
 /* ── Gráficos ── */
 .graficos-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 28px; }
+/* Flujo del ciclo */
+.flujo-barra{display:flex;height:26px;border-radius:3px;overflow:hidden;margin:14px 0 0}
+.flujo-seg{display:flex;align-items:center;justify-content:center;font-size:10px;letter-spacing:.05em;text-transform:uppercase;font-weight:600;color:rgba(255,255,255,.9);padding:0 6px;overflow:hidden;white-space:nowrap;min-width:0}
+.f-cri{background:#8d6e63}.f-p1{background:#a5d6a7;color:#1b5e20!important}.f-p2{background:#388e3c}.f-p3{background:#1b5e20}
+.flujo-tml{position:relative;height:68px;margin-top:0}
+.flujo-tml-line{position:absolute;top:9px;left:0;right:0;height:2px;background:var(--linea)}
+.flujo-hito{position:absolute;transform:translateX(-50%);text-align:center}
+.flujo-hito.hl{transform:none;left:0}.flujo-hito.hr{transform:none;right:0;left:auto}
+.flujo-hdot{width:14px;height:14px;border-radius:50%;border:2.5px solid;background:var(--papel);margin:2px auto}
+.flujo-hlbl{font-size:10px;font-weight:600;white-space:nowrap;margin-top:3px}
+.flujo-hsub{font-size:9px;color:var(--suave);white-space:nowrap}
+.flujo-cards{display:flex;align-items:stretch;gap:8px;margin-top:20px;flex-wrap:wrap}
+.flujo-card{flex:1;min-width:130px;background:var(--fondo);border:1px solid var(--linea);padding:12px 14px;border-radius:3px}
+.flujo-card-val{font-family:var(--ft);font-size:18px;font-weight:700;color:var(--prim);line-height:1}
+.flujo-card-val.ok{color:var(--ok)}.flujo-card-val.mal{color:var(--mal)}.flujo-card-val.gold{color:#e65100}
+.flujo-card-lbl{font-size:10px;color:var(--tenue);text-transform:uppercase;letter-spacing:.06em;margin-top:4px}
+.flujo-card-sub{font-size:11px;color:var(--suave);margin-top:2px}
+.flujo-arr{display:flex;align-items:center;color:var(--linea-f);font-size:20px;padding:0 2px;flex-shrink:0}
 .graficos-grid.full { grid-template-columns: 1fr; }
 .grafico-wrap { background: var(--papel); border: 1px solid var(--linea); padding: 20px 18px 14px; }
 .grafico-titulo { font-family: var(--fc); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--tenue); margin-bottom: 14px; }
@@ -263,6 +281,16 @@ td.real { background: rgba(27,94,32,.07) !important; font-weight: 600; }
         <span class="ficha-num" id="kpi-ebitda">—</span>
         <span class="ficha-lbl">EBITDA ciclo</span>
         <span class="ficha-sub" id="kpi-ebitda-sub">ingresos − alim − fijos − despacho − envase</span>
+      </div>
+      <div class="ficha">
+        <span class="ficha-num" id="kpi-ing">—</span>
+        <span class="ficha-lbl">Ingresos totales ciclo</span>
+        <span class="ficha-sub" id="kpi-ing-sub"></span>
+      </div>
+      <div class="ficha">
+        <span class="ficha-num" id="kpi-gastos">—</span>
+        <span class="ficha-lbl">Gastos fijos + despacho</span>
+        <span class="ficha-sub" id="kpi-gastos-sub">por mes</span>
       </div>
     </div>
   </section>
@@ -961,6 +989,87 @@ function selLote(id) {
 /* ════════════════════════════════════════════════════════════
    DASHBOARD
    ════════════════════════════════════════════════════════════ */
+/* ════════════════════════════════════════════════════════════
+   FLUJO DEL CICLO — timeline de etapas e hitos financieros
+   ════════════════════════════════════════════════════════════ */
+function renderFlujoCiclo(lote) {
+  const semMax  = lote.semanasCiclo || 100;
+  const gastos  = lote.gastosEspeciales || [];
+  const inv     = gastos.reduce((a,g)=>a+(+g.monto),0);
+  const repos   = calcCostoReposicion(lote);
+  const be      = calcBreakEven(proy);
+  const pico    = Math.max(...proy.map(d=>d.pos));
+  const semPico = proy.find(d=>d.pos===pico)?.sem || 0;
+  const semIP   = proy.find(d=>d.pos>0)?.sem || 18;   // inicio postura
+  const semPT   = Math.min(66, semMax);                // transición postura tardía
+
+  const semFecha = s => {
+    const d = new Date(lote.fechaNacimiento+'T12:00:00');
+    d.setDate(d.getDate()+(s-1)*7);
+    return d.toLocaleDateString('es-CL',{day:'numeric',month:'short',year:'numeric'});
+  };
+
+  // Widths del bar (% de semMax)
+  const criW = Math.round((semIP-1)/semMax*100);
+  const p1W  = Math.round(Math.max(0,semPico-semIP)/semMax*100);
+  const p2W  = Math.round(Math.max(0,semPT-semPico)/semMax*100);
+  const p3W  = Math.max(0, 100-criW-p1W-p2W);
+
+  // Segmentos del bar (solo los que tienen ancho)
+  const segHtml = [
+    criW>2  ? `<div class="flujo-seg f-cri" style="width:${criW}%">Crianza · sem 1–${semIP-1}</div>` : '',
+    p1W>2   ? `<div class="flujo-seg f-p1"  style="width:${p1W}%">Inicio postura</div>` : '',
+    p2W>2   ? `<div class="flujo-seg f-p2"  style="width:${p2W}%">Postura plena</div>` : '',
+    p3W>2   ? `<div class="flujo-seg f-p3"  style="width:${p3W}%">Postura tardía</div>` : '',
+  ].join('');
+
+  // Hitos en la línea de tiempo
+  const pctPos = s => Math.round((s-1)/Math.max(semMax-1,1)*100);
+  const hitos = [
+    {sem:1,       lbl:'Inicio',        sub:MN(inv)||'sin inversión', col:'#c62828', pin:'l'},
+    {sem:semIP,   lbl:'Inicia postura',sub:`Sem ${semIP}`,           col:'#2e7d32'},
+    {sem:semPico, lbl:`Pico ${pico.toFixed(0)}%`, sub:`Sem ${semPico} · ${semFecha(semPico)}`, col:'#1b4332'},
+    ...(be?[{sem:be.sem, lbl:'Break-even', sub:new Date(be.fecha+'T12:00:00').toLocaleDateString('es-CL',{day:'numeric',month:'short',year:'numeric'}), col:'#e65100'}]:[]),
+    {sem:semMax,  lbl:'Fin ciclo',     sub:`Repos. est. ${MN(repos.total)}`, col:'#b8860b', pin:'r'},
+  ];
+
+  const hitoHtml = hitos.map(h => {
+    const p  = pctPos(h.sem);
+    const pos = h.pin==='l' ? 'left:0;transform:none'
+              : h.pin==='r' ? 'right:0;left:auto;transform:none'
+              : `left:${p}%`;
+    return `<div class="flujo-hito${h.pin==='l'?' hl':h.pin==='r'?' hr':''}" style="${pos}">
+      <div class="flujo-hdot" style="border-color:${h.col}"></div>
+      <div class="flujo-hlbl" style="color:${h.col}">${h.lbl}</div>
+      <div class="flujo-hsub">${h.sub}</div>
+    </div>`;
+  }).join('');
+
+  // Tarjetas del flujo financiero
+  const card = (ico,lbl,val,cls,sub) =>
+    `<div class="flujo-card"><div class="flujo-card-val ${cls}">${ico}&thinsp;${val}</div>
+     <div class="flujo-card-lbl">${lbl}</div>
+     ${sub?`<div class="flujo-card-sub">${sub}</div>`:''}</div>`;
+
+  return `<section class="bloque">
+    <h2>Flujo del ciclo · ${semMax} semanas</h2>
+    <div class="flujo-barra">${segHtml}</div>
+    <div class="flujo-tml">
+      <div class="flujo-tml-line"></div>
+      ${hitoHtml}
+    </div>
+    <div class="flujo-cards">
+      ${card('↑','Gasto inicial', MN(inv)||'—', 'mal', gastos.length?gastos.length+' gastos especiales (sem 1)':'')}
+      <div class="flujo-arr">→</div>
+      ${card('▲','Pico de postura', pico.toFixed(1)+'%', 'ok', `Sem ${semPico} · ${semFecha(semPico)}`)}
+      <div class="flujo-arr">→</div>
+      ${card('✓','Recuperación inversión', be?'Sem '+be.sem:'Sin retorno', be?'ok':'mal', be?new Date(be.fecha+'T12:00:00').toLocaleDateString('es-CL',{day:'numeric',month:'short',year:'numeric'}):'')}
+      <div class="flujo-arr">→</div>
+      ${card('↺','Reposición estimada', MN(repos.total), 'gold', `${MN(repos.pollas)} pollas · ${MN(repos.alim)} alim. · ${MN(repos.fijos)} fijos`)}
+    </div>
+  </section>`;
+}
+
 function renderDashboard(lote) {
   const dFin  = proy[proy.length - 1];
   const dHoy  = proy.find(d => d.fecha === HOY) || dFin;
@@ -1027,9 +1136,27 @@ function renderDashboard(lote) {
       `Margen ${ebitdaMargen.toFixed(1)}% · excluye gastos especiales`;
   }
 
+  const elIng = document.getElementById('kpi-ing');
+  if (elIng) {
+    elIng.textContent = MN(totalIng);
+    const avgH = totalVendibles > 0 ? (totalIng / totalVendibles).toFixed(0) : 0;
+    document.getElementById('kpi-ing-sub').textContent =
+      `${NUM(totalVendibles)} huevos · $${avgH} prom/huevo`;
+  }
+
+  const elGastos = document.getElementById('kpi-gastos');
+  if (elGastos) {
+    const gFijos   = +lote.gastosMes;
+    const gDesp    = +(lote.costoDespachoMes ?? 300000);
+    elGastos.textContent = MN(gFijos + gDesp);
+    document.getElementById('kpi-gastos-sub').textContent =
+      `Fijos ${MN(gFijos)} · Despacho ${MN(gDesp)}`;
+  }
+
   const semCicloActual = lote.semanasCiclo || 100;
 
   document.getElementById('contenido').innerHTML = `
+  ${renderFlujoCiclo(lote)}
   <section id="graficos" class="bloque">
     <h2>Proyección financiera</h2>
     <p class="bloque-desc">
@@ -1830,10 +1957,10 @@ function confirmarEliminar() {
   </div>`;
   document.getElementById('metodo').style.display = 'none';
   document.getElementById('pie').style.display    = 'none';
-  ['kpi-huevos','kpi-pos','kpi-aves','kpi-ginv','kpi-res','kpi-roi','kpi-repos','kpi-ebitda'].forEach(id => {
+  ['kpi-huevos','kpi-pos','kpi-aves','kpi-ginv','kpi-res','kpi-roi','kpi-repos','kpi-ebitda','kpi-ing','kpi-gastos'].forEach(id => {
     const el = document.getElementById(id); if (el) el.textContent = '—';
   });
-  ['kpi-huevos-sub','kpi-pos-sub','kpi-aves-sub','kpi-res-sub','kpi-ginv-sub','kpi-roi-sub','kpi-repos-sub','kpi-ebitda-sub'].forEach(id => {
+  ['kpi-huevos-sub','kpi-pos-sub','kpi-aves-sub','kpi-res-sub','kpi-ginv-sub','kpi-roi-sub','kpi-repos-sub','kpi-ebitda-sub','kpi-ing-sub','kpi-gastos-sub'].forEach(id => {
     const el = document.getElementById(id); if (el) el.textContent = '';
   });
   document.getElementById('lote-nombre-txt').textContent = '';
