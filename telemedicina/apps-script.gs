@@ -193,6 +193,32 @@ function doPost(e) {
 
     sheet.appendRow(row);
 
+    // Notificación por correo
+    const productor = data['productor'] || 'Sin nombre';
+    const region    = data['region']    || '—';
+    const motivo    = data['motivo_consulta'] || '—';
+    const telefono  = data['telefono']  || '—';
+    const fecha     = data['fecha_consulta'] || Utilities.formatDate(new Date(), 'America/Santiago', 'dd/MM/yyyy');
+
+    MailApp.sendEmail({
+      to: 'alazoemv@gmail.com',
+      subject: '🐔 Nueva consulta AviVet — ' + productor + ' (' + region + ')',
+      body: [
+        'Se recibió una nueva planilla de telemedicina.',
+        '',
+        'Productor:  ' + productor,
+        'Región:     ' + region,
+        'Teléfono:   ' + telefono,
+        'Fecha:      ' + fecha,
+        'Motivo:     ' + motivo,
+        '',
+        data['fotos_drive_url'] ? 'Fotos: ' + data['fotos_drive_url'] : 'Sin fotos adjuntas.',
+        '',
+        'Ver todas las consultas:',
+        'https://avivet.cl/avivet/telemedicina/dashboard/',
+      ].join('\n')
+    });
+
     return ContentService
       .createTextOutput(JSON.stringify({ status: 'ok' }))
       .setMimeType(ContentService.MimeType.JSON);
