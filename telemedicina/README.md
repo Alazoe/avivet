@@ -1,17 +1,20 @@
 # Planilla Telemedicina Avícola — AviVet
 
-Formulario web para recopilar información de los productores antes o después de una sesión de telemedicina. Los datos se envían automáticamente a Google Sheets para construir una base de datos de consultas.
+Formulario web para recopilar información de productores antes o después de una sesión de telemedicina. Los datos se envían automáticamente a Google Sheets y las fotos a Google Drive.
 
-**URL pública:** [avivet.cl/avivet/telemedicina](https://avivet.cl/avivet/telemedicina/)
+| | URL |
+|---|---|
+| **Formulario (productores)** | [avivet.cl/avivet/telemedicina](https://avivet.cl/avivet/telemedicina/) |
+| **Panel de consultas (privado)** | [avivet.cl/avivet/telemedicina/dashboard](https://avivet.cl/avivet/telemedicina/dashboard/) |
 
 ---
 
-## Qué hace
+## Flujo de datos
 
-- El productor llena el formulario en su celular o computador.
-- Al hacer clic en **Enviar planilla**, los datos van via `fetch` al Apps Script desplegado.
-- El script escribe una fila nueva en la hoja **Consultas** del Google Sheet.
-- La primera vez que se recibe un envío, el script crea la hoja con encabezados formateados automáticamente.
+1. El productor llena el formulario y adjunta fotos.
+2. Al enviar, el navegador comprime las fotos (JPEG, máx. 1200px) y hace POST al Apps Script.
+3. El script guarda una fila en el Google Sheet y las fotos en una carpeta de Google Drive nombrada `FECHA_Productor`.
+4. El link a la carpeta queda en la columna **Fotos en Drive** del Sheet.
 
 ---
 
@@ -19,30 +22,29 @@ Formulario web para recopilar información de los productores antes o después d
 
 | # | Sección | Campos destacados |
 |---|---------|-------------------|
-| 1 | Identificación del productor | Nombre, teléfono, email, región |
-| 2 | Pabellón / galpón | Dimensiones (largo × ancho × altura), cubierta, muro, ventilación, iluminación |
-| 3 | Sistema de alojamiento | **Jaulas:** dimensiones + calculadora cm²/ave con semáforo de bienestar · **Piso:** m² + calculadora aves/m² · **Semilibertad** |
-| 4 | Equipamiento | Comederos, bebederos, nidales, fuente de agua, tratamiento |
-| 5 | Lote y parámetros productivos | Línea genética, semana de edad, % postura, peso corporal, consumo alimento/agua — para comparar con [curvas genéticas](https://avivet.cl/avivet/curvas-geneticas/) |
-| 6 | Nutrición | Tipo de alimento, marca, proteína, EM, calcio |
-| 7 | Sanidad | Vacunación, ectoparásitos, desinfección, registro productivo |
-| 8 | Motivo de consulta | Problema principal, descripción, tratamientos previos |
-| 9 | Fotos solicitadas | Checklist de 16 puntos fotográficos (pabellón, jaulas, aves, huevos, fecas, etc.) |
-| 10 | Observaciones adicionales | Campo libre |
+| 1 | Identificación | Nombre, teléfono, email, región (Valparaíso → Magallanes) |
+| 2 | Pabellón | Largo × ancho × altura, cubierta, muro, ventilación, iluminación. Si hay ≥ 2 pabellones, permite dimensionar cada uno |
+| 3 | Sistema de alojamiento | **Jaulas:** calculadora cm²/ave · **Piso:** calculadora aves/m² · **Semilibertad** |
+| 4 | Equipamiento | Comederos (tipo + diámetro), bebederos, nidales, fuente y tratamiento de agua |
+| 5 | Lote | N° lotes, línea genética, semana, etapa, aves, postura. Si hay ≥ 2 lotes, permite detallar cada uno |
+| 6 | Parámetros | Total huevos/día, % postura, peso corporal, humedad, termómetro + T° mínima |
+| 7 | Alimentación | Tipo (comercial/propio/mixto), N° veces al día, horarios, suplementos |
+| 8 | Sanidad | Vacunación, ectoparásitos, desinfección, registro productivo |
+| 9 | Motivo de consulta | Problema principal, descripción, tratamientos previos |
+| 10 | Fotos | Upload directo: cama/piso · nidales · ventilación/entrada · sospecha enfermedad |
 
 ---
 
-## Calculadora de densidad integrada
+## Panel de consultas (dashboard)
 
-### Jaulas en batería
-> Ingresa: largo × profundidad de la jaula (cm) + N° aves → calcula **cm²/ave** con evaluación automática:
-> - ✅ Óptimo: ≥ 550 cm²/ave
-> - ✅ Adecuado: ≥ 550 cm²/ave
-> - ⚠️ Mínimo bienestar: 450–549 cm²/ave
-> - ❌ Bajo: < 450 cm²/ave
+URL privada: `avivet.cl/avivet/telemedicina/dashboard/`
 
-### Sistema de piso
-> Ingresa: largo × ancho (m) + % área efectiva + N° aves → calcula **aves/m²** y **m²/ave**
+- **Acceso** por código (definido en `CODIGO_CORRECTO` en el HTML y `DATA_TOKEN` en el Apps Script).
+- **Estadísticas:** total de consultas, este mes, regiones, con fotos.
+- **Filtros:** búsqueda libre, región, motivo, sistema de alojamiento.
+- **Tarjetas** ordenadas de más reciente a más antigua.
+- **Detalle completo** al hacer clic en cada tarjeta.
+- **Link directo** a la carpeta de fotos en Drive.
 
 ---
 
@@ -50,42 +52,37 @@ Formulario web para recopilar información de los productores antes o después d
 
 | Archivo | Descripción |
 |---------|-------------|
-| `index.html` | Formulario web completo (HTML + CSS + JS, sin dependencias externas) |
-| `apps-script.gs` | Código del Google Apps Script que recibe los datos y los escribe en el Sheet |
+| `index.html` | Formulario público para productores |
+| `dashboard/index.html` | Panel privado de visualización de consultas |
+| `apps-script.gs` | Backend: recibe datos (POST), guarda fotos en Drive, devuelve datos al dashboard (GET) |
 
 ---
 
 ## Configuración del backend (Apps Script)
 
-El script ya está desplegado. Si necesitas volver a desplegarlo o migrar a otro sheet:
+El script ya está desplegado. Para re-desplegar o migrar:
 
 1. Abre [script.google.com](https://script.google.com) → pega el contenido de `apps-script.gs`.
-2. Reemplaza `SHEET_ID` con el ID de tu Google Sheet  
-   *(está en la URL: `docs.google.com/spreadsheets/d/**ID**/edit`)*.
-3. **Implementar → Nueva implementación:**
-   - Tipo: *Aplicación web*
-   - Ejecutar como: *Yo*
-   - Acceso: *Cualquier persona*
-4. Copia la URL generada y pégala en `index.html`:
-   ```js
-   const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/.../exec';
-   ```
-5. Commit + push para publicar el cambio.
+2. Reemplaza `SHEET_ID` con el ID de tu Google Sheet.
+3. Cambia `DATA_TOKEN` por tu código privado (debe coincidir con `CODIGO_CORRECTO` en `dashboard/index.html`).
+4. **Implementar → Nueva implementación:**
+   - Tipo: *Aplicación web* · Ejecutar como: *Yo* · Acceso: *Cualquier persona*
+5. Copia la URL y pégala en `index.html` y `dashboard/index.html` (`APPS_SCRIPT_URL`).
+6. Commit + push.
 
-### Base de datos actual
+### Recursos actuales
 - **Google Sheet:** [AviVet Telemedicina](https://docs.google.com/spreadsheets/d/1NpAJJkV1k6U-q1ZOCGFFoK8oyBAIWGH6535Wc-bA8Yw/edit)
-- **Apps Script URL:** `https://script.google.com/macros/s/AKfycbysLTpZKj4y47xd9qXM_WsZYJegyDN27UDajZr0JVpAg7J67YGqMt_ixVr3GJCWJcyljw/exec`
+- **Apps Script:** `https://script.google.com/macros/s/AKfycbysLTpZKj4y47xd9qXM_WsZYJegyDN27UDajZr0JVpAg7J67YGqMt_ixVr3GJCWJcyljw/exec`
+- **Fotos Drive:** carpeta `AviVet Telemedicina Fotos` en Google Drive
 
 ---
 
-## Uso con pacientes
-
-Puedes compartir el link directamente por WhatsApp antes de la consulta:
+## Compartir con pacientes
 
 ```
 Hola! Para preparar mejor nuestra sesión de telemedicina,
 te pido que completes esta planilla con los datos de tu plantel:
-https://avivet.cl/telemedicina
+https://avivet.cl/avivet/telemedicina/
 ```
 
 ---
