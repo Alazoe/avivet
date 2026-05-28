@@ -89,7 +89,6 @@ const COLUMNAS = [
   ['analisis_agua',          'Análisis de agua'],
   ['tipo_nidal',             'Tipo nidal'],
   ['n_nidales',              'N° nidales'],
-  ['aves_por_nidal',         'Aves por nidal'],
   ['material_nidal',         'Material nidal'],
   // Lote
   ['n_lotes',                'N° lotes en el plantel'],
@@ -103,22 +102,18 @@ const COLUMNAS = [
   ['mortalidad_pct',         'Mortalidad acumulada (%)'],
   ['sem_inicio_postura',     'Sem. inicio postura'],
   // Parámetros
+  ['total_huevos_dia',       'Total huevos producidos (día)'],
   ['pct_postura',            '% postura'],
   ['peso_corporal',          'Peso corporal (g/ave)'],
-  ['consumo_alimento',       'Consumo alimento (g/ave/día)'],
-  ['consumo_agua',           'Consumo agua (mL/ave/día)'],
-  ['peso_huevo',             'Peso huevo (g)'],
-  ['huevos_rotos_pct',       'Huevos rotos + sucios (%)'],
-  ['temperatura',            'Temperatura pabellón (°C)'],
   ['humedad',                'Humedad relativa (%)'],
-  // Nutrición
+  ['tiene_termometro',       '¿Tiene termómetro interior?'],
+  ['temp_minima',            'T° mínima registrada (°C)'],
+  ['lotes_adicionales',      'Datos lotes adicionales'],
+  // Alimentación
   ['tipo_alimento',          'Tipo alimento'],
-  ['marca_alimento',         'Marca / proveedor alimento'],
-  ['fase_racion',            'Fase / ración'],
-  ['proteina',               'Proteína (%)'],
-  ['energia_kcal',           'EM (kcal/kg)'],
-  ['calcio',                 'Calcio (%)'],
-  ['obs_alimentacion',       'Obs. alimentación'],
+  ['n_veces_alimentacion',   'N° veces alimenta al día'],
+  ['horarios_alimentacion',  'Horarios de alimentación'],
+  ['obs_alimentacion',       'Obs. alimentación / suplementos'],
   // Sanidad
   ['programa_vacunacion',    'Programa vacunación'],
   ['ultima_vacuna',          'Última vacuna'],

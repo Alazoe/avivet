@@ -695,7 +695,7 @@
         </div>
 
         <div class="subsection" style="margin-top:12px;">Nidales (si aplica — sistema piso)</div>
-        <div class="grid g4">
+        <div class="grid g3">
           <div class="field">
             <label>Tipo de nidal</label>
             <select name="tipo_nidal">
@@ -709,10 +709,6 @@
           <div class="field">
             <label>N° de nidales</label>
             <input type="number" name="n_nidales" min="0" placeholder="">
-          </div>
-          <div class="field">
-            <label>Aves por nidal</label>
-            <input type="text" name="aves_por_nidal" placeholder="">
           </div>
           <div class="field">
             <label>Material del nidal</label>
@@ -743,7 +739,7 @@
         <div class="grid g4">
           <div class="field">
             <label>N° de lotes en el plantel</label>
-            <input type="number" name="n_lotes" min="1" placeholder="ej. 2">
+            <input type="number" name="n_lotes" id="n_lotes" min="1" placeholder="ej. 2" oninput="checkMultipleLotes()">
           </div>
           <div class="field">
             <label>N° de este lote</label>
@@ -800,6 +796,10 @@
         <div class="subsection" style="margin-top:12px;">Parámetros actuales vs. curva de referencia</div>
         <div class="grid g4">
           <div class="field">
+            <label>Total huevos producidos (día)</label>
+            <input type="number" name="total_huevos_dia" min="0" placeholder="">
+          </div>
+          <div class="field">
             <label>% postura actual</label>
             <input type="number" name="pct_postura" min="0" max="100" step="0.1" placeholder="ej. 88">
           </div>
@@ -808,29 +808,29 @@
             <input type="number" name="peso_corporal" min="800" max="2500" step="1" placeholder="ej. 1850">
           </div>
           <div class="field">
-            <label>Consumo alimento (g/ave/día)</label>
-            <input type="number" name="consumo_alimento" min="50" max="200" step="0.5" placeholder="ej. 115">
-          </div>
-          <div class="field">
-            <label>Consumo agua (mL/ave/día)</label>
-            <input type="number" name="consumo_agua" min="50" max="500" step="1" placeholder="ej. 230">
-          </div>
-          <div class="field">
-            <label>Peso promedio del huevo (g)</label>
-            <input type="number" name="peso_huevo" min="40" max="80" step="0.5" placeholder="ej. 62">
-          </div>
-          <div class="field">
-            <label>Huevos rotos + sucios (%)</label>
-            <input type="number" name="huevos_rotos_pct" min="0" max="30" step="0.1" placeholder="ej. 2">
-          </div>
-          <div class="field">
-            <label>Temperatura interna (°C)</label>
-            <input type="number" name="temperatura" min="-5" max="45" step="0.5" placeholder="ej. 18">
-          </div>
-          <div class="field">
             <label>Humedad relativa (%)</label>
             <input type="number" name="humedad" min="0" max="100" step="1" placeholder="ej. 65">
           </div>
+          <div class="field">
+            <label>¿Cuenta con termómetro interior?</label>
+            <select name="tiene_termometro" onchange="toggleTermometro(this)">
+              <option value="">—</option>
+              <option>Sí</option>
+              <option>No</option>
+            </select>
+          </div>
+          <div class="field" id="campo_temp_minima" style="display:none;">
+            <label>T° mínima registrada (°C)</label>
+            <input type="number" name="temp_minima" min="-10" max="45" step="0.5" placeholder="ej. 8">
+          </div>
+        </div>
+
+        <!-- Lotes adicionales (aparece cuando N° lotes > 1) -->
+        <div id="multi-lote-section" style="display:none; margin-top:16px;">
+          <div class="subsection">Datos de lotes adicionales</div>
+          <p style="font-size:8.5pt;color:#666;margin-bottom:10px;">Complete los datos principales de cada lote adicional.</p>
+          <div id="multi-lote-rows"></div>
+          <input type="hidden" name="lotes_adicionales" id="lotes_adicionales">
         </div>
 
       </div>
@@ -838,50 +838,29 @@
 
     <!-- 6. NUTRICIÓN -->
     <div class="section">
-      <div class="section-title"><span class="num">6</span> Nutrición y alimentación</div>
+      <div class="section-title"><span class="num">6</span> Alimentación</div>
       <div class="section-body">
         <div class="grid g3">
           <div class="field">
             <label>Tipo de alimento</label>
             <select name="tipo_alimento">
               <option value="">—</option>
-              <option>Alimento comercial peletizado</option>
-              <option>Alimento comercial harinoso</option>
-              <option>Mezcla artesanal propia</option>
+              <option>Comercial</option>
+              <option>Propio (artesanal)</option>
               <option>Mixto</option>
             </select>
           </div>
           <div class="field">
-            <label>Marca / proveedor</label>
-            <input type="text" name="marca_alimento" placeholder="ej. AgroSuper, El Trébol…">
+            <label>N° veces que alimenta al día</label>
+            <input type="number" name="n_veces_alimentacion" min="1" max="10" placeholder="ej. 2">
           </div>
           <div class="field">
-            <label>Fase / tipo de ración</label>
-            <select name="fase_racion">
-              <option value="">—</option>
-              <option>Iniciadora (0–6 sem)</option>
-              <option>Crecimiento (7–12 sem)</option>
-              <option>Desarrollo (13–16 sem)</option>
-              <option>Pre-postura</option>
-              <option>Postura pico</option>
-              <option>Postura mantenimiento</option>
-            </select>
-          </div>
-          <div class="field">
-            <label>Proteína declarada (%)</label>
-            <input type="number" name="proteina" min="10" max="30" step="0.1" placeholder="ej. 16">
-          </div>
-          <div class="field">
-            <label>Energía Metabolizable (kcal/kg)</label>
-            <input type="number" name="energia_kcal" min="2000" max="3200" step="1" placeholder="ej. 2750">
-          </div>
-          <div class="field">
-            <label>Calcio declarado (%)</label>
-            <input type="number" name="calcio" min="0" max="5" step="0.01" placeholder="ej. 3.5">
+            <label>Horarios de alimentación</label>
+            <input type="text" name="horarios_alimentacion" placeholder="ej. 08:00 y 16:00">
           </div>
           <div class="field span3">
             <label>Observaciones / suplementos</label>
-            <textarea name="obs_alimentacion" placeholder="ej. suministra conchilla de ostras, vitaminas en agua los lunes…"></textarea>
+            <textarea name="obs_alimentacion" placeholder="ej. conchilla de ostras adicional, vitaminas en agua los lunes…"></textarea>
           </div>
         </div>
       </div>
@@ -1054,6 +1033,98 @@
   // URL del Apps Script — reemplazar con la URL real al desplegar
   // ─────────────────────────────────────────────────────────
   const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbysLTpZKj4y47xd9qXM_WsZYJegyDN27UDajZr0JVpAg7J67YGqMt_ixVr3GJCWJcyljw/exec';
+
+  // ── TERMÓMETRO ───────────────────────────────────────────
+  function toggleTermometro(sel) {
+    document.getElementById('campo_temp_minima').style.display = sel.value === 'Sí' ? '' : 'none';
+  }
+
+  // ── LOTES MÚLTIPLES ──────────────────────────────────────
+  function checkMultipleLotes() {
+    const n = parseInt(document.getElementById('n_lotes').value) || 1;
+    const section   = document.getElementById('multi-lote-section');
+    const container = document.getElementById('multi-lote-rows');
+
+    if (n < 2) { section.style.display = 'none'; container.innerHTML = ''; return; }
+
+    section.style.display = 'block';
+    container.innerHTML = '';
+
+    for (let i = 2; i <= Math.min(n, 6); i++) {
+      const panel = document.createElement('div');
+      panel.style.cssText = 'border:1px solid #c8e6c9;border-radius:6px;padding:12px 14px;margin-bottom:12px;background:#fafafa;';
+      panel.innerHTML = `
+        <div style="font-size:9.5pt;font-weight:700;color:#2e7d32;margin-bottom:10px;">Lote ${i}</div>
+        <div class="grid g4" style="gap:8px 14px;">
+          <div class="field">
+            <label>Línea genética</label>
+            <select id="lote${i}_genetica" onchange="serializeLotes()">
+              <option value="">—</option>
+              <option>Hy-Line Brown</option><option>Hy-Line W-80</option>
+              <option>Lohmann Brown</option><option>Nick Brown</option><option>Otra</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Semana de edad</label>
+            <input type="number" id="lote${i}_semana" min="1" max="100" placeholder="ej. 35" oninput="serializeLotes()">
+          </div>
+          <div class="field">
+            <label>Etapa productiva</label>
+            <select id="lote${i}_etapa" onchange="serializeLotes()">
+              <option value="">—</option>
+              <option>Recría (0–16 sem)</option>
+              <option>Pico (17–30 sem)</option>
+              <option>Producción estable</option>
+              <option>Final postura</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>N° aves actuales</label>
+            <input type="number" id="lote${i}_aves" min="1" placeholder="" oninput="serializeLotes()">
+          </div>
+          <div class="field">
+            <label>% postura</label>
+            <input type="number" id="lote${i}_postura" min="0" max="100" step="0.1" placeholder="" oninput="serializeLotes()">
+          </div>
+          <div class="field">
+            <label>Total huevos/día</label>
+            <input type="number" id="lote${i}_huevos" min="0" placeholder="" oninput="serializeLotes()">
+          </div>
+          <div class="field">
+            <label>Sistema alojamiento</label>
+            <select id="lote${i}_sistema" onchange="serializeLotes()">
+              <option value="">—</option>
+              <option>Jaulas</option><option>Piso</option><option>Semilibertad</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Pabellón / ubicación</label>
+            <input type="text" id="lote${i}_pabellon" placeholder="ej. Pabellón 2" oninput="serializeLotes()">
+          </div>
+        </div>`;
+      container.appendChild(panel);
+    }
+  }
+
+  function serializeLotes() {
+    const n = parseInt(document.getElementById('n_lotes').value) || 1;
+    const result = [];
+    for (let i = 2; i <= Math.min(n, 6); i++) {
+      const vals = {
+        genetica: document.getElementById('lote' + i + '_genetica')?.value,
+        semana:   document.getElementById('lote' + i + '_semana')?.value,
+        etapa:    document.getElementById('lote' + i + '_etapa')?.value,
+        aves:     document.getElementById('lote' + i + '_aves')?.value,
+        postura:  document.getElementById('lote' + i + '_postura')?.value,
+        huevos:   document.getElementById('lote' + i + '_huevos')?.value,
+        sistema:  document.getElementById('lote' + i + '_sistema')?.value,
+        pabellon: document.getElementById('lote' + i + '_pabellon')?.value,
+      };
+      const partes = Object.entries(vals).filter(([,v]) => v).map(([k,v]) => k + ':' + v);
+      if (partes.length) result.push('Lote' + i + '{' + partes.join(',') + '}');
+    }
+    document.getElementById('lotes_adicionales').value = result.join(' | ');
+  }
 
   // ── PABELLONES MÚLTIPLES ─────────────────────────────────
   function checkMultiplePabellones() {
