@@ -148,6 +148,52 @@ const LINEAS = {
     // mort. acumulada por fase (%) — oficial HLB Jaula 2024
     mortCrianza: [0.40, 0.55, 0.65, 0.75, 0.85, 0.95, 1.05, 1.15, 1.25, 1.35, 1.45, 1.55, 1.63, 1.70, 1.78, 1.85, 2.00],
     mortPostura: [0.12, 0.12, 0.12, 0.24, 0.35, 0.35, 0.47, 0.59, 0.59, 0.71, 0.71, 0.83, 0.83, 0.94, 0.94, 1.06, 1.06, 1.18, 1.18, 1.30, 1.30, 1.41, 1.41, 1.53, 1.53, 1.65, 1.65, 1.77, 1.89, 1.89, 2.00, 2.12, 2.12, 2.24, 2.36, 2.36, 2.48, 2.59, 2.59, 2.71, 2.83, 2.95, 3.06, 3.18, 3.30, 3.42, 3.42, 3.53, 3.65, 3.65, 3.77, 3.89, 4.01, 4.24, 4.36, 4.60, 4.71, 4.95, 5.07, 5.30, 5.42, 5.66, 5.78, 6.01, 6.13, 6.36, 6.48, 6.72, 6.84, 7.07, 7.19, 7.43, 7.66, 7.90, 8.13, 8.37, 8.60, 8.84, 8.96, 9.19, 9.43, 9.66, 9.90],
+    // distribución semanal tamaño huevo — oficial HLB Jaula 2024 (biweekly sem 18-100)
+    // [sem, %chico 43-53g, %mediano 53-63g, %grande 63-73g, %muyGrande >73g]
+    tamHuevo: [
+      [18, 94.91,  4.42,  0.27, 0.41],
+      [20, 62.13, 36.41,  1.06, 0.40],
+      [22, 31.12, 64.95,  3.48, 0.45],
+      [24, 12.01, 78.30,  9.16, 0.53],
+      [26,  3.93, 78.25, 17.23, 0.59],
+      [28,  1.31, 72.42, 25.62, 0.64],
+      [30,  0.49, 65.63, 33.18, 0.70],
+      [32,  0.21, 59.40, 39.62, 0.77],
+      [34,  0.10, 54.02, 45.02, 0.86],
+      [36,  0.05, 49.48, 49.50, 0.96],
+      [38,  0.03, 45.68, 53.22, 1.07],
+      [40,  0.02, 42.49, 56.29, 1.20],
+      [42,  0.01, 39.81, 58.84, 1.33],
+      [44,  0.01, 37.54, 60.97, 1.48],
+      [46,  0.01, 35.60, 62.76, 1.63],
+      [48,  0.01, 33.91, 64.28, 1.80],
+      [50,  0.01, 32.42, 65.59, 1.98],
+      [52,  0.01, 31.10, 66.73, 2.17],
+      [54,  0.00, 29.89, 67.74, 2.36],
+      [56,  0.00, 28.79, 68.64, 2.57],
+      [58,  0.00, 27.76, 69.45, 2.79],
+      [60,  0.00, 26.80, 70.19, 3.01],
+      [62,  0.00, 25.89, 70.86, 3.24],
+      [64,  0.00, 25.03, 71.49, 3.48],
+      [66,  0.00, 24.20, 72.08, 3.72],
+      [68,  0.00, 23.41, 72.63, 3.96],
+      [70,  0.00, 22.64, 73.14, 4.21],
+      [72,  0.00, 21.90, 73.63, 4.46],
+      [74,  0.00, 21.18, 74.10, 4.71],
+      [76,  0.00, 20.49, 74.54, 4.96],
+      [78,  0.00, 19.82, 74.97, 5.21],
+      [80,  0.00, 19.17, 75.38, 5.45],
+      [82,  0.00, 18.54, 75.77, 5.69],
+      [84,  0.00, 17.93, 76.14, 5.93],
+      [86,  0.00, 17.34, 76.50, 6.16],
+      [88,  0.00, 16.76, 76.85, 6.38],
+      [90,  0.00, 16.21, 77.19, 6.60],
+      [92,  0.00, 15.68, 77.51, 6.81],
+      [94,  0.00, 15.16, 77.83, 7.01],
+      [96,  0.00, 14.66, 78.13, 7.20],
+      [98,  0.00, 14.19, 78.42, 7.39],
+      [100, 0.00, 13.73, 78.70, 7.57],
+    ],
   },
 
   'Hy-Line W-80': {
@@ -265,6 +311,7 @@ const LINEAS = {
     // mort. acumulada por fase (%) — oficial Hy-Line W-80 Management Guide, Ene 2024
     mortCrianza: [1.0, 1.3, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.0, 2.2, 2.2, 2.3, 2.4, 2.6, 2.7, 2.8, 3.0, 3.2],
     mortPostura: [0.0, 0.2, 0.5, 0.6, 0.8, 0.9, 1.1, 1.2, 1.3, 1.4, 1.6, 1.7, 1.9, 2.0, 2.2, 2.3, 2.5, 2.6, 2.8, 2.9, 3.0, 3.2, 3.3, 3.4, 3.5, 3.6, 3.6, 3.8, 3.9, 4.0, 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7, 4.8, 4.9, 4.9, 5.0, 5.1, 5.2, 5.3, 5.4, 5.6, 5.7, 5.8, 6.0, 6.0, 6.2, 6.3, 6.4, 6.6, 6.7, 6.8, 7.0, 7.1, 7.3, 7.4, 7.6, 7.7, 7.9, 8.0, 8.1, 8.3, 8.4, 8.5, 8.6, 8.8, 8.9, 9.1, 9.2, 9.4, 9.5, 9.7, 9.8, 10.0, 10.1, 10.3, 10.5, 10.6],
+    tamHuevo: null, // pendiente — línea blanca, valores distintos a líneas marrones
   },
 
   'Lohmann Brown': {
@@ -386,6 +433,7 @@ const LINEAS = {
     // mort. acumulada por fase (%) — viabilidad oficial: recría 98-99%, postura 72sem 94-95%, 90sem 91-92%
     mortCrianza: [0.5, 0.6, 0.6, 0.7, 0.7, 0.8, 0.9, 0.9, 1.0, 1.0, 1.1, 1.1, 1.2, 1.2, 1.3, 1.3, 1.4, 1.5],
     mortPostura: [0.0, 0.2, 0.5, 0.6, 0.8, 0.9, 1.1, 1.2, 1.3, 1.4, 1.6, 1.7, 1.9, 2.0, 2.2, 2.3, 2.5, 2.6, 2.8, 2.9, 3.0, 3.2, 3.3, 3.4, 3.5, 3.6, 3.6, 3.8, 3.9, 4.0, 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7, 4.8, 4.9, 4.9, 5.0, 5.1, 5.2, 5.3, 5.4, 5.6, 5.7, 5.8, 6.0, 6.0, 6.2, 6.3, 6.4, 6.6, 6.7, 6.8, 7.0, 7.1, 7.3, 7.4, 7.6, 7.7, 7.9, 8.0, 8.1, 8.3, 8.4, 8.5, 8.6, 8.8, 8.9, 9.1, 9.2, 9.4, 9.5, 9.7, 9.8, 10.0, 10.1, 10.3, 10.5, 10.6],
+    tamHuevo: 'ref-hlb', // referencia HLB Jaula 2024 — pendiente datos específicos Lohmann
   },
 
   'Nick Brown': {
@@ -504,6 +552,7 @@ const LINEAS = {
     // mort. acumulada por fase (%) — estimado (*) basado en perfil W-80
     mortCrianza: [1.0, 1.3, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.0, 2.2, 2.2, 2.3, 2.4, 2.6, 2.7, 2.8, 3.0, 3.2],
     mortPostura: [0.0, 0.2, 0.5, 0.6, 0.8, 0.9, 1.1, 1.2, 1.3, 1.4, 1.6, 1.7, 1.9, 2.0, 2.2, 2.3, 2.5, 2.6, 2.8, 2.9, 3.0, 3.2, 3.3, 3.4, 3.5, 3.6, 3.6, 3.8, 3.9, 4.0, 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7, 4.8, 4.9, 4.9, 5.0, 5.1, 5.2, 5.3, 5.4, 5.6, 5.7, 5.8, 6.0, 6.0, 6.2, 6.3, 6.4, 6.6, 6.7, 6.8, 7.0, 7.1, 7.3, 7.4, 7.6, 7.7, 7.9, 8.0, 8.1, 8.3, 8.4, 8.5, 8.6, 8.8, 8.9, 9.1, 9.2, 9.4, 9.5, 9.7, 9.8, 10.0, 10.1, 10.3, 10.5, 10.6],
+    tamHuevo: 'ref-hlb', // referencia HLB Jaula 2024 — pendiente datos específicos Nick
   },
 
   'Dekalb Brown': {
@@ -622,6 +671,7 @@ const LINEAS = {
     // mort. acumulada por fase (%) — estimado (*) basado en perfil W-80
     mortCrianza: [1.0, 1.3, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.0, 2.2, 2.2, 2.3, 2.4, 2.6, 2.7, 2.8, 3.0],
     mortPostura: [0.0, 0.0, 0.2, 0.5, 0.6, 0.8, 0.9, 1.1, 1.2, 1.3, 1.4, 1.6, 1.7, 1.9, 2.0, 2.2, 2.3, 2.5, 2.6, 2.8, 2.9, 3.0, 3.2, 3.3, 3.4, 3.5, 3.6, 3.6, 3.8, 3.9, 4.0, 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7, 4.8, 4.9, 4.9, 5.0, 5.1, 5.2, 5.3, 5.4, 5.6, 5.7, 5.8, 6.0, 6.0, 6.2, 6.3, 6.4, 6.6, 6.7, 6.8, 7.0, 7.1, 7.3, 7.4, 7.6, 7.7, 7.9, 8.0, 8.1, 8.3, 8.4, 8.5, 8.6, 8.8, 8.9, 9.1, 9.2, 9.4, 9.5, 9.7, 9.8, 10.0, 10.1, 10.3, 10.5, 10.6],
+    tamHuevo: 'ref-hlb', // referencia HLB Jaula 2024 — pendiente datos específicos Dekalb
   },
 };
 
@@ -742,6 +792,52 @@ function renderPostura() {
   }).join('');
   document.querySelector('#tabla-postura thead').innerHTML = th;
   document.querySelector('#tabla-postura tbody').innerHTML = filas;
+
+  renderTamHuevo();
+}
+
+// ── DISTRIBUCIÓN TAMAÑO HUEVO ──────────────────────────────────────────
+function getTamHuevoData() {
+  const L = LINEAS[lineaSel];
+  if (!L.tamHuevo) return null;
+  if (Array.isArray(L.tamHuevo)) return { datos: L.tamHuevo, esRef: false };
+  if (L.tamHuevo === 'ref-hlb') return { datos: LINEAS['Hy-Line Brown'].tamHuevo, esRef: true };
+  return null;
+}
+
+function renderTamHuevo() {
+  const sec = document.getElementById('tam-huevo-section');
+  if (!sec) return;
+  const result = getTamHuevoData();
+  if (!result) { sec.innerHTML = ''; return; }
+
+  const { datos, esRef } = result;
+  const nota = esRef
+    ? `<span class="nota-fuente">(*) Referencia aplicada desde Hy-Line Brown Jaula 2024 — pendiente datos específicos de esta línea</span>`
+    : `<span class="nota-fuente">Hy-Line Brown Jaula 2024 · Tabla de distribución semanal</span>`;
+
+  const filas = datos.map(r =>
+    `<tr><td>${r[0]}</td><td>${r[1].toFixed(2)}</td><td>${r[2].toFixed(2)}</td><td>${r[3].toFixed(2)}</td><td>${r[4].toFixed(2)}</td></tr>`
+  ).join('');
+
+  sec.innerHTML = `
+    <h3 style="font-family:var(--fuente-t);font-size:20px;font-weight:600;color:var(--prim);margin-bottom:10px">
+      Distribución semanal del tamaño de huevo
+    </h3>
+    ${nota}
+    <p style="font-size:13px;color:var(--tenue);margin:8px 0 12px">Datos biweekly (sem pares). Clasificación por peso promedio del huevo semanal.</p>
+    <div class="tabla-wrap">
+      <table>
+        <thead><tr>
+          <th>Sem</th>
+          <th>Chico 43–53 g (%)</th>
+          <th>Mediano 53–63 g (%)</th>
+          <th>Grande 63–73 g (%)</th>
+          <th>Muy grande &gt;73 g (%)</th>
+        </tr></thead>
+        <tbody>${filas}</tbody>
+      </table>
+    </div>`;
 }
 
 // ── GRÁFICO SVG ────────────────────────────────────────────────────────
@@ -994,6 +1090,26 @@ function exportarExcel() {
   const wsEq = XLSX.utils.aoa_to_sheet(eqData);
   wsEq['!cols'] = [22, 10, 14, 18].map(w => ({ wch: w }));
   XLSX.utils.book_append_sheet(wb, wsEq, 'Equipamiento');
+
+  // ── Hoja 4: Tamaño de Huevo ──────────────────────────────────────────
+  const tamResult = getTamHuevoData();
+  if (tamResult) {
+    const { datos: tamDatos, esRef } = tamResult;
+    const fuenteTam = esRef
+      ? '(*) Referencia aplicada desde Hy-Line Brown Jaula 2024 — pendiente datos específicos de esta línea'
+      : 'Hy-Line Brown Jaula 2024 · Tabla de calidad y distribución del tamaño de huevo';
+    const tamData = [
+      ['Línea genética:', lineaSel],
+      ['Fuente:', fuenteTam],
+      ['Nota:', 'Datos biweekly (sem pares). Clasificación por peso promedio del huevo semanal.'],
+      [],
+      ['Semana', '% Chico 43-53 g', '% Mediano 53-63 g', '% Grande 63-73 g', '% Muy grande >73 g'],
+    ];
+    tamDatos.forEach(r => tamData.push([r[0], r[1], r[2], r[3], r[4]]));
+    const wsTam = XLSX.utils.aoa_to_sheet(tamData);
+    wsTam['!cols'] = [10, 18, 20, 18, 20].map(w => ({ wch: w }));
+    XLSX.utils.book_append_sheet(wb, wsTam, 'Tamaño Huevo');
+  }
 
   const fecha    = new Date().toISOString().slice(0, 10);
   const nombreFn = `curva-genetica_${lineaSel.replace(/[\s/]/g, '-')}_${fecha}.xlsx`;
