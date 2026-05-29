@@ -831,12 +831,18 @@ function renderResumen(registros, curvaRef) {
       </div>
     </div>
     <div class="card" id="hist-card" style="display:none;border-left:4px solid var(--verde)">
-      <h3 id="hist-titulo">Distribución de pesos</h3>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <h3 id="hist-titulo" style="margin:0">Distribución de pesos</h3>
+        <button onclick="exportarPDFSemanal()" style="background:#e3f2fd;color:#1565c0;border:1px solid #bbdefb;border-radius:8px;padding:6px 12px;font-size:.78rem;font-weight:600;cursor:pointer">📄 PDF semana</button>
+      </div>
       <p style="font-size:.75rem;color:#888;margin-bottom:8px">Verde ±10% · Amarillo ±20% · Rojo fuera · Curva azul = distribución normal · CV en esquina superior derecha</p>
       <div id="hist-container"></div>
     </div>
     <div class="card">
-      <h3>Uniformidad vs curva esperada</h3>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <h3 style="margin:0">Uniformidad vs curva esperada</h3>
+        <button onclick="exportarPDFAcumulado()" style="background:#e3f2fd;color:#1565c0;border:1px solid #bbdefb;border-radius:8px;padding:6px 12px;font-size:.78rem;font-weight:600;cursor:pointer">📄 PDF acumulado</button>
+      </div>
       <canvas id="grafico-canvas" height="220"></canvas>
     </div>`;
 
@@ -892,12 +898,142 @@ function renderGrafico(registros, curvaRef) {
   semanas.forEach(s => ctx.fillText('S'+s,xP(s),H-pad.b+16));
 }
 
+// ══ EXPORTAR PDF ═════════════════════════════════════════════
+function exportarPDFSemanal() {
+  const semana = window._histSemanaActual;
+  if (!semana) { toast('Selecciona una semana del historial primero'); return; }
+  const registros = window._histRegistros || [];
+  const curvaRef  = window._histCurva || {};
+  const loteId    = document.getElementById('sel-lote-hist').value;
+  const loteObj   = lotes.find(l => l.id === loteId);
+  const r = registros.find(x => x.semana === semana);
+  if (!r) return;
+
+  const ref      = curvaRef[semana];
+  const cvNum    = r.cv * 100;
+  const unifNum  = r.uniformidad * 100;
+  const diff     = ref ? (r.promedio - ref.prom) / ref.prom * 100 : null;
+  const unifMin  = ref ? ref.unif * 100 : 85;
+  const histSVG  = r.pesosRaw?.length ? renderHistogramaSVG(r.pesosRaw, ref) : '';
+  const cvColor  = cvNum<=10?'#2e7d32':cvNum<=15?'#e65100':'#c62828';
+  const uColor   = unifNum>=unifMin?'#2e7d32':unifNum>=unifMin-10?'#e65100':'#c62828';
+  const pColor   = diff===null?'#212121':Math.abs(diff)<=5?'#2e7d32':'#c62828';
+
+  let alertaHtml = '';
+  if (diff !== null) {
+    const ok = Math.abs(diff)<=5;
+    const bajo = diff < 0;
+    alertaHtml = `<div style="padding:9px 13px;border-radius:7px;font-size:.85rem;margin:10px 0;background:${ok?'#e8f5e9':bajo?'#fff3e0':'#e3f2fd'};color:${ok?'#2e7d32':bajo?'#e65100':'#1565c0'}">
+      ${ok?'✅':bajo?'⚠️':'📈'} Curva <b>${loteObj?.lineaGenetica||'estándar'}</b>: esperado <b>${ref.prom.toFixed(3)} kg</b> — medido ${ok?'dentro de curva':bajo?Math.abs(diff).toFixed(1)+'% bajo curva':diff.toFixed(1)+'% sobre curva'}
+    </div>`;
+  }
+
+  const html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">
+<title>Pesaje S${semana} · ${loteObj?.nombre||''}</title>
+<style>
+body{font-family:system-ui,sans-serif;margin:24px;color:#212121;font-size:14px}
+.hdr{display:flex;align-items:center;border-bottom:3px solid #2e7d32;padding-bottom:14px;margin-bottom:18px}
+.logo{font-size:2.8rem;margin-right:14px}h1{font-size:1.2rem;color:#2e7d32;margin:0}
+.sub{font-size:.85rem;color:#666;margin:3px 0 0}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:16px 0}
+.stat{background:#f5f5f5;border-radius:8px;padding:12px;text-align:center}
+.stat .v{font-size:1.45rem;font-weight:700}.stat .l{font-size:.72rem;color:#777;margin-top:2px}
+.footer{margin-top:22px;font-size:.72rem;color:#aaa;text-align:center;border-top:1px solid #eee;padding-top:8px}
+@media print{body{margin:8mm}}
+</style></head><body onload="window.print()">
+<div class="hdr"><div class="logo">🐔</div><div>
+  <h1>Informe de Pesaje — Semana ${semana}</h1>
+  <div class="sub">${loteObj?.nombre||''} · ${loteObj?.lineaGenetica||''} · ${r.fecha} · ${r.nAves} aves pesadas</div>
+</div></div>
+<div class="stats">
+  <div class="stat"><div class="v" style="color:${pColor}">${r.promedio.toFixed(3)} kg</div><div class="l">Promedio</div></div>
+  <div class="stat"><div class="v" style="color:${uColor}">${unifNum.toFixed(1)}%</div><div class="l">Uniformidad</div></div>
+  <div class="stat"><div class="v" style="color:${cvColor}">${cvNum.toFixed(1)}%</div><div class="l">CV%</div></div>
+  <div class="stat"><div class="v">${r.nAves}</div><div class="l">Aves pesadas</div></div>
+</div>
+${alertaHtml}
+<div style="margin:16px 0">${histSVG}</div>
+<div class="footer">AviVet · avivet.cl · ${new Date().toLocaleDateString('es-CL',{day:'2-digit',month:'long',year:'numeric'})}</div>
+</body></html>`;
+
+  const win = window.open('', '_blank');
+  if (!win) { toast('Activa ventanas emergentes en el navegador para exportar'); return; }
+  win.document.write(html);
+  win.document.close();
+}
+
+function exportarPDFAcumulado() {
+  const registros = window._histRegistros || [];
+  const curvaRef  = window._histCurva || {};
+  const loteId    = document.getElementById('sel-lote-hist').value;
+  const loteObj   = lotes.find(l => l.id === loteId);
+  if (!registros.length) { toast('Sin registros para exportar'); return; }
+
+  const canvas   = document.getElementById('grafico-canvas');
+  const chartImg = canvas ? canvas.toDataURL('image/png') : null;
+
+  const filas = registros.map(r => {
+    const ref     = curvaRef[r.semana];
+    const unifNum = r.uniformidad * 100;
+    const cvNum   = r.cv * 100;
+    const diff    = ref ? (r.promedio - ref.prom) / ref.prom * 100 : null;
+    const unifMin = ref ? ref.unif * 100 : 85;
+    const uColor  = unifNum>=unifMin?'#2e7d32':unifNum>=unifMin-10?'#e65100':'#c62828';
+    const cColor  = cvNum<=10?'#2e7d32':cvNum<=15?'#e65100':'#c62828';
+    const dStr    = diff!==null ? `${diff>=0?'+':''}${diff.toFixed(1)}%` : '—';
+    const dColor  = diff!==null ? (Math.abs(diff)<=5?'#2e7d32':diff<0?'#e65100':'#1565c0') : '#aaa';
+    return `<tr>
+      <td><b>${r.semana}</b></td><td>${r.promedio.toFixed(3)}</td>
+      <td>${ref?ref.prom.toFixed(3):'—'}</td>
+      <td style="color:${dColor};font-weight:600">${dStr}</td>
+      <td style="color:${uColor};font-weight:600">${unifNum.toFixed(1)}%</td>
+      <td style="color:${cColor};font-weight:600">${cvNum.toFixed(1)}%</td>
+      <td>${r.nAves}</td>
+    </tr>`;
+  }).join('');
+
+  const html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">
+<title>Historial · ${loteObj?.nombre||''}</title>
+<style>
+body{font-family:system-ui,sans-serif;margin:24px;color:#212121;font-size:14px}
+.hdr{display:flex;align-items:center;border-bottom:3px solid #2e7d32;padding-bottom:14px;margin-bottom:18px}
+.logo{font-size:2.8rem;margin-right:14px}h1{font-size:1.2rem;color:#2e7d32;margin:0}
+.sub{font-size:.85rem;color:#666;margin:3px 0 0}
+h2{font-size:1rem;color:#555;margin:18px 0 6px}
+table{width:100%;border-collapse:collapse;font-size:.88rem;margin:8px 0}
+th{background:#2e7d32;color:#fff;padding:9px 7px;text-align:center}
+td{padding:8px 7px;text-align:center;border-bottom:1px solid #e0e0e0}
+tr:nth-child(even) td{background:#f9f9f9}
+.chart img{width:100%;border-radius:8px;border:1px solid #e0e0e0;margin-top:4px}
+.footer{margin-top:22px;font-size:.72rem;color:#aaa;text-align:center;border-top:1px solid #eee;padding-top:8px}
+@media print{body{margin:8mm}}
+</style></head><body onload="window.print()">
+<div class="hdr"><div class="logo">🐔</div><div>
+  <h1>Historial de Pesajes — ${loteObj?.nombre||''}</h1>
+  <div class="sub">${loteObj?.lineaGenetica||''} · Nacimiento: ${loteObj?.fechaNac||'—'} · ${registros.length} semanas registradas</div>
+</div></div>
+<h2>Resumen por semana</h2>
+<table>
+  <thead><tr><th>Sem</th><th>Prom kg</th><th>Curva</th><th>Dif</th><th>Uniformidad</th><th>CV%</th><th>N aves</th></tr></thead>
+  <tbody>${filas}</tbody>
+</table>
+${chartImg?`<h2>Uniformidad vs curva esperada</h2><div class="chart"><img src="${chartImg}"/></div>`:''}
+<div class="footer">AviVet · avivet.cl · ${new Date().toLocaleDateString('es-CL',{day:'2-digit',month:'long',year:'numeric'})}</div>
+</body></html>`;
+
+  const win = window.open('', '_blank');
+  if (!win) { toast('Activa ventanas emergentes en el navegador para exportar'); return; }
+  win.document.write(html);
+  win.document.close();
+}
+
 // ══ HISTOGRAMA ════════════════════════════════════════════════
 function mostrarHistograma(semana) {
   const registros = window._histRegistros || [];
   const curvaRef  = window._histCurva     || {};
   const r = registros.find(x => x.semana === semana);
   if (!r?.pesosRaw?.length) return;
+  window._histSemanaActual = semana;
   document.getElementById('hist-card').style.display = 'block';
   document.getElementById('hist-titulo').textContent = `Distribución Semana ${semana} · ${r.pesosRaw.length} aves`;
   document.getElementById('hist-container').innerHTML = renderHistogramaSVG(r.pesosRaw, curvaRef[semana]);
