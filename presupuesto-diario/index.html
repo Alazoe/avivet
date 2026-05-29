@@ -322,10 +322,14 @@ td.real { background: rgba(27,94,32,.07) !important; font-weight: 600; }
       <li><strong>Precio huevo por mes:</strong> precio personalizado por mes-año; meses sin asignar usan el precio base.</li>
       <li><strong>Gastos fijos:</strong> sueldo + luz + agua + gas + combustible + viruta + insumos, distribuidos en 30 días/mes.</li>
       <li><strong>Empaque y merma:</strong> el % de huevo no vendible (roto, sucio, mal formado) se descuenta de la producción antes de calcular el ingreso. El costo de bandeja (30 huevos) y caja (180 huevos) se aplica sobre los huevos vendibles y se resta del resultado diario.</li>
-      <li><strong>Resultado diario:</strong> Ingreso (huevos vendibles × precio) − Costo alimento − Gastos fijos − Costo envase − Gastos especiales de ese día.</li>
+      <li><strong>Resultado diario:</strong> Ingreso (huevos vendibles × precio) − Costo alimento − Gastos fijos − Costo envase − Despacho − Gastos especiales de ese día + Venta gallinas (último día). Este es el resultado <em>antes de impuesto a la renta</em>.</li>
+      <li><strong>EBITDA operacional:</strong> Ingresos − Costo alimento − Gastos fijos/mes − Despacho − Costo envase. Excluye gastos especiales (inversión, pollas, vacunas), depreciación de activos, intereses de deuda e impuestos. Mide el desempeño productivo puro, independiente de la estructura financiera del negocio. Es el indicador más limpio para comparar ciclos o genéticas.</li>
       <li><strong>Retorno sobre la inversión (ROI):</strong> el acumulado parte negativo (inversión inicial + crianza sin ingresos). La <em>recuperación de inversión</em> es la semana en que el acumulado vuelve a cero — desde ahí el negocio genera ganancia real. El resultado al fin del ciclo es la utilidad bruta del lote.</li>
       <li><strong>Costo de reposición:</strong> para continuar produciendo al terminar el ciclo hay que invertir en un nuevo lote. Se estima como: compra de pollitas + alimentación semanas 1–20 (crianza sin ingresos, según curva genética) + gastos fijos de esas 20 semanas. El <em>Resultado neto</em> descuenta este costo del resultado bruto, mostrando la rentabilidad real considerando la continuidad del negocio.</li>
       <li><strong>Siguiente ciclo:</strong> al finalizar el ciclo se puede crear un nuevo lote con fecha de nacimiento calculada automáticamente.</li>
+      <li><strong>Impuesto a la Renta — referencia Chile:</strong> el Resultado presentado es <em>pre-impuesto</em>. Para estimar la utilidad neta, multiplique por el factor correspondiente según régimen: <strong>27%</strong> empresas régimen general (1ª categoría) · <strong>25%</strong> PYME Pro-Pyme · <strong>~10%</strong> Renta Presunta Agrícola (pequeños productores). Puede configurar la tasa en el tab Configuración para ver la estimación automáticamente.</li>
+      <li><strong>IVA (19%) — avicultura:</strong> si el productor está inscrito en IVA, es generalmente <em>neutro en el resultado</em>: recupera el IVA pagado en alimento, insumos y vacunas (crédito fiscal) y lo descuenta del IVA cobrado en la venta de huevos (débito fiscal). Afecta el flujo de caja mensual pero no el resultado económico neto. La venta de huevos <em>sí está afecta a IVA</em> (no es producto exento).</li>
+      <li><strong>Depreciación de activos:</strong> galpones, equipos y maquinaria se deprecian y reducen la base imponible (no incluido en este modelo). El resultado pre-impuesto del modelo puede estar levemente sobreestimado respecto a la utilidad tributaria real si hay activos significativos.</li>
     </ul>
   </section>
 
@@ -1234,7 +1238,35 @@ function renderDashboard(lote) {
 
   const semCicloActual = lote.semanasCiclo || 100;
 
+  // Estimación post-impuesto (si configurada)
+  const _tasa = lote.tasaImpuesto || 0;
+  const _resPostImp = res * (1 - _tasa);
+  const _ebitdaPostImp = totalEBITDA * (1 - _tasa);
+  const _impBanner = _tasa > 0 ? `
+    <div style="background:#f8f6f1;border:1px solid #e0ddd5;border-left:4px solid #f0a500;
+                padding:12px 18px;margin-bottom:0;display:flex;flex-wrap:wrap;gap:18px;align-items:center">
+      <div style="font-size:11px;color:var(--tenue);text-transform:uppercase;letter-spacing:.06em;min-width:200px">
+        Estimación post-impuesto · ${(_tasa*100).toFixed(1)}% Imp. Renta
+        <span style="font-size:10px;display:block;margin-top:2px;color:#bbb;text-transform:none">Solo referencial — no incluye depreciación ni ajustes tributarios</span>
+      </div>
+      <div style="display:flex;gap:24px;flex-wrap:wrap">
+        <div>
+          <div style="font-family:var(--ft);font-size:20px;font-weight:700;color:${_resPostImp>=0?'var(--ok)':'var(--mal)'}">${MN(Math.abs(_resPostImp))}</div>
+          <div style="font-size:10px;color:var(--tenue);text-transform:uppercase;letter-spacing:.05em">Resultado neto estimado</div>
+        </div>
+        <div>
+          <div style="font-family:var(--ft);font-size:20px;font-weight:700;color:${_ebitdaPostImp>=0?'var(--ok)':'var(--mal)'}">${MN(Math.abs(_ebitdaPostImp))}</div>
+          <div style="font-size:10px;color:var(--tenue);text-transform:uppercase;letter-spacing:.05em">EBITDA neto estimado</div>
+        </div>
+        <div style="font-size:11px;color:var(--suave);max-width:220px;line-height:1.5">
+          Impuesto estimado sobre resultado: ${MN(Math.abs(res - _resPostImp))}<br>
+          <a href="#metodo" style="color:var(--prim);font-size:10px" onclick="document.getElementById('metodo').style.display='block'">Ver metodología y contexto tributario →</a>
+        </div>
+      </div>
+    </div>` : '';
+
   document.getElementById('contenido').innerHTML = `
+  ${_impBanner}
   ${renderFlujoCiclo(lote)}
   <section id="graficos" class="bloque">
     <h2>Proyección financiera</h2>
@@ -1380,6 +1412,17 @@ function renderDashboard(lote) {
           <div class="cfg-sec">Consumo real por etapa (g/ave/día) — dejar en 0 para usar curva</div>
           ${[1,2,3,4,5,6,7].map(d=>`
           <div class="cfg-field"><span>Etapa ${d} · g/ave/día</span><input type="number" id="cfg-gr${d}" value="${lote.consumoGrDieta?.[d]||''}" placeholder="Curva oficial" min="1"></div>`).join('')}
+          <hr class="cfg-sep">
+          <div class="cfg-sec">Estimación fiscal — opcional</div>
+          <div class="cfg-field" style="grid-column:1/-1">
+            <span>Tasa Impuesto a la Renta (%)</span>
+            <input type="number" id="cfg-impuesto" value="${(lote.tasaImpuesto??0)*100||''}" min="0" max="40" step="0.5" placeholder="0 = no aplicar">
+            <small style="font-size:10px;color:var(--tenue);line-height:1.5;display:block;margin-top:4px">
+              Régimen referencial Chile: <strong>27%</strong> empresas · <strong>25%</strong> PYME Pro-Pyme · <strong>~10%</strong> Renta Presunta Agrícola.
+              Si se configura, se muestra una estimación de resultado post-impuesto en el dashboard.
+              El IVA (19%) no se incluye aquí — es neutro si opera con débito/crédito fiscal.
+            </small>
+          </div>
           <hr class="cfg-sep">
           <div style="grid-column:1/-1;display:flex;gap:10px;flex-wrap:wrap">
             <button class="btn btn-acento" onclick="aplicarConfig()">Guardar y recalcular</button>
@@ -2348,6 +2391,8 @@ function aplicarConfig() {
   lote.costoOtrosEnvase       = +(document.getElementById('cfg-otros-envase')?.value      || 0);
   lote.costoDespachoMes       = +(document.getElementById('cfg-despacho')?.value          || 300000);
   lote.precioGallinaDescarte  = +(document.getElementById('cfg-gallina')?.value           || 600);
+  const _imp = +(document.getElementById('cfg-impuesto')?.value || 0);
+  lote.tasaImpuesto = _imp > 0 ? _imp / 100 : 0;
   [1,2,3,4,5,6,7].forEach(d => lote.costoDieta[d] = +document.getElementById(`cfg-d${d}`).value || 520);
   lote.consumoGrDieta = Object.fromEntries([1,2,3,4,5,6,7].map(d => [d, +(document.getElementById(`cfg-gr${d}`)?.value) || 0]));
   saveLote(lote);
