@@ -311,7 +311,66 @@ const LINEAS = {
     // mort. acumulada por fase (%) — oficial Hy-Line W-80 Management Guide, Ene 2024
     mortCrianza: [1.0, 1.3, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.0, 2.2, 2.2, 2.3, 2.4, 2.6, 2.7, 2.8, 3.0, 3.2],
     mortPostura: [0.0, 0.2, 0.5, 0.6, 0.8, 0.9, 1.1, 1.2, 1.3, 1.4, 1.6, 1.7, 1.9, 2.0, 2.2, 2.3, 2.5, 2.6, 2.8, 2.9, 3.0, 3.2, 3.3, 3.4, 3.5, 3.6, 3.6, 3.8, 3.9, 4.0, 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7, 4.8, 4.9, 4.9, 5.0, 5.1, 5.2, 5.3, 5.4, 5.6, 5.7, 5.8, 6.0, 6.0, 6.2, 6.3, 6.4, 6.6, 6.7, 6.8, 7.0, 7.1, 7.3, 7.4, 7.6, 7.7, 7.9, 8.0, 8.1, 8.3, 8.4, 8.5, 8.6, 8.8, 8.9, 9.1, 9.2, 9.4, 9.5, 9.7, 9.8, 10.0, 10.1, 10.3, 10.5, 10.6],
-    tamHuevo: null, // pendiente — línea blanca, valores distintos a líneas marrones
+    // distribución semanal tamaño huevo — oficial Hy-Line W-80 Estándares Chile (jaula) Ene 2024
+    // Estándares UE. [sem, %chico 43-53g, %mediano 53-63g, %grande 63-73g, %muyGrande >73g]
+    // Nota: W-80 huevo blanco, tamaño promedio inferior a líneas marrones
+    tamHuevo: [
+      [20, 99.00,  1.00,  0.00, 0.00],
+      [22, 91.54,  8.45,  0.01, 0.00],
+      [24, 59.87, 39.83,  0.30, 0.00],
+      [26, 25.51, 70.74,  3.75, 0.00],
+      [28, 14.16, 77.24,  8.59, 0.01],
+      [30,  8.60, 77.24, 14.14, 0.02],
+      [32,  5.64, 74.69, 19.62, 0.05],
+      [34,  3.90, 69.30, 26.66, 0.13],
+      [36,  2.84, 65.46, 31.48, 0.21],
+      [38,  2.41, 63.31, 34.02, 0.27],
+      [40,  2.15, 61.80, 35.74, 0.31],
+      [42,  1.81, 59.44, 38.37, 0.38],
+      [44,  1.70, 58.63, 39.26, 0.41],
+      [46,  1.61, 57.80, 40.15, 0.44],
+      [48,  1.42, 56.13, 41.94, 0.51],
+      [50,  1.34, 55.28, 42.84, 0.54],
+      [52,  1.26, 54.42, 43.74, 0.58],
+      [54,  1.19, 53.55, 44.64, 0.62],
+      [56,  1.05, 51.80, 46.44, 0.71],
+      [58,  0.92, 50.03, 48.24, 0.81],
+      [60,  0.81, 48.24, 50.05, 0.90],
+      [62,  0.71, 46.48, 51.85, 0.96],
+      [64,  0.56, 45.55, 52.84, 1.05],
+      [66,  0.49, 43.70, 54.72, 1.09],
+      [68,  0.42, 41.84, 56.59, 1.15],
+      [70,  0.42, 41.79, 56.59, 1.20],
+      [72,  0.32, 40.70, 57.76, 1.22],
+      [74,  0.30, 39.83, 58.65, 1.22],
+      [76,  0.26, 37.95, 60.55, 1.24],
+      [78,  0.19, 36.80, 61.77, 1.24],
+      [80,  0.17, 35.81, 62.75, 1.26],
+      [82,  0.17, 35.81, 62.75, 1.28],
+      [84,  0.11, 34.53, 64.08, 1.29],
+      [86,  0.11, 33.57, 64.99, 1.33],
+      [88,  0.11, 33.57, 64.99, 1.33],
+      [90,  0.10, 32.63, 65.94, 1.34],
+      [92,  0.06, 31.26, 67.33, 1.35],
+      [94,  0.06, 31.25, 67.33, 1.37],
+      [96,  0.06, 30.31, 68.25, 1.39],
+      [98,  0.05, 29.84, 68.69, 1.43],
+      [100, 0.04, 28.88, 69.63, 1.45],
+    ],
+    // temperatura e iluminación crianza — oficial Hy-Line W-80 Estándares Chile (jaula) Ene 2024
+    // [edad, T.Aire Jaula (°C), T.Aire Piso (°C), Intensidad (lux), Horas de luz]
+    crianzaAmb: {
+      fuente: 'Hy-Line W-80 Estándares Chile (jaula), Ene 2024',
+      periodos: [
+        ['0–3 días',   '33–34', '35–36', 'Prog. intermitente', 'Prog. intermitente / 22 h'],
+        ['4–7 días',   '30–32', '33–35', '30–50',              'Prog. intermitente / 21 h'],
+        ['8–14 días',  '28–30', '31–33', '30–50',              '20'],
+        ['15–21 días', '26–28', '29–31', '25',                 '20'],
+        ['22–28 días', '23–26', '25–29', '25',                 '18'],
+        ['29–35 días', '21–23', '23–25', '5–10',               '16.5'],
+        ['36–42 días', '21',    '21',    '5–10',               '15 / 13.5'],
+      ],
+    },
   },
 
   'Lohmann Brown': {
@@ -812,9 +871,14 @@ function renderTamHuevo() {
   if (!result) { sec.innerHTML = ''; return; }
 
   const { datos, esRef } = result;
-  const nota = esRef
-    ? `<span class="nota-fuente">(*) Referencia aplicada desde Hy-Line Brown Jaula 2024 — pendiente datos específicos de esta línea</span>`
-    : `<span class="nota-fuente">Hy-Line Brown Jaula 2024 · Tabla de distribución semanal</span>`;
+  const fuenteOficial = {
+    'Hy-Line Brown': 'Hy-Line Brown Jaula 2024 · Tabla de distribución semanal',
+    'Hy-Line W-80':  'Hy-Line W-80 Estándares Chile (jaula) 2024 · Estándares UE',
+  };
+  const notaTexto = esRef
+    ? '(*) Referencia desde Hy-Line Brown Jaula 2024 — pendiente datos específicos de esta línea'
+    : (fuenteOficial[lineaSel] || `${lineaSel} · Tabla de distribución semanal`);
+  const nota = `<span class="nota-fuente">${notaTexto}</span>`;
 
   const filas = datos.map(r =>
     `<tr><td>${r[0]}</td><td>${r[1].toFixed(2)}</td><td>${r[2].toFixed(2)}</td><td>${r[3].toFixed(2)}</td><td>${r[4].toFixed(2)}</td></tr>`
