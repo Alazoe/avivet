@@ -89,13 +89,8 @@ body {
 .flujo-barra{display:flex;height:26px;border-radius:3px;overflow:hidden;margin:14px 0 0}
 .flujo-seg{display:flex;align-items:center;justify-content:center;font-size:10px;letter-spacing:.05em;text-transform:uppercase;font-weight:600;color:rgba(255,255,255,.9);padding:0 6px;overflow:hidden;white-space:nowrap;min-width:0}
 .f-cri{background:#8d6e63}.f-p1{background:#a5d6a7;color:#1b5e20!important}.f-p2{background:#388e3c}.f-p3{background:#1b5e20}
-.flujo-tml{position:relative;height:68px;margin-top:0}
-.flujo-tml-line{position:absolute;top:9px;left:0;right:0;height:2px;background:var(--linea)}
-.flujo-hito{position:absolute;transform:translateX(-50%);text-align:center}
-.flujo-hito.hl{transform:none;left:0}.flujo-hito.hr{transform:none;right:0;left:auto}
-.flujo-hdot{width:14px;height:14px;border-radius:50%;border:2.5px solid;background:var(--papel);margin:2px auto}
-.flujo-hlbl{font-size:10px;font-weight:600;white-space:nowrap;margin-top:3px}
-.flujo-hsub{font-size:9px;color:var(--suave);white-space:nowrap}
+.flujo-tml{position:relative;height:92px;margin-top:0}
+.flujo-tml-line{position:absolute;top:46px;left:0;right:0;height:2px;background:var(--linea)}
 .flujo-cards{display:flex;align-items:stretch;gap:8px;margin-top:20px;flex-wrap:wrap}
 .flujo-card{flex:1;min-width:130px;background:var(--fondo);border:1px solid var(--linea);padding:12px 14px;border-radius:3px}
 .flujo-card-val{font-family:var(--ft);font-size:18px;font-weight:700;color:var(--prim);line-height:1}
@@ -1077,51 +1072,66 @@ function renderFlujoCiclo(lote) {
     p3W>2   ? `<div class="flujo-seg f-p3"  style="width:${p3W}%">Postura tardía</div>` : '',
   ].join('');
 
-  // Hitos en la línea de tiempo
   const pctPos = s => Math.round((s-1)/Math.max(semMax-1,1)*100);
+
+  // Línea dashed blanca en la barra marcando el break-even
+  const beBarMark = be
+    ? `<div style="position:absolute;top:0;bottom:0;left:${pctPos(be.sem)}%;
+         border-left:2px dashed rgba(255,255,255,.7);pointer-events:none;z-index:1"
+         title="Break-even sem ${be.sem}"></div>` : '';
+
+  // Hitos con labels alternando arriba/abajo
+  // above: label→conector(13px)→punto  |  below: espacio(40px)→punto→conector(8px)→label
+  // En ambos casos el CENTRO del punto queda en y=46px (coincide con flujo-tml-line)
   const hitos = [
-    {sem:1,       lbl:'Inicio',        sub:MN(inv)||'sin inversión', col:'#c62828', pin:'l'},
-    {sem:semIP,   lbl:'Inicia postura',sub:`Sem ${semIP}`,           col:'#2e7d32'},
-    {sem:semPico, lbl:`Pico ${pico.toFixed(0)}%`, sub:`Sem ${semPico} · ${semFecha(semPico)}`, col:'#1b4332'},
-    ...(be?[{sem:be.sem, lbl:'Break-even', sub:new Date(be.fecha+'T12:00:00').toLocaleDateString('es-CL',{day:'numeric',month:'short',year:'numeric'}), col:'#e65100'}]:[]),
-    {sem:semMax,  lbl:'Fin ciclo',     sub:`Repos. est. ${MN(repos.total)}`, col:'#b8860b', pin:'r'},
+    { sem:1,       lbl:'Inicio',         sub:MN(inv)||'sin inversión', col:'#c62828', pin:'l', above:true  },
+    { sem:semIP,   lbl:'Inicia postura', sub:`Sem ${semIP}`,           col:'#2e7d32',          above:false },
+    { sem:semPico, lbl:`Pico ${pico.toFixed(0)}%`, sub:`Sem ${semPico}`, col:'#1b4332',        above:true  },
+    ...(be ? [{ sem:be.sem, lbl:'Break-even',
+                sub:new Date(be.fecha+'T12:00:00').toLocaleDateString('es-CL',{day:'numeric',month:'short',year:'numeric'}),
+                col:'#e65100', above:false }] : []),
+    { sem:semMax,  lbl:'Fin ciclo',      sub:semFecha(semMax),         col:'#b8860b', pin:'r', above:true  },
   ];
 
-  const hitoHtml = hitos.map(h => {
-    const p  = pctPos(h.sem);
-    const pos = h.pin==='l' ? 'left:0;transform:none'
-              : h.pin==='r' ? 'right:0;left:auto;transform:none'
-              : `left:${p}%`;
-    return `<div class="flujo-hito${h.pin==='l'?' hl':h.pin==='r'?' hr':''}" style="${pos}">
-      <div class="flujo-hdot" style="border-color:${h.col}"></div>
-      <div class="flujo-hlbl" style="color:${h.col}">${h.lbl}</div>
-      <div class="flujo-hsub">${h.sub}</div>
-    </div>`;
-  }).join('');
+  const mkHito = h => {
+    const p = pctPos(h.sem);
+    const ps = h.pin==='l' ? 'left:0;transform:none'
+             : h.pin==='r' ? 'right:0;left:auto;transform:none'
+             : `left:${p}%;transform:translateX(-50%)`;
+    const dot = `<div style="width:12px;height:12px;border-radius:50%;border:2.5px solid ${h.col};background:var(--papel,#fff);flex-shrink:0"></div>`;
+    const con  = n => `<div style="width:1px;height:${n}px;background:${h.col};opacity:.45;flex-shrink:0"></div>`;
+    const txt  = `<div style="font-size:10px;font-weight:600;color:${h.col};white-space:nowrap;line-height:1.3;text-align:center">${h.lbl}</div>
+      <div style="font-size:9px;color:#888;white-space:nowrap;line-height:1.3;text-align:center">${h.sub}</div>`;
+    return h.above
+      ? `<div style="position:absolute;${ps};top:0;display:flex;flex-direction:column;align-items:center">${txt}<div style="margin:2px 0"></div>${con(13)}${dot}</div>`
+      : `<div style="position:absolute;${ps};top:0;display:flex;flex-direction:column;align-items:center"><div style="height:40px;flex-shrink:0"></div>${dot}${con(8)}${txt}</div>`;
+  };
 
-  // Tarjetas del flujo financiero
-  const card = (ico,lbl,val,cls,sub) =>
-    `<div class="flujo-card"><div class="flujo-card-val ${cls}">${ico}&thinsp;${val}</div>
-     <div class="flujo-card-lbl">${lbl}</div>
-     ${sub?`<div class="flujo-card-sub">${sub}</div>`:''}</div>`;
+  const card = (ico, lbl, val, cls, sub) =>
+    `<div class="flujo-card">
+       <div class="flujo-card-val ${cls}">${ico}&thinsp;${val}</div>
+       <div class="flujo-card-lbl">${lbl}</div>
+       ${sub ? `<div class="flujo-card-sub">${sub}</div>` : ''}
+     </div>`;
 
   return `<section class="bloque">
     <h2>Flujo del ciclo · ${semMax} semanas</h2>
-    <div class="flujo-barra">${segHtml}</div>
+    <div class="flujo-barra" style="position:relative">${segHtml}${beBarMark}</div>
     <div class="flujo-tml">
       <div class="flujo-tml-line"></div>
-      ${hitoHtml}
+      ${hitos.map(mkHito).join('')}
     </div>
     <div class="flujo-cards">
-      ${card('↑','Gasto inicial', MN(inv)||'—', 'mal', gastos.length?gastos.length+' gastos especiales (sem 1)':'')}
+      ${card('↑','Gasto inicial',         MN(inv)||'—',            'mal', gastos.length ? gastos.length+' gastos especiales' : '')}
       <div class="flujo-arr">→</div>
-      ${card('▲','Pico de postura', pico.toFixed(1)+'%', 'ok', `Sem ${semPico} · ${semFecha(semPico)}`)}
+      ${card('▲','Pico de postura',        pico.toFixed(1)+'%',     'ok',  `Sem ${semPico} · ${semFecha(semPico)}`)}
       <div class="flujo-arr">→</div>
-      ${card('✓','Recuperación inversión', be?'Sem '+be.sem:'Sin retorno', be?'ok':'mal', be?new Date(be.fecha+'T12:00:00').toLocaleDateString('es-CL',{day:'numeric',month:'short',year:'numeric'}):'')}
+      ${card('✓','Recuperación inversión', be?'Sem '+be.sem:'Sin retorno', be?'ok':'mal',
+             be ? new Date(be.fecha+'T12:00:00').toLocaleDateString('es-CL',{day:'numeric',month:'short',year:'numeric'}) : '')}
       <div class="flujo-arr">→</div>
-      ${card('🐔','Venta gallinas descarte', MN(gallinasVenta), '', `${NUM(Math.round(proy[proy.length-1]?.aves||0))} aves · $${(+(lote.precioGallinaDescarte??600)).toLocaleString('es-CL')}/ave`)}
+      ${card('🐔','Venta gallinas',         MN(gallinasVenta),       '',    `${NUM(Math.round(proy[proy.length-1]?.aves||0))} aves · $${(+(lote.precioGallinaDescarte??600)).toLocaleString('es-CL')}/ave`)}
       <div class="flujo-arr">→</div>
-      ${card('↺','Reposición estimada', MN(repos.total), '', `${MN(repos.pollas)} pollas · ${MN(repos.alim)} alim · ${MN(repos.fijos)} fijos`)}
+      ${card('↺','Reposición estimada',     MN(repos.total),         '',    `${MN(repos.pollas)} pollas · ${MN(repos.alim)} alim · ${MN(repos.fijos)} fijos`)}
     </div>
   </section>`;
 }
@@ -2872,6 +2882,21 @@ td{padding:4px 7px;border-bottom:1px solid #e0ddd5;text-align:center}
 tr:nth-child(even) td{background:#f8f6f1}
 .fm{font-family:'IBM Plex Mono',monospace}
 .cri td{color:#888;font-style:italic}
+/* flujo del ciclo */
+:root{--papel:#fff;--linea:#e0ddd5;--fondo:#f8f6f1;--prim:#1b4332;--suave:#666;--tenue:#999;--ok:#1b5e20;--mal:#b71c1c;--linea-f:#ccc;--ft:'Crimson Pro',serif}
+.bloque{margin-bottom:18px}
+.flujo-barra{display:flex;height:22px;border-radius:3px;overflow:hidden;margin:10px 0 0;position:relative}
+.flujo-seg{display:flex;align-items:center;justify-content:center;font-size:8pt;font-weight:600;color:rgba(255,255,255,.9);padding:0 5px;overflow:hidden;white-space:nowrap;min-width:0;letter-spacing:.04em;text-transform:uppercase}
+.f-cri{background:#8d6e63}.f-p1{background:#a5d6a7;color:#1b5e20!important}.f-p2{background:#388e3c}.f-p3{background:#1b5e20}
+.flujo-tml{position:relative;height:88px;margin-top:0}
+.flujo-tml-line{position:absolute;top:46px;left:0;right:0;height:2px;background:#e0ddd5}
+.flujo-cards{display:flex;align-items:stretch;gap:5px;margin-top:12px;flex-wrap:wrap}
+.flujo-card{flex:1;min-width:100px;background:#f8f6f1;border:1px solid #e0ddd5;padding:9px 11px;border-radius:3px}
+.flujo-card-val{font-family:'Crimson Pro',serif;font-size:14pt;font-weight:700;color:#1b4332;line-height:1}
+.flujo-card-val.ok{color:#1b5e20}.flujo-card-val.mal{color:#b71c1c}
+.flujo-card-lbl{font-size:7.5pt;color:#999;text-transform:uppercase;letter-spacing:.05em;margin-top:3px}
+.flujo-card-sub{font-size:8.5pt;color:#666;margin-top:2px}
+.flujo-arr{display:flex;align-items:center;color:#ccc;font-size:16pt;padding:0 1px;flex-shrink:0}
 @media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}.pg{padding:8mm 12mm}}
 </style></head><body><div class="pg">
 <h1>Presupuesto Avícola</h1>
@@ -2897,6 +2922,8 @@ ${ajustado ? `<div class="aviso"><strong>Escenario ajustado:</strong> ${factPost
 ${gastos.length ? `<div style="margin-bottom:16px;font-size:10pt;color:#555">
   <strong>Gastos especiales:</strong> ${gastos.map(g=>`${g.descripcion} ($${(+g.monto).toLocaleString('es-CL')})`).join(' · ')}
 </div>` : ''}
+
+${renderFlujoCiclo(lote).replace(/class="bloque"/,'style="margin-bottom:18px"')}
 
 <h2>Gráficos de proyección</h2>
 ${imgFin  ? `<div><div style="font-size:8pt;color:#888;margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em">Ingreso y costo semanal</div><img class="ch" src="${imgFin}"></div>` : ''}
