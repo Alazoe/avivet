@@ -1243,7 +1243,8 @@ function renderDashboard(lote) {
       · <span style="font-weight:600;color:${col}">${gen}</span>
       · ${semCicloActual} semanas · ${NUM(+lote.nAves)} aves iniciales.
       <button class="btn btn-ok btn-sm" style="margin-left:16px" onclick="exportarExcel()">↓ Excel</button>
-      <button class="btn btn-sm btn-linea" style="margin-left:6px" onclick="generarPDF()">↓ PDF</button>
+      <button class="btn btn-sm btn-linea" style="margin-left:6px" onclick="generarPDF()">↓ PDF completo</button>
+      <button class="btn btn-sm btn-acento" style="margin-left:6px" onclick="exportarResumenEjecutivo()">↓ Resumen ejecutivo</button>
     </p>
 
     <div class="tabs">
@@ -2009,7 +2010,11 @@ function renderSensibilidad(lote) {
         ${resRow('Margen promedio/huevo', fmtH(kP.margenH), fmtH(kB.margenH), fmtH(kO.margenH), false)}
       </tbody>
     </table>
-    ${specHtml}`;
+    ${specHtml}
+    <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn btn-ok btn-sm" onclick="exportarEscenarios()">↓ Excel escenarios</button>
+      <button class="btn btn-acento btn-sm" onclick="exportarResumenEjecutivo()">↓ Resumen ejecutivo</button>
+    </div>`;
 }
 
 function recalcSensib() {
@@ -2518,6 +2523,243 @@ function renderCurvasRef(lote) {
         <tbody>${filaHtml}</tbody>
       </table>
     </div>`;
+}
+
+/* ════════════════════════════════════════════════════════════
+   EXPORTAR ESCENARIOS — Excel comparativo pes/base/opt
+   ════════════════════════════════════════════════════════════ */
+function exportarEscenarios() {
+  if (!proy) return;
+  const lote = getLote(loteId);
+  const wb   = XLSX.utils.book_new();
+
+  const pPes = proyectarEscenario(lote, sensibEsc.pes);
+  const pOpt = proyectarEscenario(lote, sensibEsc.opt);
+  const kP   = kpisEsc(pPes);
+  const kB   = kpisEsc(proy);
+  const kO   = kpisEsc(pOpt);
+
+  const pfx = v => (v > 0 ? '+' : '') + v;
+  const beS = be => be ? 'Sem ' + be.sem : 'Sin retorno';
+
+  const rows = [
+    ['Análisis de Sensibilidad — ' + lote.nombre, '', '', ''],
+    ['', 'PESIMISTA', 'BASE (actual)', 'OPTIMISTA'],
+    [''],
+    ['── PARÁMETROS DE ESCENARIO ──', '', '', ''],
+    ['Precio huevo (Δ%)',      pfx(sensibEsc.pes.precioPct)+'%',      '$'+(+lote.precioHuevo)+'/ud.',          pfx(sensibEsc.opt.precioPct)+'%'     ],
+    ['Factor postura (%)',     sensibEsc.pes.factorPost,               (lote.factorPostura??100)+'% oficial',  sensibEsc.opt.factorPost              ],
+    ['Factor mortalidad (×)',  sensibEsc.pes.factorMort,               (lote.factorMortalidad??1.0)+'× oficial',sensibEsc.opt.factorMort             ],
+    ['Costo alimento (Δ%)',    pfx(sensibEsc.pes.alimentoPct)+'%',     'base',                                  pfx(sensibEsc.opt.alimentoPct)+'%'  ],
+    [''],
+    ['── RESULTADOS PROYECTADOS ──', '', '', ''],
+    ['Resultado acum. fin ciclo ($)', kP.resultado,               kB.resultado,               kO.resultado              ],
+    ['EBITDA operacional ($)',         kP.ebitda,                  kB.ebitda,                  kO.ebitda                 ],
+    ['Break-even',                     beS(kP.be),                 beS(kB.be),                 beS(kO.be)                ],
+    ['Ingresos totales ($)',            kP.ingresos,                kB.ingresos,                kO.ingresos               ],
+    ['Huevos vendibles',               kP.huevosV,                 kB.huevosV,                 kO.huevosV                ],
+    ['Margen promedio/huevo ($)',       +kP.margenH.toFixed(2),     +kB.margenH.toFixed(2),     +kO.margenH.toFixed(2)    ],
+    [''],
+    ['Generado', new Date().toLocaleDateString('es-CL'), '', ''],
+  ];
+
+  const ws = XLSX.utils.aoa_to_sheet(rows);
+  // Formato monetario para filas de resultados (B11:D14)
+  [10,11,13,15].forEach(r => {
+    ['B','C','D'].forEach(col => {
+      const cell = ws[col+(r+1)];
+      if (cell && typeof cell.v === 'number') cell.z = '#,##0';
+    });
+  });
+  XLSX.utils.book_append_sheet(wb, ws, 'Escenarios');
+
+  const nombre = lote.nombre.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]/g,'').replace(/\s+/g,'_');
+  XLSX.writeFile(wb, `Escenarios_${nombre}_${new Date().toISOString().slice(0,10)}.xlsx`);
+}
+
+/* ════════════════════════════════════════════════════════════
+   RESUMEN EJECUTIVO — PDF compacto 1 página
+   ════════════════════════════════════════════════════════════ */
+function exportarResumenEjecutivo() {
+  if (!proy) return;
+  const lote = getLote(loteId);
+  const gen  = lote.genetica || 'Lohmann Brown';
+  const col  = GEN_COLORES[gen] || '#1b4332';
+
+  // ── Cascada off-screen ──────────────────────────────────────
+  const mkC = () => { const c = document.createElement('canvas'); c.width=860; c.height=190; return c; };
+  const noA = { animation:false, responsive:false, maintainAspectRatio:false };
+  let imgCasc = '';
+  const totVR = proy.reduce((a,d)=>a+d.huevosVendibles,0);
+  if (totVR > 0) {
+    const prH=proy.reduce((a,d)=>a+d.ingreso,0)/totVR,
+          alH=proy.reduce((a,d)=>a+d.costoAlim,0)/totVR,
+          ebH=proy.reduce((a,d)=>a+(d.envBandeja||0),0)/totVR,
+          ecH=proy.reduce((a,d)=>a+(d.envCaja||0),0)/totVR,
+          dpH=proy.reduce((a,d)=>a+(d.costoDespacho||0),0)/totVR,
+          fjH=proy.reduce((a,d)=>a+d.gastoDia,0)/totVR,
+          mgH=prH-alH-ebH-ecH-dpH-fjH;
+    const wIt=[
+      {lbl:['Precio/h',`$${prH.toFixed(1)}`],  val:prH, col:'rgba(27,67,50,.8)',    isStart:true},
+      {lbl:['Alimento',`$${alH.toFixed(1)}`],   val:alH, col:'rgba(183,28,28,.75)'},
+      {lbl:['Bandeja', `$${ebH.toFixed(2)}`],   val:ebH, col:'rgba(121,85,72,.75)'},
+      {lbl:['Caja',    `$${ecH.toFixed(2)}`],   val:ecH, col:'rgba(160,82,45,.75)'},
+      {lbl:['Despacho',`$${dpH.toFixed(2)}`],   val:dpH, col:'rgba(230,81,0,.7)'  },
+      {lbl:['G.fijos', `$${fjH.toFixed(2)}`],   val:fjH, col:'rgba(240,165,0,.75)'},
+      {lbl:['Margen/h',`${mgH>=0?'+':''}$${mgH.toFixed(1)}`], val:Math.abs(mgH),
+       col:mgH>=0?'rgba(46,125,50,.85)':'rgba(183,28,28,.85)', isEnd:true},
+    ];
+    let topW=prH;
+    const wR=wIt.map(i=>{
+      if(i.isStart)return[0,i.val];
+      if(i.isEnd)return[Math.min(0,mgH),Math.max(0,mgH)];
+      const f=topW-i.val; topW-=i.val; return[f,f+i.val];
+    });
+    const cW=mkC(); const chW=new Chart(cW,{type:'bar',
+      data:{labels:wIt.map(i=>i.lbl),datasets:[{data:wR,backgroundColor:wIt.map(i=>i.col),borderRadius:3,borderSkipped:false}]},
+      options:{...noA,plugins:{legend:{display:false}},
+        scales:{x:{ticks:{...tFont,maxRotation:0},grid:{color:gColor}},
+                y:{ticks:{...tFont,callback:v=>'$'+v.toFixed(1)},grid:{color:gColor}}}}});
+    imgCasc=cW.toDataURL('image/png'); chW.destroy();
+  }
+
+  // ── Escenarios ──────────────────────────────────────────────
+  const pPes = proyectarEscenario(lote, sensibEsc.pes);
+  const pOpt = proyectarEscenario(lote, sensibEsc.opt);
+  const kP   = kpisEsc(pPes), kB = kpisEsc(proy), kO = kpisEsc(pOpt);
+  const be   = kB.be;
+
+  // ── KPIs ────────────────────────────────────────────────────
+  const dFin  = proy[proy.length-1];
+  const porcP = Math.max(...proy.map(d=>d.pos));
+  const semP  = proy.find(d=>d.pos===porcP)?.sem||'—';
+  const totIng= proy.reduce((a,d)=>a+d.ingreso,0);
+  const totEB = kB.ebitda;
+  const gall  = proy.reduce((a,d)=>a+(d.ingresoGallinas||0),0);
+  const repos = calcCostoReposicion(lote);
+  const fn    = new Date(lote.fechaNacimiento+'T12:00:00').toLocaleDateString('es-CL',{day:'numeric',month:'long',year:'numeric'});
+
+  const KPI = (v,l,s='',c='') =>
+    `<div class="kpi"><div class="kn ${c}">${v}</div><div class="kl">${l}</div>${s?`<div class="ks">${s}</div>`:''}</div>`;
+
+  // ── Escenario HTML ───────────────────────────────────────────
+  const escNum = (v,bold=false) =>
+    `<span style="color:${v>=0?'#1b5e20':'#c62828'};font-family:'IBM Plex Mono',monospace;font-weight:${bold?700:600};font-size:${bold?'11':'10'}pt">${v>=0?'+':''}${MN(v)}</span>`;
+  const escH = v =>
+    `<span style="color:${v>=0?'#1b5e20':'#c62828'};font-family:'IBM Plex Mono',monospace;font-size:10pt">${v>=0?'+':''}$${v.toFixed(1)}/h</span>`;
+  const escBE = be => be
+    ? `<span style="color:#1b5e20;font-family:'IBM Plex Mono',monospace">Sem ${be.sem}</span>`
+    : `<span style="color:#c62828">Sin retorno</span>`;
+
+  const pfx = v => (v > 0 ? '+' : '') + v;
+  const pRow = (lbl, vP, vBase, vO) =>
+    `<tr><td style="padding:5px 8px;font-size:9pt;color:#444;border-bottom:1px solid #eee">${lbl}</td>
+     <td style="padding:5px 8px;text-align:center;background:#fff8f8;border-bottom:1px solid #eee;color:#c62828;font-weight:600;font-size:9pt">${vP}</td>
+     <td style="padding:5px 8px;text-align:center;background:#f4f8f4;border-bottom:1px solid #eee;color:#555;font-size:9pt">${vBase}</td>
+     <td style="padding:5px 8px;text-align:center;background:#f0f7f0;border-bottom:1px solid #eee;color:#1b5e20;font-weight:600;font-size:9pt">${vO}</td></tr>`;
+  const rRow = (lbl, vP, vB, vO) =>
+    `<tr><td style="padding:5px 8px;font-size:9pt;color:#444;border-bottom:1px solid #eee">${lbl}</td>
+     <td style="padding:5px 8px;text-align:center;background:#fff8f8;border-bottom:1px solid #eee">${vP}</td>
+     <td style="padding:5px 8px;text-align:center;background:#f4f8f4;border-bottom:1px solid #eee">${vB}</td>
+     <td style="padding:5px 8px;text-align:center;background:#f0f7f0;border-bottom:1px solid #eee">${vO}</td></tr>`;
+
+  const escHead = `<thead><tr>
+    <th style="text-align:left;padding:6px 8px;background:#1b4332;color:#fff;font-size:8pt">Parámetro / Resultado</th>
+    <th style="padding:6px 8px;background:#ffcdd2;color:#c62828;font-size:8pt">🔴 Pesimista</th>
+    <th style="padding:6px 8px;background:#e8f5e9;color:#1b4332;font-size:8pt">⬤ Base</th>
+    <th style="padding:6px 8px;background:#e0f2f1;color:#1b5e20;font-size:8pt">🟢 Optimista</th>
+  </tr></thead>`;
+
+  const flujoHtml = renderFlujoCiclo(lote).replace(/class="bloque"/,'style="margin:10px 0"');
+
+  const html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">
+<title>Resumen Ejecutivo — ${lote.nombre.replace(/</g,'&lt;')} · avivet.cl</title>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--papel:#fff;--linea:#e0ddd5;--fondo:#f8f6f1;--prim:#1b4332;--suave:#666;--tenue:#999;--ok:#1b5e20;--mal:#b71c1c;--linea-f:#ccc;--ft:'Crimson Pro',serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;font-size:10pt;color:#1a1a1a;background:#fff}
+.pg{padding:12mm 15mm;max-width:210mm;margin:0 auto}
+h1{font-family:'Crimson Pro',serif;font-size:20pt;font-weight:700;color:#1b4332;margin-bottom:4px}
+h2{font-family:'Crimson Pro',serif;font-size:12pt;font-weight:600;color:#1b4332;margin:14px 0 8px;border-bottom:2px solid #f0a500;padding-bottom:3px}
+.meta{font-size:8.5pt;color:#888;margin-bottom:12px;line-height:1.7}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:8px 0 14px}
+.kpi{background:#f8f6f1;border:1px solid #e0ddd5;padding:9px 11px}
+.kn{font-family:'Crimson Pro',serif;font-size:16pt;font-weight:700;color:#1b4332;line-height:1}
+.kn.ok{color:#1b5e20}.kn.mal{color:#b71c1c}
+.kl{font-size:7.5pt;color:#888;text-transform:uppercase;letter-spacing:.04em;margin-top:2px}
+.ks{font-size:8.5pt;color:#555;margin-top:2px}
+img.ch{width:100%;border:1px solid #e0ddd5;margin:4px 0 10px}
+table{width:100%;border-collapse:collapse;font-size:9pt}
+th{font-size:8pt;text-transform:uppercase;letter-spacing:.04em;text-align:center}
+.flujo-barra{display:flex;height:22px;border-radius:3px;overflow:hidden;margin:10px 0 0;position:relative}
+.flujo-seg{display:flex;align-items:center;justify-content:center;font-size:7.5pt;font-weight:600;color:rgba(255,255,255,.9);padding:0 5px;overflow:hidden;white-space:nowrap;min-width:0;letter-spacing:.04em;text-transform:uppercase}
+.f-cri{background:#8d6e63}.f-p1{background:#a5d6a7;color:#1b5e20!important}.f-p2{background:#388e3c}.f-p3{background:#1b5e20}
+.flujo-tml{position:relative;height:88px}
+.flujo-tml-line{position:absolute;top:46px;left:0;right:0;height:2px;background:#e0ddd5}
+.flujo-cards{display:flex;align-items:stretch;gap:5px;margin-top:10px;flex-wrap:wrap}
+.flujo-card{flex:1;min-width:90px;background:#f8f6f1;border:1px solid #e0ddd5;padding:8px 10px;border-radius:3px}
+.flujo-card-val{font-family:'Crimson Pro',serif;font-size:13pt;font-weight:700;color:#1b4332;line-height:1}
+.flujo-card-val.ok{color:#1b5e20}.flujo-card-val.mal{color:#b71c1c}
+.flujo-card-lbl{font-size:7pt;color:#999;text-transform:uppercase;letter-spacing:.05em;margin-top:3px}
+.flujo-card-sub{font-size:7.5pt;color:#666;margin-top:1px}
+.flujo-arr{display:flex;align-items:center;color:#ccc;font-size:14pt;padding:0 1px;flex-shrink:0}
+@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}.pg{padding:8mm 10mm}}
+</style></head><body><div class="pg">
+<h1>Resumen Ejecutivo</h1>
+<div style="font-family:'Crimson Pro',serif;font-size:14pt;font-weight:600;color:${col};margin-bottom:6px">${lote.nombre.replace(/</g,'&lt;')}</div>
+<div class="meta">
+  <strong>avivet.cl</strong> · MV Andrés Lazo · ${new Date().toLocaleDateString('es-CL',{day:'numeric',month:'long',year:'numeric'})}<br>
+  Genética: <strong style="color:${col}">${gen}</strong> · Nacimiento: ${fn} · ${(+lote.nAves).toLocaleString('es-CL')} aves · ${lote.semanasCiclo||100} semanas proyectadas
+</div>
+
+<h2>Indicadores clave</h2>
+<div class="kpis">
+  ${KPI((kB.huevosV).toLocaleString('es-CL'), 'Huevos vendibles', (proy.reduce((a,d)=>a+d.huevos,0)).toLocaleString('es-CL')+' producidos')}
+  ${KPI(MN(dFin.acum), 'Resultado fin ciclo', dFin.acum>=0?'Superávit':'Déficit', dFin.acum>=0?'ok':'mal')}
+  ${KPI(MN(totEB), 'EBITDA operacional', ((totIng>0?totEB/totIng*100:0).toFixed(1))+'% margen', totEB>=0?'ok':'mal')}
+  ${KPI(be?'Sem '+be.sem:'Sin retorno', 'Break-even', be?new Date(be.fecha+'T12:00:00').toLocaleDateString('es-CL',{day:'numeric',month:'short',year:'numeric'}):'', be?'ok':'mal')}
+  ${KPI(porcP.toFixed(1)+'%', 'Pico de postura', 'Semana '+semP)}
+  ${KPI(MN(totIng), 'Ingresos totales', '')}
+  ${KPI(dFin.aves.toLocaleString('es-CL'), 'Aves fin ciclo', 'de '+(+lote.nAves).toLocaleString('es-CL')+' iniciales')}
+  ${gall>0 ? KPI(MN(gall),'Venta gallinas descarte','incluido en resultado','ok') : KPI(MN(repos.total),'Reposición estimada','')}
+</div>
+
+<h2>Flujo del ciclo</h2>
+${flujoHtml}
+
+<h2>Análisis de escenarios</h2>
+<table>
+  ${escHead}
+  <tbody>
+    <tr><td colspan="4" style="padding:5px 8px;background:#f8f6f1;font-size:8pt;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.05em">Parámetros ajustados</td></tr>
+    ${pRow('Precio huevo (Δ%)',      pfx(sensibEsc.pes.precioPct)+'%',   '$'+(+lote.precioHuevo).toLocaleString('es-CL')+'/ud.', '+'+pfx(sensibEsc.opt.precioPct)+'%')}
+    ${pRow('Factor postura (%)',     sensibEsc.pes.factorPost+'%',        (lote.factorPostura??100)+'% oficial',                  sensibEsc.opt.factorPost+'%')}
+    ${pRow('Factor mortalidad (×)',  sensibEsc.pes.factorMort+'×',        (lote.factorMortalidad??1.0)+'× oficial',               sensibEsc.opt.factorMort+'×')}
+    ${pRow('Costo alimento (Δ%)',    pfx(sensibEsc.pes.alimentoPct)+'%',  'base',                                                  pfx(sensibEsc.opt.alimentoPct)+'%')}
+    <tr><td colspan="4" style="padding:5px 8px;background:#f8f6f1;font-size:8pt;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.05em">Resultados proyectados</td></tr>
+    ${rRow('Resultado fin ciclo',     escNum(kP.resultado), escNum(kB.resultado,true), escNum(kO.resultado))}
+    ${rRow('EBITDA operacional',      escNum(kP.ebitda),    escNum(kB.ebitda,true),    escNum(kO.ebitda))}
+    ${rRow('Break-even',             escBE(kP.be),          escBE(kB.be),              escBE(kO.be))}
+    ${rRow('Ingresos totales',        `<span style="font-family:'IBM Plex Mono',monospace;font-size:9pt">${MN(kP.ingresos)}</span>`,
+                                      `<span style="font-family:'IBM Plex Mono',monospace;font-size:9pt;font-weight:700">${MN(kB.ingresos)}</span>`,
+                                      `<span style="font-family:'IBM Plex Mono',monospace;font-size:9pt">${MN(kO.ingresos)}</span>`)}
+    ${rRow('Margen prom./huevo',       escH(kP.margenH), escH(kB.margenH), escH(kO.margenH))}
+  </tbody>
+</table>
+
+${imgCasc ? `<h2>Estructura de costos por huevo · promedio del ciclo</h2><img class="ch" src="${imgCasc}">` : ''}
+
+<div style="margin-top:16px;font-size:8pt;color:#aaa;border-top:1px solid #e0ddd5;padding-top:8px;text-align:center">
+  avivet.cl · MV Andrés Lazo Escobar · Valdivia, Chile · Generado ${new Date().toLocaleDateString('es-CL',{day:'numeric',month:'long',year:'numeric'})}
+</div>
+</div>
+<script>window.onload=function(){setTimeout(()=>window.print(),500)}<\/script>
+</body></html>`;
+
+  const win = window.open('', '_blank', 'width=960,height=800');
+  if (win) { win.document.write(html); win.document.close(); }
+  else alert('Permite ventanas emergentes para generar el PDF.');
 }
 
 /* ════════════════════════════════════════════════════════════
