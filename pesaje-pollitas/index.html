@@ -923,13 +923,15 @@ function renderHistogramaSVG(pesos, ref) {
   const nBins= Math.max(1, Math.round(span/BIN));
   const counts = new Array(nBins).fill(0);
   pesos.forEach(v => { const i=clamp(Math.floor((v-loV)/BIN),0,nBins-1); counts[i]++; });
-  const maxCnt = Math.max(...counts, 1);
+  const maxCnt  = Math.max(...counts, 1);
+  const dentroU = pesos.filter(v => v >= rMin10 && v <= rMax10).length;
+  const unifPct  = (dentroU/n*100).toFixed(1);
 
   // Pico de la curva normal escalada a unidades de conteo
   const normalPeak = n * BIN / (sd * Math.sqrt(2 * Math.PI));
   const yMax = Math.max(maxCnt, normalPeak) * 1.12;
 
-  const W=340, H=235, p={t:32,r:16,b:62,l:36};
+  const W=340, H=262, p={t:32,r:16,b:84,l:36};
   const iW=W-p.l-p.r, iH=H-p.t-p.b;
   const xOf  = i => p.l+(i/nBins)*iW;
   const xOfV = v => p.l+((v-loV)/span)*iW;
@@ -1009,6 +1011,16 @@ function renderHistogramaSVG(pesos, ref) {
              `<text x="${x.toFixed(1)}" y="${p.t+iH+14}" text-anchor="middle" font-size="8.5" fill="#888">${v}</text>`;
   }
 
+  // Bracket de uniformidad debajo del eje X
+  const brkY  = p.t+iH+28;
+  const uMid  = (bx1+bx2)/2;
+  const unifBracket =
+    `<line x1="${bx1.toFixed(1)}" y1="${brkY}" x2="${bx2.toFixed(1)}" y2="${brkY}" stroke="#388e3c" stroke-width="2"/>` +
+    `<line x1="${bx1.toFixed(1)}" y1="${(brkY-5).toFixed(1)}" x2="${bx1.toFixed(1)}" y2="${(brkY+2).toFixed(1)}" stroke="#388e3c" stroke-width="2"/>` +
+    `<line x1="${bx2.toFixed(1)}" y1="${(brkY-5).toFixed(1)}" x2="${bx2.toFixed(1)}" y2="${(brkY+2).toFixed(1)}" stroke="#388e3c" stroke-width="2"/>` +
+    `<text x="${uMid.toFixed(1)}" y="${(brkY+14).toFixed(1)}" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#2e7d32">Uniformidad: ${unifPct}%</text>` +
+    `<text x="${uMid.toFixed(1)}" y="${(brkY+26).toFixed(1)}" text-anchor="middle" font-size="8" fill="#555">${dentroU} de ${n} aves dentro ±10% del promedio</text>`;
+
   // Caja CV (prominente, esquina superior derecha)
   const cvPct  = (cv*100).toFixed(1);
   const cvColor= cv<=0.10?'#2e7d32':cv<=0.15?'#e65100':'#c62828';
@@ -1030,12 +1042,11 @@ function renderHistogramaSVG(pesos, ref) {
                `<text x="${p.l+138}" y="${ly}" font-size="8.5" fill="#1565c0">Dist.normal</text>` +
                `<line x1="${p.l+200}" y1="${ly-4}" x2="${p.l+213}" y2="${ly-4}" stroke="#2e7d32" stroke-width="1.5"/>` +
                `<text x="${p.l+216}" y="${ly}" font-size="8.5" fill="#2e7d32">Media</text>` +
-               (ref?.prom?`<line x1="${p.l+250}" y1="${ly-4}" x2="${p.l+263}" y2="${ly-4}" stroke="#e91e63" stroke-width="1.5" stroke-dasharray="4,3"/><text x="${p.l+266}" y="${ly}" font-size="8.5" fill="#e91e63">Curva</text>`:'') +
-               `<text x="${W/2}" y="${H-27}" text-anchor="middle" font-size="8" fill="#bbb">peso (kg)</text>`;
+               (ref?.prom?`<line x1="${p.l+250}" y1="${ly-4}" x2="${p.l+263}" y2="${ly-4}" stroke="#e91e63" stroke-width="1.5" stroke-dasharray="4,3"/><text x="${p.l+266}" y="${ly}" font-size="8.5" fill="#e91e63">Curva</text>`:'');
 
   return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;display:block" xmlns="http://www.w3.org/2000/svg">` +
          `<rect width="${W}" height="${H}" fill="#fafafa" rx="4"/>` +
-         `${band}${grid}${bars}${curve}${sdLines}${axes}${xLabels}${yLabels}${meanLine}${refLine}${cvBox}${legend}` +
+         `${band}${grid}${bars}${curve}${sdLines}${axes}${xLabels}${yLabels}${meanLine}${refLine}${cvBox}${unifBracket}${legend}` +
          `</svg>`;
 }
 
