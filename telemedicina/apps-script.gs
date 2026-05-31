@@ -240,11 +240,16 @@ function doGet(e) {
     if (!sheet) {
       return ContentService.createTextOutput('[]').setMimeType(ContentService.MimeType.JSON);
     }
-    const data    = sheet.getDataRange().getValues();
-    const headers = data[0];
-    const rows    = data.slice(1).map(row => {
+    const data        = sheet.getDataRange().getValues();
+    const displayData = sheet.getDataRange().getDisplayValues();
+    const headers     = data[0];
+    const rows        = data.slice(1).map((row, rowIdx) => {
+      const display = displayData[rowIdx + 1];
       const obj = {};
-      headers.forEach((h, i) => { obj[h] = row[i] instanceof Date ? row[i].toISOString() : row[i]; });
+      headers.forEach((h, i) => {
+        // Solo el timestamp se convierte a ISO; el resto usa el valor mostrado en la celda
+        obj[h] = row[i] instanceof Date ? row[i].toISOString() : (display[i] || '');
+      });
       return obj;
     });
     return ContentService
