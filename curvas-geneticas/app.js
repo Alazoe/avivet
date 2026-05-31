@@ -891,6 +891,41 @@ function renderCrianza() {
   }).join('');
   document.querySelector('#tabla-crianza thead').innerHTML = th;
   document.querySelector('#tabla-crianza tbody').innerHTML = filas;
+
+  renderCrianzaAmb();
+}
+
+// ── AMBIENTAL CRIANZA ──────────────────────────────────────────────────
+function renderCrianzaAmb() {
+  const sec = document.getElementById('crianza-amb-section');
+  if (!sec) return;
+  const L = LINEAS[lineaSel];
+  if (!L.crianzaAmb) { sec.innerHTML = ''; return; }
+
+  const amb = L.crianzaAmb;
+  const esJaula = amb.sistema === 'jaula';
+  const sistemaLabel = esJaula ? 'Sistema jaula' : 'Sistema piso (alternativo)';
+
+  const thJaula = esJaula ? '<th>T. Jaula (°C)</th>' : '';
+  const thead = `<tr><th>Edad</th>${thJaula}<th>T. Piso (°C)</th><th>Intensidad (lux)</th><th>Horas de luz</th></tr>`;
+
+  const filas = amb.periodos.map(p => {
+    const [edad, tJaula, tPiso, lux, horas] = p;
+    const celJaula = esJaula ? `<td>${tJaula}</td>` : '';
+    return `<tr><td style="text-align:left;font-weight:500">${edad}</td>${celJaula}<td>${tPiso}</td><td>${lux}</td><td>${horas}</td></tr>`;
+  }).join('');
+
+  sec.innerHTML = `
+    <h3 style="font-family:var(--fuente-t);font-size:20px;font-weight:600;color:var(--prim);margin-bottom:10px">
+      Temperatura e iluminación crianza
+    </h3>
+    <span class="nota-fuente">${amb.fuente} · ${sistemaLabel}</span>
+    <div class="tabla-wrap" style="margin-top:12px">
+      <table>
+        <thead>${thead}</thead>
+        <tbody>${filas}</tbody>
+      </table>
+    </div>`;
 }
 
 // ── POSTURA ────────────────────────────────────────────────────────────
@@ -1161,6 +1196,20 @@ function exportarExcel() {
     const mS = mC ? mortSem(mC, i) : null;
     crianzaData.push([r[0], r[1], r[2], r[3], r[4], r[5], r[6], ...(mC ? [mS, mA] : [])]);
   });
+  // Tabla ambiental al final de la hoja Crianza
+  if (L.crianzaAmb) {
+    const amb = L.crianzaAmb;
+    const esJaula = amb.sistema === 'jaula';
+    crianzaData.push([], ['TEMPERATURA E ILUMINACIÓN CRIANZA'], ['Fuente:', amb.fuente]);
+    const hdrAmb = esJaula
+      ? ['Edad', 'T. Jaula (°C)', 'T. Piso (°C)', 'Intensidad (lux)', 'Horas de luz']
+      : ['Edad', 'T. Piso (°C)', 'Intensidad (lux)', 'Horas de luz'];
+    crianzaData.push(hdrAmb);
+    amb.periodos.forEach(p => {
+      const [edad, tJaula, tPiso, lux, horas] = p;
+      crianzaData.push(esJaula ? [edad, tJaula, tPiso, lux, horas] : [edad, tPiso, lux, horas]);
+    });
+  }
   const wsCrianza = XLSX.utils.aoa_to_sheet(crianzaData);
   wsCrianza['!cols'] = [8,14,14,22,22,22,22,...(mC ? [18,18] : [])].map(w => ({ wch: w }));
   XLSX.utils.book_append_sheet(wb, wsCrianza, 'Crianza');
