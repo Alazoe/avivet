@@ -802,6 +802,34 @@ const LINEAS = {
       [96,   1.7, 42.0, 52.7, 3.6], [97,   1.7, 41.8, 52.8, 3.6], [98,   1.7, 41.7, 53.0, 3.7],
       [99,   1.7, 41.5, 53.1, 3.7], [100,  1.6, 41.3, 53.3, 3.8],
     ],
+    // temperatura, humedad e iluminación crianza — Hendrix Genetics, Guía Sistemas Alternativos
+    // columnas: [Edad, T.Calefactor, T.2-3m calef., T.Ambiente, Humedad relativa%]
+    crianzaAmb: {
+      fuente: 'Hendrix Genetics — Guía de Manejo Sistemas Alternativos (Dekalb / ISA)',
+      sistema: 'piso',
+      columnas: ['Edad', 'T. Calefactor (°C)', 'T. 2–3m calef. (°C)', 'T. Ambiente (°C)', 'Humedad (%)'],
+      periodos: [
+        ['0–3 días',    '35',  '29–28', '32–33', '55–60'],
+        ['4–7 días',    '34',  '28–27', '32–31', '55–60'],
+        ['8–14 días',   '32',  '27–26', '30–28', '55–60'],
+        ['15–21 días',  '29',  '26–25', '28–26', '55–60'],
+        ['22–24 días',  '—',   '25–23', '25–23', '55–65'],
+        ['25–28 días',  '—',   '23–21', '23–21', '55–65'],
+        ['29–35 días',  '—',   '21–19', '21–19', '60–70'],
+        ['Pasados 35',  '—',   '19–17', '19–17', '60–70'],
+      ],
+    },
+    // sección 4.4 técnica de alimentación — Hendrix Genetics, Guía Sistemas Alternativos
+    tecnicaAlimentacion: {
+      fuente: 'Hendrix Genetics — Guía de Manejo, Sección 4.4 · Técnicas de alimentación',
+      puntos: [
+        'Vaciar comederos diariamente desde la semana 5 para que las aves ingieran todos los nutrientes.',
+        'Distribuir el 60% de la ración en la tarde, 2–3 h antes del apagado de luces; 40% restante al encendido.',
+        'El tiempo con comederos vacíos debe aumentar gradualmente: a las 10–12 sem., vacíos al menos 2–3 h/día.',
+        'Presentar el alimento en partículas gruesas para estimular el desarrollo del buche (molleja).',
+        'Las aves son granívoras: las partículas gruesas favorecen un consumo rápido y reducen la acumulación de finos.',
+      ],
+    },
   },
 };
 
@@ -906,26 +934,45 @@ function renderCrianzaAmb() {
   const esJaula = amb.sistema === 'jaula';
   const sistemaLabel = esJaula ? 'Sistema jaula' : 'Sistema piso (alternativo)';
 
-  const thJaula = esJaula ? '<th>T. Jaula (°C)</th>' : '';
-  const thead = `<tr><th>Edad</th>${thJaula}<th>T. Piso (°C)</th><th>Intensidad (lux)</th><th>Horas de luz</th></tr>`;
+  // Columnas flexibles (si el manual tiene más columnas que el estándar)
+  let thead, filas;
+  if (amb.columnas) {
+    thead = `<tr>${amb.columnas.map(c => `<th>${c}</th>`).join('')}</tr>`;
+    filas = amb.periodos.map(p =>
+      `<tr>${p.map((v, i) => i === 0
+        ? `<td style="text-align:left;font-weight:500">${v}</td>`
+        : `<td>${v}</td>`).join('')}</tr>`
+    ).join('');
+  } else {
+    const thJaula = esJaula ? '<th>T. Jaula (°C)</th>' : '';
+    thead = `<tr><th>Edad</th>${thJaula}<th>T. Piso (°C)</th><th>Intensidad (lux)</th><th>Horas de luz</th></tr>`;
+    filas = amb.periodos.map(p => {
+      const [edad, tJaula, tPiso, lux, horas] = p;
+      const celJaula = esJaula ? `<td>${tJaula}</td>` : '';
+      return `<tr><td style="text-align:left;font-weight:500">${edad}</td>${celJaula}<td>${tPiso}</td><td>${lux}</td><td>${horas}</td></tr>`;
+    }).join('');
+  }
 
-  const filas = amb.periodos.map(p => {
-    const [edad, tJaula, tPiso, lux, horas] = p;
-    const celJaula = esJaula ? `<td>${tJaula}</td>` : '';
-    return `<tr><td style="text-align:left;font-weight:500">${edad}</td>${celJaula}<td>${tPiso}</td><td>${lux}</td><td>${horas}</td></tr>`;
-  }).join('');
+  // Notas de alimentación si existen
+  const ta = L.tecnicaAlimentacion;
+  const notaAlim = ta ? `
+    <h3 style="font-family:var(--fuente-t);font-size:20px;font-weight:600;color:var(--prim);margin:28px 0 8px">
+      Técnica de alimentación en cría
+    </h3>
+    <span class="nota-fuente">${ta.fuente}</span>
+    <ul style="margin:10px 0 0 20px;line-height:1.9;font-size:14px;color:var(--suave)">
+      ${ta.puntos.map(p => `<li>${p}</li>`).join('')}
+    </ul>` : '';
 
   sec.innerHTML = `
     <h3 style="font-family:var(--fuente-t);font-size:20px;font-weight:600;color:var(--prim);margin-bottom:10px">
-      Temperatura e iluminación crianza
+      Temperatura${amb.columnas ? ', humedad' : ''} e iluminación crianza
     </h3>
     <span class="nota-fuente">${amb.fuente} · ${sistemaLabel}</span>
     <div class="tabla-wrap" style="margin-top:12px">
-      <table>
-        <thead>${thead}</thead>
-        <tbody>${filas}</tbody>
-      </table>
-    </div>`;
+      <table><thead>${thead}</thead><tbody>${filas}</tbody></table>
+    </div>
+    ${notaAlim}`;
 }
 
 // ── POSTURA ────────────────────────────────────────────────────────────
