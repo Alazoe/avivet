@@ -249,6 +249,23 @@ td { padding:11px 14px; }
 .leyenda-item { display:flex; align-items:center; gap:6px; font-size:11px; color:var(--gris); }
 .leyenda-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
 
+/* STOCK TEÓRICO */
+.teor-layout { display:grid; grid-template-columns:1fr; gap:16px; }
+.teor-ctrl { display:flex; align-items:flex-end; gap:12px; flex-wrap:wrap; margin-bottom:20px; }
+.teor-ctrl label { font-size:11px;font-weight:600;color:var(--gris);text-transform:uppercase;display:block;margin-bottom:5px; }
+.teor-ctrl input[type=date] { padding:9px 12px;border:1.5px solid var(--borde);border-radius:var(--radio-sm);font-family:'DM Sans',sans-serif;font-size:14px;outline:none; }
+.teor-ctrl input[type=date]:focus { border-color:var(--verde-clar); }
+.teor-status { font-size:13px; color:var(--gris); padding:6px 0; }
+.teor-status.ok   { color:var(--verde-med); font-weight:600; }
+.teor-status.err  { color:var(--rojo); font-weight:600; }
+.teor-status.calc { color:var(--azul); }
+.teor-badge-ok    { display:inline-block;padding:3px 9px;border-radius:5px;font-size:11px;font-weight:600;background:var(--verde-bg);color:var(--verde-med); }
+.teor-badge-warn  { display:inline-block;padding:3px 9px;border-radius:5px;font-size:11px;font-weight:600;background:var(--amarillo-bg);color:var(--amarillo); }
+.teor-badge-crit  { display:inline-block;padding:3px 9px;border-radius:5px;font-size:11px;font-weight:600;background:var(--rojo-bg);color:var(--rojo); }
+.teor-badge-pend  { display:inline-block;padding:3px 9px;border-radius:5px;font-size:11px;font-weight:600;background:var(--azul-bg);color:var(--azul); }
+.teor-badge-exc   { display:inline-block;padding:3px 9px;border-radius:5px;font-size:11px;font-weight:600;background:var(--amarillo-bg);color:var(--amarillo); }
+.teor-info-box { background:var(--azul-bg);border:1px solid #BEE3F8;border-radius:var(--radio);padding:14px 18px;margin-bottom:20px;font-size:13px;color:var(--azul); }
+
 /* PRECIOS */
 .precios-layout { display:grid; grid-template-columns:1fr 1fr; gap:16px; align-items:start; }
 .precio-input { width:100%; padding:6px 10px; border:1.5px solid var(--borde); border-radius:6px; font-family:'DM Mono',monospace; font-size:13px; text-align:right; background:white; outline:none; color:var(--texto); }
@@ -330,6 +347,10 @@ td { padding:11px 14px; }
         <button class="nav-item" onclick="irA('precios',this)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
           Precios
+        </button>
+        <button class="nav-item" onclick="irA('teorico',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 17H5a2 2 0 00-2 2v1"/><path d="M9 11H5a2 2 0 00-2 2v1"/><path d="M9 5H5a2 2 0 00-2 2v1"/><path d="M13 5h8"/><path d="M13 11h5"/><path d="M13 17h3"/><circle cx="19" cy="17" r="3"/><path d="M21 19l-1.5-1.5"/></svg>
+          Stock Teórico
         </button>
       </div>
       <div class="sidebar-footer">
@@ -533,6 +554,45 @@ td { padding:11px 14px; }
         </div>
       </div>
 
+      <!-- STOCK TEÓRICO -->
+      <div class="page" id="pg-teorico">
+        <div class="page-header">
+          <h2>Stock Teórico</h2>
+          <p>Calcula el stock esperado restando la producción planificada desde el último conteo físico</p>
+        </div>
+
+        <div class="teor-info-box">
+          ℹ️ <strong>¿Cómo funciona?</strong> Selecciona la fecha del nuevo conteo. El sistema busca el último conteo
+          físico de cada insumo (en CONTEOS_FISICOS), suma todo el consumo planificado desde ese conteo hasta la fecha
+          seleccionada, y calcula el stock esperado. El resultado se guarda en la hoja <strong>STOCK_TEORICO</strong>
+          de Google Sheets para que Verónica lo use como referencia al contar.
+        </div>
+
+        <div class="teor-ctrl">
+          <div>
+            <label>Fecha del nuevo conteo</label>
+            <input type="date" id="teor-fecha" />
+          </div>
+          <button class="btn-primary" onclick="calcularStockTeorico()">
+            ⚙ Calcular y guardar en Sheet
+          </button>
+          <button class="btn-outline" onclick="verStockTeorico()">
+            ↻ Ver resultado guardado
+          </button>
+          <span class="teor-status" id="teor-status"></span>
+        </div>
+
+        <div id="teor-metricas" class="metricas" style="margin-bottom:20px"></div>
+
+        <div class="card" id="teor-card" style="display:none">
+          <div class="card-header">
+            <h3 id="teor-card-titulo">Stock Teórico</h3>
+            <span class="ts" id="teor-card-sub"></span>
+          </div>
+          <div id="teor-tabla-body"></div>
+        </div>
+      </div>
+
       <!-- PRECIOS -->
       <div class="page" id="pg-precios">
         <div class="page-header">
@@ -654,6 +714,7 @@ function irA(pagina, btn) {
   if(pagina==="control")      iniciarControlDiario();
   if(pagina==="graficos")     renderGraficos();
   if(pagina==="precios")      cargarPrecios();
+  if(pagina==="teorico")      iniciarStockTeorico();
 }
 
 // ── DASHBOARD ──
@@ -1570,6 +1631,160 @@ function _buildBarChart(canvasId, wrapId, grupo, instanciaPrevia, COLORES) {
       }
     }
   });
+}
+
+// ── STOCK TEÓRICO ─────────────────────────────────────────────────────────────
+
+function iniciarStockTeorico() {
+  const el = document.getElementById("teor-fecha");
+  if (!el.value) el.value = fechaHoy();
+}
+
+async function calcularStockTeorico() {
+  const fecha = document.getElementById("teor-fecha").value;
+  if (!fecha) { alert("Selecciona una fecha"); return; }
+
+  setTeorStatus("Calculando...", "calc");
+  document.getElementById("teor-card").style.display = "none";
+  document.getElementById("teor-metricas").innerHTML = "";
+
+  try {
+    const url = `${BACKEND}?action=calcularStockTeorico&fecha=${fecha}`;
+    const res = await fetch(url).then(r => r.json());
+    if (!res.ok) { setTeorStatus("Error: " + (res.error || "desconocido"), "err"); return; }
+    setTeorStatus(`✓ ${res.msg}`, "ok");
+    renderTablaStockTeorico(res.data, fecha, "Calculado ahora — guardado en Sheet");
+  } catch(e) {
+    setTeorStatus("Error de conexión con el backend", "err");
+  }
+  setTimeout(() => setTeorStatus("", ""), 5000);
+}
+
+async function verStockTeorico() {
+  const fecha = document.getElementById("teor-fecha").value;
+  if (!fecha) { alert("Selecciona una fecha"); return; }
+
+  setTeorStatus("Cargando...", "calc");
+  document.getElementById("teor-card").style.display = "none";
+  document.getElementById("teor-metricas").innerHTML = "";
+
+  try {
+    const url = `${BACKEND}?action=getStockTeorico&fecha=${fecha}`;
+    const res = await fetch(url).then(r => r.json());
+    if (!res.ok) { setTeorStatus("Error: " + (res.error || "desconocido"), "err"); return; }
+    if (!res.calculado || !res.data.length) {
+      setTeorStatus("Sin datos para esa fecha. Usa 'Calcular y guardar' primero.", "err");
+      return;
+    }
+    setTeorStatus("", "");
+    renderTablaStockTeorico(res.data, fecha, "Desde Sheet STOCK_TEORICO");
+  } catch(e) {
+    setTeorStatus("Error de conexión con el backend", "err");
+  }
+}
+
+function setTeorStatus(msg, cls) {
+  const el = document.getElementById("teor-status");
+  el.textContent = msg;
+  el.className = "teor-status" + (cls ? " " + cls : "");
+}
+
+function renderTablaStockTeorico(data, fecha, subtitulo) {
+  if (!data || !data.length) {
+    document.getElementById("teor-metricas").innerHTML = "";
+    document.getElementById("teor-card").style.display = "none";
+    return;
+  }
+
+  // Ordenar por consumo desc (los más relevantes primero)
+  data.sort((a, b) => (b.consumo_produccion || 0) - (a.consumo_produccion || 0));
+
+  // Métricas resumen
+  const conComparacion = data.filter(d => d.conteo_real !== null);
+  const ok     = conComparacion.filter(d => d.estado === "OK").length;
+  const alerta = conComparacion.filter(d => d.estado === "Alerta").length;
+  const crit   = conComparacion.filter(d => d.estado === "Pérdida" || d.estado === "Exceso").length;
+  const pend   = data.filter(d => d.conteo_real === null).length;
+
+  document.getElementById("teor-metricas").innerHTML = `
+    <div class="metrica-card verde">
+      <div class="met-label">OK ✓</div>
+      <div class="met-valor" style="font-size:28px;color:var(--verde-med)">${ok}</div>
+      <div class="met-sub">Descuadre ≤3%</div>
+    </div>
+    <div class="metrica-card amarillo">
+      <div class="met-label">Alerta</div>
+      <div class="met-valor" style="font-size:28px;color:var(--amarillo)">${alerta}</div>
+      <div class="met-sub">Descuadre 3–7%</div>
+    </div>
+    <div class="metrica-card rojo">
+      <div class="met-label">Pérdida/Exceso</div>
+      <div class="met-valor" style="font-size:28px;color:var(--rojo)">${crit}</div>
+      <div class="met-sub">Descuadre &gt;7%</div>
+    </div>
+    <div class="metrica-card azul">
+      <div class="met-label">Sin conteo</div>
+      <div class="met-valor" style="font-size:28px;color:var(--azul)">${pend}</div>
+      <div class="met-sub">Pendiente conteo real</div>
+    </div>`;
+
+  const rows = data.map(d => {
+    const consumo  = d.consumo_produccion != null ? d.consumo_produccion.toFixed(1) + " kg" : "—";
+    const teorico  = d.stock_teorico != null ? d.stock_teorico.toFixed(1) + " kg" : "—";
+    const real     = d.conteo_real  != null ? d.conteo_real.toFixed(1)  + " kg" : `<span style="color:var(--gris);font-style:italic">Pendiente</span>`;
+    let diffHtml   = `<td class="num-cell" style="color:var(--gris);font-style:italic">—</td>`;
+    let pctHtml    = `<td class="num-cell" style="color:var(--gris)">—</td>`;
+    let estadoHtml = `<span class="teor-badge-pend">Pendiente</span>`;
+
+    if (d.conteo_real !== null && d.diferencia !== null) {
+      const sign = d.diferencia >= 0 ? "+" : "";
+      const pct  = d.stock_teorico > 0 ? (d.diferencia / d.stock_teorico * 100).toFixed(1) : "—";
+      let cls = "ok", badgeCls = "teor-badge-ok";
+      if (d.estado === "Pérdida")      { cls = "crit"; badgeCls = "teor-badge-crit"; }
+      else if (d.estado === "Exceso")  { cls = "warn"; badgeCls = "teor-badge-exc"; }
+      else if (d.estado === "Alerta")  { cls = "warn"; badgeCls = "teor-badge-warn"; }
+      diffHtml   = `<td class="num-cell ctrl-${cls}"><b>${sign}${d.diferencia.toFixed(1)} kg</b></td>`;
+      pctHtml    = `<td class="num-cell ctrl-${cls}">${sign}${pct}%</td>`;
+      estadoHtml = `<span class="${badgeCls}">${d.estado}</span>`;
+    }
+
+    const fechaConteoFmt = d.fecha_ultimo_conteo
+      ? new Date(d.fecha_ultimo_conteo + "T12:00:00").toLocaleDateString("es-CL", { day:"2-digit", month:"2-digit" })
+      : "—";
+
+    return `<tr>
+      <td><div class="nombre-cell">${d.nombre}</div><div class="cod-cell">${d.codigo}</div></td>
+      <td class="num-cell" style="color:var(--gris);font-size:11px">${fechaConteoFmt}<br>${(d.stock_ultimo_conteo||0).toFixed(0)} kg</td>
+      <td class="num-cell" style="color:var(--rojo)">${consumo}</td>
+      <td class="num-cell" style="font-weight:600;color:var(--verde)">${teorico}</td>
+      <td class="num-cell">${real}</td>
+      ${diffHtml}${pctHtml}
+      <td>${estadoHtml}</td>
+    </tr>`;
+  }).join("");
+
+  const fechaFmt = new Date(fecha + "T12:00:00").toLocaleDateString("es-CL",
+    { weekday:"long", day:"numeric", month:"long", year:"numeric" });
+
+  document.getElementById("teor-card-titulo").textContent = `Stock Teórico — ${fechaFmt}`;
+  document.getElementById("teor-card-sub").textContent = subtitulo;
+  document.getElementById("teor-tabla-body").innerHTML = `
+    <div style="overflow-x:auto">
+    <table>
+      <thead><tr>
+        <th>Materia Prima</th>
+        <th style="text-align:right">Último Conteo<br><span style="font-weight:400">(fecha / kg)</span></th>
+        <th style="text-align:right">Consumo<br>Producción</th>
+        <th style="text-align:right">Stock<br>Teórico</th>
+        <th style="text-align:right">Conteo<br>Real</th>
+        <th style="text-align:right">Diferencia<br>(kg)</th>
+        <th style="text-align:right">Diferencia<br>(%)</th>
+        <th>Estado</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    </div>`;
+  document.getElementById("teor-card").style.display = "block";
 }
 
 // ── PRECIOS ───────────────────────────────────────────────────────────────────

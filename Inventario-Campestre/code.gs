@@ -66,6 +66,7 @@ function inicializarSistema() {
   crearHojaOrdenes(ss);
   crearHojaProyecciones(ss);
   crearHojaPlanificacion(ss);
+  crearHojaStockTeorico(ss);
   cargarStocksMinimos();
   const s1 = ss.getSheetByName("Sheet1") || ss.getSheetByName("Hoja 1") || ss.getSheetByName("Hoja1");
   if (s1 && ss.getSheets().length > 1) ss.deleteSheet(s1);
@@ -274,6 +275,32 @@ function crearHojaStockActual(ss) {
 }
 
 // ──────────────────────────────────────────────
+// HOJA: STOCK_TEORICO
+// ──────────────────────────────────────────────
+function crearHojaStockTeorico(ss) {
+  const ws = getOrCreate(ss, "STOCK_TEORICO");
+  ws.clearContents();
+  ws.getRange("A1:I1").merge()
+    .setValue("STOCK TEÓRICO — Calculado desde último conteo físico + plan de producción")
+    .setBackground("#1B4332").setFontColor("#FFFFFF").setFontWeight("bold")
+    .setFontSize(13).setHorizontalAlignment("center");
+  ws.setRowHeight(1, 30);
+
+  const headers = [
+    "Fecha Producción","Código MP","Nombre MP",
+    "Fecha Último Conteo","Stock Último Conteo (kg)",
+    "Consumo Acumulado (kg)","Stock Teórico (kg)",
+    "Conteo Real (kg)","Diferencia (kg)"
+  ];
+  ws.getRange(2, 1, 1, headers.length).setValues([headers]);
+  headerStyle(ws, 2, headers.length, "2D6A4F");
+
+  const widths = [130, 120, 260, 140, 160, 160, 140, 130, 120];
+  widths.forEach((w, i) => ws.setColumnWidth(i + 1, w));
+  ws.setFrozenRows(2);
+}
+
+// ──────────────────────────────────────────────
 // HOJA: ORDENES_COMPRA
 // ──────────────────────────────────────────────
 function crearHojaOrdenes(ss) {
@@ -382,7 +409,9 @@ function doGet(e) {
       case "guardarPlanificacion": result = guardarPlanificacion(JSON.parse(decodeURIComponent(e.parameter.payload||"{}"))); break;
       case "getPlanificacion":     result = getPlanificacion(e.parameter);                break;
       case "getConteosDelDia":     result = getConteosDelDia(e.parameter.fecha);          break;
-      case "actualizarPrecios":    result = actualizarPrecios(JSON.parse(decodeURIComponent(e.parameter.payload||"{}"))); break;
+      case "actualizarPrecios":       result = actualizarPrecios(JSON.parse(decodeURIComponent(e.parameter.payload||"{}"))); break;
+      case "calcularStockTeorico":    result = calcularYGuardarStockTeorico(e.parameter); break;
+      case "getStockTeorico":         result = getStockTeorico(e.parameter); break;
       default: result = { ok: true, msg: "Sistema activo" };
     }
   } catch(err) {
@@ -910,6 +939,166 @@ function getPlanificacion(body) {
     .map(r => ({ fecha: normFecha(r[0]), dieta: r[1], kg_dia: r[2] }));
 
   return { ok: true, data: resultado };
+}
+
+// ──────────────────────────────────────────────
+// STOCK TEÓRICO
+// ──────────────────────────────────────────────
+
+// Calcula el stock teórico para una fecha dada:
+//   Para cada MP, busca su último conteo físico <= fecha
+//   Resta todo el consumo planificado entre ese conteo y la fecha
+//   Persiste el resultado en la hoja STOCK_TEORICO
+function calcularYGuardarStockTeorico(params) {
+  const fecha = params.fecha || Utilities.formatDate(new Date(), "America/Santiago", "yyyy-MM-dd");
+  const ss    = SpreadsheetApp.openById(SHEET_ID);
+
+  // 1 — Último conteo físico por MP (cualquier fecha <= fecha)
+  const wsConteos = ss.getSheetByName("CONTEOS_FISICOS");
+  const ultimoConteo = {}; // { cod: { fecha, cantidad } }
+  if (wsConteos && wsConteos.getLastRow() > 2) {
+    wsConteos.getRange(3, 1, wsConteos.getLastRow() - 2, 8).getValues()
+      .filter(r => r[0] && r[1])
+      .forEach(r => {
+        const f   = normFecha(r[1]);
+        const cod = String(r[3] || "").trim();
+        const kg  = parseFloat(r[5]) || 0;
+        if (f <= fecha && cod) {
+          if (!ultimoConteo[cod] || f > ultimoConteo[cod].fecha ||
+              (f === ultimoConteo[cod].fecha && String(r[2]) > ultimoConteo[cod].hora)) {
+            ultimoConteo[cod] = { fecha: f, hora: String(r[2] || ""), cantidad: kg };
+          }
+        }
+      });
+  }
+
+  // 2 — Plan de producción: sumar consumo por MP desde (ultimo_conteo + 1 día) hasta fecha
+  const recetasRes = getRecetas();
+  const recetas = recetasRes.ok && Object.keys(recetasRes.data).length
+    ? recetasRes.data
+    : Object.fromEntries(Object.entries(RECETAS).map(([k, v]) => [k, v]));
+
+  const consumoAcum = {}; // { cod: kg }
+  const wsPlan = ss.getSheetByName("PLANIFICACION");
+  if (wsPlan && wsPlan.getLastRow() > 2) {
+    wsPlan.getRange(3, 1, wsPlan.getLastRow() - 2, 3).getValues()
+      .filter(r => r[0] && r[2] > 0)
+      .forEach(r => {
+        const fPlan = normFecha(r[0]);
+        if (fPlan > fecha) return; // solo hasta la fecha objetivo
+        const dieta = String(r[1] || "").trim();
+        const kgDia = parseFloat(r[2]) || 0;
+        const rec   = recetas[dieta];
+        if (!rec) return;
+        Object.entries(rec.insumos || {}).forEach(([cod, prop]) => {
+          const uc = ultimoConteo[cod];
+          // Solo contar producción DESPUÉS del último conteo y HASTA la fecha objetivo
+          if (uc && fPlan > uc.fecha && fPlan <= fecha) {
+            consumoAcum[cod] = (consumoAcum[cod] || 0) + kgDia * (prop / 1000);
+          }
+        });
+      });
+  }
+
+  // 3 — Construir resultado
+  const mpsActivas = MATERIAS_PRIMAS.filter(([,, , g]) => g !== "Envases");
+  const resultado  = [];
+  mpsActivas.forEach(([cod, nombre]) => {
+    const uc     = ultimoConteo[cod];
+    if (!uc) return; // sin conteo previo, no se puede calcular
+    const consumo = Math.round((consumoAcum[cod] || 0) * 10) / 10;
+    const teorico = Math.round((uc.cantidad - consumo) * 10) / 10;
+    resultado.push({ cod, nombre, fecha_conteo: uc.fecha, stock_conteo: uc.cantidad, consumo, teorico });
+  });
+
+  // 4 — Persistir en hoja STOCK_TEORICO (reemplaza filas de esa fecha)
+  let wsTeor = ss.getSheetByName("STOCK_TEORICO");
+  if (!wsTeor) { crearHojaStockTeorico(ss); wsTeor = ss.getSheetByName("STOCK_TEORICO"); }
+
+  // Borrar filas previas para esta fecha (sin destruir encabezados)
+  if (wsTeor.getLastRow() > 2) {
+    const existing = wsTeor.getRange(3, 1, wsTeor.getLastRow() - 2, 1).getValues();
+    const toDelete = [];
+    existing.forEach((r, i) => { if (normFecha(r[0]) === fecha) toDelete.push(i + 3); });
+    for (let i = toDelete.length - 1; i >= 0; i--) wsTeor.deleteRow(toDelete[i]);
+  }
+
+  // Obtener conteos reales de ese día (para comparar en la misma pasada)
+  const conteosReales = {};
+  if (wsConteos && wsConteos.getLastRow() > 2) {
+    wsConteos.getRange(3, 1, wsConteos.getLastRow() - 2, 8).getValues()
+      .filter(r => r[0] && normFecha(r[1]) === fecha)
+      .forEach(r => {
+        const cod = String(r[3] || "").trim();
+        const kg  = parseFloat(r[5]) || 0;
+        if (cod) conteosReales[cod] = kg;
+      });
+  }
+
+  const ts = Utilities.formatDate(new Date(), "America/Santiago", "yyyy-MM-dd HH:mm");
+  resultado.forEach(r => {
+    const real = conteosReales[r.cod] !== undefined ? conteosReales[r.cod] : "";
+    const diff = real !== "" ? Math.round((real - r.teorico) * 10) / 10 : "";
+    wsTeor.appendRow([fecha, r.cod, r.nombre, r.fecha_conteo, r.stock_conteo, r.consumo, r.teorico, real, diff, ts]);
+  });
+
+  SpreadsheetApp.flush();
+  return { ok: true, fecha, data: resultado, n: resultado.length,
+           msg: `Stock teórico calculado para ${fecha}: ${resultado.length} insumos` };
+}
+
+// Lee la hoja STOCK_TEORICO para una fecha y agrega conteos reales si existen
+function getStockTeorico(params) {
+  const fecha = params.fecha || "";
+  const ss    = SpreadsheetApp.openById(SHEET_ID);
+  const ws    = ss.getSheetByName("STOCK_TEORICO");
+  if (!ws || ws.getLastRow() < 3) return { ok: true, data: [], calculado: false };
+
+  const rows = ws.getRange(3, 1, ws.getLastRow() - 2, 10).getValues()
+    .filter(r => r[0] && (!fecha || normFecha(r[0]) === fecha));
+
+  if (!rows.length) return { ok: true, data: [], calculado: false };
+
+  // Conteos reales del día (actualiza por si hubo conteos después de calcular)
+  const wsConteos = ss.getSheetByName("CONTEOS_FISICOS");
+  const conteosReales = {};
+  if (wsConteos && wsConteos.getLastRow() > 2) {
+    wsConteos.getRange(3, 1, wsConteos.getLastRow() - 2, 8).getValues()
+      .filter(r => r[0] && normFecha(r[1]) === fecha)
+      .forEach(r => {
+        const cod = String(r[3] || "").trim();
+        const kg  = parseFloat(r[5]) || 0;
+        if (cod) conteosReales[cod] = kg;
+      });
+  }
+
+  return {
+    ok: true,
+    calculado: true,
+    fecha,
+    data: rows.map(r => {
+      const cod     = String(r[1] || "");
+      const teorico = parseFloat(r[6]) || 0;
+      const real    = conteosReales[cod] !== undefined ? conteosReales[cod] : (r[7] !== "" ? parseFloat(r[7]) : null);
+      const diff    = real !== null ? Math.round((real - teorico) * 10) / 10 : null;
+      let estado = "Pendiente";
+      if (real !== null) {
+        const pct = teorico > 0 ? Math.abs(diff) / teorico * 100 : 0;
+        estado = pct <= 3 ? "OK" : pct <= 7 ? "Alerta" : (diff < 0 ? "Pérdida" : "Exceso");
+      }
+      return {
+        codigo:             cod,
+        nombre:             String(r[2] || ""),
+        fecha_ultimo_conteo: normFecha(r[3]),
+        stock_ultimo_conteo: parseFloat(r[4]) || 0,
+        consumo_produccion:  parseFloat(r[5]) || 0,
+        stock_teorico:       teorico,
+        conteo_real:         real,
+        diferencia:          diff,
+        estado
+      };
+    })
+  };
 }
 
 // ──────────────────────────────────────────────
