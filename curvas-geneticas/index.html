@@ -135,6 +135,10 @@ tbody tr:hover{background:var(--acento-cl)}
 .eq-lbl{font-size:12px;font-weight:600;color:var(--tinta);margin:6px 0 2px}
 .eq-unit{font-size:11px;color:var(--tenue);font-variant-numeric:tabular-nums}
 .eq-nota{font-family:var(--fuente-m);font-size:10px;color:var(--tenue);margin-top:4px}
+.eq-ref-titulo{font-size:13px;font-weight:600;color:var(--prim);letter-spacing:.02em;
+  margin-bottom:8px;padding-bottom:6px;border-bottom:2px solid var(--acento)}
+.eq-ref-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;margin-top:16px}
+.eq-ref-nota{font-family:var(--fuente-m);font-size:11px;color:var(--tenue);margin-top:10px}
 
 /* ── Notas metodología ──────────────────────────────────────────────── */
 .nota-fuente{display:inline-block;font-family:var(--fuente-m);font-size:11px;color:var(--tenue);
@@ -318,6 +322,87 @@ tbody tr:hover{background:var(--acento-cl)}
         <h3>Postura</h3>
         <div id="eq-postura"></div>
       </div>
+
+      <div class="eq-seccion" style="margin-top:40px">
+        <h3>Referencia por etapa — Crianza</h3>
+        <p class="bloque-desc" style="font-size:13px;margin-bottom:4px">
+          Estándares aplicables a todas las líneas genéticas. Semanas posteriores se agregarán próximamente.
+        </p>
+
+        <div class="eq-ref-grid">
+
+          <!-- Ventilación y Densidad -->
+          <div>
+            <div class="eq-ref-titulo">Ventilación y Densidad</div>
+            <div class="tabla-wrap" style="max-height:none">
+              <table>
+                <thead>
+                  <tr><th style="text-align:left">Parámetro</th><th>0–2 sem</th><th>2–5 sem</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td style="text-align:left">Ventilación mínima</td><td>0,7 m³/h/kg</td><td>0,7 m³/h/kg</td></tr>
+                  <tr><td style="text-align:left">Capacidad ventilación</td><td>4 m³/h/kg</td><td>4 m³/h/kg</td></tr>
+                  <tr><td style="text-align:left">Densidad</td><td>30 aves/m²</td><td>20 aves/m²</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Suministro de agua -->
+          <div>
+            <div class="eq-ref-titulo">Suministro de agua</div>
+            <div class="tabla-wrap" style="max-height:none">
+              <table>
+                <thead>
+                  <tr><th style="text-align:left">Equipamiento</th><th>0–2 sem</th><th>2–5 sem</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td style="text-align:left">Bebedero de arranque</td><td>75 pollitas</td><td>—</td></tr>
+                  <tr><td style="text-align:left">Bebedero</td><td>75 pollitas</td><td>75 pollitas</td></tr>
+                  <tr><td style="text-align:left">Tetina (nipple)</td><td>10 pollitas</td><td>10 pollitas</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Suministro de alimento -->
+          <div>
+            <div class="eq-ref-titulo">Suministro de alimento</div>
+            <div class="tabla-wrap" style="max-height:none">
+              <table>
+                <thead>
+                  <tr><th style="text-align:left">Equipamiento</th><th>0–2 sem</th><th>2–5 sem</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td style="text-align:left">Comedero de arranque</td><td>50 pollitas</td><td>—</td></tr>
+                  <tr><td style="text-align:left">Cadena (lineal)</td><td>4 cm/ave</td><td>4 cm/ave</td></tr>
+                  <tr><td style="text-align:left">Comedero redondo</td><td>35 pollitas</td><td>35 pollitas</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Comedero redondo — capacidad por diámetro -->
+          <div>
+            <div class="eq-ref-titulo">Comedero redondo — capacidad</div>
+            <div class="tabla-wrap" style="max-height:none">
+              <table>
+                <thead>
+                  <tr><th>Diámetro (cm)</th><th>Aves/comedero (máx)</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>30</td><td>38</td></tr>
+                  <tr><td>40</td><td>50</td></tr>
+                  <tr><td>50</td><td>63</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+        <p class="eq-ref-nota">Fuente: estándares de manejo — todas las líneas genéticas. La cría a elevadas densidades requiere especial atención.</p>
+      </div>
+
     </section>
   </div>
 
