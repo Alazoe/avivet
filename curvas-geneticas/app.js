@@ -869,10 +869,99 @@ function cambiarAves() {
 
 function selTab(tab) {
   tabActual = tab;
-  ['crianza','postura','equipamiento','alimentacion'].forEach(t => {
+  ['crianza','postura','equipamiento','alimentacion','iluminacion'].forEach(t => {
     document.getElementById('tab-' + t).classList.toggle('activo', t === tab);
     document.getElementById('panel-' + t).style.display = t === tab ? '' : 'none';
   });
+  if (tab === 'iluminacion') renderLuzDiagram();
+}
+
+// ── DIAGRAMA PROGRAMA DE ILUMINACIÓN ──────────────────────────────────
+const LUZ_PROGRAMA = [
+  { sem:  1, horas: 23, fase: 'inicio',       label: 'Sem 1'  },
+  { sem:  2, horas: 20, fase: 'inicio',       label: 'Sem 2'  },
+  { sem:  3, horas: 18, fase: 'inicio',       label: 'Sem 3'  },
+  { sem:  4, horas: 16, fase: 'inicio',       label: 'Sem 4'  },
+  { sem:  5, horas: 14, fase: 'descenso',     label: 'Sem 5'  },
+  { sem:  6, horas: 12, fase: 'descenso',     label: 'Sem 6'  },
+  { sem:  7, horas: 11, fase: 'descenso',     label: 'Sem 7'  },
+  { sem:  8, horas: 10, fase: 'meseta',       label: 'Sem 8'  },
+  { sem:  9, horas: 10, fase: 'meseta',       label: 'Sem 9'  },
+  { sem: 10, horas: 10, fase: 'meseta',       label: 'Sem 10' },
+  { sem: 11, horas: 10, fase: 'meseta',       label: 'Sem 11' },
+  { sem: 12, horas: 10, fase: 'meseta',       label: 'Sem 12' },
+  { sem: 13, horas: 10, fase: 'meseta',       label: 'Sem 13' },
+  { sem: 14, horas: 10, fase: 'meseta',       label: 'Sem 14' },
+  { sem: 15, horas: 10, fase: 'meseta',       label: 'Sem 15' },
+  { sem: 16, horas: 10, fase: 'meseta',       label: 'Sem 16' },
+  { sem: 17, horas: 11, fase: 'estimulacion', label: 'Sem 17' },
+  { sem: 18, horas: 12, fase: 'estimulacion', label: 'Sem 18' },
+  { sem: 19, horas: 13, fase: 'estimulacion', label: 'Sem 19' },
+  { sem: 20, horas: 14, fase: 'estimulacion', label: 'Sem 20' },
+  { sem: 21, horas: 15, fase: 'estimulacion', label: 'Sem 21' },
+  { sem: 22, horas: 16, fase: 'puesta',       label: 'Sem 22' },
+  { sem: 23, horas: 16, fase: 'puesta',       label: 'Sem 23' },
+  { sem: 24, horas: 16, fase: 'puesta',       label: 'Sem 24' },
+];
+
+const FASE_COLORES = {
+  inicio:       { barra: '#ffd54f', texto: 'Inicio (descenso rápido)' },
+  descenso:     { barra: '#ffb300', texto: 'Descenso gradual'         },
+  meseta:       { barra: '#42a5f5', texto: 'Meseta (constante)'       },
+  estimulacion: { barra: '#66bb6a', texto: 'Estimulación luminosa'    },
+  puesta:       { barra: '#f0a500', texto: 'Puesta'                   },
+};
+
+const FASE_SEPARADORES = {
+  5:  'Descenso gradual',
+  8:  'Meseta (10 h constantes)',
+  17: 'Estimulación luminosa',
+  22: 'Puesta',
+};
+
+function renderLuzDiagram() {
+  const container = document.getElementById('luz-diagram');
+  if (!container || container.dataset.rendered) return;
+
+  const NOCHE = '#1e2a35';
+  const hLabels = ['00:00','03:00','06:00','09:00','12:00','15:00','18:00','21:00','24:00'];
+
+  let html = '';
+
+  // Eje de horas
+  html += `<div class="luz-axis-row">
+    <div class="luz-row-label-empty"></div>
+    <div class="luz-axis-horas">${hLabels.map(h => `<span>${h}</span>`).join('')}</div>
+    <div class="luz-row-h-empty"></div>
+  </div>`;
+
+  LUZ_PROGRAMA.forEach(row => {
+    if (FASE_SEPARADORES[row.sem]) {
+      html += `<div class="luz-fase-sep">— ${FASE_SEPARADORES[row.sem]}</div>`;
+    }
+    const startH = 12 - row.horas / 2;
+    const endH   = 12 + row.horas / 2;
+    const sp = (startH / 24 * 100).toFixed(1);
+    const ep = (endH   / 24 * 100).toFixed(1);
+    const col = FASE_COLORES[row.fase].barra;
+    const bg  = `linear-gradient(to right, ${NOCHE} 0%, ${NOCHE} ${sp}%, ${col} ${sp}%, ${col} ${ep}%, ${NOCHE} ${ep}%, ${NOCHE} 100%)`;
+    html += `<div class="luz-row">
+      <span class="luz-row-label">${row.label}</span>
+      <div class="luz-barra" style="background:${bg}" title="${row.horas} h luz"></div>
+      <span class="luz-row-h">${row.horas} h</span>
+    </div>`;
+  });
+
+  // Leyenda
+  html += `<div class="luz-leyenda">`;
+  html += `<div class="luz-ley-item"><div class="luz-ley-dot" style="background:${NOCHE}"></div>Oscuridad</div>`;
+  Object.entries(FASE_COLORES).forEach(([, v]) => {
+    html += `<div class="luz-ley-item"><div class="luz-ley-dot" style="background:${v.barra}"></div>${v.texto}</div>`;
+  });
+  html += `</div>`;
+
+  container.innerHTML = html;
+  container.dataset.rendered = '1';
 }
 
 // ── RENDER COMPLETO ────────────────────────────────────────────────────
