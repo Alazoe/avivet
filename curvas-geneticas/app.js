@@ -869,7 +869,7 @@ function cambiarAves() {
 
 function selTab(tab) {
   tabActual = tab;
-  ['crianza','postura','equipamiento'].forEach(t => {
+  ['crianza','postura','equipamiento','alimentacion'].forEach(t => {
     document.getElementById('tab-' + t).classList.toggle('activo', t === tab);
     document.getElementById('panel-' + t).style.display = t === tab ? '' : 'none';
   });
