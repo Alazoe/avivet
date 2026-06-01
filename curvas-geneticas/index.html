@@ -163,6 +163,38 @@ tbody tr:hover{background:var(--acento-cl)}
 .btn-exportar:hover{background:var(--acento);color:#1a1a1a}
 .btn-exportar svg{width:14px;height:14px;fill:currentColor;flex-shrink:0}
 
+/* ── Técnicas de alimentación ───────────────────────────────────────── */
+.alim-intro{background:var(--papel);border:1px solid var(--linea);border-left:4px solid var(--acento);
+  padding:20px 24px;margin-bottom:32px;font-size:15px;color:var(--suave);line-height:1.75;border-radius:0 4px 4px 0}
+.alim-intro strong{color:var(--prim)}
+.alim-objetivos{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:32px}
+.alim-obj{background:var(--papel);border:1px solid var(--linea);border-top:3px solid var(--prim);
+  padding:14px 16px;border-radius:0 0 4px 4px;font-size:13px;color:var(--suave);line-height:1.5}
+.alim-obj strong{display:block;font-size:12px;font-weight:600;color:var(--prim);letter-spacing:.04em;
+  text-transform:uppercase;margin-bottom:4px}
+.alim-texto{font-size:15px;color:var(--suave);line-height:1.8;margin-bottom:28px;max-width:80ch}
+.alim-texto p{margin-bottom:14px}
+.alim-subtitulo{font-family:var(--fuente-t);font-size:20px;font-weight:600;color:var(--prim);
+  margin:36px 0 16px;padding-bottom:8px;border-bottom:1px solid var(--linea)}
+/* diagrama flujo */
+.flujo-wrap{background:var(--papel);border:1px solid var(--linea);padding:28px 24px;border-radius:4px;overflow-x:auto}
+.flujo-timeline{display:flex;align-items:stretch;min-width:640px;height:64px;border-radius:6px;overflow:hidden;border:1px solid var(--linea-f)}
+.flujo-seg{display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:11px;
+  font-weight:600;text-align:center;padding:6px 4px;line-height:1.3;border-right:1px solid rgba(0,0,0,.08)}
+.flujo-seg:last-child{border-right:none}
+.flujo-noche{background:#2c3e50;color:rgba(255,255,255,.7);flex:1.2}
+.flujo-manana{background:#e8f5e9;color:var(--prim);flex:1.5}
+.flujo-medio{background:var(--fondo);color:var(--tenue);flex:2;font-style:italic}
+.flujo-tarde{background:#fff8e1;color:#7c5800;flex:2}
+.flujo-apagado{background:#37474f;color:rgba(255,255,255,.8);flex:1}
+.flujo-noche2{background:#1a252f;color:rgba(255,255,255,.6);flex:1.2}
+.flujo-leyenda{display:flex;flex-wrap:wrap;gap:16px;margin-top:14px;font-size:12px;color:var(--suave)}
+.flujo-ley-item{display:flex;align-items:center;gap:6px}
+.flujo-ley-dot{width:12px;height:12px;border-radius:2px;flex-shrink:0}
+.flujo-nota{font-family:var(--fuente-m);font-size:11px;color:var(--tenue);margin-top:12px;line-height:1.6}
+.alim-regla{background:var(--acento-cl);border:1px solid #f0c84a;border-left:4px solid var(--acento);
+  padding:14px 20px;border-radius:0 4px 4px 0;font-size:14px;color:#5a3e00;margin:20px 0;font-weight:500}
+
 /* ── Responsive ─────────────────────────────────────────────────────── */
 @media(max-width:900px){
   .graficos-grid,.graficos-full,.graficos-postura{grid-template-columns:1fr}
@@ -259,6 +291,7 @@ tbody tr:hover{background:var(--acento-cl)}
     <button id="tab-crianza"      class="tab activo"  onclick="selTab('crianza')">Crianza</button>
     <button id="tab-postura"      class="tab"         onclick="selTab('postura')">Postura</button>
     <button id="tab-equipamiento" class="tab"         onclick="selTab('equipamiento')">Equipamiento</button>
+    <button id="tab-alimentacion" class="tab"         onclick="selTab('alimentacion')">Alimentación</button>
   </div>
 
   <!-- ─── PANEL CRIANZA ────────────────────────────────────────────── -->
@@ -402,6 +435,75 @@ tbody tr:hover{background:var(--acento-cl)}
 
         </div>
         <p class="eq-ref-nota">Fuente: estándares de manejo — todas las líneas genéticas (sistema piso). La cría a elevadas densidades requiere especial atención en los primeros días.</p>
+      </div>
+
+    </section>
+  </div>
+
+  <div id="panel-alimentacion" style="display:none">
+    <section id="alimentacion" class="bloque">
+      <h2>Técnicas de alimentación</h2>
+      <p class="bloque-desc">Manejo del programa de alimentación desde la semana 5 hasta las 16 semanas de vida.</p>
+
+      <!-- Objetivos -->
+      <div class="alim-objetivos">
+        <div class="alim-obj"><strong>Objetivo 1</strong>Evitar la acumulación de finos en el sistema de alimentación</div>
+        <div class="alim-obj"><strong>Objetivo 2</strong>Fomentar el desarrollo del buche mediante un consumo rápido</div>
+      </div>
+
+      <!-- Bloque introductorio -->
+      <div class="alim-intro">
+        Las aves son granívoras por naturaleza, por lo que tienen afinidad por las partículas gruesas. Con los finos les cuesta más,
+        por lo que gastan más energía para consumir lo mismo. La acumulación de finos en el sistema de alimentación tiene como
+        resultado que coman menos de lo que necesitan.
+      </div>
+
+      <!-- Texto principal -->
+      <div class="alim-texto">
+        <p>El manejo del alimento en la cría afecta al consumo en la puesta. El objetivo es el desarrollo del tracto digestivo en la recría
+        para que en la puesta puedan comer lo que necesitarán, especialmente tras el traslado, cuando el consumo debe aumentar
+        mucho en pocas semanas.</p>
+
+        <p>El buche es el órgano de almacenaje de alimento. Permite al ave ingerir bastante al final del día para las necesidades
+        energéticas nocturnas. Una ingesta rápida durante la cría fomenta el desarrollo del buche. Conseguir que coman suficientemente
+        rápido dependerá de la frecuencia de alimentación y la textura del alimento. Así se aprovecha la tendencia de los animales de
+        comer al inicio y al final del día, persiguiendo mantener los comederos vacíos a mitad del día.</p>
+
+        <p>Se recomienda el uso de sistemas de alimentación que distribuyan el alimento rápidamente y que permitan a las aves
+        terminarlo cada día. Esto fomenta el desarrollo de su capacidad de ingestión y evita la acumulación de finos. Los mejores
+        son los comederos alimentados con sistemas rápidos de cadena, pues permiten un buen control. Si se usan platos o
+        comederos de tolva, deben adaptarse a estas técnicas de alimentación.</p>
+
+        <p>La presentación en <strong>partículas gruesas</strong> facilita el desarrollo de la molleja.</p>
+      </div>
+
+      <div class="alim-regla">
+        Para asegurar que las aves ingieren todos los nutrientes que necesitan, deben <strong>vaciar los comederos diariamente desde la semana 5</strong> en adelante. Esta regla se aplica tanto a pollitas como a ponedoras.
+      </div>
+
+      <!-- Diagrama flujo -->
+      <div class="alim-subtitulo">Manejo de la distribución del alimento en la recría</div>
+
+      <div class="flujo-wrap">
+        <div class="flujo-timeline">
+          <div class="flujo-seg flujo-noche">🌙<br>Noche<br><span style="font-weight:400;font-size:10px">comederos vacíos</span></div>
+          <div class="flujo-seg flujo-manana">🌅 Encendido<br>40% ración<br><span style="font-weight:400;font-size:10px">(opcional)</span></div>
+          <div class="flujo-seg flujo-medio">· · · Mediodía · · ·<br><span style="font-size:10px">comederos vacíos</span></div>
+          <div class="flujo-seg flujo-tarde">☀️ Tarde<br><strong>60% ración</strong><br><span style="font-weight:400;font-size:10px">2–3 h antes apagado</span></div>
+          <div class="flujo-seg flujo-apagado">🌆<br>Apagado<br><span style="font-weight:400;font-size:10px">luces</span></div>
+          <div class="flujo-seg flujo-noche2">🌙<br>Noche<br><span style="font-weight:400;font-size:10px">vacíos ≥1–1,5 h</span></div>
+        </div>
+        <div class="flujo-leyenda">
+          <div class="flujo-ley-item"><div class="flujo-ley-dot" style="background:#e8f5e9;border:1px solid #a5d6a7"></div>40% ración al encendido de luces (opcional)</div>
+          <div class="flujo-ley-item"><div class="flujo-ley-dot" style="background:#fff8e1;border:1px solid #ffe082"></div>60% ración en la tarde (distribución principal)</div>
+          <div class="flujo-ley-item"><div class="flujo-ley-dot" style="background:#2c3e50"></div>Comederos vacíos (noche y mediodía)</div>
+        </div>
+        <p class="flujo-nota">
+          · Rutina iniciable entre las semanas 4 y 8 según el sistema de alimentación.<br>
+          · El tiempo con comederos vacíos debe incrementarse gradualmente: a las 10–12 semanas, vacíos al menos 2–3 h/día.<br>
+          · Se pueden hacer 2 distribuciones por la tarde, siempre que el intervalo entre repartos sea corto.<br>
+          · Plateau de luz: 12 horas.
+        </p>
       </div>
 
     </section>
