@@ -195,6 +195,40 @@ tbody tr:hover{background:var(--acento-cl)}
 .alim-regla{background:var(--acento-cl);border:1px solid #f0c84a;border-left:4px solid var(--acento);
   padding:14px 20px;border-radius:0 4px 4px 0;font-size:14px;color:#5a3e00;margin:20px 0;font-weight:500}
 
+/* ── Programa de iluminación ────────────────────────────────────────── */
+.luz-regla{background:var(--prim);color:#fff;padding:14px 20px;border-radius:4px;font-size:14px;
+  font-weight:500;margin-bottom:12px;line-height:1.5}
+.luz-regla span{display:block;font-size:11px;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--acento);margin-bottom:4px}
+.luz-objetivos-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:28px}
+.luz-obj-bloque{background:var(--papel);border:1px solid var(--linea);padding:16px 18px}
+.luz-obj-bloque h4{font-family:var(--fuente-t);font-size:16px;font-weight:600;color:var(--prim);
+  margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid var(--acento)}
+.luz-obj-bloque ul{list-style:none;display:grid;gap:6px;font-size:13px;color:var(--suave)}
+.luz-obj-bloque li{padding-left:16px;position:relative}
+.luz-obj-bloque li::before{content:'·';position:absolute;left:4px;font-size:18px;color:var(--acento);top:-3px;font-weight:700}
+.luz-diagram-wrap{background:var(--papel);border:1px solid var(--linea);padding:20px 16px;
+  border-radius:4px;overflow-x:auto;margin-bottom:8px}
+.luz-diagram{min-width:460px}
+.luz-axis-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.luz-row-label-empty{width:52px;flex-shrink:0}
+.luz-axis-horas{flex:1;display:flex;justify-content:space-between;
+  font-family:var(--fuente-m);font-size:10px;color:var(--tenue);padding:0 2px}
+.luz-row-h-empty{width:38px;flex-shrink:0}
+.luz-row{display:flex;align-items:center;gap:8px;margin-bottom:2px}
+.luz-row-label{font-family:var(--fuente-m);font-size:10px;color:var(--suave);
+  width:52px;flex-shrink:0;text-align:right;padding-right:4px}
+.luz-barra{flex:1;height:16px;border-radius:2px}
+.luz-row-h{font-family:var(--fuente-m);font-size:10px;color:var(--tenue);
+  width:38px;flex-shrink:0;text-align:right}
+.luz-leyenda{display:flex;flex-wrap:wrap;gap:14px;font-size:12px;color:var(--suave);margin-top:10px}
+.luz-ley-item{display:flex;align-items:center;gap:6px}
+.luz-ley-dot{width:28px;height:10px;border-radius:2px;flex-shrink:0}
+.luz-fase-sep{font-size:10px;font-family:var(--fuente-m);color:var(--acento);
+  letter-spacing:.06em;text-transform:uppercase;margin:6px 0 4px;padding-left:56px}
+.luz-tabla-wrap{overflow-x:auto;margin-bottom:28px}
+.luz-tabla-wrap table{min-width:560px}
+
 /* ── Responsive ─────────────────────────────────────────────────────── */
 @media(max-width:900px){
   .graficos-grid,.graficos-full,.graficos-postura{grid-template-columns:1fr}
@@ -292,6 +326,7 @@ tbody tr:hover{background:var(--acento-cl)}
     <button id="tab-postura"      class="tab"         onclick="selTab('postura')">Postura</button>
     <button id="tab-equipamiento" class="tab"         onclick="selTab('equipamiento')">Equipamiento</button>
     <button id="tab-alimentacion" class="tab"         onclick="selTab('alimentacion')">Alimentación</button>
+    <button id="tab-iluminacion"  class="tab"         onclick="selTab('iluminacion')">Iluminación</button>
   </div>
 
   <!-- ─── PANEL CRIANZA ────────────────────────────────────────────── -->
@@ -504,6 +539,102 @@ tbody tr:hover{background:var(--acento-cl)}
           · Se pueden hacer 2 distribuciones por la tarde, siempre que el intervalo entre repartos sea corto.<br>
           · Plateau de luz: 12 horas.
         </p>
+      </div>
+
+    </section>
+  </div>
+
+  <div id="panel-iluminacion" style="display:none">
+    <section id="iluminacion" class="bloque">
+      <h2>Programa de iluminación</h2>
+      <p class="bloque-desc">Manejo de la luz en recría y puesta para controlar la madurez sexual y el consumo de alimento.</p>
+
+      <!-- Reglas básicas -->
+      <div class="luz-regla"><span>Regla 1</span>No incrementar la duración de la luz en recría antes del momento de la estimulación de las aves.</div>
+      <div class="luz-regla" style="margin-bottom:28px"><span>Regla 2</span>No reducir la duración de la luz en fase de puesta.</div>
+
+      <!-- Texto principal -->
+      <div class="alim-texto">
+        <p>Las pollitas son sensibles a los cambios de luz, y estos afectan la edad de su madurez sexual. Además, el consumo de alimento se ve muy afectado por la duración del día. En la recría, el principal objetivo del programa de iluminación es que las aves crezcan controlando la aparición de su madurez sexual.</p>
+        <p>Los programas de iluminación deberían adaptarse a las instalaciones (naves abiertas o cerradas), las condiciones de producción, el clima y el perfil de peso del huevo deseado.</p>
+        <p><strong>El momento de la estimulación luminosa debe basarse siempre en el peso vivo, no en la edad.</strong> Si se hace prematuramente (peso vivo bajo) puede conllevar unos malos resultados en la fase de puesta (menor pico y persistencia), además de mayor mortalidad y peor calidad de la cáscara.</p>
+        <p>Las primeras semanas de recría, se recomienda un programa decreciente de la duración de la luz para maximizar el crecimiento, seguido de un periodo de duración constante de la luz (meseta). La velocidad de reducción y las horas de luz en la meseta dependerán de la estirpe, sus resultados de crecimiento, el clima, el momento en que se espera la madurez sexual y el perfil de peso del huevo deseado.</p>
+      </div>
+
+      <!-- Objetivos -->
+      <div class="luz-objetivos-grid">
+        <div class="luz-obj-bloque">
+          <h4>En recría</h4>
+          <ul>
+            <li>Fomentar el desarrollo temprano, el crecimiento y el consumo</li>
+            <li>Controlar la madurez sexual de las aves</li>
+          </ul>
+        </div>
+        <div class="luz-obj-bloque">
+          <h4>En puesta</h4>
+          <ul>
+            <li>Fomentar el crecimiento y el inicio de la puesta</li>
+            <li>Contrarrestar los efectos negativos de un día natural decreciente</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Naves abiertas -->
+      <div class="alim-subtitulo">Naves abiertas y semicerradas</div>
+      <div class="alim-texto">
+        <p>Cuando las pollitas se recrían en naves con sistema abierto, el control de la madurez sexual es más complejo. Se recomienda oscurecer la nave y utilizar programas que consideren la duración del día natural en el momento del traslado.</p>
+        <p><strong>La regla de oro es que la duración total de la luz en la fase de meseta nunca debe ser menor que el día más largo entre el periodo que va de las 6 semanas de vida hasta el traslado.</strong></p>
+        <p>Las naves en que la luz que entra del exterior supera los 0,5 lux deberían considerarse semicerradas. A fin de conseguir una fotoestimulación efectiva y evitar que las aves maduren sexualmente de forma prematura, el programa de iluminación debería considerar la duración del día natural cuando las aves tengan 16 semanas.</p>
+        <p>El traslado de aves de naves semicerradas a naves con ventanas puede conllevar un avance de la madurez sexual. Para reducirlo, se recomienda trabajar con una intensidad de luz mayor en recría (40 lux) o incrementarla gradualmente las últimas semanas. El traslado de una nave abierta o semicerrada a una nave cerrada ralentiza la madurez sexual y retrasa el inicio de la puesta — en estas circunstancias es necesario mantener la duración e intensidad de la luz equivalente al día natural al traslado y reajustarla gradualmente una vez completada la transferencia.</p>
+      </div>
+
+      <div class="alim-regla">
+        Puntos clave en naves abiertas: (1) La estimulación efectiva es más difícil cuando el día natural es más largo. (2) En recría, la fotoestimulación es más efectiva si la luz se añade al final del día. (3) Al inicio de la puesta, añadir luz por la mañana <em>y</em> por la tarde mejora el reparto de aves en los nidos.
+      </div>
+
+      <!-- Tabla programa -->
+      <div class="alim-subtitulo">Programa de iluminación — producción alternativa</div>
+      <p class="bloque-desc" style="font-size:13px;margin-bottom:12px">Horas de luz recomendadas según la duración del día natural a las 16 semanas de edad.</p>
+      <div class="luz-tabla-wrap">
+        <div class="tabla-wrap" style="max-height:none">
+          <table>
+            <thead>
+              <tr>
+                <th style="text-align:left">Edad y/o peso</th>
+                <th>10 h</th><th>11 h</th><th>12 h</th><th>13 h</th><th>≥14 h</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td style="text-align:left">1–3 días</td><td>23</td><td>23</td><td>23</td><td>23</td><td>23</td></tr>
+              <tr><td style="text-align:left">4–7 días</td><td>22</td><td>22</td><td>22</td><td>22</td><td>22</td></tr>
+              <tr><td style="text-align:left">8–14 días</td><td>20</td><td>20</td><td>20</td><td>20</td><td>20</td></tr>
+              <tr><td style="text-align:left">15–21 días</td><td>18</td><td>18</td><td>18</td><td>18</td><td>18</td></tr>
+              <tr><td style="text-align:left">22–28 días</td><td>16</td><td>16</td><td>16</td><td>16</td><td>16</td></tr>
+              <tr><td style="text-align:left">29–35 días</td><td>14</td><td>14</td><td>14</td><td>14</td><td>15</td></tr>
+              <tr><td style="text-align:left">36–42 días</td><td>12</td><td>13</td><td>13</td><td>13:30</td><td>14</td></tr>
+              <tr><td style="text-align:left">43–49 días</td><td>11</td><td>12</td><td>12:30</td><td>13</td><td>14</td></tr>
+              <tr><td style="text-align:left">Días decrecientes: 49d → estimulación</td><td>10</td><td colspan="4" style="color:var(--tenue);font-style:italic">Luz natural</td></tr>
+              <tr><td style="text-align:left">Días crecientes: 49d → estimulación</td><td>10</td><td>11</td><td>12</td><td>13</td><td>14</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Diagrama visual -->
+      <div class="alim-subtitulo">Ejemplo: ponedoras marrones — día natural 10 h a las 16 semanas</div>
+      <div class="luz-diagram-wrap">
+        <div id="luz-diagram" class="luz-diagram"></div>
+      </div>
+
+      <!-- 5.4 Intensidad -->
+      <div class="alim-subtitulo">5.4 Intensidad luminosa</div>
+      <div class="alim-texto">
+        <p>La intensidad luminosa es un factor importante los primeros días de cría, pues anima a las aves a explorar su ambiente y a encontrar con rapidez agua y alimento. Más tarde puede reducirse gradualmente hasta un nivel que en la práctica depende de: la luz necesaria para inspeccionar las aves, el grado de oscuridad de la nave y la intensidad luminosa que tendrán en puesta.</p>
+        <p>Existe una fuerte relación entre intensidad luminosa, actividad física y problemas de emplume y picaje. Una elevada intensidad incrementa el nerviosismo de las aves y fomenta la mortalidad por picaje de cloaca. El riesgo es mayor a elevadas densidades de alojamiento.</p>
+        <p>Hoy día se suele mantener la intensidad relativamente alta, pues ayuda en el desarrollo, y solo se reduce si se observan problemas. Así se dispone de una herramienta para combatir los problemas de picaje si aparecen.</p>
+      </div>
+      <div class="alim-intro">
+        La intensidad luminosa necesaria para la puesta es relativamente baja, <strong>5–10 lux</strong>, y no es necesario aumentarla para conseguir una fotoestimulación efectiva. Sin embargo, una intensidad ligeramente superior al inicio de la puesta puede estimular el consumo de alimento si es necesario. Conseguir una <strong>distribución uniforme</strong> de la intensidad de la luz también es muy importante.
       </div>
 
     </section>
