@@ -658,6 +658,7 @@ const MP_NOMBRES = {
   "30PHSB-00":"Fosfato Phosbic","30MSRB-00":"Secuestrante","30MET2-00":"Metionina","30INMU-00":"Reg. Intestinal",
   "30LIS2-00":"Lisina 99%","30PLFD-00":"Polifeed","30COCI-00":"Coccisan","30NSLP-00":"Nucleo Pollita",
   "30NSLG-00":"Nucleo Ponedora","30SAL6-00":"Sal Fina","30OVTO-00":"Ovotop","30PIGM-00":"Pigmento",
+  "30EMEL-00":"Emeral","30FITO-00":"Fitogénico","10VSCT-00":"Chicktonic 1Lt",
 };
 
 const MPS_PRINCIPALES = [
@@ -870,11 +871,38 @@ async function crearOC() {
 async function cargarRecetasDesdeGAS() {
   try {
     const data = await jsonpGet({ action: "getRecetas" });
-    if (data.ok && data.data) {
+    if (data.ok && data.data && Object.keys(data.data).length > 0) {
       Object.keys(RECETAS_DATA).forEach(k => delete RECETAS_DATA[k]);
       Object.assign(RECETAS_DATA, data.data);
+    } else if (data.ok && Object.keys(data.data || {}).length === 0 && Object.keys(RECETAS_DATA).length === 0) {
+      // Hoja RECETAS vacía — usar constante hardcodeada como arranque seguro
+      console.warn("Hoja RECETAS vacía en GAS, usando datos locales hardcodeados");
+      _usarRecetasFallback();
+    } else if (!data.ok) {
+      console.error("Error GAS al obtener recetas:", data.error);
+      if (Object.keys(RECETAS_DATA).length === 0) _usarRecetasFallback();
     }
-  } catch(e) { console.log("Error cargando recetas GAS:", e); }
+  } catch(e) {
+    console.error("Error al cargar recetas:", e);
+    if (Object.keys(RECETAS_DATA).length === 0) _usarRecetasFallback();
+  }
+}
+
+// Datos de fallback (sincronizados con la constante RECETAS de code.gs)
+function _usarRecetasFallback() {
+  const RECETAS_FALLBACK = {
+    "PONEDORA 1":     { activo: true,  fecha: "19-may", insumos: {"30MAIZ-00":562,"30AFSY-00":266,"30COCH-00":106,"30HTR3-00":50,"30PHSB-00":6,"30MSRB-00":0.5,"30MET2-00":2.5,"30INMU-00":0.5,"30LIS2-00":0.5,"30PLFD-00":2,"30NSLP-00":0.5,"30SAL6-00":4,"30OVTO-00":1,"30NSLG-00":1,"30PIGM-00":0.2} },
+    "PONEDORA 2":     { activo: true,  fecha: "19-may", insumos: {"30MAIZ-00":552,"30AFSY-00":257,"30COCH-00":127,"30HTR3-00":50,"30PHSB-00":4,"30MSRB-00":0.5,"30MET2-00":2,"30INMU-00":0.5,"30LIS2-00":0.3,"30PLFD-00":2.5,"30SAL6-00":4,"30OVTO-00":1,"30NSLG-00":1,"30PIGM-00":0.2} },
+    "POLLITA INICIAL":{ activo: true,  fecha: "19-may", insumos: {"30MAIZ-00":600,"30AFSY-00":315,"30COCH-00":15,"30HTR3-00":50,"30PHSB-00":10,"30MSRB-00":0.5,"30MET2-00":2.5,"30INMU-00":0.5,"30LIS2-00":1.6,"30COCI-00":0.5,"30NSLP-00":1,"30SAL6-00":2.5} },
+    "RECRÍA":         { activo: true,  fecha: "19-may", insumos: {"30MAIZ-00":661,"30AFSY-00":260,"30COCH-00":13,"30HTR3-00":50,"30PHSB-00":9,"30MSRB-00":0.5,"30MET2-00":1,"30INMU-00":0.5,"30LIS2-00":0.3,"30COCI-00":0.4,"30NSLP-00":1,"30SAL6-00":2.5} },
+    "PREPOSTURA":     { activo: true,  fecha: "19-may", insumos: {"30MAIZ-00":646,"30AFSY-00":250,"30COCH-00":63,"30HTR3-00":25,"30PHSB-00":9,"30MSRB-00":0.5,"30MET2-00":1,"30INMU-00":0.5,"30LIS2-00":0.3,"30SAL6-00":3,"30NSLG-00":1} },
+    "LOLOL":          { activo: true,  fecha: "19-may", insumos: {"30MAIZ-00":562,"30AFSY-00":269,"30COCH-00":105,"30HTR3-00":50,"30PHSB-00":6,"30MSRB-00":0.5,"30MET2-00":2,"30INMU-00":0.5,"30LIS2-00":0.3,"30PLFD-00":2,"30SAL6-00":3,"30NSLG-00":1} },
+    "POLLA NUEVA":    { activo: true,  fecha: "25-ene", insumos: {"30MAIZ-00":558,"30AFSY-00":267,"30COCH-00":108,"30HTR3-00":50,"30PHSB-00":7,"30MSRB-00":0.5,"30MET2-00":2,"30INMU-00":0.5,"30LIS2-00":0.3,"30PLFD-00":3,"30NSLP-00":0.5,"30SAL6-00":3,"30NSLG-00":1,"30PIGM-00":0.2} },
+    "LAMPA":          { activo: false, fecha: "13-nov", insumos: {"30MAIZ-00":527,"30AFSY-00":315,"30COCH-00":108,"30HTR3-00":25,"30PHSB-00":11,"30MSRB-00":0.5,"30MET2-00":3,"30INMU-00":0.5,"30LIS2-00":1,"30PLFD-00":4,"30NSLP-00":0.5,"30SAL6-00":3.5,"30NSLG-00":1,"30PIGM-00":0.2} },
+  };
+  Object.assign(RECETAS_DATA, RECETAS_FALLBACK);
+  console.warn("Recetas cargadas desde fallback local — guardando en Sheet...");
+  guardarRecetasEnGAS().catch(e => console.error("No se pudo sincronizar fallback:", e));
 }
 
 async function guardarRecetasEnGAS() {
@@ -887,7 +915,8 @@ async function guardarRecetasEnGAS() {
 function renderRecetas() {
   const dietas = Object.keys(RECETAS_DATA);
   if (!dietas.length) {
-    document.getElementById("tabla-recetas").innerHTML = '<div class="loading-msg">Cargando dietas<span class="dot-anim"></span></div>';
+    document.getElementById("tabla-recetas").innerHTML =
+      '<div class="loading-msg" style="color:var(--rojo)">⚠ No se pudieron cargar las dietas desde el backend. Verifica la conexión o que la hoja RECETAS exista en Google Sheets.</div>';
     return;
   }
   let html = "";
@@ -1789,18 +1818,16 @@ function renderTablaStockTeorico(data, fecha, subtitulo) {
 
 // ── PRECIOS ───────────────────────────────────────────────────────────────────
 
-let _preciosData   = [];  // materias primas con precio actual
-let _recetasData   = {};  // recetas con insumos
+let _preciosData = [];  // materias primas con precio actual
 
 async function cargarPrecios() {
-  if (!_preciosData.length) {
+  // Siempre refrescar precios al navegar a esta sección
+  try {
     const res = await fetch(`${BACKEND}?action=getMateriasPrimas`).then(r => r.json());
     if (res.ok) _preciosData = res.data.filter(m => m.activo === "SÍ" || m.activo === true);
-  }
-  if (!Object.keys(_recetasData).length) {
-    const res = await fetch(`${BACKEND}?action=getRecetas`).then(r => r.json());
-    if (res.ok) _recetasData = res.data;
-  }
+  } catch(e) { console.error("Error cargando MPs para precios:", e); }
+  // Usar RECETAS_DATA (ya cargado y siempre actualizado) en lugar de cache separada
+  if (Object.keys(RECETAS_DATA).length === 0) await cargarRecetasDesdeGAS();
   renderTablaPrecios();
   renderCostosRecetas();
 }
@@ -1862,7 +1889,7 @@ function renderCostosRecetas() {
   const el       = document.getElementById("costos-recetas");
   const precioMap = {};
   _preciosData.forEach(m => { precioMap[m.codigo] = m.precio || 0; });
-  const recetas  = Object.entries(_recetasData).filter(([, v]) => v.activo !== false);
+  const recetas  = Object.entries(RECETAS_DATA).filter(([, v]) => v.activo !== false);
 
   if (!recetas.length) {
     el.innerHTML = `<div class="loading-msg">Sin recetas cargadas</div>`;
@@ -1992,3 +2019,4 @@ async function guardarPrecios() {
 </div>
 </body>
 </html>
+
