@@ -11,6 +11,7 @@ const SHEET_ID = "1AhcHJ0rgewyu4FPh_37lih5iLjHEyrtkjpt86HhzQtA";
 const MATERIAS_PRIMAS = [
   ["30MAIZ-00",  "MAÍZ",                              "kg",  "Energéticos"],
   ["30AFSY-00",  "SOYA HIGH",                         "kg",  "Proteínas"],
+  ["30SOYB-00",  "SOYA BOLIVIANA",                    "kg",  "Proteínas"],
   ["30COCH-00",  "CONCHUELA GRUESA",                  "kg",  "Minerales"],
   ["30HTR3-00",  "HARINILLA TRIGO",                   "kg",  "Energéticos"],
   ["30PHSB-00",  "FOSFATO MONOCALCICO",               "kg",  "Minerales"],
@@ -51,6 +52,10 @@ const RECETAS = {
     insumos: {"30MAIZ-00":558,"30AFSY-00":267,"30COCH-00":108,"30HTR3-00":50,"30PHSB-00":7,"30MSRB-00":0.5,"30MET2-00":2,"30INMU-00":0.5,"30LIS2-00":0.3,"30PLFD-00":3,"30NSLP-00":0.5,"30SAL6-00":3,"30NSLG-00":1,"30PIGM-00":0.2}},
   "LAMPA":          { codigo: "",          activo: false, fecha: "13-nov",
     insumos: {"30MAIZ-00":527,"30AFSY-00":315,"30COCH-00":108,"30HTR3-00":25,"30PHSB-00":11,"30MSRB-00":0.5,"30MET2-00":3,"30INMU-00":0.5,"30LIS2-00":1,"30PLFD-00":4,"30NSLP-00":0.5,"30SAL6-00":3.5,"30NSLG-00":1,"30PIGM-00":0.2}},
+  "F.E. ROMAN":     { codigo: "",          activo: true,  fecha: "10-abr",
+    insumos: {"30MAIZ-00":558,"30SOYB-00":268,"30COCH-00":112,"30HTR3-00":50,"30PHSB-00":3,"30MSRB-00":0.5,"30MET2-00":1.5,"30INMU-00":0.5,"30LIS2-00":0.03,"30PLFD-00":3,"30SAL6-00":3,"30NSLG-00":1}},
+  "F.E. GENESIS":   { codigo: "",          activo: true,  fecha: "07-abr",
+    insumos: {"30MAIZ-00":510,"30SOYB-00":312,"30COCH-00":110,"30HTR3-00":50,"30PHSB-00":6,"30MSRB-00":0.5,"30MET2-00":2,"30INMU-00":0.5,"30LIS2-00":1,"30PLFD-00":3,"30SAL6-00":3,"30NSLG-00":1,"30NSLP-00":1}},
 };
 
 // ──────────────────────────────────────────────
