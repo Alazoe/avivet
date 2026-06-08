@@ -621,12 +621,14 @@ function guardarRecetas(body) {
 }
 
 function escribirHojaRecetas(recetasObj) {
+  const data = (recetasObj && typeof recetasObj === "object" && Object.keys(recetasObj).length)
+               ? recetasObj : RECETAS;
   const ss = SpreadsheetApp.openById(SHEET_ID);
   const ws = getOrCreate(ss, "RECETAS");
   ws.clearContents();
   ws.clearFormats();
 
-  const nombresDietas = Object.keys(recetasObj);
+  const nombresDietas = Object.keys(data);
   if (!nombresDietas.length) return;
   const numCols = 2 + nombresDietas.length;
 
@@ -641,8 +643,8 @@ function escribirHojaRecetas(recetasObj) {
   // Valores de las 3 filas de cabecera en una sola llamada
   const cabeceraValues = [
     ["INSUMO", "Código MP", ...nombresDietas],
-    ["Fecha inicio", "", ...nombresDietas.map(n => recetasObj[n].fecha || "")],
-    ["Activo",       "", ...nombresDietas.map(n => recetasObj[n].activo ? "SÍ" : "NO")]
+    ["Fecha inicio", "", ...nombresDietas.map(n => data[n].fecha || "")],
+    ["Activo",       "", ...nombresDietas.map(n => data[n].activo ? "SÍ" : "NO")]
   ];
   ws.getRange(2, 1, 3, numCols).setValues(cabeceraValues)
     .setFontFamily("Arial").setFontSize(10).setFontWeight("bold").setHorizontalAlignment("center");
@@ -651,7 +653,7 @@ function escribirHojaRecetas(recetasObj) {
   ws.getRange(2, 1, 1, 2).setBackground("#2D6A4F").setFontColor("#FFFFFF");
   nombresDietas.forEach((nombre, i) => {
     ws.getRange(2, 3+i)
-      .setBackground(recetasObj[nombre].activo ? "#2D6A4F" : "#888888")
+      .setBackground(data[nombre].activo ? "#2D6A4F" : "#888888")
       .setFontColor("#FFFFFF");
   });
   ws.setRowHeight(2, 24);
@@ -662,7 +664,7 @@ function escribirHojaRecetas(recetasObj) {
   // Formato fila 4 (activo)
   ws.getRange(4, 1, 1, 2).setBackground("#D8F3DC");
   nombresDietas.forEach((nombre, i) => {
-    const activo = recetasObj[nombre].activo;
+    const activo = data[nombre].activo;
     ws.getRange(4, 3+i)
       .setBackground(activo ? "#D8F3DC" : "#FFD6D6")
       .setFontColor(activo ? "#006400" : "#CC0000");
@@ -671,10 +673,10 @@ function escribirHojaRecetas(recetasObj) {
   // ── Insumos: recopilar códigos ───────────────────────────────
   const allCods = [];
   MATERIAS_PRIMAS.forEach(([cod]) => {
-    if (nombresDietas.some(d => (recetasObj[d].insumos || {})[cod])) allCods.push(cod);
+    if (nombresDietas.some(d => (data[d].insumos || {})[cod])) allCods.push(cod);
   });
   nombresDietas.forEach(d => {
-    Object.keys(recetasObj[d].insumos || {}).forEach(cod => {
+    Object.keys(data[d].insumos || {}).forEach(cod => {
       if (!allCods.includes(cod)) allCods.push(cod);
     });
   });
@@ -683,7 +685,7 @@ function escribirHojaRecetas(recetasObj) {
   const ingData = allCods.map(cod => {
     const mp = MATERIAS_PRIMAS.find(m => m[0] === cod);
     const nombre = mp ? mp[1] : cod;
-    const vals = nombresDietas.map(d => (recetasObj[d].insumos || {})[cod] || "");
+    const vals = nombresDietas.map(d => (data[d].insumos || {})[cod] || "");
     return [nombre, cod, ...vals];
   });
 
@@ -699,7 +701,7 @@ function escribirHojaRecetas(recetasObj) {
     ws.getRange(5, 3, ingData.length, nombresDietas.length).setHorizontalAlignment("center");
     // Dietas inactivas en gris
     nombresDietas.forEach((d, i) => {
-      if (!recetasObj[d].activo) ws.getRange(5, 3+i, ingData.length, 1).setFontColor("#AAAAAA");
+      if (!data[d].activo) ws.getRange(5, 3+i, ingData.length, 1).setFontColor("#AAAAAA");
     });
     // Alturas de fila
     for (let r = 5; r < 5 + ingData.length; r++) ws.setRowHeight(r, 18);
