@@ -654,7 +654,7 @@ async function initConfig() {
 let RECETAS_DATA = {}; // cargado desde GAS al iniciar y al navegar a Recetas
 
 const MP_NOMBRES = {
-  "30MAIZ-00":"Maíz","30AFSY-00":"Soya High","30SOYB-00":"Soya Boliviana","30COCH-00":"Conchuela Gruesa","30HTR3-00":"Harinilla Trigo",
+  "30MAIZ-00":"Maíz","30AFSY-00":"Soya High","30SOYB-00":"Soya Boliviana","30SA46-00":"Soya Arg 46%","30COCH-00":"Conchuela Gruesa","30HTR3-00":"Harinilla Trigo",
   "30PHSB-00":"Fosfato Monocalcico","30MSRB-00":"Secuestrante","30MET2-00":"Metionina","30INMU-00":"Inmunowall",
   "30LIS2-00":"Lisina 99%","30PLFD-00":"Polifeed","30COCI-00":"Coccisan","30NSLP-00":"Nucleo Pollita",
   "30NSLG-00":"Nucleo Ponedora","30SAL6-00":"Sal Fina","30OVTO-00":"Ovotop","30PIGM-00":"Capsantal",
@@ -891,16 +891,14 @@ async function cargarRecetasDesdeGAS() {
 // Datos de fallback (sincronizados con la constante RECETAS de code.gs)
 function _usarRecetasFallback() {
   const RECETAS_FALLBACK = {
-    "PONEDORA 1":     { activo: true,  fecha: "02-abr", insumos: {"30MAIZ-00":558,"30AFSY-00":267,"30COCH-00":108,"30HTR3-00":50,"30PHSB-00":6,"30MSRB-00":0.5,"30MET2-00":2,"30INMU-00":0.5,"30LIS2-00":0.3,"30PLFD-00":3,"30SAL6-00":3,"30OVTO-00":1,"30NSLG-00":1,"30PIGM-00":0.2} },
-    "PONEDORA 2":     { activo: true,  fecha: "02-abr", insumos: {"30MAIZ-00":552,"30AFSY-00":257,"30COCH-00":128,"30HTR3-00":50,"30PHSB-00":3,"30MSRB-00":0.5,"30MET2-00":1.5,"30INMU-00":0.5,"30LIS2-00":0.3,"30PLFD-00":2.5,"30SAL6-00":3,"30OVTO-00":1,"30NSLG-00":1,"30PIGM-00":0.2} },
-    "POLLITA INICIAL":{ activo: true,  fecha: "02-abr", insumos: {"30MAIZ-00":610,"30AFSY-00":310,"30COCH-00":15,"30HTR3-00":50,"30PHSB-00":6,"30MSRB-00":0.5,"30MET2-00":2.5,"30INMU-00":0.5,"30LIS2-00":1.5,"30COCI-00":0.5,"30NSLP-00":1,"30SAL6-00":3} },
-    "RECRÍA":         { activo: true,  fecha: "02-abr", insumos: {"30MAIZ-00":665,"30AFSY-00":253,"30COCH-00":19,"30HTR3-00":50,"30PHSB-00":6,"30MSRB-00":0.5,"30MET2-00":1,"30INMU-00":0.5,"30LIS2-00":0.3,"30COCI-00":0.4,"30NSLP-00":1,"30SAL6-00":3} },
-    "PREPOSTURA":     { activo: true,  fecha: "02-abr", insumos: {"30MAIZ-00":634,"30AFSY-00":235,"30COCH-00":67,"30HTR3-00":50,"30PHSB-00":6,"30MSRB-00":0.5,"30MET2-00":1.5,"30INMU-00":0.5,"30LIS2-00":0.3,"30PLFD-00":1,"30SAL6-00":3,"30NSLG-00":1} },
-    "LOLOL":          { activo: true,  fecha: "02-abr", insumos: {"30MAIZ-00":586,"30AFSY-00":243,"30COCH-00":108,"30HTR3-00":50,"30PHSB-00":5,"30MSRB-00":0.5,"30MET2-00":2,"30INMU-00":0.5,"30LIS2-00":0.3,"30PLFD-00":1,"30SAL6-00":3,"30NSLG-00":1,"30PIGM-00":0.2} },
-    "POLLA NUEVA":    { activo: true,  fecha: "25-ene", insumos: {"30MAIZ-00":558,"30AFSY-00":267,"30COCH-00":108,"30HTR3-00":50,"30PHSB-00":7,"30MSRB-00":0.5,"30MET2-00":2,"30INMU-00":0.5,"30LIS2-00":0.3,"30PLFD-00":3,"30NSLP-00":0.5,"30SAL6-00":3,"30NSLG-00":1,"30PIGM-00":0.2} },
-    "LAMPA":          { activo: false, fecha: "13-nov", insumos: {"30MAIZ-00":527,"30AFSY-00":315,"30COCH-00":108,"30HTR3-00":25,"30PHSB-00":11,"30MSRB-00":0.5,"30MET2-00":3,"30INMU-00":0.5,"30LIS2-00":1,"30PLFD-00":4,"30NSLP-00":0.5,"30SAL6-00":3.5,"30NSLG-00":1,"30PIGM-00":0.2} },
-    "F.E. ROMAN":     { activo: true,  fecha: "10-abr", insumos: {"30MAIZ-00":558,"30SOYB-00":268,"30COCH-00":112,"30HTR3-00":50,"30PHSB-00":3,"30MSRB-00":0.5,"30MET2-00":1.5,"30INMU-00":0.5,"30LIS2-00":0.03,"30PLFD-00":3,"30SAL6-00":3,"30NSLG-00":1} },
-    "F.E. GENESIS":   { activo: true,  fecha: "07-abr", insumos: {"30MAIZ-00":510,"30SOYB-00":312,"30COCH-00":110,"30HTR3-00":50,"30PHSB-00":6,"30MSRB-00":0.5,"30MET2-00":2,"30INMU-00":0.5,"30LIS2-00":1,"30PLFD-00":3,"30SAL6-00":3,"30NSLG-00":1,"30NSLP-00":1} },
+    "PONEDORA 1":        { activo: true, fecha: "06-jun", insumos: {"30MAIZ-00":555,"30SA46-00":270,"30COCH-00":112,"30HTR3-00":50,"30PHSB-00":4.5,"30MSRB-00":0.5,"30MET2-00":1.3,"30INMU-00":0.5,"30LIS2-00":0.2,"30PLFD-00":3,"30NSLP-00":0.25,"30SAL6-00":2.5,"30NSLG-00":1,"30PIGM-00":0.2} },
+    "PONEDORA 2":        { activo: true, fecha: "06-jun", insumos: {"30MAIZ-00":570,"30SA46-00":245,"30COCH-00":125,"30HTR3-00":50,"30PHSB-00":4,"30MSRB-00":0.5,"30MET2-00":1,"30INMU-00":0.5,"30PLFD-00":2.5,"30NSLP-00":0.25,"30SAL6-00":2.5,"30OVTO-00":1,"30NSLG-00":1,"30PIGM-00":0.2} },
+    "POLLITA INICIAL":   { activo: true, fecha: "06-jun", insumos: {"30MAIZ-00":590,"30SA46-00":325,"30COCH-00":19,"30HTR3-00":50,"30PHSB-00":8,"30MSRB-00":0.5,"30MET2-00":2.2,"30INMU-00":0.5,"30LIS2-00":1.4,"30COCI-00":0.5,"30NSLP-00":1.25,"30SAL6-00":3} },
+    "RECRÍA":            { activo: true, fecha: "06-jun", insumos: {"30MAIZ-00":661,"30SA46-00":257,"30COCH-00":17,"30HTR3-00":50,"30PHSB-00":7,"30MSRB-00":0.5,"30MET2-00":1.5,"30INMU-00":0.5,"30LIS2-00":0.25,"30COCI-00":0.4,"30NSLP-00":1.25,"30SAL6-00":3} },
+    "PREPOSTURA":        { activo: true, fecha: "06-jun", insumos: {"30MAIZ-00":632,"30SA46-00":245,"30COCH-00":61,"30HTR3-00":50,"30PHSB-00":7,"30MSRB-00":0.5,"30MET2-00":1.1,"30INMU-00":0.5,"30LIS2-00":0.2,"30SAL6-00":3,"30NSLG-00":1.25} },
+    "LOLOL":             { activo: true, fecha: "06-jun", insumos: {"30MAIZ-00":570,"30SA46-00":258,"30COCH-00":111,"30HTR3-00":50,"30PHSB-00":4.5,"30MSRB-00":0.5,"30MET2-00":1.1,"30INMU-00":0.5,"30LIS2-00":0.2,"30PLFD-00":1.5,"30SAL6-00":3,"30NSLG-00":1,"30PIGM-00":0.2} },
+    "GENESIS-HERBERT L2":{ activo: true, fecha: "06-jun", insumos: {"30MAIZ-00":558,"30SA46-00":270,"30COCH-00":110,"30HTR3-00":50,"30PHSB-00":4.5,"30MSRB-00":0.5,"30MET2-00":1.3,"30INMU-00":0.5,"30LIS2-00":0.2,"30PLFD-00":3,"30NSLP-00":1,"30SAL6-00":3,"30NSLG-00":1,"30PIGM-00":0.2} },
+    "ROMAN-HERBERT L1":  { activo: true, fecha: "06-jun", insumos: {"30MAIZ-00":575,"30SA46-00":245,"30COCH-00":120,"30HTR3-00":50,"30PHSB-00":3,"30MSRB-00":0.5,"30MET2-00":0.6,"30INMU-00":0.5,"30LIS2-00":0.2,"30PLFD-00":3,"30NSLP-00":0.25,"30SAL6-00":3,"30OVTO-00":1,"30NSLG-00":1,"30PIGM-00":0.2} },
   };
   Object.assign(RECETAS_DATA, RECETAS_FALLBACK);
   console.warn("Recetas cargadas desde fallback local — guardando en Sheet...");
