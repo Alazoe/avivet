@@ -616,13 +616,12 @@ function guardarRecetas(body) {
   }
   if (!recetas || typeof recetas !== "object") return { ok: false, error: "Datos inválidos" };
 
-  const ss = SpreadsheetApp.openById(SHEET_ID);
-  escribirHojaRecetas(ss, recetas);
-  SpreadsheetApp.flush();
+  escribirHojaRecetas(recetas);
   return { ok: true, msg: "Recetas actualizadas", n: Object.keys(recetas).length };
 }
 
-function escribirHojaRecetas(ss, recetasObj) {
+function escribirHojaRecetas(recetasObj) {
+  const ss = SpreadsheetApp.openById(SHEET_ID);
   const ws = getOrCreate(ss, "RECETAS");
   ws.clearContents();
   ws.clearFormats();
