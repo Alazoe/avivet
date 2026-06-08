@@ -578,7 +578,7 @@ function getRecetas() {
   const ws = ss.getSheetByName("RECETAS");
   if (!ws) return { ok: false, error: "Hoja RECETAS no encontrada" };
   const lastCol = ws.getLastColumn(); const lastRow = ws.getLastRow();
-  if (lastRow < 5) return { ok: true, data: {} };
+  if (lastRow < 5 || lastCol < 3) return { ok: true, data: {} };
   const allData   = ws.getRange(2, 1, lastRow-1, lastCol).getValues();
   const headersRow = allData[0]; const datesRow = allData[1];
   const activoRow  = allData[2]; const ingRows  = allData.slice(3);
@@ -599,59 +599,91 @@ function guardarRecetas(body) {
   let recetas;
   try { recetas = JSON.parse(decodeURIComponent(body.payload || "{}")); } catch(e) { return { ok: false, error: "JSON inválido" }; }
   if (!recetas || typeof recetas !== "object") return { ok: false, error: "Datos inválidos" };
-  const ss = SpreadsheetApp.openById(SHEET_ID);
-  escribirHojaRecetas(ss, recetas);
-  SpreadsheetApp.flush();
+  escribirHojaRecetas(recetas);
   return { ok: true, msg: "Recetas actualizadas", n: Object.keys(recetas).length };
 }
 
-function escribirHojaRecetas(ss, recetasObj) {
-  const ws = getOrCreate(ss, "RECETAS"); ws.clearContents();
-  const nombresDietas = Object.keys(recetasObj);
+function escribirHojaRecetas(recetasObj) {
+  const data = (recetasObj && typeof recetasObj === "object" && Object.keys(recetasObj).length)
+               ? recetasObj : RECETAS;
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  const ws = getOrCreate(ss, "RECETAS");
+  ws.clearContents();
+  ws.clearFormats();
+
+  const nombresDietas = Object.keys(data);
   if (!nombresDietas.length) return;
   const numCols = 2 + nombresDietas.length;
-  ws.getRange(1, 1, 1, numCols).merge().setValue("RECETAS / FÓRMULAS — kg por 1.000 kg de mezcla")
-    .setBackground("#1B4332").setFontColor("#FFFFFF").setFontWeight("bold").setFontSize(13).setHorizontalAlignment("center");
+
+  // Fila 1: título
+  ws.getRange(1, 1, 1, numCols).merge()
+    .setValue("RECETAS / FÓRMULAS — kg por 1.000 kg de mezcla")
+    .setBackground("#1B4332").setFontColor("#FFFFFF").setFontWeight("bold")
+    .setFontSize(13).setHorizontalAlignment("center");
   ws.setRowHeight(1, 30);
-  ws.getRange(2,1).setValue("INSUMO").setBackground("#2D6A4F").setFontColor("#FFFFFF").setFontWeight("bold").setHorizontalAlignment("center");
-  ws.getRange(2,2).setValue("Código MP").setBackground("#2D6A4F").setFontColor("#FFFFFF").setFontWeight("bold").setHorizontalAlignment("center");
-  nombresDietas.forEach((n,i) => ws.getRange(2,3+i).setValue(n).setBackground(recetasObj[n].activo?"#2D6A4F":"#888888").setFontColor("#FFFFFF").setFontWeight("bold").setHorizontalAlignment("center"));
-  ws.setRowHeight(2,24);
-  ws.getRange(3,1).setValue("Fecha inicio").setBackground("#95D5B2").setFontWeight("bold").setHorizontalAlignment("center");
-  ws.getRange(3,2).setBackground("#95D5B2");
-  nombresDietas.forEach((n,i) => ws.getRange(3,3+i).setValue(recetasObj[n].fecha||"").setBackground("#95D5B2").setHorizontalAlignment("center").setFontWeight("bold"));
-  ws.getRange(4,1).setValue("Activo").setBackground("#D8F3DC").setFontWeight("bold").setHorizontalAlignment("center");
-  ws.getRange(4,2).setBackground("#D8F3DC");
-  nombresDietas.forEach((n,i) => {
-    const a = recetasObj[n].activo;
-    ws.getRange(4,3+i).setValue(a?"SÍ":"NO").setBackground(a?"#D8F3DC":"#FFD6D6").setFontColor(a?"#006400":"#CC0000").setFontWeight("bold").setHorizontalAlignment("center");
+
+  // Filas 2-4: cabeceras en batch
+  const cabeceraValues = [
+    ["INSUMO", "Código MP", ...nombresDietas],
+    ["Fecha inicio", "", ...nombresDietas.map(n => data[n].fecha || "")],
+    ["Activo",       "", ...nombresDietas.map(n => data[n].activo ? "SÍ" : "NO")]
+  ];
+  ws.getRange(2, 1, 3, numCols).setValues(cabeceraValues)
+    .setFontFamily("Arial").setFontSize(10).setFontWeight("bold").setHorizontalAlignment("center");
+
+  ws.getRange(2, 1, 1, 2).setBackground("#2D6A4F").setFontColor("#FFFFFF");
+  nombresDietas.forEach((n, i) => {
+    ws.getRange(2, 3+i).setBackground(data[n].activo ? "#2D6A4F" : "#888888").setFontColor("#FFFFFF");
   });
+  ws.setRowHeight(2, 24);
+  ws.getRange(3, 1, 1, numCols).setBackground("#95D5B2");
+  ws.getRange(4, 1, 1, 2).setBackground("#D8F3DC");
+  nombresDietas.forEach((n, i) => {
+    const a = data[n].activo;
+    ws.getRange(4, 3+i).setBackground(a ? "#D8F3DC" : "#FFD6D6").setFontColor(a ? "#006400" : "#CC0000");
+  });
+
+  // Recopilar códigos con valores
   const allCods = [];
   MATERIAS_PRIMAS.forEach(([cod]) => {
-    let t = false; nombresDietas.forEach(d => { if ((recetasObj[d].insumos||{})[cod]) t = true; });
-    if (t) allCods.push(cod);
+    if (nombresDietas.some(d => (data[d].insumos||{})[cod])) allCods.push(cod);
   });
-  nombresDietas.forEach(d => Object.keys(recetasObj[d].insumos||{}).forEach(cod => { if (!allCods.includes(cod)) allCods.push(cod); }));
-  let row = 5;
-  allCods.forEach(cod => {
+  nombresDietas.forEach(d => Object.keys(data[d].insumos||{}).forEach(cod => {
+    if (!allCods.includes(cod)) allCods.push(cod);
+  }));
+
+  // Insumos en batch
+  const ingData = allCods.map(cod => {
     const mp = MATERIAS_PRIMAS.find(m => m[0] === cod);
-    ws.getRange(row,1).setValue(mp?mp[1]:cod).setFontWeight("bold").setFontFamily("Arial").setFontSize(10);
-    ws.getRange(row,2).setValue(cod).setFontColor("#555555").setFontFamily("Arial").setFontSize(9);
-    nombresDietas.forEach((d,i) => {
-      const val = (recetasObj[d].insumos||{})[cod]||"";
-      const c = ws.getRange(row,3+i); c.setValue(val).setHorizontalAlignment("center").setFontFamily("Arial").setFontSize(10);
-      if (!recetasObj[d].activo) c.setFontColor("#AAAAAA");
-    });
-    ws.setRowHeight(row,18); row++;
+    return [mp ? mp[1] : cod, cod, ...nombresDietas.map(d => (data[d].insumos||{})[cod] || "")];
   });
-  ws.getRange(row,1).setValue("TOTAL").setBackground("#1B4332").setFontColor("#FFFFFF").setFontWeight("bold").setHorizontalAlignment("center");
-  ws.getRange(row,2).setBackground("#1B4332");
-  for (let i=0;i<nombresDietas.length;i++) {
-    const col=3+i; const letra=columnToLetter(col);
-    ws.getRange(row,col).setFormula(`=SUM(${letra}5:${letra}${row-1})`).setBackground("#1B4332").setFontColor("#FFFFFF").setFontWeight("bold").setHorizontalAlignment("center");
+  if (ingData.length) {
+    ws.getRange(5, 1, ingData.length, numCols).setValues(ingData)
+      .setFontFamily("Arial").setFontSize(10).setVerticalAlignment("middle");
+    ws.getRange(5, 1, ingData.length, 1).setFontWeight("bold");
+    ws.getRange(5, 2, ingData.length, 1).setFontColor("#555555").setFontSize(9);
+    ws.getRange(5, 3, ingData.length, nombresDietas.length).setHorizontalAlignment("center");
+    nombresDietas.forEach((d, i) => {
+      if (!data[d].activo) ws.getRange(5, 3+i, ingData.length, 1).setFontColor("#AAAAAA");
+    });
+    for (let r = 5; r < 5 + ingData.length; r++) ws.setRowHeight(r, 18);
   }
-  ws.setRowHeight(row,22); ws.setColumnWidth(1,240); ws.setColumnWidth(2,140);
-  for (let i=0;i<nombresDietas.length;i++) ws.setColumnWidth(3+i,110);
+
+  // Fila TOTAL con fórmulas
+  const totalRow = 5 + ingData.length;
+  ws.getRange(totalRow, 1, 1, numCols)
+    .setBackground("#1B4332").setFontColor("#FFFFFF").setFontWeight("bold").setHorizontalAlignment("center");
+  ws.getRange(totalRow, 1).setValue("TOTAL");
+  for (let i = 0; i < nombresDietas.length; i++) {
+    const letra = columnToLetter(3 + i);
+    ws.getRange(totalRow, 3+i).setFormula(`=SUM(${letra}5:${letra}${totalRow-1})`);
+  }
+  ws.setRowHeight(totalRow, 22);
+
+  // Anchos de columna y formato final
+  ws.setColumnWidth(1, 240);
+  ws.setColumnWidth(2, 140);
+  for (let i = 0; i < nombresDietas.length; i++) ws.setColumnWidth(3+i, 110);
   ws.setFrozenRows(4);
 }
 
@@ -752,3 +784,4 @@ function columnToLetter(col) {
   while (col > 0) { const rem=(col-1)%26; letter=String.fromCharCode(65+rem)+letter; col=Math.floor((col-1)/26); }
   return letter;
 }
+
