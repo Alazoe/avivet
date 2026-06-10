@@ -613,8 +613,53 @@ function guardarRecetas(body) {
   }
   if (!recetas || typeof recetas !== "object") return { ok: false, error: "Datos inválidos" };
 
+  guardarRespaldoRecetas(recetas);
   escribirHojaRecetas(recetas);
   return { ok: true, msg: "Recetas actualizadas", n: Object.keys(recetas).length };
+}
+
+
+// ── Respaldo automático de recetas ──────────────
+// Cada guardarRecetas() deja un snapshot JSON en la hoja
+// RECETAS_HISTORIAL antes de reescribir la hoja RECETAS.
+function guardarRespaldoRecetas(recetasObj) {
+  try {
+    const ss = SpreadsheetApp.openById(SHEET_ID);
+    let ws = ss.getSheetByName("RECETAS_HISTORIAL");
+    if (!ws) {
+      ws = ss.insertSheet("RECETAS_HISTORIAL");
+      ws.getRange(1, 1, 1, 4).setValues([["Fecha", "Hora", "N° dietas", "Snapshot JSON"]])
+        .setBackground("#1B4332").setFontColor("#FFFFFF").setFontWeight("bold");
+      ws.setColumnWidth(1, 100);
+      ws.setColumnWidth(2, 80);
+      ws.setColumnWidth(4, 600);
+      ws.setFrozenRows(1);
+    }
+    const ahora = new Date();
+    ws.appendRow([
+      Utilities.formatDate(ahora, "America/Santiago", "yyyy-MM-dd"),
+      Utilities.formatDate(ahora, "America/Santiago", "HH:mm:ss"),
+      Object.keys(recetasObj).length,
+      JSON.stringify(recetasObj)
+    ]);
+    // Conservar solo los últimos 50 respaldos (los más antiguos arriba)
+    const filas = ws.getLastRow() - 1;
+    if (filas > 50) ws.deleteRows(2, filas - 50);
+  } catch (e) {
+    // El respaldo nunca debe bloquear el guardado principal
+    console.error("Respaldo de recetas falló: " + e.message);
+  }
+}
+
+// ── Restaurar el último respaldo ────────────────
+// Ejecutar desde el editor de Apps Script si la hoja
+// RECETAS queda vacía o corrupta.
+function restaurarUltimoRespaldo() {
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  const ws = ss.getSheetByName("RECETAS_HISTORIAL");
+  if (!ws || ws.getLastRow() < 2) throw new Error("No hay respaldos en RECETAS_HISTORIAL");
+  const json = ws.getRange(ws.getLastRow(), 4).getValue();
+  escribirHojaRecetas(JSON.parse(json));
 }
 
 function escribirHojaRecetas(recetasObj) {
