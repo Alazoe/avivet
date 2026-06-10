@@ -39,6 +39,17 @@ Inventario-Campestre/
 | `STOCK_ACTUAL` | Stock en tiempo real con estado y alertas automáticas |
 | `ORDENES_COMPRA` | Historial y estado de órdenes de compra |
 | `PROYECCIONES` | Consumo estimado de MPs según producción diaria |
+| `RECETAS_HISTORIAL` | Respaldo automático: snapshot JSON de las recetas en cada guardado (últimos 50) |
+
+---
+
+## 🛟 Recuperación de recetas
+
+Cada vez que se guardan recetas desde el panel admin, el backend deja un snapshot JSON en `RECETAS_HISTORIAL` **antes** de reescribir la hoja `RECETAS`. Si la hoja queda vacía o corrupta:
+
+1. Abrir el editor de Apps Script del Sheet
+2. Ejecutar `restaurarUltimoRespaldo()` → restaura el último snapshot guardado
+3. Si no hay respaldos aún, ejecutar `escribirHojaRecetas()` sin argumentos → restaura desde la constante `RECETAS` del código
 
 ---
 
