@@ -43,6 +43,19 @@ Inventario-Campestre/
 
 ---
 
+## 📧 Alerta diaria de stock crítico
+
+El backend incluye `enviarAlertaStock()`: revisa el stock y envía un correo cuando hay insumos **sin stock**, **bajo el mínimo** o con **menos de 7 días de cobertura** (según el plan de producción). El correo incluye stock actual, mínimo, días de cobertura y si ya existe una OC pendiente para ese insumo. Si no hay alertas, no se envía nada.
+
+**Activación (una sola vez, desde el editor de Apps Script):**
+
+1. Ejecutar `crearTriggerAlertaDiaria()` → programa el envío automático todos los días a las 7 am
+2. Autorizar los permisos de correo cuando Google lo solicite
+
+**Destinatario:** por defecto el dueño del script. Para cambiarlo, agregar en la hoja `CONFIG` una fila con clave `email_alertas` y el correo deseado (admite varios separados por coma).
+
+---
+
 ## 🛟 Recuperación de recetas
 
 Cada vez que se guardan recetas desde el panel admin, el backend deja un snapshot JSON en `RECETAS_HISTORIAL` **antes** de reescribir la hoja `RECETAS`. Si la hoja queda vacía o corrupta:
