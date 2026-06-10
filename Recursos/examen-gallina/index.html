@@ -9,12 +9,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500;1,9..144,600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
-  --paper:#f5f4f0; --paper2:#f0ede8; --paper3:#e8e4de;
-  --ink:#1a1916; --ink2:#5a5650; --ink3:#9a948c;
-  --line:#ddd9d0; --line2:#cbc5b8;
-  --rust:#1b4332; --rust-d:#143b2a; --rust-l:#d8f3dc;
+  --paper:#fafaf8; --paper2:#f0faf3; --paper3:#e3f0e8;
+  --ink:#141414; --ink2:#3a3a3a; --ink3:#6b6b6b;
+  --line:#d4e6da; --line2:#bcd6c5;
+  --rust:#1b4332; --rust-d:#0d2b1e; --rust-l:#d8f3dc;
   --olive:#2d6a4f; --olive-d:#1b4332;
-  --amber:#92400e; --amber-d:#7c3409;
+  --amber:#c0392b; --amber-d:#7a1c1c;
+  --gold:#c9a84c; --gold2:#e8c96e; --gold-d:#a8842e;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
@@ -99,10 +100,10 @@ main{max-width:760px;margin:0 auto;padding:0 22px 90px;position:relative;z-index
 /* Margin notes */
 .note{margin-top:22px;padding:2px 0 2px 18px;border-left:2px solid var(--amber);
   font-family:"Fraunces",serif;font-size:15px;font-style:italic;line-height:1.5;color:var(--amber-d);}
-.note.tip{border-left-color:var(--line2);color:var(--ink2);}
+.note.tip{border-left-color:var(--gold);color:#5a4720;}
 .note .lbl{font-style:normal;font-weight:700;font-size:10.5px;letter-spacing:0.16em;text-transform:uppercase;
   display:block;margin-bottom:3px;color:var(--amber);}
-.note.tip .lbl{color:var(--ink3);}
+.note.tip .lbl{color:var(--gold-d);}
 
 /* Pull quote */
 .pull{font-family:"Fraunces",serif;font-style:italic;font-weight:500;font-size:clamp(24px,4vw,32px);line-height:1.25;
@@ -502,7 +503,7 @@ main{max-width:760px;margin:0 auto;padding:0 22px 90px;position:relative;z-index
       </div>
     </div>
 
-    <p class="foot">MV Andrés Lazo Escobar · <a href="../">Volver a herramientas AviVet</a></p>
+    <p class="foot">MV Andrés Lazo Escobar · <a href="https://avivet.cl/">Volver a avivet.cl</a></p>
   </div>
 
 </main>
