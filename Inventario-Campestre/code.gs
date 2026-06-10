@@ -768,6 +768,89 @@ function escribirHojaRecetas(recetasObj) {
   ws.setFrozenRows(4);
 }
 
+// ── Alertas diarias de stock crítico ────────────
+// enviarAlertaStock(): revisa el stock y envía un correo si hay
+// insumos sin stock, críticos o con menos de 7 días de cobertura.
+// crearTriggerAlertaDiaria(): ejecutar UNA VEZ desde el editor
+// para programar el envío automático todos los días a las 7 am.
+// Destinatario: clave "email_alertas" en la hoja CONFIG;
+// si no existe, se usa el correo del dueño del script.
+
+function crearTriggerAlertaDiaria() {
+  ScriptApp.getProjectTriggers()
+    .filter(t => t.getHandlerFunction() === "enviarAlertaStock")
+    .forEach(t => ScriptApp.deleteTrigger(t));
+  ScriptApp.newTrigger("enviarAlertaStock")
+    .timeBased().everyDays(1).atHour(7).create();
+}
+
+function enviarAlertaStock() {
+  const stock = getStockActual();
+  if (!stock.ok) return;
+
+  const alertas = stock.data.filter(m =>
+    m.estado === "SIN STOCK" || m.estado === "CRÍTICO" ||
+    (typeof m.dias_stock === "number" && m.dias_stock < 7)
+  );
+  if (!alertas.length) return; // sin alertas no se envía correo
+
+  const severidad = { "SIN STOCK": 0, "CRÍTICO": 1, "BAJO": 2, "OK": 3 };
+  alertas.sort((a, b) => (severidad[a.estado] ?? 9) - (severidad[b.estado] ?? 9));
+
+  // OC pendientes por código — para saber si la reposición ya está en camino
+  const pendientes = {};
+  getOrdenes().data.filter(o => o.estado === "PENDIENTE")
+    .forEach(o => { pendientes[o.codigo] = (pendientes[o.codigo] || 0) + (parseFloat(o.cantidad) || 0); });
+
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  const cfg = {};
+  const wsCfg = ss.getSheetByName("CONFIG");
+  if (wsCfg && wsCfg.getLastRow() > 2) {
+    wsCfg.getRange(3, 1, wsCfg.getLastRow() - 2, 2).getValues()
+      .forEach(([k, v]) => { if (k) cfg[String(k).trim()] = String(v); });
+  }
+  const destinatario = cfg.email_alertas || Session.getEffectiveUser().getEmail();
+  const planta = cfg.planta || "Planta de alimentos";
+
+  const colores = { "SIN STOCK": "#CC0000", "CRÍTICO": "#E07C00", "BAJO": "#B5A300" };
+  const filas = alertas.map(m => `
+    <tr>
+      <td style="padding:8px 12px;border-bottom:1px solid #ddd"><b>${m.nombre}</b></td>
+      <td style="padding:8px 12px;border-bottom:1px solid #ddd;text-align:right">${m.stock.toLocaleString("es-CL")} kg</td>
+      <td style="padding:8px 12px;border-bottom:1px solid #ddd;text-align:right">${m.stock_min.toLocaleString("es-CL")} kg</td>
+      <td style="padding:8px 12px;border-bottom:1px solid #ddd;text-align:right">${m.dias_stock === "N/D" ? "—" : m.dias_stock + " días"}</td>
+      <td style="padding:8px 12px;border-bottom:1px solid #ddd;text-align:center;color:${colores[m.estado] || "#333"};font-weight:bold">${m.estado}</td>
+      <td style="padding:8px 12px;border-bottom:1px solid #ddd;text-align:right">${pendientes[m.codigo] ? pendientes[m.codigo].toLocaleString("es-CL") + " kg" : "—"}</td>
+    </tr>`).join("");
+
+  const htmlBody = `
+    <div style="font-family:Arial,sans-serif;max-width:680px">
+      <h2 style="color:#1B4332">⚠ Alerta de stock — ${planta}</h2>
+      <p>${alertas.length} insumo(s) requieren atención (sin stock, bajo el mínimo o con menos de 7 días de cobertura):</p>
+      <table style="border-collapse:collapse;width:100%;font-size:14px">
+        <tr style="background:#1B4332;color:#fff">
+          <th style="padding:8px 12px;text-align:left">Insumo</th>
+          <th style="padding:8px 12px;text-align:right">Stock</th>
+          <th style="padding:8px 12px;text-align:right">Mínimo</th>
+          <th style="padding:8px 12px;text-align:right">Cobertura</th>
+          <th style="padding:8px 12px">Estado</th>
+          <th style="padding:8px 12px;text-align:right">OC pendiente</th>
+        </tr>
+        ${filas}
+      </table>
+      <p style="color:#666;font-size:12px;margin-top:16px">
+        Cobertura calculada con el plan de producción de los próximos 7 días.
+        Correo generado automáticamente por el Sistema de Inventario AviVet.
+      </p>
+    </div>`;
+
+  MailApp.sendEmail({
+    to: destinatario,
+    subject: `⚠ Stock: ${alertas.length} insumo(s) por reponer — ${planta}`,
+    htmlBody: htmlBody
+  });
+}
+
 function getDashboard() {
   const stock   = getStockActual();
   const ordenes = getOrdenes();
