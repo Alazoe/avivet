@@ -10,7 +10,7 @@
 //   5. Pegar la URL del deploy en config/praderas-ranco.json → backendUrl
 // ============================================================
 
-const SHEET_ID = "REEMPLAZAR_CON_ID_DEL_SHEET_PRADERAS_RANCO";
+const SHEET_ID = "1312kBO5GvFas1H7mCHoeMyVdSPxtU0EZFuz9NHe4JEk";
 
 // ──────────────────────────────────────────────
 // DATOS MAESTROS
