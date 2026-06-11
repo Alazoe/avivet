@@ -152,75 +152,9 @@ function crearHojaMateriasPrimas(ss) {
 // HOJA: RECETAS
 // ──────────────────────────────────────────────
 function crearHojaRecetas(ss) {
-  const ws = getOrCreate(ss, "RECETAS");
-  ws.clearContents();
-
-  const nombresDietas = Object.keys(RECETAS);
-  const numCols = 2 + nombresDietas.length;
-
-  ws.getRange(1, 1, 1, numCols).merge()
-    .setValue("RECETAS / FÓRMULAS — kg por 1.000 kg de mezcla")
-    .setBackground("#1B4332").setFontColor("#FFFFFF").setFontWeight("bold")
-    .setFontSize(13).setHorizontalAlignment("center");
-  ws.setRowHeight(1, 30);
-
-  ws.getRange(2, 1).setValue("INSUMO").setBackground("#2D6A4F").setFontColor("#FFFFFF").setFontWeight("bold").setHorizontalAlignment("center");
-  ws.getRange(2, 2).setValue("Código MP").setBackground("#2D6A4F").setFontColor("#FFFFFF").setFontWeight("bold").setHorizontalAlignment("center");
-  nombresDietas.forEach((nombre, i) => {
-    const r = RECETAS[nombre];
-    const bg = r.activo ? "#2D6A4F" : "#888888";
-    ws.getRange(2, 3+i).setValue(nombre).setBackground(bg).setFontColor("#FFFFFF").setFontWeight("bold").setHorizontalAlignment("center");
-  });
-  ws.setRowHeight(2, 24);
-
-  ws.getRange(3, 1).setValue("Fecha inicio").setBackground("#95D5B2").setFontWeight("bold").setHorizontalAlignment("center");
-  ws.getRange(3, 2).setBackground("#95D5B2");
-  nombresDietas.forEach((nombre, i) => {
-    ws.getRange(3, 3+i).setValue(RECETAS[nombre].fecha).setBackground("#95D5B2").setHorizontalAlignment("center").setFontWeight("bold");
-  });
-
-  ws.getRange(4, 1).setValue("Activo").setBackground("#D8F3DC").setFontWeight("bold").setHorizontalAlignment("center");
-  ws.getRange(4, 2).setBackground("#D8F3DC");
-  nombresDietas.forEach((nombre, i) => {
-    const activo = RECETAS[nombre].activo;
-    ws.getRange(4, 3+i).setValue(activo ? "SÍ" : "NO")
-      .setBackground(activo ? "#D8F3DC" : "#FFD6D6")
-      .setFontColor(activo ? "#006400" : "#CC0000")
-      .setFontWeight("bold").setHorizontalAlignment("center");
-  });
-
-  let row = 5;
-  MATERIAS_PRIMAS.forEach(([cod, nombre]) => {
-    let tieneValor = false;
-    nombresDietas.forEach(d => { if (RECETAS[d].insumos[cod]) tieneValor = true; });
-    if (!tieneValor) return;
-
-    ws.getRange(row, 1).setValue(nombre).setFontWeight("bold").setFontFamily("Arial").setFontSize(10);
-    ws.getRange(row, 2).setValue(cod).setFontColor("#555555").setFontFamily("Arial").setFontSize(9);
-    nombresDietas.forEach((dieta, i) => {
-      const val = RECETAS[dieta].insumos[cod] || "";
-      const c = ws.getRange(row, 3+i);
-      c.setValue(val).setHorizontalAlignment("center").setFontFamily("Arial").setFontSize(10);
-      if (!RECETAS[dieta].activo) c.setFontColor("#AAAAAA");
-    });
-    ws.setRowHeight(row, 18);
-    row++;
-  });
-
-  const totalRow = 5 + ingData.length;
-  ws.getRange(totalRow, 1, 1, numCols)
-    .setBackground("#1B4332").setFontColor("#FFFFFF").setFontWeight("bold").setHorizontalAlignment("center");
-  ws.getRange(totalRow, 1).setValue("TOTAL");
-  for (let i = 0; i < nombresDietas.length; i++) {
-    const letra = columnToLetter(3 + i);
-    ws.getRange(totalRow, 3+i).setFormula(`=SUM(${letra}5:${letra}${totalRow-1})`);
-  }
-  ws.setRowHeight(totalRow, 22);
-
-  ws.setColumnWidth(1, 240);
-  ws.setColumnWidth(2, 140);
-  for (let i = 0; i < nombresDietas.length; i++) ws.setColumnWidth(3+i, 110);
-  ws.setFrozenRows(4);
+  // Delegado a escribirHojaRecetas, que usa la constante RECETAS
+  // como fallback y escribe todo en batch.
+  escribirHojaRecetas(RECETAS);
 }
 
 // ──────────────────────────────────────────────
