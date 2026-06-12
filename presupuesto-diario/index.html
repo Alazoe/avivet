@@ -424,9 +424,9 @@ td.real { background: rgba(27,94,32,.07) !important; font-weight: 600; }
               <small style="font-size:10px;color:var(--tenue)">Ej: 4 sem → sale a las 8 sem de vida</small>
             </div>
             <div class="modal-field">
-              <label>Precio de venta por ave ($ / ave)</label>
-              <input type="number" name="precioVentaAve" value="2500" min="0" oninput="fmtNum(this)">
-              <small class="fmt-hint">2.500</small>
+              <label>Margen por ave ($ / ave sobre costo)</label>
+              <input type="number" name="margenAve" value="1000" min="0" oninput="fmtNum(this)">
+              <small class="fmt-hint" id="fmt-margen">1.000 · precio venta = costo/ave + margen</small>
             </div>
             <div class="modal-field">
               <label>Factor mortalidad (1.0 = normal)</label>
@@ -938,15 +938,16 @@ function proyectar(lote) {
    MOTOR DE PROYECCIÓN — CRIANZA PARA VENTA
    ════════════════════════════════════════════════════════════ */
 function proyectarCrianza(lote) {
-  const curvas       = buildCurvas(lote.genetica || 'Lohmann Brown');
-  const edadIngSem   = +(lote.edadIngresoSem ?? 0);
-  const semCrianza   = Math.max(1, +(lote.semanasCrianza ?? 8));
-  const gastoMes     = +lote.gastosMes;
-  const costoDieta   = lote.costoDieta || {};
-  const precioVenta  = +(lote.precioVentaAve ?? 0);
-  const factorMort   = lote.factorMortalidad ?? 1.0;
-  const fn           = new Date(lote.fechaNacimiento + 'T12:00:00');
-  const diasCiclo    = semCrianza * 7;
+  const curvas           = buildCurvas(lote.genetica || 'Lohmann Brown');
+  const edadIngSem       = +(lote.edadIngresoSem ?? 0);
+  const semCrianza       = Math.max(1, +(lote.semanasCrianza ?? 8));
+  const gastoMes         = +lote.gastosMes;
+  const costoDieta       = lote.costoDieta || {};
+  const margenAve        = +(lote.margenAve ?? 1000);
+  const preciosPorSemana = lote.preciosPorSemana || {};
+  const factorMort       = lote.factorMortalidad ?? 1.0;
+  const fn               = new Date(lote.fechaNacimiento + 'T12:00:00');
+  const diasCiclo        = semCrianza * 7;
 
   const gastosXSem = {};
   (lote.gastosEspeciales || []).forEach(g => {
@@ -955,6 +956,7 @@ function proyectarCrianza(lote) {
   });
 
   let aves = +lote.nAves;
+  let acumCostos = 0; // costos acumulados positivos (alim + fijos + esp)
   const dias = [];
 
   for (let n = 0; n < diasCiclo; n++) {
@@ -972,19 +974,30 @@ function proyectarCrianza(lote) {
     const costoAlim = consumoKg * (+(costoDieta[cons.dieta]) || 520);
     const gastoDia  = gastoMes / 30;
     const gastoEsp  = (n % 7 === 0) ? (gastosXSem[semCiclo] || 0) : 0;
-    const ingresoVenta = (n === diasCiclo - 1) ? Math.round(avesFin * precioVenta) : 0;
-    const resultado = ingresoVenta - costoAlim - gastoDia - gastoEsp;
+
+    acumCostos += costoAlim + gastoDia + gastoEsp;
+
+    // Precio de venta: custom por semana si existe, sino costo/ave + margen
+    const costoPorAve = avesFin > 0 ? acumCostos / avesFin : 0;
+    const pvCustom    = preciosPorSemana[semCiclo] != null ? +preciosPorSemana[semCiclo] : null;
+    const precioVenta = pvCustom ?? Math.round(costoPorAve + margenAve);
+
+    const esUltimoDia  = n === diasCiclo - 1;
+    const ingresoVenta = esUltimoDia ? Math.round(avesFin * precioVenta) : 0;
+    const resultado    = ingresoVenta - costoAlim - gastoDia - gastoEsp;
 
     dias.push({
       fecha, n: n + 1, semCiclo, semVida, mes,
-      aves:      Math.round(avesFin * 10) / 10,
-      consumoKg: Math.round(consumoKg * 10) / 10,
-      dieta:     cons.dieta,
-      costoAlim: Math.round(costoAlim),
-      gastoDia:  Math.round(gastoDia),
-      gastoEsp:  Math.round(gastoEsp),
-      ingreso:   ingresoVenta,
-      resultado: Math.round(resultado),
+      aves:         Math.round(avesFin * 10) / 10,
+      consumoKg:    Math.round(consumoKg * 10) / 10,
+      dieta:        cons.dieta,
+      costoAlim:    Math.round(costoAlim),
+      gastoDia:     Math.round(gastoDia),
+      gastoEsp:     Math.round(gastoEsp),
+      costoPorAve:  Math.round(costoPorAve),
+      precioVenta:  esUltimoDia ? precioVenta : 0,
+      ingreso:      ingresoVenta,
+      resultado:    Math.round(resultado),
     });
     aves = avesFin;
   }
@@ -992,6 +1005,27 @@ function proyectarCrianza(lote) {
   let acum = 0;
   dias.forEach(d => { acum += d.resultado; d.acum = Math.round(acum); });
   return dias;
+}
+
+// Resumen semanal de costo/ave para la vista "Precio por semana"
+function resumenSemanasCrianza(loteOProy) {
+  const p = Array.isArray(loteOProy) ? loteOProy : proy;
+  const semsMax = p.length > 0 ? p[p.length - 1].semCiclo : 0;
+  let costoAcum = 0;
+  const result = [];
+  for (let s = 1; s <= semsMax; s++) {
+    const dias7 = p.filter(d => d.semCiclo === s);
+    if (!dias7.length) continue;
+    costoAcum += dias7.reduce((a,d) => a + d.costoAlim + d.gastoDia + (d.gastoEsp||0), 0);
+    const avesFin7 = dias7[dias7.length - 1].aves;
+    result.push({
+      semCiclo:    s,
+      aves:        Math.round(avesFin7),
+      costoAcum:   Math.round(costoAcum),
+      costoPorAve: avesFin7 > 0 ? Math.round(costoAcum / avesFin7) : 0,
+    });
+  }
+  return result;
 }
 
 /* ════════════════════════════════════════════════════════════
@@ -1677,7 +1711,7 @@ function renderFlujoCrianza(lote) {
       ${card('✓', 'Break-even',        be ? 'Sem ' + be.semCiclo : 'Sin retorno', be ? 'ok' : 'mal',
              be ? new Date(be.fecha+'T12:00:00').toLocaleDateString('es-CL',{day:'numeric',month:'short',year:'numeric'}) : '')}
       <div class="flujo-arr">→</div>
-      ${card('🐔', 'Aves a vender',    NUM(Math.round(avesFin)),    '',      `${MN(+(lote.precioVentaAve??0))}/ave · Ing. ${MN(ingresos)}`)}
+      ${card('🐔', 'Aves a vender',    NUM(Math.round(avesFin)),    '',      `Margen ${MN(+(lote.margenAve??1000))}/ave · Ing. ${MN(ingresos)}`)}
       <div class="flujo-arr">→</div>
       ${card('$', 'Margen / ave',      MN(margenAve),               margenAve >= 0 ? 'ok' : 'mal', `Costo/ave ${MN(costoAve)}`)}
     </div>
@@ -1751,7 +1785,8 @@ function renderDashboardCrianza(lote) {
 
   K('kpi-ing', MN(ingresos), ingresos > 0 ? 'ok' : '');
   L('kpi-ing-lbl', 'ingreso por venta de aves');
-  S('kpi-ing-sub', `${NUM(avesFin)} aves · ${MN(+(lote.precioVentaAve??0))}/ave`);
+  const dVenta = proy[proy.length - 1];
+  S('kpi-ing-sub', `${NUM(avesFin)} aves · ${MN(dVenta?.precioVenta || 0)}/ave`);
 
   K('kpi-gastos', MN(Math.round(+lote.gastosMes)), '');
   L('kpi-gastos-lbl', 'gastos fijos / mes');
@@ -1770,6 +1805,7 @@ function renderDashboardCrianza(lote) {
     <div class="tabs">
       <button class="tab activo" data-tab="tc-graficos" onclick="setTabCrianza(event,'tc-graficos')">Gráficos</button>
       <button class="tab" data-tab="tc-tabla"   onclick="setTabCrianza(event,'tc-tabla')">Proyección</button>
+      <button class="tab" data-tab="tc-precios" onclick="setTabCrianza(event,'tc-precios')">Precio sem.</button>
       <button class="tab" data-tab="tc-gastos"  onclick="setTabCrianza(event,'tc-gastos')">Gastos especiales</button>
       <button class="tab" data-tab="tc-config"  onclick="setTabCrianza(event,'tc-config')">Configuración</button>
     </div>
@@ -1786,21 +1822,26 @@ function renderDashboardCrianza(lote) {
           <div class="grafico-canvas"><canvas id="cc-costo"></canvas></div>
         </div>
         <div class="grafico-wrap">
-          <div class="grafico-titulo">Aves vivas</div>
-          <div class="grafico-canvas"><canvas id="cc-aves"></canvas></div>
+          <div class="grafico-titulo">Costo/ave acumulado vs precio venta ($/ave)</div>
+          <div class="leyenda">
+            <span class="leyenda-item"><span class="cuad" style="background:rgba(183,28,28,.7)"></span>Costo/ave acum.</span>
+            <span class="leyenda-item"><span class="cuad" style="background:rgba(27,67,50,.8)"></span>Precio venta</span>
+          </div>
+          <div class="grafico-canvas"><canvas id="cc-precios"></canvas></div>
         </div>
       </div>
       <div class="graficos-grid full" style="margin-top:4px">
         <div class="grafico-wrap">
-          <div class="grafico-titulo">Resultado acumulado ($)</div>
+          <div class="grafico-titulo">Resultado si vende esta semana ($)</div>
           <div class="grafico-canvas"><canvas id="cc-acum"></canvas></div>
         </div>
       </div>
     </div>
 
-    <div id="tc-tabla"  class="tab-panel" style="display:none"><div id="tc-tabla-panel"></div></div>
-    <div id="tc-gastos" class="tab-panel" style="display:none"><div id="gastos-panel"></div></div>
-    <div id="tc-config" class="tab-panel" style="display:none"><div id="tc-config-panel"></div></div>
+    <div id="tc-tabla"   class="tab-panel" style="display:none"><div id="tc-tabla-panel"></div></div>
+    <div id="tc-precios" class="tab-panel" style="display:none"><div id="tc-precios-panel"></div></div>
+    <div id="tc-gastos"  class="tab-panel" style="display:none"><div id="gastos-panel"></div></div>
+    <div id="tc-config"  class="tab-panel" style="display:none"><div id="tc-config-panel"></div></div>
   </section>`;
 
   document.getElementById('metodo').style.display = 'block';
@@ -1808,6 +1849,7 @@ function renderDashboardCrianza(lote) {
 
   renderGraficosCrianza(lote);
   renderTablaCrianza(lote);
+  renderPreciosSemana(lote);
   renderGastosEspeciales(lote);
   renderConfigCrianza(lote);
 }
@@ -1822,8 +1864,97 @@ function setTabCrianza(e, id) {
   const l = getLote(loteId);
   if (id === 'tc-graficos') renderGraficosCrianza(l);
   if (id === 'tc-tabla')    renderTablaCrianza(l);
+  if (id === 'tc-precios')  renderPreciosSemana(l);
   if (id === 'tc-gastos')   renderGastosEspeciales(l);
   if (id === 'tc-config')   renderConfigCrianza(l);
+}
+
+/* ════════════════════════════════════════════════════════════
+   CRIANZA — PRECIO POR SEMANA
+   ════════════════════════════════════════════════════════════ */
+function renderPreciosSemana(lote) {
+  const panel = document.getElementById('tc-precios-panel');
+  if (!panel || !proy) return;
+
+  const margenBase     = +(lote.margenAve ?? 1000);
+  const preciosPorSem  = lote.preciosPorSemana || {};
+  const resumen        = resumenSemanasCrianza(proy);
+
+  const filas = resumen.map(({ semCiclo: s, aves, costoAcum, costoPorAve }) => {
+    const pvCustom    = preciosPorSem[s] != null ? +preciosPorSem[s] : null;
+    const precioVenta = pvCustom ?? (costoPorAve + margenBase);
+    const resSiVende  = Math.round(aves * precioVenta - costoAcum);
+    const esVentaSem  = s === +(lote.semanasCrianza ?? 8);
+    const modificado  = pvCustom != null && pvCustom !== costoPorAve + margenBase;
+    return `<div class="pm-item${modificado?' modificado':''}" style="display:grid;grid-template-columns:50px 70px 90px 110px 110px 110px;gap:8px;align-items:center;padding:8px 12px;border-bottom:1px solid var(--linea);${esVentaSem?'background:#f0fdf4;':''}">
+      <span style="font-family:var(--fm);font-size:12px;color:var(--prim);font-weight:${esVentaSem?700:400}">${s}</span>
+      <span style="font-family:var(--fm);font-size:12px">${NUM(aves)}</span>
+      <span style="font-family:var(--fm);font-size:12px;color:var(--mal)">${MN(costoPorAve)}</span>
+      <input type="number" id="ps-${s}" value="${pvCustom ?? ''}"
+        placeholder="${MN(costoPorAve + margenBase)}"
+        min="0" style="font-family:var(--fm);font-size:12px;padding:4px 8px;border:1px solid var(--linea-f);border-radius:3px;background:var(--fondo);width:100%"
+        oninput="marcarSemMod(${s},${costoPorAve},${margenBase})">
+      <span style="font-family:var(--fm);font-size:12px;font-weight:600">${MN(precioVenta)}</span>
+      <span style="font-family:var(--fm);font-size:12px;font-weight:600;color:${resSiVende>=0?'var(--ok)':'var(--mal)'}">${MN(resSiVende)}</span>
+    </div>`;
+  }).join('');
+
+  panel.innerHTML = `
+    <p style="font-size:13px;color:var(--suave);margin-bottom:16px">
+      Margen base configurado: <strong>${MN(margenBase)}/ave</strong>.
+      Precio de venta = <strong>costo/ave + margen</strong> — puedes sobrescribir semanas específicas (campo en blanco = usar margen base).
+      La fila verde es la semana de venta configurada (sem ${lote.semanasCrianza ?? 8}).
+    </p>
+    <div style="display:grid;grid-template-columns:50px 70px 90px 110px 110px 110px;gap:8px;padding:8px 12px;background:var(--prim);color:#fff;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;border-radius:4px 4px 0 0">
+      <span>Sem</span><span>Aves</span><span>Costo/ave</span><span>Precio config</span><span>Precio venta</span><span>Resultado</span>
+    </div>
+    ${filas}
+    <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn btn-acento" onclick="guardarPreciosSemana()">Guardar y recalcular</button>
+      <button class="btn btn-linea btn-sm" onclick="resetPreciosSemana()">Resetear al margen base</button>
+    </div>`;
+}
+
+function marcarSemMod(sem, costoPorAve, margenBase) {
+  const input = document.getElementById(`ps-${sem}`);
+  if (!input) return;
+  const precioAuto = costoPorAve + margenBase;
+  const val = input.value === '' ? null : +input.value;
+  const wrap = input.parentElement;
+  if (wrap) wrap.classList.toggle('modificado', val !== null && val !== precioAuto);
+}
+
+function guardarPreciosSemana() {
+  const lote = getLote(loteId);
+  if (!lote) return;
+  const margenBase     = +(lote.margenAve ?? 1000);
+  const resumen        = resumenSemanasCrianza(proy);
+  const preciosPorSemana = {};
+  resumen.forEach(({ semCiclo: s, costoPorAve }) => {
+    const el = document.getElementById(`ps-${s}`);
+    if (!el || el.value === '') return;
+    const v = +el.value;
+    if (!isNaN(v) && v > 0 && v !== costoPorAve + margenBase) preciosPorSemana[s] = v;
+  });
+  lote.preciosPorSemana = preciosPorSemana;
+  saveLote(lote);
+  proy = proyectarCrianza(lote);
+  renderDashboardCrianza(lote);
+  const p = document.getElementById('tc-precios');
+  if (p) { p.classList.add('activo'); p.style.display = 'block'; }
+  renderPreciosSemana(lote);
+}
+
+function resetPreciosSemana() {
+  const lote = getLote(loteId);
+  if (!lote) return;
+  lote.preciosPorSemana = {};
+  saveLote(lote);
+  proy = proyectarCrianza(lote);
+  renderDashboardCrianza(lote);
+  const p = document.getElementById('tc-precios');
+  if (p) { p.classList.add('activo'); p.style.display = 'block'; }
+  renderPreciosSemana(lote);
 }
 
 /* ════════════════════════════════════════════════════════════
@@ -1831,20 +1962,30 @@ function setTabCrianza(e, id) {
    ════════════════════════════════════════════════════════════ */
 function renderGraficosCrianza(lote) {
   if (!proy || proy.length === 0) return;
-  const semC    = +(lote.semanasCrianza ?? 8);
-  const labels  = [];
-  const costoAlimSem = [], costoFijosSem = [], costoEspSem = [], avesSem = [], acumSem = [];
+  const margenBase     = +(lote.margenAve ?? 1000);
+  const preciosPorSem  = lote.preciosPorSemana || {};
+  const resumen        = resumenSemanasCrianza(proy);
 
-  for (let s = 1; s <= semC; s++) {
+  const labels         = resumen.map(r => `Sem ${r.semCiclo}`);
+  const costoPorAveSem = resumen.map(r => r.costoPorAve);
+  const precioVentaSem = resumen.map(r => preciosPorSem[r.semCiclo] != null
+    ? +preciosPorSem[r.semCiclo]
+    : r.costoPorAve + margenBase);
+  const resSiVendeSem  = resumen.map(r => {
+    const pv = preciosPorSem[r.semCiclo] != null ? +preciosPorSem[r.semCiclo] : r.costoPorAve + margenBase;
+    return Math.round(r.aves * pv - r.costoAcum);
+  });
+
+  // Costos por semana (apilado)
+  const costoAlimSem  = [];
+  const costoFijosSem = [];
+  const costoEspSem   = [];
+  resumen.forEach(({ semCiclo: s }) => {
     const dias7 = proy.filter(d => d.semCiclo === s);
-    if (dias7.length === 0) continue;
-    labels.push(`Sem ${s}`);
     costoAlimSem.push(dias7.reduce((a,d) => a + d.costoAlim, 0));
     costoFijosSem.push(dias7.reduce((a,d) => a + d.gastoDia, 0));
     costoEspSem.push(dias7.reduce((a,d) => a + (d.gastoEsp||0), 0));
-    avesSem.push(dias7[dias7.length - 1].aves);
-    acumSem.push(dias7[dias7.length - 1].acum);
-  }
+  });
 
   const cht = (id, cfg) => {
     if (charts[id]) { charts[id].destroy(); delete charts[id]; }
@@ -1854,24 +1995,23 @@ function renderGraficosCrianza(lote) {
   };
 
   cht('cc-costo', { type:'bar', data:{ labels, datasets:[
-    { label:'Alimento',        data: costoAlimSem,  backgroundColor:'rgba(183,28,28,.7)', stack:'c' },
-    { label:'Gastos fijos',    data: costoFijosSem, backgroundColor:'rgba(100,100,150,.5)', stack:'c' },
-    { label:'Gastos especiales', data: costoEspSem, backgroundColor:'rgba(230,81,0,.7)', stack:'c' },
+    { label:'Alimento',          data: costoAlimSem,  backgroundColor:'rgba(183,28,28,.7)',  stack:'c' },
+    { label:'Gastos fijos',      data: costoFijosSem, backgroundColor:'rgba(100,100,150,.5)', stack:'c' },
+    { label:'Gastos especiales', data: costoEspSem,   backgroundColor:'rgba(230,81,0,.7)',    stack:'c' },
   ]}, options:{ responsive:true, plugins:{ legend:{labels:{...tFont}}, tooltip:{callbacks:{label:c=>' $'+Math.round(c.raw).toLocaleString('es-CL')}} }, scales:{ x:{ticks:tFont,grid:{color:gColor}}, y:{ticks:{...tFont,callback:v=>'$'+v.toLocaleString('es-CL')},grid:{color:gColor}} }, animation:false }});
 
-  cht('cc-aves', { type:'line', data:{ labels, datasets:[
-    { label:'Aves vivas', data: avesSem, borderColor:'#1b4332', backgroundColor:'rgba(27,67,50,.08)', tension:.3, fill:true, pointRadius:3, pointHoverRadius:5 }
-  ]}, options:{ responsive:true, plugins:{ legend:{labels:{...tFont}}, tooltip:{callbacks:{label:c=>' '+Math.round(c.raw).toLocaleString('es-CL')+' aves'}} }, scales:{ x:{ticks:tFont,grid:{color:gColor}}, y:{ticks:{...tFont,callback:v=>v.toLocaleString('es-CL')},grid:{color:gColor}} }, animation:false }});
+  cht('cc-precios', { type:'line', data:{ labels, datasets:[
+    { label:'Costo/ave acum.', data: costoPorAveSem, borderColor:'#b71c1c', backgroundColor:'rgba(183,28,28,.06)', tension:.3, fill:true, pointRadius:3 },
+    { label:'Precio de venta', data: precioVentaSem, borderColor:'#1b4332', backgroundColor:'rgba(27,67,50,.06)', tension:.3, fill:true, pointRadius:3, borderDash:[5,3] },
+  ]}, options:{ responsive:true, plugins:{ legend:{labels:{...tFont}}, tooltip:{callbacks:{label:c=>' $'+Math.round(c.raw).toLocaleString('es-CL')+'/ave'}} }, scales:{ x:{ticks:tFont,grid:{color:gColor}}, y:{ticks:{...tFont,callback:v=>'$'+v.toLocaleString('es-CL')},grid:{color:gColor}} }, animation:false }});
 
-  const beIdx = acumSem.findIndex((v,i) => i > 0 && acumSem[i-1] < 0 && v >= 0);
-  const beAnn = beIdx >= 0 ? { annotations:{ be:{ type:'line', scaleID:'x', value:beIdx-.5, borderColor:'#e65100', borderWidth:1.5, borderDash:[4,3], label:{ content:'Break-even', display:true, backgroundColor:'#e65100', font:{size:9} } } } } : {};
-
-  cht('cc-acum', { type:'line', data:{ labels, datasets:[
-    { label:'Resultado acum.', data: acumSem, borderColor:'#2e7d32', backgroundColor: ctx => {
-        const g = ctx.chart.ctx.createLinearGradient(0,0,0,220);
-        g.addColorStop(0,'rgba(46,125,50,.25)'); g.addColorStop(1,'rgba(46,125,50,.02)'); return g;
-      }, tension:.3, fill:true, pointRadius:3, segment:{ borderColor: ctx => acumSem[ctx.p0DataIndex] < 0 ? '#b71c1c' : '#2e7d32' } }
-  ]}, options:{ responsive:true, plugins:{ legend:{labels:{...tFont}}, tooltip:{callbacks:{label:c=>' $'+Math.round(c.raw).toLocaleString('es-CL')}}, ...beAnn }, scales:{ x:{ticks:tFont,grid:{color:gColor}}, y:{ticks:{...tFont,callback:v=>'$'+v.toLocaleString('es-CL')},grid:{color:gColor}} }, animation:false }});
+  const be0Idx = resSiVendeSem.findIndex(v => v >= 0);
+  cht('cc-acum', { type:'bar', data:{ labels, datasets:[
+    { label:'Resultado si vende', data: resSiVendeSem,
+      backgroundColor: resSiVendeSem.map(v => v >= 0 ? 'rgba(46,125,50,.75)' : 'rgba(183,28,28,.65)'),
+      borderRadius: 3 },
+  ]}, options:{ responsive:true, plugins:{ legend:{labels:{...tFont}}, tooltip:{callbacks:{label:c=>' $'+Math.round(c.raw).toLocaleString('es-CL')}} },
+    scales:{ x:{ticks:tFont,grid:{color:gColor}}, y:{ticks:{...tFont,callback:v=>'$'+v.toLocaleString('es-CL')},grid:{color:gColor}} }, animation:false }});
 }
 
 /* ════════════════════════════════════════════════════════════
@@ -1951,7 +2091,7 @@ function renderConfigCrianza(lote) {
           </select>
         </div>
         <div class="cfg-field"><span>Semanas de crianza</span><input type="number" id="ccfg-semCrianza" value="${lote.semanasCrianza??8}" min="1" max="30"></div>
-        <div class="cfg-field"><span>Precio de venta ($/ave)</span><input type="number" id="ccfg-precioVenta" value="${lote.precioVentaAve??2500}" min="0" oninput="fmtNum(this)"><small class="fmt-hint">${(+(lote.precioVentaAve??2500)).toLocaleString('es-CL')}</small></div>
+        <div class="cfg-field"><span>Margen por ave ($/ave sobre costo)</span><input type="number" id="ccfg-margenAve" value="${lote.margenAve??1000}" min="0" oninput="fmtNum(this)"><small class="fmt-hint">${(+(lote.margenAve??1000)).toLocaleString('es-CL')} · precio = costo/ave + margen</small></div>
         <div class="cfg-field"><span>Factor mortalidad (1.0 = normal)</span><input type="number" id="ccfg-factMort" value="${lote.factorMortalidad??1.0}" min="0.5" max="5.0" step="0.1"></div>
         <div class="cfg-field"><span>Gastos fijos / mes ($)</span><input type="number" id="ccfg-gastosMes" value="${lote.gastosMes}" oninput="fmtNum(this)"><small class="fmt-hint">${(+lote.gastosMes).toLocaleString('es-CL')}</small></div>
         <hr class="cfg-sep">
@@ -1975,7 +2115,7 @@ function aplicarConfigCrianza() {
   if (!lote) return;
   lote.edadIngresoSem   = +(document.getElementById('ccfg-edadIng')?.value ?? 0);
   lote.semanasCrianza   = +(document.getElementById('ccfg-semCrianza')?.value ?? 8);
-  lote.precioVentaAve   = +(document.getElementById('ccfg-precioVenta')?.value ?? 2500);
+  lote.margenAve = +(document.getElementById('ccfg-margenAve')?.value ?? 1000);
   lote.factorMortalidad = +(document.getElementById('ccfg-factMort')?.value ?? 1.0);
   lote.gastosMes        = +(document.getElementById('ccfg-gastosMes')?.value ?? 0);
   [1,2,3,4,5].forEach(d => {
@@ -2946,7 +3086,7 @@ function abrirModal(id) {
       const sel = document.getElementById('sel-edad-ingreso');
       if (sel) sel.value = l.edadIngresoSem ?? 0;
       if (form.semanasCrianza)  form.semanasCrianza.value  = l.semanasCrianza ?? 8;
-      if (form.precioVentaAve)  form.precioVentaAve.value  = l.precioVentaAve ?? 2500;
+      if (form.margenAve) form.margenAve.value = l.margenAve ?? 1000;
       if (form.factorMortalidad) form.factorMortalidad.value = l.factorMortalidad ?? 1.0;
     } else {
       if (form.semanasCiclo)     form.semanasCiclo.value     = l.semanasCiclo    || 100;
@@ -3006,7 +3146,8 @@ function guardarLote(e) {
       nAves:            +f.nAves.value,
       edadIngresoSem:   +(f.edadIngresoSem?.value ?? 0),
       semanasCrianza:   Math.max(1, +(f.semanasCrianza?.value ?? 8)),
-      precioVentaAve:   +(f.precioVentaAve?.value ?? 0),
+      margenAve:        +(f.margenAve?.value ?? 1000),
+      preciosPorSemana: modoEditar ? (getLote(modoEditar)?.preciosPorSemana || {}) : {},
       factorMortalidad: +(f.factorMortalidad?.value ?? 1.0),
       gastosMes:        +f.gastosMes.value,
       costoDieta,
