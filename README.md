@@ -86,6 +86,7 @@ python3 oxitetraciclina.py
 
 | Herramienta | Tipo | Antibiótico | Especies | Dosis |
 |-------------|------|------------|---------|-------|
+| `zanil80.html` | Web | Oxitetraciclina · ZANIL® 80 (en alimento) | Pollos broiler / Pavos / Salmónidos | Aves: 25–73,75 mg/kg/día · 7–14 días · Salmon: 94 mg/kg/día · 10 días |
 | `oxitetraciclina.html` | Web | Oxitetraciclina · Zanil® HCL 80% / TERRIVET® 65,5% | Pollos / Pavos | 16,8–90,1 mg/kg PV/día · 5–14 días |
 | `florfenicol.html` | Web | Florfenicol · Veterin® 10% | Pollos / Pavos / Cerdos | 0,1–0,3 mL/kg PV/día · 5–7 días |
 | `primavet.html` | Web | Amoxicilina · Primavet® 50% | Pollos broiler / Cerdos | 40 mg/kg PV/día · 5–7 días |
