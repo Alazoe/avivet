@@ -68,6 +68,12 @@ body {
 .sep-v { width: 1px; height: 36px; background: rgba(255,255,255,.2); flex-shrink: 0; }
 .lote-meta-txt { font-size: 12px; color: rgba(255,255,255,.7); margin-top: 3px; }
 .badge-genetica { font-family: var(--fm); font-size: 10px; padding: 2px 8px; border-radius: 3px; background: rgba(240,165,0,.2); border: 1px solid rgba(240,165,0,.3); display: inline-block; margin-top: 4px; }
+.badge-tipo-crianza { font-family: var(--fm); font-size: 10px; padding: 2px 8px; border-radius: 3px; background: rgba(74,144,164,.2); border: 1px solid rgba(74,144,164,.4); color: #b3e5fc; display: inline-block; margin-left: 8px; vertical-align: middle; }
+/* Modal tipo toggle */
+.modal-tipo-row { display: flex; gap: 0; border: 1.5px solid var(--linea-f); border-radius: 6px; overflow: hidden; margin-top: 6px; }
+.modal-tipo-btn { flex: 1; padding: 10px 14px; font-family: var(--fc); font-size: 13px; font-weight: 600; border: none; background: var(--fondo); color: var(--tenue); cursor: pointer; transition: all .18s; text-align: center; }
+.modal-tipo-btn.activo { background: var(--prim); color: #fff; }
+.modal-tipo-btn:first-child { border-right: 1px solid var(--linea-f); }
 
 /* ── Bloques ── */
 .bloque { margin-bottom: 72px; scroll-margin-top: 80px; }
@@ -253,38 +259,38 @@ td.real { background: rgba(27,94,32,.07) !important; font-weight: 600; }
       Precio de huevo por mes, gastos iniciales (pollas, vacunas, viruta, inversión) y continuación de ciclos.
     </p>
     <div class="hero-fichas">
-      <div class="ficha"><span class="ficha-num" id="kpi-huevos">—</span><span class="ficha-lbl">huevos totales ciclo</span><span class="ficha-sub" id="kpi-huevos-sub"></span></div>
-      <div class="ficha"><span class="ficha-num" id="kpi-pos">—</span><span class="ficha-lbl">pico de postura</span><span class="ficha-sub" id="kpi-pos-sub"></span></div>
-      <div class="ficha"><span class="ficha-num" id="kpi-aves">—</span><span class="ficha-lbl">aves al fin del ciclo</span><span class="ficha-sub" id="kpi-aves-sub"></span></div>
-      <div class="ficha"><span class="ficha-num" id="kpi-ginv">—</span><span class="ficha-lbl">inversión inicial</span><span class="ficha-sub" id="kpi-ginv-sub"></span></div>
+      <div class="ficha"><span class="ficha-num" id="kpi-huevos">—</span><span class="ficha-lbl" id="kpi-huevos-lbl">huevos totales ciclo</span><span class="ficha-sub" id="kpi-huevos-sub"></span></div>
+      <div class="ficha"><span class="ficha-num" id="kpi-pos">—</span><span class="ficha-lbl" id="kpi-pos-lbl">pico de postura</span><span class="ficha-sub" id="kpi-pos-sub"></span></div>
+      <div class="ficha"><span class="ficha-num" id="kpi-aves">—</span><span class="ficha-lbl" id="kpi-aves-lbl">aves al fin del ciclo</span><span class="ficha-sub" id="kpi-aves-sub"></span></div>
+      <div class="ficha"><span class="ficha-num" id="kpi-ginv">—</span><span class="ficha-lbl" id="kpi-ginv-lbl">inversión inicial</span><span class="ficha-sub" id="kpi-ginv-sub"></span></div>
       <div class="ficha">
         <span class="ficha-num" id="kpi-res">—</span>
-        <span class="ficha-lbl">resultado acum. al fin ciclo</span>
+        <span class="ficha-lbl" id="kpi-res-lbl">resultado acum. al fin ciclo</span>
         <span class="ficha-sub" id="kpi-res-sub"></span>
       </div>
       <div class="ficha">
         <span class="ficha-num" id="kpi-roi">—</span>
-        <span class="ficha-lbl">recuperación inversión</span>
+        <span class="ficha-lbl" id="kpi-roi-lbl">recuperación inversión</span>
         <span class="ficha-sub" id="kpi-roi-sub"></span>
       </div>
       <div class="ficha">
         <span class="ficha-num" id="kpi-repos">—</span>
-        <span class="ficha-lbl">costo reposición est.</span>
+        <span class="ficha-lbl" id="kpi-repos-lbl">costo reposición est.</span>
         <span class="ficha-sub" id="kpi-repos-sub">pollas + alim sem 1–20 + fijos</span>
       </div>
       <div class="ficha">
         <span class="ficha-num" id="kpi-ebitda">—</span>
-        <span class="ficha-lbl">EBITDA ciclo</span>
+        <span class="ficha-lbl" id="kpi-ebitda-lbl">EBITDA ciclo</span>
         <span class="ficha-sub" id="kpi-ebitda-sub">ingresos − alim − fijos − despacho − envase</span>
       </div>
       <div class="ficha">
         <span class="ficha-num" id="kpi-ing">—</span>
-        <span class="ficha-lbl">Ingresos totales ciclo</span>
+        <span class="ficha-lbl" id="kpi-ing-lbl">Ingresos totales ciclo</span>
         <span class="ficha-sub" id="kpi-ing-sub"></span>
       </div>
       <div class="ficha">
         <span class="ficha-num" id="kpi-gastos">—</span>
-        <span class="ficha-lbl">Gastos fijos + despacho</span>
+        <span class="ficha-lbl" id="kpi-gastos-lbl">Gastos fijos + despacho</span>
         <span class="ficha-sub" id="kpi-gastos-sub">por mes</span>
       </div>
     </div>
@@ -347,6 +353,16 @@ td.real { background: rgba(27,94,32,.07) !important; font-weight: 600; }
     <form id="form-lote" onsubmit="guardarLote(event)">
       <div class="modal-grid">
 
+        <!-- Selector tipo de lote -->
+        <div class="modal-field full">
+          <label>Tipo de lote</label>
+          <div class="modal-tipo-row">
+            <button type="button" class="modal-tipo-btn activo" id="btn-tipo-postura" onclick="modalTipoChange('postura')">🥚 Postura de huevos</button>
+            <button type="button" class="modal-tipo-btn" id="btn-tipo-crianza" onclick="modalTipoChange('crianza')">🐥 Venta de aves vivas</button>
+          </div>
+          <input type="hidden" name="tipoLote" id="inp-tipo-lote" value="postura">
+        </div>
+
         <div class="modal-field full">
           <label>Nombre / cliente</label>
           <input type="text" name="nombre" placeholder="Ej: Jonathan Morales — Pitrufquén" required>
@@ -362,7 +378,7 @@ td.real { background: rgba(27,94,32,.07) !important; font-weight: 600; }
           </select>
         </div>
         <div class="modal-field">
-          <label>Fecha de nacimiento</label>
+          <label id="lbl-fecha-modal">Fecha de nacimiento</label>
           <input type="date" name="fechaNacimiento" required>
         </div>
         <div class="modal-field">
@@ -370,16 +386,57 @@ td.real { background: rgba(27,94,32,.07) !important; font-weight: 600; }
           <input type="number" name="nAves" value="1500" min="1" required oninput="fmtNum(this)">
           <small class="fmt-hint">1.500</small>
         </div>
-        <div class="modal-field">
-          <label>Duración del ciclo (semanas)</label>
-          <input type="number" name="semanasCiclo" value="100" min="18" max="130">
+
+        <!-- ═══ CAMPOS SOLO POSTURA ═══ -->
+        <div id="sec-postura-only" style="display:contents">
+          <div class="modal-field">
+            <label>Duración del ciclo (semanas)</label>
+            <input type="number" name="semanasCiclo" value="100" min="18" max="130">
+          </div>
+          <div class="modal-field">
+            <label>Precio huevo base ($/ud.)</label>
+            <input type="number" name="precioHuevo" value="130" min="1" oninput="fmtNum(this)">
+            <small class="fmt-hint"></small>
+          </div>
         </div>
-        <div class="modal-field">
-          <label>Precio huevo base ($/ud.)</label>
-          <input type="number" name="precioHuevo" value="130" min="1" required oninput="fmtNum(this)">
-          <small class="fmt-hint"></small>
+
+        <!-- ═══ CAMPOS SOLO CRIANZA ═══ -->
+        <div id="sec-crianza-only" style="display:none;grid-column:1/-1">
+          <div class="modal-grid" style="padding:0">
+            <div class="modal-field">
+              <label>Edad de ingreso al galpón</label>
+              <select name="edadIngresoSem" id="sel-edad-ingreso">
+                <option value="0">1 día de vida (pollito BB)</option>
+                <option value="1">1 semana</option>
+                <option value="2">2 semanas</option>
+                <option value="3">3 semanas</option>
+                <option value="4" selected>4 semanas</option>
+                <option value="5">5 semanas</option>
+                <option value="6">6 semanas</option>
+                <option value="8">8 semanas</option>
+                <option value="10">10 semanas</option>
+                <option value="12">12 semanas</option>
+              </select>
+            </div>
+            <div class="modal-field">
+              <label>Semanas de crianza hasta venta</label>
+              <input type="number" name="semanasCrianza" value="8" min="1" max="30">
+              <small style="font-size:10px;color:var(--tenue)">Ej: 4 sem → sale a las 8 sem de vida</small>
+            </div>
+            <div class="modal-field">
+              <label>Precio de venta por ave ($ / ave)</label>
+              <input type="number" name="precioVentaAve" value="2500" min="0" oninput="fmtNum(this)">
+              <small class="fmt-hint">2.500</small>
+            </div>
+            <div class="modal-field">
+              <label>Factor mortalidad (1.0 = normal)</label>
+              <input type="number" name="factorMortalidad" value="1.0" min="0.5" max="5.0" step="0.1">
+              <small style="font-size:10px;color:var(--tenue)">1.5 = 50% más muertes que la curva</small>
+            </div>
+          </div>
         </div>
-        <div class="modal-field">
+
+        <div class="modal-field" style="grid-column:1/-1">
           <label>Gastos fijos / mes ($)</label>
           <input type="number" name="gastosMes" value="2441000" min="0" required oninput="fmtNum(this)">
           <small class="fmt-hint">2.441.000</small>
@@ -389,7 +446,7 @@ td.real { background: rgba(27,94,32,.07) !important; font-weight: 600; }
         <div class="modal-sep" id="sep-gi"></div>
         <div class="modal-sec" id="sec-gi">Gastos iniciales (semana 1) — opcional</div>
         <div class="modal-field" id="fi-pollas">
-          <label>Compra de pollas ($)</label>
+          <label id="lbl-gi-pollas">Compra de pollas ($)</label>
           <input type="number" name="gi_pollas" value="0" min="0" oninput="fmtNum(this)">
           <small class="fmt-hint"></small>
         </div>
@@ -409,60 +466,60 @@ td.real { background: rgba(27,94,32,.07) !important; font-weight: 600; }
           <small class="fmt-hint"></small>
         </div>
 
-        <hr class="modal-sep">
-        <div class="modal-sec">Empaque y merma</div>
-        <div class="modal-field">
-          <label>% Huevo no vendible (roto, sucio…)</label>
-          <input type="number" name="pctNoVendible" value="2" min="0" max="30" step="0.1">
-        </div>
-        <div class="modal-field">
-          <label>Bandeja pulpa/plástica ($ / bandeja 30 uds.)</label>
-          <input type="number" name="costoBandeja" value="20" min="0" oninput="fmtNum(this)">
-          <small class="fmt-hint"></small>
-        </div>
-        <div class="modal-field">
-          <label>Caja cartón ($ / caja 180 uds.)</label>
-          <input type="number" name="costoCaja" value="150" min="0" oninput="fmtNum(this)">
-          <small class="fmt-hint"></small>
-        </div>
-        <div class="modal-field">
-          <label>Etiqueta ($ / bandeja 30 uds.)</label>
-          <input type="number" name="costoEtiqueta" value="0" min="0" oninput="fmtNum(this)">
-          <small class="fmt-hint"></small>
-        </div>
-        <div class="modal-field">
-          <label>Otros insumos envase ($ / bandeja 30 uds.)</label>
-          <input type="number" name="costoOtrosEnvase" value="0" min="0" oninput="fmtNum(this)">
-          <small class="fmt-hint"></small>
-        </div>
-
-        <hr class="modal-sep">
-        <div class="modal-sec">Despacho</div>
-        <div class="modal-field">
-          <label>Costo despacho / mes ($)</label>
-          <input type="number" name="costoDespachoMes" value="300000" min="0" oninput="fmtNum(this)">
-          <small class="fmt-hint">300.000</small>
-        </div>
-
-        <hr class="modal-sep">
-        <div class="modal-sec">Al fin de ciclo — liquidación</div>
-        <div class="modal-field">
-          <label>Precio gallina de descarte ($ / ave)</label>
-          <input type="number" name="precioGallinaDescarte" value="600" min="0" step="50" oninput="fmtNum(this)">
-          <small class="fmt-hint">600 · suma al resultado fin ciclo, excluye EBITDA</small>
-        </div>
-
-        <hr class="modal-sep">
-        <div class="modal-sec">Escenario de proyección</div>
-        <div class="modal-field">
-          <label>% postura respecto a curva oficial</label>
-          <input type="number" name="factorPostura" value="100" min="50" max="110" step="1">
-          <small style="font-size:10px;color:var(--tenue)">100 = curva oficial · 85 = postura baja</small>
-        </div>
-        <div class="modal-field">
-          <label>Factor mortalidad (1.0 = normal)</label>
-          <input type="number" name="factorMortalidad" value="1.0" min="0.5" max="5.0" step="0.1">
-          <small style="font-size:10px;color:var(--tenue)">1.5 = 50% más muertes que la curva</small>
+        <!-- ═══ SECCIONES SOLO POSTURA ═══ -->
+        <div id="sec-postura-extra" style="display:contents">
+          <hr class="modal-sep">
+          <div class="modal-sec">Empaque y merma</div>
+          <div class="modal-field">
+            <label>% Huevo no vendible (roto, sucio…)</label>
+            <input type="number" name="pctNoVendible" value="2" min="0" max="30" step="0.1">
+          </div>
+          <div class="modal-field">
+            <label>Bandeja pulpa/plástica ($ / bandeja 30 uds.)</label>
+            <input type="number" name="costoBandeja" value="20" min="0" oninput="fmtNum(this)">
+            <small class="fmt-hint"></small>
+          </div>
+          <div class="modal-field">
+            <label>Caja cartón ($ / caja 180 uds.)</label>
+            <input type="number" name="costoCaja" value="150" min="0" oninput="fmtNum(this)">
+            <small class="fmt-hint"></small>
+          </div>
+          <div class="modal-field">
+            <label>Etiqueta ($ / bandeja 30 uds.)</label>
+            <input type="number" name="costoEtiqueta" value="0" min="0" oninput="fmtNum(this)">
+            <small class="fmt-hint"></small>
+          </div>
+          <div class="modal-field">
+            <label>Otros insumos envase ($ / bandeja 30 uds.)</label>
+            <input type="number" name="costoOtrosEnvase" value="0" min="0" oninput="fmtNum(this)">
+            <small class="fmt-hint"></small>
+          </div>
+          <hr class="modal-sep">
+          <div class="modal-sec">Despacho</div>
+          <div class="modal-field">
+            <label>Costo despacho / mes ($)</label>
+            <input type="number" name="costoDespachoMes" value="300000" min="0" oninput="fmtNum(this)">
+            <small class="fmt-hint">300.000</small>
+          </div>
+          <hr class="modal-sep">
+          <div class="modal-sec">Al fin de ciclo — liquidación</div>
+          <div class="modal-field">
+            <label>Precio gallina de descarte ($ / ave)</label>
+            <input type="number" name="precioGallinaDescarte" value="600" min="0" step="50" oninput="fmtNum(this)">
+            <small class="fmt-hint">600 · suma al resultado fin ciclo, excluye EBITDA</small>
+          </div>
+          <hr class="modal-sep">
+          <div class="modal-sec">Escenario de proyección</div>
+          <div class="modal-field">
+            <label>% postura respecto a curva oficial</label>
+            <input type="number" name="factorPostura" value="100" min="50" max="110" step="1">
+            <small style="font-size:10px;color:var(--tenue)">100 = curva oficial · 85 = postura baja</small>
+          </div>
+          <div class="modal-field">
+            <label>Factor mortalidad (1.0 = normal)</label>
+            <input type="number" name="factorMortalidad" value="1.0" min="0.5" max="5.0" step="0.1">
+            <small style="font-size:10px;color:var(--tenue)">1.5 = 50% más muertes que la curva</small>
+          </div>
         </div>
 
         <hr class="modal-sep">
@@ -878,6 +935,93 @@ function proyectar(lote) {
 }
 
 /* ════════════════════════════════════════════════════════════
+   MOTOR DE PROYECCIÓN — CRIANZA PARA VENTA
+   ════════════════════════════════════════════════════════════ */
+function proyectarCrianza(lote) {
+  const curvas       = buildCurvas(lote.genetica || 'Lohmann Brown');
+  const edadIngSem   = +(lote.edadIngresoSem ?? 0);
+  const semCrianza   = Math.max(1, +(lote.semanasCrianza ?? 8));
+  const gastoMes     = +lote.gastosMes;
+  const costoDieta   = lote.costoDieta || {};
+  const precioVenta  = +(lote.precioVentaAve ?? 0);
+  const factorMort   = lote.factorMortalidad ?? 1.0;
+  const fn           = new Date(lote.fechaNacimiento + 'T12:00:00');
+  const diasCiclo    = semCrianza * 7;
+
+  const gastosXSem = {};
+  (lote.gastosEspeciales || []).forEach(g => {
+    const s = +g.semana;
+    gastosXSem[s] = (gastosXSem[s] || 0) + +g.monto;
+  });
+
+  let aves = +lote.nAves;
+  const dias = [];
+
+  for (let n = 0; n < diasCiclo; n++) {
+    const f        = new Date(fn); f.setDate(fn.getDate() + n);
+    const fecha    = f.toISOString().slice(0, 10);
+    const mes      = fecha.slice(0, 7);
+    const semCiclo = Math.floor(n / 7) + 1;
+    const semVida  = edadIngSem + semCiclo;
+    const mort     = ((MORTALIDAD[semVida] ?? 0.0015) / 7) * factorMort;
+    const mortDia  = aves * mort;
+    const avesFin  = aves - mortDia;
+    const cons     = curvas.getConsumo(semVida);
+    const grReal   = +(lote.consumoGrDieta?.[cons.dieta]) || cons.gr;
+    const consumoKg = aves * grReal / 1000;
+    const costoAlim = consumoKg * (+(costoDieta[cons.dieta]) || 520);
+    const gastoDia  = gastoMes / 30;
+    const gastoEsp  = (n % 7 === 0) ? (gastosXSem[semCiclo] || 0) : 0;
+    const ingresoVenta = (n === diasCiclo - 1) ? Math.round(avesFin * precioVenta) : 0;
+    const resultado = ingresoVenta - costoAlim - gastoDia - gastoEsp;
+
+    dias.push({
+      fecha, n: n + 1, semCiclo, semVida, mes,
+      aves:      Math.round(avesFin * 10) / 10,
+      consumoKg: Math.round(consumoKg * 10) / 10,
+      dieta:     cons.dieta,
+      costoAlim: Math.round(costoAlim),
+      gastoDia:  Math.round(gastoDia),
+      gastoEsp:  Math.round(gastoEsp),
+      ingreso:   ingresoVenta,
+      resultado: Math.round(resultado),
+    });
+    aves = avesFin;
+  }
+
+  let acum = 0;
+  dias.forEach(d => { acum += d.resultado; d.acum = Math.round(acum); });
+  return dias;
+}
+
+/* ════════════════════════════════════════════════════════════
+   MODAL — toggle tipo de lote
+   ════════════════════════════════════════════════════════════ */
+function modalTipoChange(tipo) {
+  document.getElementById('inp-tipo-lote').value = tipo;
+  document.getElementById('btn-tipo-postura').classList.toggle('activo', tipo === 'postura');
+  document.getElementById('btn-tipo-crianza').classList.toggle('activo', tipo === 'crianza');
+
+  const esCrianza = tipo === 'crianza';
+  // Secciones que aparecen/desaparecen
+  document.getElementById('sec-postura-only').style.display  = esCrianza ? 'none' : 'contents';
+  document.getElementById('sec-postura-extra').style.display = esCrianza ? 'none' : 'contents';
+  document.getElementById('sec-crianza-only').style.display  = esCrianza ? 'block' : 'none';
+
+  // Label fecha cambia según tipo
+  document.getElementById('lbl-fecha-modal').textContent =
+    esCrianza ? 'Fecha de ingreso al galpón' : 'Fecha de nacimiento';
+
+  // Label "compra de pollas" vs "compra de aves"
+  document.getElementById('lbl-gi-pollas').textContent =
+    esCrianza ? 'Compra de aves ($)' : 'Compra de pollas ($)';
+
+  // El campo precioHuevo no es required en crianza (está oculto)
+  const phInput = document.querySelector('[name="precioHuevo"]');
+  if (phInput) phInput.required = !esCrianza;
+}
+
+/* ════════════════════════════════════════════════════════════
    ALMACENAMIENTO
    ════════════════════════════════════════════════════════════ */
 const CLAVE = 'avivet_presupuesto_v1';
@@ -978,11 +1122,12 @@ function cargarSelector() {
   const sel   = document.getElementById('sel-lote');
   sel.innerHTML = '<option value="">— Selecciona un lote —</option>';
   lotes.forEach(l => {
-    const o  = document.createElement('option');
-    o.value  = l.id;
-    const fn = new Date(l.fechaNacimiento + 'T12:00:00').toLocaleDateString('es-CL',{day:'2-digit',month:'short',year:'numeric'});
+    const o   = document.createElement('option');
+    o.value   = l.id;
+    const fn  = new Date(l.fechaNacimiento + 'T12:00:00').toLocaleDateString('es-CL',{day:'2-digit',month:'short',year:'numeric'});
     const gen = l.genetica || 'Lohmann Brown';
-    o.textContent = `${l.nombre}  ·  ${gen}  ·  ${(+l.nAves).toLocaleString('es-CL')} aves  ·  nac. ${fn}`;
+    const tip = l.tipo === 'crianza' ? '[CRIANZA] ' : '';
+    o.textContent = `${tip}${l.nombre}  ·  ${gen}  ·  ${(+l.nAves).toLocaleString('es-CL')} aves  ·  ${l.tipo === 'crianza' ? 'ingreso' : 'nac.'} ${fn}`;
     sel.appendChild(o);
   });
   if (loteId) sel.value = loteId;
@@ -998,12 +1143,23 @@ function selLote(id) {
   const col = GEN_COLORES[gen] || '#1b4332';
   document.getElementById('lote-nombre-txt').textContent = lote.nombre;
   const fn = new Date(lote.fechaNacimiento + 'T12:00:00').toLocaleDateString('es-CL',{day:'numeric',month:'long',year:'numeric'});
-  document.getElementById('lote-meta-txt').textContent =
-    `${(+lote.nAves).toLocaleString('es-CL')} aves · nacimiento ${fn}`;
-  document.getElementById('lote-gen-badge').innerHTML =
-    `<span class="badge-genetica" style="color:${col}">${gen}</span>`;
-  proy = proyectar(lote);
-  renderDashboard(lote);
+
+  if (lote.tipo === 'crianza') {
+    document.getElementById('lote-meta-txt').textContent =
+      `${(+lote.nAves).toLocaleString('es-CL')} aves · ingreso ${fn} · ${lote.semanasCrianza || 8} sem crianza`;
+    document.getElementById('lote-gen-badge').innerHTML =
+      `<span class="badge-genetica" style="color:${col}">${gen}</span>
+       <span class="badge-tipo-crianza">CRIANZA</span>`;
+    proy = proyectarCrianza(lote);
+    renderDashboardCrianza(lote);
+  } else {
+    document.getElementById('lote-meta-txt').textContent =
+      `${(+lote.nAves).toLocaleString('es-CL')} aves · nacimiento ${fn}`;
+    document.getElementById('lote-gen-badge').innerHTML =
+      `<span class="badge-genetica" style="color:${col}">${gen}</span>`;
+    proy = proyectar(lote);
+    renderDashboard(lote);
+  }
 }
 
 /* ════════════════════════════════════════════════════════════
@@ -1442,6 +1598,489 @@ function renderDashboard(lote) {
   renderSensibilidad(lote);
   renderPreciosMes(lote);
   renderGastosEspeciales(lote);
+}
+
+/* ════════════════════════════════════════════════════════════
+   DASHBOARD — CRIANZA PARA VENTA
+   ════════════════════════════════════════════════════════════ */
+function renderFlujoCrianza(lote) {
+  const semC      = +(lote.semanasCrianza ?? 8);
+  const edadIng   = +(lote.edadIngresoSem ?? 0);
+  const avesFin   = proy[proy.length - 1]?.aves || 0;
+  const nAves     = +lote.nAves;
+  const mortAcum  = ((nAves - avesFin) / nAves * 100);
+  const gastos    = lote.gastosEspeciales || [];
+  const invTotal  = gastos.reduce((a,g) => a + +g.monto, 0);
+  const be        = calcBreakEven(proy);
+  const ingresos  = proy.reduce((a,d) => a + d.ingreso, 0);
+  const costAlimT = proy.reduce((a,d) => a + d.costoAlim, 0);
+
+  const semFecha = s => {
+    const d = new Date(lote.fechaNacimiento + 'T12:00:00');
+    d.setDate(d.getDate() + (s - 1) * 7);
+    return d.toLocaleDateString('es-CL', {day:'numeric', month:'short', year:'numeric'});
+  };
+
+  const pctPos = s => Math.round((s - 1) / Math.max(semC - 1, 1) * 100);
+
+  // Hitos: ingreso, break-even (si aplica), venta final
+  const hitos = [
+    { semCiclo:1, lbl:'Ingreso aves', sub: edadIng === 0 ? '1 día de vida' : `${edadIng} sem de vida`, col:'#c62828', pin:'l', above:true  },
+    ...(be ? [{ semCiclo: be.semCiclo, lbl:'Break-even',
+                sub: new Date(be.fecha+'T12:00:00').toLocaleDateString('es-CL',{day:'numeric',month:'short',year:'numeric'}),
+                col:'#e65100', above:false }] : []),
+    { semCiclo:semC, lbl:'Venta aves', sub: semFecha(semC), col:'#1b4332', pin:'r', above:true  },
+  ];
+
+  const mkHito = h => {
+    const p = pctPos(h.semCiclo);
+    const ps = h.pin==='l' ? 'left:0;transform:none'
+             : h.pin==='r' ? 'right:0;left:auto;transform:none'
+             : `left:${p}%;transform:translateX(-50%)`;
+    const dot = `<div style="width:12px;height:12px;border-radius:50%;border:2.5px solid ${h.col};background:var(--papel,#fff);flex-shrink:0"></div>`;
+    const con  = n => `<div style="width:1px;height:${n}px;background:${h.col};opacity:.45;flex-shrink:0"></div>`;
+    const txt  = `<div style="font-size:10px;font-weight:600;color:${h.col};white-space:nowrap;line-height:1.3;text-align:center">${h.lbl}</div>
+      <div style="font-size:9px;color:#888;white-space:nowrap;line-height:1.3;text-align:center">${h.sub}</div>`;
+    return h.above
+      ? `<div style="position:absolute;${ps};top:0;display:flex;flex-direction:column;align-items:center">${txt}<div style="margin:2px 0"></div>${con(13)}${dot}</div>`
+      : `<div style="position:absolute;${ps};top:0;display:flex;flex-direction:column;align-items:center"><div style="height:40px;flex-shrink:0"></div>${dot}${con(8)}${txt}</div>`;
+  };
+
+  const card = (ico, lbl, val, cls, sub) =>
+    `<div class="flujo-card">
+       <div class="flujo-card-val ${cls}">${ico}&thinsp;${val}</div>
+       <div class="flujo-card-lbl">${lbl}</div>
+       ${sub ? `<div class="flujo-card-sub">${sub}</div>` : ''}
+     </div>`;
+
+  const costoAve = Math.round(avesFin) > 0 ? Math.round(proy[proy.length-1].acum < 0
+    ? (costAlimT + proy.reduce((a,d)=>a+d.gastoDia+d.gastoEsp,0)) / Math.round(avesFin)
+    : (costAlimT + proy.reduce((a,d)=>a+d.gastoDia+d.gastoEsp,0)) / Math.round(avesFin)) : 0;
+  const margenAve = Math.round(avesFin) > 0 ? Math.round(proy[proy.length-1].acum / Math.round(avesFin)) : 0;
+
+  return `<section class="bloque">
+    <h2>Flujo de crianza · ${semC} semanas</h2>
+    <div class="flujo-barra" style="position:relative">
+      <div class="flujo-seg" style="width:100%;background:#6d9eeb;font-size:10px;letter-spacing:.05em;text-transform:uppercase;font-weight:600;color:#fff">
+        Crianza para venta · sem ${edadIng > 0 ? edadIng+1 : 1}–${edadIng + semC} de vida
+      </div>
+    </div>
+    <div class="flujo-tml">
+      <div class="flujo-tml-line"></div>
+      ${hitos.map(mkHito).join('')}
+    </div>
+    <div class="flujo-cards">
+      ${card('↑', 'Gasto inicial',    MN(invTotal) || '—',         'mal',  gastos.length ? gastos.length + ' gastos especiales' : 'sin gastos especiales')}
+      <div class="flujo-arr">→</div>
+      ${card('↓', 'Mortalidad acum.', mortAcum.toFixed(2) + '%',   mortAcum > 5 ? 'mal' : '', `${NUM(Math.round(nAves - avesFin))} aves de ${NUM(nAves)}`)}
+      <div class="flujo-arr">→</div>
+      ${card('✓', 'Break-even',        be ? 'Sem ' + be.semCiclo : 'Sin retorno', be ? 'ok' : 'mal',
+             be ? new Date(be.fecha+'T12:00:00').toLocaleDateString('es-CL',{day:'numeric',month:'short',year:'numeric'}) : '')}
+      <div class="flujo-arr">→</div>
+      ${card('🐔', 'Aves a vender',    NUM(Math.round(avesFin)),    '',      `${MN(+(lote.precioVentaAve??0))}/ave · Ing. ${MN(ingresos)}`)}
+      <div class="flujo-arr">→</div>
+      ${card('$', 'Margen / ave',      MN(margenAve),               margenAve >= 0 ? 'ok' : 'mal', `Costo/ave ${MN(costoAve)}`)}
+    </div>
+  </section>`;
+}
+
+function renderDashboardCrianza(lote) {
+  const dFin    = proy[proy.length - 1];
+  const gen     = lote.genetica || 'Lohmann Brown';
+  const col     = GEN_COLORES[gen] || '#1b4332';
+  const nAves   = +lote.nAves;
+  const avesFin = Math.round(dFin.aves);
+  const mortAcum = ((nAves - avesFin) / nAves * 100);
+  const gastos   = lote.gastosEspeciales || [];
+  const invTotal = gastos.reduce((a,g) => a + +g.monto, 0);
+  const ingresos = proy.reduce((a,d) => a + d.ingreso, 0);
+  const costAlimT = proy.reduce((a,d) => a + d.costoAlim, 0);
+  const costFijosT = proy.reduce((a,d) => a + d.gastoDia, 0);
+  const res      = dFin.acum;
+  const be       = calcBreakEven(proy);
+  const costoAveV = avesFin > 0 ? Math.round((costAlimT + costFijosT + invTotal) / avesFin) : 0;
+  const margenAve = avesFin > 0 ? Math.round(res / avesFin) : 0;
+  const semC     = +(lote.semanasCrianza ?? 8);
+  const edadIng  = +(lote.edadIngresoSem ?? 0);
+
+  // Actualizar KPIs hero
+  const K = (id, val, cls) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = val;
+    if (cls !== undefined) el.className = 'ficha-num ' + (cls || '');
+  };
+  const L = (id, txt) => { const el = document.getElementById(id); if (el) el.textContent = txt; };
+  const S = (id, txt) => { const el = document.getElementById(id); if (el) el.textContent = txt; };
+
+  K('kpi-huevos', NUM(avesFin), 'ok');
+  L('kpi-huevos-lbl', 'aves a vender al fin');
+  S('kpi-huevos-sub', `de ${NUM(nAves)} iniciales · ${mortAcum.toFixed(2)}% mort.`);
+
+  K('kpi-pos', mortAcum.toFixed(2) + '%', mortAcum > 5 ? 'mal' : '');
+  L('kpi-pos-lbl', 'mortalidad acumulada');
+  S('kpi-pos-sub', `${NUM(Math.round(nAves - avesFin))} aves perdidas`);
+
+  K('kpi-aves', `${edadIng === 0 ? '1d' : edadIng + 'sem'} → ${edadIng + semC} sem`, '');
+  L('kpi-aves-lbl', 'edad ingreso → salida');
+  S('kpi-aves-sub', `${semC} semanas de crianza`);
+
+  K('kpi-ginv', MN(invTotal), invTotal > 0 ? 'mal' : '');
+  L('kpi-ginv-lbl', 'gasto inicial');
+  S('kpi-ginv-sub', `${gastos.length} gasto${gastos.length!==1?'s':''} especial${gastos.length!==1?'es':''}`);
+
+  const elRes = document.getElementById('kpi-res');
+  if (elRes) { elRes.textContent = '$' + Math.abs(res).toLocaleString('es-CL'); elRes.className = 'ficha-num ' + (res >= 0 ? 'ok' : 'mal'); }
+  L('kpi-res-lbl', 'resultado neto ciclo');
+  S('kpi-res-sub', res >= 0 ? 'superávit' : 'déficit');
+
+  const elRoi = document.getElementById('kpi-roi');
+  if (elRoi) {
+    if (be) { elRoi.textContent = `Sem ${be.semCiclo}`; elRoi.className = 'ficha-num ok'; S('kpi-roi-sub', new Date(be.fecha+'T12:00:00').toLocaleDateString('es-CL',{day:'numeric',month:'short',year:'numeric'})); }
+    else    { elRoi.textContent = 'Sin retorno'; elRoi.className = 'ficha-num mal'; S('kpi-roi-sub', `en ${semC} semanas`); }
+  }
+  L('kpi-roi-lbl', 'recuperación inversión');
+
+  K('kpi-repos', MN(costoAveV), '');
+  L('kpi-repos-lbl', 'costo por ave vendida');
+  S('kpi-repos-sub', `Alim ${MN(Math.round(costAlimT/avesFin||0))} · Fijos ${MN(Math.round(costFijosT/avesFin||0))}`);
+
+  K('kpi-ebitda', MN(costAlimT), '');
+  L('kpi-ebitda-lbl', 'costo total alimento');
+  S('kpi-ebitda-sub', `${(costAlimT / Math.max(ingresos, 1) * 100).toFixed(1)}% del ingreso`);
+
+  K('kpi-ing', MN(ingresos), ingresos > 0 ? 'ok' : '');
+  L('kpi-ing-lbl', 'ingreso por venta de aves');
+  S('kpi-ing-sub', `${NUM(avesFin)} aves · ${MN(+(lote.precioVentaAve??0))}/ave`);
+
+  K('kpi-gastos', MN(Math.round(+lote.gastosMes)), '');
+  L('kpi-gastos-lbl', 'gastos fijos / mes');
+  S('kpi-gastos-sub', `Total ciclo: ${MN(Math.round(costFijosT))}`);
+
+  document.getElementById('contenido').innerHTML = `
+  ${renderFlujoCrianza(lote)}
+  <section id="graficos" class="bloque">
+    <h2>Proyección crianza · ${gen}</h2>
+    <p class="bloque-desc">
+      <strong>${lote.nombre}</strong>
+      · <span style="font-weight:600;color:${col}">${gen}</span>
+      · ${NUM(nAves)} aves · ingreso sem ${edadIng===0?'1 día':edadIng+' sem'} · venta sem ${edadIng+semC}.
+      <button class="btn btn-sm btn-linea" style="margin-left:16px" onclick="generarPDFCrianza()">↓ PDF crianza</button>
+    </p>
+    <div class="tabs">
+      <button class="tab activo" data-tab="tc-graficos" onclick="setTabCrianza(event,'tc-graficos')">Gráficos</button>
+      <button class="tab" data-tab="tc-tabla"   onclick="setTabCrianza(event,'tc-tabla')">Proyección</button>
+      <button class="tab" data-tab="tc-gastos"  onclick="setTabCrianza(event,'tc-gastos')">Gastos especiales</button>
+      <button class="tab" data-tab="tc-config"  onclick="setTabCrianza(event,'tc-config')">Configuración</button>
+    </div>
+
+    <div id="tc-graficos" class="tab-panel activo">
+      <div class="graficos-grid">
+        <div class="grafico-wrap">
+          <div class="grafico-titulo">Costo semanal ($)</div>
+          <div class="leyenda">
+            <span class="leyenda-item"><span class="cuad" style="background:rgba(183,28,28,.7)"></span>Alimento</span>
+            <span class="leyenda-item"><span class="cuad" style="background:rgba(100,100,150,.5)"></span>Gastos fijos</span>
+            <span class="leyenda-item"><span class="cuad" style="background:rgba(230,81,0,.7)"></span>Gastos especiales</span>
+          </div>
+          <div class="grafico-canvas"><canvas id="cc-costo"></canvas></div>
+        </div>
+        <div class="grafico-wrap">
+          <div class="grafico-titulo">Aves vivas</div>
+          <div class="grafico-canvas"><canvas id="cc-aves"></canvas></div>
+        </div>
+      </div>
+      <div class="graficos-grid full" style="margin-top:4px">
+        <div class="grafico-wrap">
+          <div class="grafico-titulo">Resultado acumulado ($)</div>
+          <div class="grafico-canvas"><canvas id="cc-acum"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="tc-tabla"  class="tab-panel" style="display:none"><div id="tc-tabla-panel"></div></div>
+    <div id="tc-gastos" class="tab-panel" style="display:none"><div id="gastos-panel"></div></div>
+    <div id="tc-config" class="tab-panel" style="display:none"><div id="tc-config-panel"></div></div>
+  </section>`;
+
+  document.getElementById('metodo').style.display = 'block';
+  document.getElementById('pie').style.display    = 'block';
+
+  renderGraficosCrianza(lote);
+  renderTablaCrianza(lote);
+  renderGastosEspeciales(lote);
+  renderConfigCrianza(lote);
+}
+
+function setTabCrianza(e, id) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('activo'));
+  document.querySelectorAll('.tab-panel').forEach(p => { p.classList.remove('activo'); p.style.display = 'none'; });
+  e.target.classList.add('activo');
+  const panel = document.getElementById(id);
+  panel.classList.add('activo');
+  panel.style.display = 'block';
+  const l = getLote(loteId);
+  if (id === 'tc-graficos') renderGraficosCrianza(l);
+  if (id === 'tc-tabla')    renderTablaCrianza(l);
+  if (id === 'tc-gastos')   renderGastosEspeciales(l);
+  if (id === 'tc-config')   renderConfigCrianza(l);
+}
+
+/* ════════════════════════════════════════════════════════════
+   CRIANZA — GRÁFICOS
+   ════════════════════════════════════════════════════════════ */
+function renderGraficosCrianza(lote) {
+  if (!proy || proy.length === 0) return;
+  const semC    = +(lote.semanasCrianza ?? 8);
+  const labels  = [];
+  const costoAlimSem = [], costoFijosSem = [], costoEspSem = [], avesSem = [], acumSem = [];
+
+  for (let s = 1; s <= semC; s++) {
+    const dias7 = proy.filter(d => d.semCiclo === s);
+    if (dias7.length === 0) continue;
+    labels.push(`Sem ${s}`);
+    costoAlimSem.push(dias7.reduce((a,d) => a + d.costoAlim, 0));
+    costoFijosSem.push(dias7.reduce((a,d) => a + d.gastoDia, 0));
+    costoEspSem.push(dias7.reduce((a,d) => a + (d.gastoEsp||0), 0));
+    avesSem.push(dias7[dias7.length - 1].aves);
+    acumSem.push(dias7[dias7.length - 1].acum);
+  }
+
+  const cht = (id, cfg) => {
+    if (charts[id]) { charts[id].destroy(); delete charts[id]; }
+    const el = document.getElementById(id);
+    if (!el) return;
+    charts[id] = new Chart(el, cfg);
+  };
+
+  cht('cc-costo', { type:'bar', data:{ labels, datasets:[
+    { label:'Alimento',        data: costoAlimSem,  backgroundColor:'rgba(183,28,28,.7)', stack:'c' },
+    { label:'Gastos fijos',    data: costoFijosSem, backgroundColor:'rgba(100,100,150,.5)', stack:'c' },
+    { label:'Gastos especiales', data: costoEspSem, backgroundColor:'rgba(230,81,0,.7)', stack:'c' },
+  ]}, options:{ responsive:true, plugins:{ legend:{labels:{...tFont}}, tooltip:{callbacks:{label:c=>' $'+Math.round(c.raw).toLocaleString('es-CL')}} }, scales:{ x:{ticks:tFont,grid:{color:gColor}}, y:{ticks:{...tFont,callback:v=>'$'+v.toLocaleString('es-CL')},grid:{color:gColor}} }, animation:false }});
+
+  cht('cc-aves', { type:'line', data:{ labels, datasets:[
+    { label:'Aves vivas', data: avesSem, borderColor:'#1b4332', backgroundColor:'rgba(27,67,50,.08)', tension:.3, fill:true, pointRadius:3, pointHoverRadius:5 }
+  ]}, options:{ responsive:true, plugins:{ legend:{labels:{...tFont}}, tooltip:{callbacks:{label:c=>' '+Math.round(c.raw).toLocaleString('es-CL')+' aves'}} }, scales:{ x:{ticks:tFont,grid:{color:gColor}}, y:{ticks:{...tFont,callback:v=>v.toLocaleString('es-CL')},grid:{color:gColor}} }, animation:false }});
+
+  const beIdx = acumSem.findIndex((v,i) => i > 0 && acumSem[i-1] < 0 && v >= 0);
+  const beAnn = beIdx >= 0 ? { annotations:{ be:{ type:'line', scaleID:'x', value:beIdx-.5, borderColor:'#e65100', borderWidth:1.5, borderDash:[4,3], label:{ content:'Break-even', display:true, backgroundColor:'#e65100', font:{size:9} } } } } : {};
+
+  cht('cc-acum', { type:'line', data:{ labels, datasets:[
+    { label:'Resultado acum.', data: acumSem, borderColor:'#2e7d32', backgroundColor: ctx => {
+        const g = ctx.chart.ctx.createLinearGradient(0,0,0,220);
+        g.addColorStop(0,'rgba(46,125,50,.25)'); g.addColorStop(1,'rgba(46,125,50,.02)'); return g;
+      }, tension:.3, fill:true, pointRadius:3, segment:{ borderColor: ctx => acumSem[ctx.p0DataIndex] < 0 ? '#b71c1c' : '#2e7d32' } }
+  ]}, options:{ responsive:true, plugins:{ legend:{labels:{...tFont}}, tooltip:{callbacks:{label:c=>' $'+Math.round(c.raw).toLocaleString('es-CL')}}, ...beAnn }, scales:{ x:{ticks:tFont,grid:{color:gColor}}, y:{ticks:{...tFont,callback:v=>'$'+v.toLocaleString('es-CL')},grid:{color:gColor}} }, animation:false }});
+}
+
+/* ════════════════════════════════════════════════════════════
+   CRIANZA — TABLA PROYECCIÓN SEMANAL
+   ════════════════════════════════════════════════════════════ */
+function renderTablaCrianza(lote) {
+  const panel = document.getElementById('tc-tabla-panel');
+  if (!panel || !proy) return;
+  const semC   = +(lote.semanasCrianza ?? 8);
+  const edadIng = +(lote.edadIngresoSem ?? 0);
+
+  const filas = [];
+  let costoAlimAcum = 0, costFijosAcum = 0, gastoEspAcum = 0;
+  for (let s = 1; s <= semC; s++) {
+    const dias7 = proy.filter(d => d.semCiclo === s);
+    if (dias7.length === 0) continue;
+    const alimSem  = dias7.reduce((a,d)=>a+d.costoAlim,0);
+    const fijosSem = dias7.reduce((a,d)=>a+d.gastoDia,0);
+    const espSem   = dias7.reduce((a,d)=>a+(d.gastoEsp||0),0);
+    const ingSem   = dias7.reduce((a,d)=>a+d.ingreso,0);
+    const resSem   = dias7.reduce((a,d)=>a+d.resultado,0);
+    costoAlimAcum += alimSem; costFijosAcum += fijosSem; gastoEspAcum += espSem;
+    const avesFin7 = dias7[dias7.length-1].aves;
+    const acum7    = dias7[dias7.length-1].acum;
+    const consKgSem = dias7.reduce((a,d)=>a+d.consumoKg,0);
+    filas.push(`<tr>
+      <td>${s}</td><td>${edadIng+s}</td>
+      <td>${NUM(Math.round(avesFin7))}</td>
+      <td>${Math.round(consKgSem).toLocaleString('es-CL')} kg</td>
+      <td>${MN(Math.round(alimSem))}</td>
+      <td>${MN(Math.round(fijosSem))}</td>
+      <td>${espSem > 0 ? MN(Math.round(espSem)) : '—'}</td>
+      <td>${ingSem > 0 ? MN(ingSem) : '—'}</td>
+      <td style="color:${resSem>=0?'var(--ok)':'var(--mal)'}">${MN(Math.round(resSem))}</td>
+      <td style="color:${acum7>=0?'var(--ok)':'var(--mal)'};font-weight:600">${MN(acum7)}</td>
+    </tr>`);
+  }
+  const dFin = proy[proy.length-1];
+  const ingrTotal = proy.reduce((a,d)=>a+d.ingreso,0);
+  panel.innerHTML = `
+    <table class="tabla-proy" style="width:100%;font-size:11.5px">
+      <thead><tr>
+        <th>Sem ciclo</th><th>Sem vida</th><th>Aves</th><th>Consumo</th>
+        <th>Alimento</th><th>Fijos</th><th>Gastos esp.</th><th>Ingreso</th><th>Resultado sem</th><th>Acumulado</th>
+      </tr></thead>
+      <tbody>${filas.join('')}</tbody>
+      <tfoot><tr style="font-weight:700">
+        <td colspan="4">TOTAL CICLO</td>
+        <td>${MN(Math.round(costoAlimAcum))}</td>
+        <td>${MN(Math.round(costFijosAcum))}</td>
+        <td>${gastoEspAcum > 0 ? MN(Math.round(gastoEspAcum)) : '—'}</td>
+        <td>${MN(ingrTotal)}</td>
+        <td></td>
+        <td style="color:${dFin.acum>=0?'var(--ok)':'var(--mal)'}">${MN(dFin.acum)}</td>
+      </tr></tfoot>
+    </table>`;
+}
+
+/* ════════════════════════════════════════════════════════════
+   CRIANZA — CONFIGURACIÓN
+   ════════════════════════════════════════════════════════════ */
+function renderConfigCrianza(lote) {
+  const panel = document.getElementById('tc-config-panel');
+  if (!panel) return;
+  const edadOpts = [[0,'1 día (pollito BB)'],[1,'1 semana'],[2,'2 semanas'],[3,'3 semanas'],[4,'4 semanas'],
+    [5,'5 semanas'],[6,'6 semanas'],[8,'8 semanas'],[10,'10 semanas'],[12,'12 semanas']];
+  panel.innerHTML = `
+    <div class="config-hdr" onclick="toggleCfg()">
+      <span class="config-titulo">Parámetros de crianza</span>
+      <button class="config-toggle" id="cfg-toggle-btn">▲ Plegar</button>
+    </div>
+    <div class="config-body" id="cfg-body">
+      <div class="config-grid">
+        <div class="cfg-field"><span>Edad de ingreso</span>
+          <select id="ccfg-edadIng">
+            ${edadOpts.map(([v,t])=>`<option value="${v}" ${+(lote.edadIngresoSem??0)===v?'selected':''}>${t}</option>`).join('')}
+          </select>
+        </div>
+        <div class="cfg-field"><span>Semanas de crianza</span><input type="number" id="ccfg-semCrianza" value="${lote.semanasCrianza??8}" min="1" max="30"></div>
+        <div class="cfg-field"><span>Precio de venta ($/ave)</span><input type="number" id="ccfg-precioVenta" value="${lote.precioVentaAve??2500}" min="0" oninput="fmtNum(this)"><small class="fmt-hint">${(+(lote.precioVentaAve??2500)).toLocaleString('es-CL')}</small></div>
+        <div class="cfg-field"><span>Factor mortalidad (1.0 = normal)</span><input type="number" id="ccfg-factMort" value="${lote.factorMortalidad??1.0}" min="0.5" max="5.0" step="0.1"></div>
+        <div class="cfg-field"><span>Gastos fijos / mes ($)</span><input type="number" id="ccfg-gastosMes" value="${lote.gastosMes}" oninput="fmtNum(this)"><small class="fmt-hint">${(+lote.gastosMes).toLocaleString('es-CL')}</small></div>
+        <hr class="cfg-sep">
+        <div class="cfg-sec">Costo alimento por periodo ($/kg)</div>
+        ${[1,2,3,4,5].map(d=>`<div class="cfg-field"><span>Dieta ${d} — $/kg</span><input type="number" id="ccfg-d${d}" value="${lote.costoDieta?.[d]||''}"></div>`).join('')}
+        <hr class="cfg-sep">
+        <div class="cfg-sec">Consumo real por etapa (g/ave/día) — opcional</div>
+        ${[1,2,3,4,5].map(d=>`<div class="cfg-field"><span>Etapa ${d} g/ave/día</span><input type="number" id="ccfg-gr${d}" value="${lote.consumoGrDieta?.[d]||''}" placeholder="Curva oficial" min="1"></div>`).join('')}
+        <hr class="cfg-sep">
+        <div style="grid-column:1/-1;display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-acento" onclick="aplicarConfigCrianza()">Guardar y recalcular</button>
+          <button class="btn btn-prim" onclick="abrirModal(loteId)">Editar lote completo</button>
+          <button class="btn btn-linea" style="color:var(--mal);border-color:var(--mal)" onclick="confirmarEliminar()">Eliminar lote</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+function aplicarConfigCrianza() {
+  const lote = getLote(loteId);
+  if (!lote) return;
+  lote.edadIngresoSem   = +(document.getElementById('ccfg-edadIng')?.value ?? 0);
+  lote.semanasCrianza   = +(document.getElementById('ccfg-semCrianza')?.value ?? 8);
+  lote.precioVentaAve   = +(document.getElementById('ccfg-precioVenta')?.value ?? 2500);
+  lote.factorMortalidad = +(document.getElementById('ccfg-factMort')?.value ?? 1.0);
+  lote.gastosMes        = +(document.getElementById('ccfg-gastosMes')?.value ?? 0);
+  [1,2,3,4,5].forEach(d => {
+    lote.costoDieta[d]     = +(document.getElementById(`ccfg-d${d}`)?.value) || lote.costoDieta[d] || 520;
+    lote.consumoGrDieta[d] = +(document.getElementById(`ccfg-gr${d}`)?.value) || 0;
+  });
+  saveLote(lote);
+  proy = proyectarCrianza(lote);
+  renderDashboardCrianza(lote);
+  const p = document.getElementById('tc-config');
+  if (p) { p.classList.add('activo'); p.style.display = 'block'; }
+}
+
+/* ════════════════════════════════════════════════════════════
+   CRIANZA — PDF
+   ════════════════════════════════════════════════════════════ */
+async function generarPDFCrianza() {
+  const lote   = getLote(loteId);
+  if (!lote || !proy) return;
+  const { jsPDF } = window.jspdf || {};
+  if (!jsPDF) { alert('jsPDF no cargado. Agrega el script en el encabezado.'); return; }
+
+  const semC    = +(lote.semanasCrianza ?? 8);
+  const edadIng = +(lote.edadIngresoSem ?? 0);
+  const nAves   = +lote.nAves;
+  const dFin    = proy[proy.length - 1];
+  const avesFin = Math.round(dFin.aves);
+  const ingresos = proy.reduce((a,d)=>a+d.ingreso,0);
+  const costAlimT = proy.reduce((a,d)=>a+d.costoAlim,0);
+  const costFijosT = proy.reduce((a,d)=>a+d.gastoDia,0);
+  const gastos   = lote.gastosEspeciales || [];
+  const invTotal = gastos.reduce((a,g)=>a + +g.monto, 0);
+  const res      = dFin.acum;
+  const be       = calcBreakEven(proy);
+  const mortAcum = ((nAves - avesFin) / nAves * 100);
+  const margenAve = avesFin > 0 ? Math.round(res / avesFin) : 0;
+  const costoAveV = avesFin > 0 ? Math.round((costAlimT + costFijosT + invTotal) / avesFin) : 0;
+
+  const doc = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
+  const W = 210; const M = 18; const CW = W - M * 2;
+  let y = M;
+  const nl = (n=5) => { y += n; };
+  const line = () => { doc.setDrawColor(200); doc.line(M, y, W-M, y); nl(3); };
+
+  doc.setFillColor(27,67,50); doc.rect(0,0,W,28,'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(16); doc.setTextColor(255,255,255);
+  doc.text('AviVet · Crianza para venta de aves', M, 12);
+  doc.setFontSize(9); doc.setFont('helvetica','normal'); doc.setTextColor(240,165,0);
+  doc.text(`${lote.nombre}  ·  ${lote.genetica||'Lohmann Brown'}  ·  ${NUM(nAves)} aves  ·  sem ${edadIng===0?'1d':edadIng+'sem'} → ${edadIng+semC}sem`, M, 20);
+  doc.setTextColor(180,180,180);
+  doc.text(`Generado ${new Date().toLocaleDateString('es-CL')} · avivet.cl`, W-M, 20, {align:'right'});
+  y = 36;
+
+  doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(27,67,50);
+  doc.text('Indicadores clave', M, y); nl(6);
+  line();
+  const kpis = [
+    ['Aves vendibles', NUM(avesFin)], ['Resultado neto', MN(res)],
+    ['Ingreso por venta', MN(ingresos)], ['Costo / ave vendida', MN(costoAveV)],
+    ['Mortalidad acum.', mortAcum.toFixed(2)+'%'], ['Costo total alimento', MN(Math.round(costAlimT))],
+    ['Margen / ave', MN(margenAve)], ['Break-even', be ? 'Sem '+be.semCiclo : 'Sin retorno'],
+  ];
+  doc.setFontSize(9.5); doc.setFont('helvetica','normal'); doc.setTextColor(30,30,30);
+  kpis.forEach(([lbl,val], i) => {
+    const col = i % 2 === 0 ? M : M + CW/2;
+    if (i % 2 === 0 && i > 0) nl(6);
+    doc.setFont('helvetica','bold'); doc.text(val, col+60, y, {align:'right'});
+    doc.setFont('helvetica','normal'); doc.setTextColor(100,100,100); doc.text(lbl, col, y); doc.setTextColor(30,30,30);
+  });
+  nl(10); line();
+
+  // Tabla semanal
+  doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(27,67,50);
+  doc.text('Proyección semanal', M, y); nl(6);
+  const cols = ['Sem','S.vida','Aves','Consumo kg','Alimento','Fijos','Gasto esp.','Resultado','Acumulado'];
+  const cw = [10,12,16,22,22,18,20,22,22];
+  doc.setFillColor(240,240,235); doc.rect(M, y-4, CW, 6, 'F');
+  doc.setFontSize(7); doc.setTextColor(80,80,80);
+  let cx = M;
+  cols.forEach((c,i) => { doc.text(c, cx+1, y); cx += cw[i]; });
+  nl(5);
+  doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(30,30,30);
+  for (let s = 1; s <= semC; s++) {
+    if (y > 265) { doc.addPage(); y = M; }
+    const dias7 = proy.filter(d => d.semCiclo === s);
+    if (!dias7.length) continue;
+    const alimS  = Math.round(dias7.reduce((a,d)=>a+d.costoAlim,0));
+    const fijosS = Math.round(dias7.reduce((a,d)=>a+d.gastoDia,0));
+    const espS   = Math.round(dias7.reduce((a,d)=>a+(d.gastoEsp||0),0));
+    const resS   = Math.round(dias7.reduce((a,d)=>a+d.resultado,0));
+    const avS    = Math.round(dias7[dias7.length-1].aves);
+    const acS    = dias7[dias7.length-1].acum;
+    const consS  = Math.round(dias7.reduce((a,d)=>a+d.consumoKg,0));
+    if (s % 2 === 0) { doc.setFillColor(249,248,245); doc.rect(M,y-4,CW,5,'F'); }
+    cx = M;
+    const row = [s, edadIng+s, NUM(avS), consS.toLocaleString('es-CL'), MN(alimS), MN(fijosS),
+                 espS>0?MN(espS):'—', MN(resS), MN(acS)];
+    row.forEach((v,i) => { doc.text(String(v), cx+1, y); cx += cw[i]; });
+    nl(5);
+  }
+
+  doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(27,67,50);
+  line();
+  doc.text(`avivet.cl · MV Andrés Lazo · ${new Date().toLocaleDateString('es-CL')}`, W/2, y+4, {align:'center'});
+  doc.save(`crianza_${lote.nombre.replace(/\s+/g,'_')}.pdf`);
 }
 
 /* ── Tabs ── */
@@ -2291,29 +2930,40 @@ function abrirModal(id) {
   });
   if (id) {
     const l = getLote(id);
-    form.nombre.value           = l.nombre;
-    form.genetica.value         = l.genetica || 'Lohmann Brown';
-    form.fechaNacimiento.value  = l.fechaNacimiento;
-    form.nAves.value            = l.nAves;
-    form.semanasCiclo.value     = l.semanasCiclo    || 100;
-    form.factorPostura.value    = l.factorPostura    ?? 100;
-    form.factorMortalidad.value = l.factorMortalidad ?? 1.0;
+    const tipol = l.tipo || 'postura';
+    modalTipoChange(tipol);
+    form.nombre.value          = l.nombre;
+    form.genetica.value        = l.genetica || 'Lohmann Brown';
+    form.fechaNacimiento.value = l.fechaNacimiento;
+    form.nAves.value           = l.nAves;
+    form.gastosMes.value       = l.gastosMes;
     [1,2,3,4,5,6,7].forEach(d => {
       const v = l.consumoGrDieta?.[d] || '';
       if (form[`gr${d}`]) form[`gr${d}`].value = v || '';
     });
-    form.precioHuevo.value      = l.precioHuevo;
-    form.gastosMes.value        = l.gastosMes;
-    form.pctNoVendible.value    = l.pctNoVendible ?? 2;
-    form.costoBandeja.value            = l.costoBandeja          ?? 20;
-    form.costoCaja.value               = l.costoCaja             ?? 150;
-    form.costoEtiqueta.value           = l.costoEtiqueta         ?? 0;
-    form.costoOtrosEnvase.value        = l.costoOtrosEnvase      ?? 0;
-    form.costoDespachoMes.value        = l.costoDespachoMes      ?? 300000;
-    form.precioGallinaDescarte.value   = l.precioGallinaDescarte ?? 600;
-    [1,2,3,4,5,6,7].forEach(d => form[`d${d}`].value = l.costoDieta[d] || '');
+    [1,2,3,4,5,6,7].forEach(d => { if (form[`d${d}`]) form[`d${d}`].value = l.costoDieta?.[d] || ''; });
+    if (tipol === 'crianza') {
+      const sel = document.getElementById('sel-edad-ingreso');
+      if (sel) sel.value = l.edadIngresoSem ?? 0;
+      if (form.semanasCrianza)  form.semanasCrianza.value  = l.semanasCrianza ?? 8;
+      if (form.precioVentaAve)  form.precioVentaAve.value  = l.precioVentaAve ?? 2500;
+      if (form.factorMortalidad) form.factorMortalidad.value = l.factorMortalidad ?? 1.0;
+    } else {
+      if (form.semanasCiclo)     form.semanasCiclo.value     = l.semanasCiclo    || 100;
+      if (form.factorPostura)    form.factorPostura.value    = l.factorPostura    ?? 100;
+      if (form.factorMortalidad) form.factorMortalidad.value = l.factorMortalidad ?? 1.0;
+      if (form.precioHuevo)      form.precioHuevo.value      = l.precioHuevo;
+      if (form.pctNoVendible)    form.pctNoVendible.value    = l.pctNoVendible ?? 2;
+      if (form.costoBandeja)     form.costoBandeja.value     = l.costoBandeja ?? 20;
+      if (form.costoCaja)        form.costoCaja.value        = l.costoCaja ?? 150;
+      if (form.costoEtiqueta)    form.costoEtiqueta.value    = l.costoEtiqueta ?? 0;
+      if (form.costoOtrosEnvase) form.costoOtrosEnvase.value = l.costoOtrosEnvase ?? 0;
+      if (form.costoDespachoMes) form.costoDespachoMes.value = l.costoDespachoMes ?? 300000;
+      if (form.precioGallinaDescarte) form.precioGallinaDescarte.value = l.precioGallinaDescarte ?? 600;
+    }
   } else {
     form.reset();
+    modalTipoChange('postura');
   }
   document.getElementById('modal').classList.add('abierto');
 }
@@ -2325,14 +2975,16 @@ function cerrarModal() {
 function guardarLote(e) {
   e.preventDefault();
   const f = e.target;
+  const tipo = f.tipoLote?.value || document.getElementById('inp-tipo-lote')?.value || 'postura';
   const costoDieta = {};
-  [1,2,3,4,5,6,7].forEach(d => costoDieta[d] = +(f[`d${d}`].value) || 520);
+  [1,2,3,4,5,6,7].forEach(d => costoDieta[d] = +(f[`d${d}`]?.value) || 520);
 
   // Gastos iniciales (solo al crear)
   let gastosEspeciales = modoEditar ? (getLote(modoEditar)?.gastosEspeciales || []) : [];
   if (!modoEditar) {
+    const descPollas = tipo === 'crianza' ? 'Compra de aves' : 'Compra de pollas';
     const mapGI = [
-      {name:'gi_pollas',    cat:'pollas',    desc:'Compra de pollas'},
+      {name:'gi_pollas',    cat:'pollas',    desc: descPollas},
       {name:'gi_inversion', cat:'inversion', desc:'Inversión inicial'},
       {name:'gi_vacunas',   cat:'vacuna',    desc:'Vacunas iniciales'},
       {name:'gi_viruta',    cat:'viruta',    desc:'Viruta'},
@@ -2343,29 +2995,50 @@ function guardarLote(e) {
     });
   }
 
-  const lote = {
-    id:                 modoEditar || `l${Date.now()}`,
-    nombre:             f.nombre.value.trim(),
-    genetica:           f.genetica.value || 'Lohmann Brown',
-    fechaNacimiento:    f.fechaNacimiento.value,
-    nAves:              +f.nAves.value,
-    semanasCiclo:       Math.min(+(f.semanasCiclo?.value || 100), 130),
-    factorPostura:      Math.min(+(f.factorPostura?.value ?? 100), 110),
-    factorMortalidad:   +(f.factorMortalidad?.value ?? 1.0),
-    consumoGrDieta:     Object.fromEntries([1,2,3,4,5,6,7].map(d => [d, +(f[`gr${d}`]?.value) || 0])),
-    precioHuevo:        +f.precioHuevo.value,
-    preciosHuevoPorMes: modoEditar ? (getLote(modoEditar)?.preciosHuevoPorMes || {}) : {},
-    gastosMes:          +f.gastosMes.value,
-    pctNoVendible:      +(f.pctNoVendible?.value    ?? 2),
-    costoBandeja:       +(f.costoBandeja?.value     ?? 20),
-    costoCaja:          +(f.costoCaja?.value         ?? 150),
-    costoEtiqueta:         +(f.costoEtiqueta?.value         ?? 0),
-    costoOtrosEnvase:      +(f.costoOtrosEnvase?.value      ?? 0),
-    costoDespachoMes:      +(f.costoDespachoMes?.value      ?? 300000),
-    precioGallinaDescarte: +(f.precioGallinaDescarte?.value ?? 600),
-    costoDieta,
-    gastosEspeciales,
-  };
+  let lote;
+  if (tipo === 'crianza') {
+    lote = {
+      id:               modoEditar || `l${Date.now()}`,
+      tipo:             'crianza',
+      nombre:           f.nombre.value.trim(),
+      genetica:         f.genetica.value || 'Lohmann Brown',
+      fechaNacimiento:  f.fechaNacimiento.value,
+      nAves:            +f.nAves.value,
+      edadIngresoSem:   +(f.edadIngresoSem?.value ?? 0),
+      semanasCrianza:   Math.max(1, +(f.semanasCrianza?.value ?? 8)),
+      precioVentaAve:   +(f.precioVentaAve?.value ?? 0),
+      factorMortalidad: +(f.factorMortalidad?.value ?? 1.0),
+      gastosMes:        +f.gastosMes.value,
+      costoDieta,
+      consumoGrDieta:   Object.fromEntries([1,2,3,4,5,6,7].map(d => [d, +(f[`gr${d}`]?.value) || 0])),
+      gastosEspeciales,
+    };
+  } else {
+    lote = {
+      id:                 modoEditar || `l${Date.now()}`,
+      tipo:               'postura',
+      nombre:             f.nombre.value.trim(),
+      genetica:           f.genetica.value || 'Lohmann Brown',
+      fechaNacimiento:    f.fechaNacimiento.value,
+      nAves:              +f.nAves.value,
+      semanasCiclo:       Math.min(+(f.semanasCiclo?.value || 100), 130),
+      factorPostura:      Math.min(+(f.factorPostura?.value ?? 100), 110),
+      factorMortalidad:   +(f.factorMortalidad?.value ?? 1.0),
+      consumoGrDieta:     Object.fromEntries([1,2,3,4,5,6,7].map(d => [d, +(f[`gr${d}`]?.value) || 0])),
+      precioHuevo:        +f.precioHuevo.value,
+      preciosHuevoPorMes: modoEditar ? (getLote(modoEditar)?.preciosHuevoPorMes || {}) : {},
+      gastosMes:          +f.gastosMes.value,
+      pctNoVendible:      +(f.pctNoVendible?.value    ?? 2),
+      costoBandeja:       +(f.costoBandeja?.value     ?? 20),
+      costoCaja:          +(f.costoCaja?.value         ?? 150),
+      costoEtiqueta:         +(f.costoEtiqueta?.value         ?? 0),
+      costoOtrosEnvase:      +(f.costoOtrosEnvase?.value      ?? 0),
+      costoDespachoMes:      +(f.costoDespachoMes?.value      ?? 300000),
+      precioGallinaDescarte: +(f.precioGallinaDescarte?.value ?? 600),
+      costoDieta,
+      gastosEspeciales,
+    };
+  }
   saveLote(lote);
   loteId = lote.id;
   cargarSelector();
