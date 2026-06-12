@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Examen de la Gallina — AviVet</title>
+<meta name="description" content="Guía clínica de campo para leer la salud de tu gallina de cabeza a cola: qué es normal y cuándo preocuparse. MV Andrés Lazo Escobar — AviVet.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500;1,9..144,600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#fafaf8; --paper2:#f0faf3; --paper3:#e3f0e8;
+  --ink:#141414; --ink2:#3a3a3a; --ink3:#6b6b6b;
+  --line:#d4e6da; --line2:#bcd6c5;
+  --rust:#1b4332; --rust-d:#0d2b1e; --rust-l:#d8f3dc;
+  --olive:#2d6a4f; --olive-d:#1b4332;
+  --amber:#c0392b; --amber-d:#7a1c1c;
+  --gold:#c9a84c; --gold2:#e8c96e; --gold-d:#a8842e;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:"DM Sans",sans-serif;background:var(--paper);color:var(--ink);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;}
+/* paper grain */
+body::before{content:"";position:fixed;inset:0;z-index:1;pointer-events:none;opacity:0.05;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+a{color:inherit;}
+
+/* Masthead bar */
+.topbar{position:sticky;top:0;z-index:200;background:rgba(243,237,225,0.94);backdrop-filter:saturate(1.2) blur(6px);
+  border-bottom:1px solid var(--line);height:48px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;}
+.brand{font-family:"Fraunces",serif;font-weight:600;font-size:17px;letter-spacing:-0.01em;}
+.brand .dotrust{color:var(--rust);}
+.topbar .meta{font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink3);}
+
+main{max-width:760px;margin:0 auto;padding:0 22px 90px;position:relative;z-index:2;animation:fadeIn .5s ease;}
+
+/* Masthead / opening */
+.masthead{padding:56px 0 34px;}
+.kicker{font-size:11.5px;letter-spacing:0.22em;text-transform:uppercase;color:var(--rust);font-weight:600;margin-bottom:22px;
+  display:flex;align-items:center;gap:12px;}
+.kicker::after{content:"";flex:1;height:1px;background:var(--line2);}
+.display{font-family:"Fraunces",serif;font-weight:600;font-size:clamp(40px,8vw,68px);line-height:0.98;letter-spacing:-0.02em;margin-bottom:24px;}
+.display em{font-style:italic;color:var(--rust);}
+.standfirst{font-family:"Fraunces",serif;font-size:clamp(18px,2.6vw,22px);line-height:1.45;color:var(--ink2);max-width:600px;font-weight:400;}
+.byline{margin-top:24px;font-size:12.5px;letter-spacing:0.04em;color:var(--ink3);text-transform:uppercase;}
+.byline b{color:var(--ink);font-weight:600;}
+
+/* Opening plate (photo) */
+.plate{margin:34px 0 6px;}
+.plate-frame{position:relative;border:1px solid var(--line2);padding:10px;background:var(--paper2);}
+.plate-frame img{width:100%;height:auto;display:block;filter:saturate(1.02) contrast(1.02);}
+.plate-cap{font-family:"Fraunces",serif;font-style:italic;font-size:13.5px;color:var(--ink2);margin-top:12px;text-align:center;}
+.plate-cap .credit{font-style:normal;color:var(--ink3);font-size:11px;}
+.plate-cap .credit a{color:var(--ink3);}
+.hint{text-align:center;font-size:12px;letter-spacing:0.04em;color:var(--ink3);margin-top:6px;}
+.dot{position:absolute;width:30px;height:30px;border-radius:50%;background:var(--paper);color:var(--rust);
+  border:1.5px solid var(--rust);font-family:"Fraunces",serif;font-weight:600;font-size:14px;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;text-decoration:none;
+  transform:translate(-50%,-50%);box-shadow:0 1px 4px rgba(60,30,10,0.25);transition:all .15s;}
+.dot:hover{background:var(--rust);color:var(--paper);transform:translate(-50%,-50%) scale(1.15);}
+
+/* Index nav */
+.index{position:sticky;top:48px;z-index:150;background:rgba(243,237,225,0.96);backdrop-filter:blur(6px);
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-top:30px;}
+.index-scroll{display:flex;overflow-x:auto;scrollbar-width:none;}
+.index-scroll::-webkit-scrollbar{display:none;}
+.idx{flex:0 0 auto;padding:11px 15px;font-size:12.5px;font-weight:600;color:var(--ink2);text-decoration:none;
+  white-space:nowrap;border-bottom:2px solid transparent;display:flex;align-items:baseline;gap:6px;transition:color .15s;}
+.idx .n{color:var(--ink3);font-variant-numeric:tabular-nums;font-size:11px;}
+.idx:hover{color:var(--rust);}
+.idx.active{color:var(--rust);border-bottom-color:var(--rust);}
+.idx.active .n{color:var(--rust);}
+
+/* Entries */
+.entry{display:grid;grid-template-columns:96px 1fr;gap:22px;padding:46px 0;border-top:1px solid var(--line);scroll-margin-top:104px;}
+.entry:first-of-type{border-top:none;}
+.entry-no{font-family:"Fraunces",serif;font-weight:500;font-size:54px;line-height:0.8;color:var(--rust);letter-spacing:-0.03em;}
+.entry-title{font-family:"Fraunces",serif;font-weight:600;font-size:30px;line-height:1.05;letter-spacing:-0.015em;margin-bottom:5px;}
+.entry-where{font-size:11.5px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink3);margin-bottom:16px;}
+.lead{font-family:"Fraunces",serif;font-size:18.5px;line-height:1.5;color:var(--ink2);max-width:560px;}
+.entry:first-of-type .lead::first-letter{initial-letter:2;font-weight:600;color:var(--rust);margin-right:8px;}
+
+.cols{display:grid;grid-template-columns:1fr 1fr;margin-top:24px;border-top:1px solid var(--line);}
+.col{padding:18px 0;}
+.col + .col{border-left:1px solid var(--line);padding-left:26px;}
+.col:first-child{padding-right:26px;}
+@media(max-width:540px){.cols{grid-template-columns:1fr;}.col + .col{border-left:none;border-top:1px solid var(--line);padding-left:0;}.col:first-child{padding-right:0;}}
+.tag{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;font-weight:700;display:inline-flex;align-items:center;gap:7px;margin-bottom:13px;}
+.tag::before{content:"";width:9px;height:9px;display:inline-block;}
+.tag-ok{color:var(--olive);}
+.tag-ok::before{background:var(--olive);}
+.tag-warn{color:var(--amber);}
+.tag-warn::before{width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:9px solid var(--amber);}
+.col ul{list-style:none;display:flex;flex-direction:column;gap:9px;}
+.col li{font-size:14.5px;line-height:1.45;color:var(--ink);padding-left:16px;position:relative;}
+.col li::before{content:"";position:absolute;left:0;top:9px;width:6px;height:1.5px;background:var(--line2);}
+.col li em{font-style:italic;color:var(--ink2);}
+
+/* Margin notes */
+.note{margin-top:22px;padding:2px 0 2px 18px;border-left:2px solid var(--amber);
+  font-family:"Fraunces",serif;font-size:15px;font-style:italic;line-height:1.5;color:var(--amber-d);}
+.note.tip{border-left-color:var(--gold);color:#5a4720;}
+.note .lbl{font-style:normal;font-weight:700;font-size:10.5px;letter-spacing:0.16em;text-transform:uppercase;
+  display:block;margin-bottom:3px;color:var(--amber);}
+.note.tip .lbl{color:var(--gold-d);}
+
+/* Pull quote */
+.pull{font-family:"Fraunces",serif;font-style:italic;font-weight:500;font-size:clamp(24px,4vw,32px);line-height:1.25;
+  color:var(--rust);text-align:center;max-width:600px;margin:8px auto;padding:54px 10px;letter-spacing:-0.01em;position:relative;}
+.pull::before,.pull::after{content:"";display:block;width:46px;height:1px;background:var(--line2);margin:0 auto;}
+.pull::before{margin-bottom:30px;}
+.pull::after{margin-top:30px;}
+
+/* Outro */
+.outro{margin-top:30px;border-top:2px solid var(--ink);padding-top:30px;}
+.disclaimer{font-family:"Fraunces",serif;font-style:italic;font-size:15px;line-height:1.55;color:var(--ink2);max-width:560px;margin-bottom:38px;}
+.contact{background:var(--paper2);border:1px solid var(--line2);padding:30px 30px 28px;}
+.contact .kicker{margin-bottom:14px;}
+.contact h3{font-family:"Fraunces",serif;font-weight:600;font-size:26px;line-height:1.1;margin-bottom:8px;letter-spacing:-0.01em;}
+.contact p{font-size:14.5px;color:var(--ink2);margin-bottom:20px;max-width:440px;}
+.contact-links{display:flex;flex-direction:column;gap:11px;}
+.clink{font-size:15px;color:var(--ink);text-decoration:none;display:flex;align-items:baseline;gap:12px;border-top:1px solid var(--line);padding-top:11px;transition:color .15s;}
+.clink:hover{color:var(--rust);}
+.clink .ck{font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink3);width:90px;flex:0 0 90px;}
+.clink b{font-weight:600;}
+.clink .arr{margin-left:auto;color:var(--rust);}
+.foot{text-align:center;font-size:12px;letter-spacing:0.04em;color:var(--ink3);margin-top:40px;text-transform:uppercase;}
+.foot a{color:var(--rust);text-decoration:none;}
+
+@media(max-width:560px){
+  .entry{grid-template-columns:1fr;gap:6px;}
+  .entry-no{font-size:38px;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span class="brand">AviVet<span class="dotrust">.</span></span>
+  <span class="meta">MV Andrés Lazo · Medicina aviar</span>
+</div>
+
+<main>
+
+  <!-- MASTHEAD -->
+  <header class="masthead">
+    <div class="kicker">Guía clínica de campo · N.º 01</div>
+    <h1 class="display">Cómo leer la salud de tu <em>gallina</em></h1>
+    <p class="standfirst">Una revisión de cabeza a cola que cualquiera puede hacer a mano, sin instrumentos. Aprende qué es normal en cada parte del ave y, sobre todo, cuándo conviene preocuparse.</p>
+    <p class="byline"><b>MV Andrés Lazo Escobar</b> — Especialista en medicina aviar · Sur de Chile</p>
+  </header>
+
+  <!-- OPENING PLATE -->
+  <figure class="plate">
+    <div class="plate-frame">
+      <div class="diagram-wrap" style="position:relative">
+        <img src="gallina.jpg" alt="Gallina Lohmann Brown de perfil con los puntos de revisión">
+        <a class="dot" href="#cresta"  style="left:30%;top:10%">2</a>
+        <a class="dot" href="#ojos"    style="left:35%;top:16%">3</a>
+        <a class="dot" href="#pico"    style="left:22%;top:17%">4</a>
+        <a class="dot" href="#buche"   style="left:31%;top:39%">5</a>
+        <a class="dot" href="#quilla"  style="left:31%;top:57%">6</a>
+        <a class="dot" href="#abdomen" style="left:49%;top:75%">7</a>
+        <a class="dot" href="#cloaca"  style="left:80%;top:50%">8</a>
+        <a class="dot" href="#patas"   style="left:52%;top:92%">10</a>
+      </div>
+    </div>
+    <figcaption class="plate-cap">
+      Lám. I — Ponedora adulta de perfil. Toca un número para ir a su examen.<br>
+      <span class="credit">Foto: Konstantin Nikiforov · <a href="https://commons.wikimedia.org/wiki/File:Lohmann_Brown_adult_hen.jpg" target="_blank" rel="noopener">Wikimedia Commons</a>, CC BY-SA 3.0</span>
+    </figcaption>
+    <p class="hint">↓ o recorre el índice</p>
+  </figure>
+
+  <!-- INDEX -->
+  <nav class="index">
+    <div class="index-scroll" id="navScroll">
+      <a class="idx" href="#actitud"><span class="n">01</span>Actitud</a>
+      <a class="idx" href="#cresta"><span class="n">02</span>Cresta y cara</a>
+      <a class="idx" href="#ojos"><span class="n">03</span>Ojos</a>
+      <a class="idx" href="#pico"><span class="n">04</span>Pico y nariz</a>
+      <a class="idx" href="#buche"><span class="n">05</span>Buche</a>
+      <a class="idx" href="#quilla"><span class="n">06</span>Quilla</a>
+      <a class="idx" href="#abdomen"><span class="n">07</span>Abdomen</a>
+      <a class="idx" href="#cloaca"><span class="n">08</span>Cloaca</a>
+      <a class="idx" href="#plumaje"><span class="n">09</span>Plumaje</a>
+      <a class="idx" href="#patas"><span class="n">10</span>Patas</a>
+    </div>
+  </nav>
+
+  <!-- 01 ACTITUD -->
+  <article class="entry" id="actitud">
+    <div class="entry-no">01</div>
+    <div>
+      <h2 class="entry-title">Actitud general</h2>
+      <p class="entry-where">Mírala antes de tomarla, en el corral</p>
+      <p class="lead">Lo primero es observar a la gallina sin molestarla. Una gallina sana está ocupada: se mueve, picotea y reacciona a su entorno.</p>
+      <div class="cols">
+        <div class="col">
+          <span class="tag tag-ok">Sano</span>
+          <ul>
+            <li>Activa, atenta y curiosa</li>
+            <li>Escarba, come, bebe y se acicala</li>
+            <li>Se mezcla con el resto del lote</li>
+            <li>Ojos abiertos, cabeza erguida</li>
+          </ul>
+        </div>
+        <div class="col">
+          <span class="tag tag-warn">Señal de alerta</span>
+          <ul>
+            <li>Apartada, encogida y desinteresada</li>
+            <li>Plumas erizadas, alas caídas</li>
+            <li>Ojos entrecerrados o somnolienta</li>
+            <li>Se queda quieta cuando te acercas</li>
+          </ul>
+        </div>
+      </div>
+      <p class="note tip"><span class="lbl">Ten en cuenta</span>Con frío las gallinas también se encogen un rato. Lo que preocupa es una gallina apagada cuando el resto del lote está activo.</p>
+    </div>
+  </article>
+
+  <!-- 02 CRESTA -->
+  <article class="entry" id="cresta">
+    <div class="entry-no">02</div>
+    <div>
+      <h2 class="entry-title">Cresta y cara</h2>
+      <p class="entry-where">Arriba de la cabeza · barbillas</p>
+      <p class="lead">El color y la textura de la cresta dicen mucho sobre si la gallina está sana y poniendo.</p>
+      <div class="cols">
+        <div class="col">
+          <span class="tag tag-ok">Sano</span>
+          <ul>
+            <li>Roja, firme y brillante <em>→ está poniendo</em></li>
+            <li>Pálida pero firme <em>→ sana, sin postura (muda o descanso)</em></li>
+            <li>Cara limpia, sin hinchazón</li>
+          </ul>
+        </div>
+        <div class="col">
+          <span class="tag tag-warn">Señal de alerta</span>
+          <ul>
+            <li>Seca, arrugada o con escamas</li>
+            <li>Manchas blancas o costras</li>
+            <li>Cara hinchada alrededor del ojo</li>
+          </ul>
+        </div>
+      </div>
+      <p class="note"><span class="lbl">Urgente</span>Cresta morada o azulada indica falta de oxígeno o enfermedad grave. Aíslala y consulta de inmediato.</p>
+    </div>
+  </article>
+
+  <div class="pull">La cresta es el semáforo del ave: su color y textura cuentan casi toda la historia.</div>
+
+  <!-- 03 OJOS -->
+  <article class="entry" id="ojos">
+    <div class="entry-no">03</div>
+    <div>
+      <h2 class="entry-title">Ojos</h2>
+      <p class="entry-where">A ambos lados de la cabeza</p>
+      <p class="lead">Los ojos deben verse despejados y brillantes. Secreciones o espuma suelen ser señal de un problema respiratorio.</p>
+      <div class="cols">
+        <div class="col">
+          <span class="tag tag-ok">Sano</span>
+          <ul>
+            <li>Brillantes, redondos y bien abiertos</li>
+            <li>Sin lagrimeo ni hinchazón</li>
+            <li>Reacciona al movimiento</li>
+          </ul>
+        </div>
+        <div class="col">
+          <span class="tag tag-warn">Señal de alerta</span>
+          <ul>
+            <li>Espuma o burbujas en la esquina del ojo</li>
+            <li>Párpados hinchados o pegados</li>
+            <li>Lagrimeo o legañas</li>
+            <li>Ojo opaco o de color cambiado</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- 04 PICO -->
+  <article class="entry" id="pico">
+    <div class="entry-no">04</div>
+    <div>
+      <h2 class="entry-title">Pico y nariz</h2>
+      <p class="entry-where">Fosas nasales sobre el pico</p>
+      <p class="lead">Revisa que respire tranquila y que las fosas nasales estén limpias y secas.</p>
+      <div class="cols">
+        <div class="col">
+          <span class="tag tag-ok">Sano</span>
+          <ul>
+            <li>Respira en silencio, con el pico cerrado</li>
+            <li>Fosas nasales limpias y secas</li>
+            <li>Pico íntegro, sin deformaciones</li>
+          </ul>
+        </div>
+        <div class="col">
+          <span class="tag tag-warn">Señal de alerta</span>
+          <ul>
+            <li>Estornudos, tos o ruidos al respirar</li>
+            <li>Respira con el pico abierto</li>
+            <li>Mocos o costras en la nariz</li>
+            <li>Sacude la cabeza con frecuencia</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- 05 BUCHE -->
+  <article class="entry" id="buche">
+    <div class="entry-no">05</div>
+    <div>
+      <h2 class="entry-title">Buche</h2>
+      <p class="entry-where">Base del cuello, sobre el pecho</p>
+      <p class="lead">El buche guarda el alimento antes de digerirlo. Se llena al comer durante el día y debería estar casi vacío a primera hora de la mañana.</p>
+      <div class="cols">
+        <div class="col">
+          <span class="tag tag-ok">Sano</span>
+          <ul>
+            <li>Se llena al comer y se vacía gradual</li>
+            <li>Blando, como una bolsita con comida</li>
+            <li>Vacío y plano en ayunas</li>
+          </ul>
+        </div>
+        <div class="col">
+          <span class="tag tag-warn">Señal de alerta</span>
+          <ul>
+            <li>Duro y apelmazado <em>→ buche impactado</em></li>
+            <li>Lleno de líquido y blando <em>→ buche ácido</em></li>
+            <li>Sigue lleno en la mañana en ayunas</li>
+            <li>Olor agrio desde el pico</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <div class="pull">Revisa el buche al amanecer, en ayunas. Si sigue lleno, algo no se está vaciando bien.</div>
+
+  <!-- 06 QUILLA -->
+  <article class="entry" id="quilla">
+    <div class="entry-no">06</div>
+    <div>
+      <h2 class="entry-title">Quilla <span style="font-weight:400;color:var(--ink3)">(pechuga)</span></h2>
+      <p class="entry-where">Hueso central del pecho</p>
+      <p class="lead">Pasa el dedo por el hueso del pecho. La carne a los lados te dice si la gallina está en buen estado o flaca.</p>
+      <div class="cols">
+        <div class="col">
+          <span class="tag tag-ok">Sano</span>
+          <ul>
+            <li>Carne firme y acolchada a ambos lados</li>
+            <li>El hueso se nota, pero no sobresale</li>
+            <li>Peso acorde al tamaño del ave</li>
+          </ul>
+        </div>
+        <div class="col">
+          <span class="tag tag-warn">Señal de alerta</span>
+          <ul>
+            <li>Hueso filoso y muy marcado <em>→ está flaca</em></li>
+            <li>Poca carne aunque el plumaje se vea bien</li>
+            <li>Pérdida de peso respecto a otras revisiones</li>
+          </ul>
+        </div>
+      </div>
+      <p class="note"><span class="lbl">Importante</span>Una quilla muy salida avisa que la gallina pierde condición, aunque por fuera se vea bien emplumada. Es una señal temprana.</p>
+    </div>
+  </article>
+
+  <!-- 07 ABDOMEN -->
+  <article class="entry" id="abdomen">
+    <div class="entry-no">07</div>
+    <div>
+      <h2 class="entry-title">Abdomen</h2>
+      <p class="entry-where">Vientre, entre la quilla y la cloaca</p>
+      <p class="lead">Palpa con suavidad la zona baja del vientre. Debe sentirse redondeada y blanda, sin bultos ni tensión.</p>
+      <div class="cols">
+        <div class="col">
+          <span class="tag tag-ok">Sano</span>
+          <ul>
+            <li>Redondeado y blando</li>
+            <li>No abultado ni tenso</li>
+            <li>Camina y se para con normalidad</li>
+          </ul>
+        </div>
+        <div class="col">
+          <span class="tag tag-warn">Señal de alerta</span>
+          <ul>
+            <li>Hinchado y duro <em>→ posible peritonitis del huevo</em></li>
+            <li>Hinchado y blando, con líquido <em>→ ascitis</em></li>
+            <li>Camina como pingüino, patas abiertas</li>
+            <li>Piel del vientre caliente o sin plumas</li>
+          </ul>
+        </div>
+      </div>
+      <p class="note"><span class="lbl">Atención</span>Un abdomen hinchado con patas abiertas es señal de un problema reproductivo serio. Consulta con el veterinario.</p>
+    </div>
+  </article>
+
+  <!-- 08 CLOACA -->
+  <article class="entry" id="cloaca">
+    <div class="entry-no">08</div>
+    <div>
+      <h2 class="entry-title">Cloaca</h2>
+      <p class="entry-where">Orificio bajo la cola</p>
+      <p class="lead">Es por donde sale el huevo y las fecas. Su forma indica si la gallina está poniendo; su limpieza, cómo va su digestión.</p>
+      <div class="cols">
+        <div class="col">
+          <span class="tag tag-ok">Sano</span>
+          <ul>
+            <li>Limpia y húmeda</li>
+            <li>Alargada y amplia <em>→ está poniendo</em></li>
+            <li>Redonda y apretada <em>→ en descanso</em></li>
+          </ul>
+        </div>
+        <div class="col">
+          <span class="tag tag-warn">Señal de alerta</span>
+          <ul>
+            <li>Sucia o con fecas pegadas alrededor</li>
+            <li>Plumas manchadas o irritación</li>
+            <li>Enrojecida, con picoteo de otras aves</li>
+            <li>Salida de tejido (prolapso)</li>
+          </ul>
+        </div>
+      </div>
+      <p class="note"><span class="lbl">Urgente</span>Si ves tejido rojo saliendo (prolapso), aíslala enseguida para evitar que las otras la picoteen, y consulta.</p>
+    </div>
+  </article>
+
+  <!-- 09 PLUMAJE -->
+  <article class="entry" id="plumaje">
+    <div class="entry-no">09</div>
+    <div>
+      <h2 class="entry-title">Plumaje y piel</h2>
+      <p class="entry-where">Todo el cuerpo · sobre todo cerca de la cloaca</p>
+      <p class="lead">Abre las plumas y mira la piel, en especial alrededor de la cloaca y bajo las alas, donde se esconden los parásitos.</p>
+      <div class="cols">
+        <div class="col">
+          <span class="tag tag-ok">Sano</span>
+          <ul>
+            <li>Plumas limpias y bien puestas</li>
+            <li>Piel rosada, sin heridas</li>
+            <li>Algo de muda es normal en su época</li>
+          </ul>
+        </div>
+        <div class="col">
+          <span class="tag tag-warn">Señal de alerta</span>
+          <ul>
+            <li>Puntitos que se mueven <em>→ piojillos o ácaros</em></li>
+            <li>Racimos de huevos en la base de las plumas</li>
+            <li>Zonas peladas fuera de temporada de muda</li>
+            <li>Heridas, costras o picoteo</li>
+          </ul>
+        </div>
+      </div>
+      <p class="note tip"><span class="lbl">Truco</span>Revisa de noche, o busca ácaros rojos en las grietas del gallinero: de día se esconden fuera del ave.</p>
+    </div>
+  </article>
+
+  <!-- 10 PATAS -->
+  <article class="entry" id="patas">
+    <div class="entry-no">10</div>
+    <div>
+      <h2 class="entry-title">Patas y dedos</h2>
+      <p class="entry-where">Tarsos · dedos · plantas</p>
+      <p class="lead">Las escamas deben verse lisas y pegadas. Revisa también las plantas de los pies por heridas o hinchazón.</p>
+      <div class="cols">
+        <div class="col">
+          <span class="tag tag-ok">Sano</span>
+          <ul>
+            <li>Escamas lisas, planas y brillantes</li>
+            <li>Camina firme, se para en ambas patas</li>
+            <li>Plantas limpias, sin bultos</li>
+          </ul>
+        </div>
+        <div class="col">
+          <span class="tag tag-warn">Señal de alerta</span>
+          <ul>
+            <li>Escamas levantadas y costrosas <em>→ ácaro de la pata</em></li>
+            <li>Bulto o costra en la planta <em>→ pododermatitis</em></li>
+            <li>Cojera o no apoya una pata</li>
+            <li>Articulaciones hinchadas o calientes</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- OUTRO -->
+  <div class="outro">
+    <p class="disclaimer">Esta guía sirve para una revisión orientativa y no reemplaza el diagnóstico de un médico veterinario. Si encuentras señales de alerta, separa al ave del lote y busca asesoría profesional.</p>
+
+    <div class="contact">
+      <div class="kicker">Asesoría veterinaria</div>
+      <h3>¿Encontraste algo que te preocupa?</h3>
+      <p>Medicina aviar y avicultura para el sur de Chile — Los Ríos, La Araucanía y Los Lagos.</p>
+      <div class="contact-links">
+        <a class="clink" href="https://wa.me/56958956340" target="_blank" rel="noopener"><span class="ck">WhatsApp</span><b>+56 9 5895 6340</b><span class="arr">→</span></a>
+        <a class="clink" href="mailto:andreslazomv@outlook.com"><span class="ck">Email</span><b>andreslazomv@outlook.com</b><span class="arr">→</span></a>
+        <a class="clink" href="https://avivet.cl" target="_blank" rel="noopener"><span class="ck">Web</span><b>avivet.cl</b><span class="arr">→</span></a>
+      </div>
+    </div>
+
+    <p class="foot">MV Andrés Lazo Escobar · <a href="https://avivet.cl/">Volver a avivet.cl</a></p>
+  </div>
+
+</main>
+
+<script>
+(function(){
+  var navScroll = document.getElementById('navScroll');
+  var chips = {};
+  navScroll.querySelectorAll('.idx').forEach(function(c){
+    chips[c.getAttribute('href').slice(1)] = c;
+  });
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        var id = e.target.id;
+        Object.values(chips).forEach(function(c){c.classList.remove('active');});
+        var active = chips[id];
+        if(active){
+          active.classList.add('active');
+          var off = active.offsetLeft - navScroll.clientWidth/2 + active.clientWidth/2;
+          navScroll.scrollTo({left:off, behavior:'smooth'});
+        }
+      }
+    });
+  }, {rootMargin:'-45% 0px -50% 0px', threshold:0});
+  document.querySelectorAll('article.entry').forEach(function(s){io.observe(s);});
+})();
+</script>
+</body>
+</html>

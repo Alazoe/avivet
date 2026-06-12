@@ -10,7 +10,7 @@
 //   5. Pegar la URL del deploy en config/praderas-ranco.json → backendUrl
 // ============================================================
 
-const SHEET_ID = "REEMPLAZAR_CON_ID_DEL_SHEET_PRADERAS_RANCO";
+const SHEET_ID = "1312kBO5GvFas1H7mCHoeMyVdSPxtU0EZFuz9NHe4JEk";
 
 // ──────────────────────────────────────────────
 // DATOS MAESTROS
@@ -152,76 +152,9 @@ function crearHojaMateriasPrimas(ss) {
 // HOJA: RECETAS
 // ──────────────────────────────────────────────
 function crearHojaRecetas(ss) {
-  const ws = getOrCreate(ss, "RECETAS");
-  ws.clearContents();
-
-  const nombresDietas = Object.keys(RECETAS);
-  const numCols = 2 + nombresDietas.length;
-
-  ws.getRange(1, 1, 1, numCols).merge()
-    .setValue("RECETAS / FÓRMULAS — kg por 1.000 kg de mezcla")
-    .setBackground("#1B4332").setFontColor("#FFFFFF").setFontWeight("bold")
-    .setFontSize(13).setHorizontalAlignment("center");
-  ws.setRowHeight(1, 30);
-
-  ws.getRange(2, 1).setValue("INSUMO").setBackground("#2D6A4F").setFontColor("#FFFFFF").setFontWeight("bold").setHorizontalAlignment("center");
-  ws.getRange(2, 2).setValue("Código MP").setBackground("#2D6A4F").setFontColor("#FFFFFF").setFontWeight("bold").setHorizontalAlignment("center");
-  nombresDietas.forEach((nombre, i) => {
-    const r = RECETAS[nombre];
-    const bg = r.activo ? "#2D6A4F" : "#888888";
-    ws.getRange(2, 3+i).setValue(nombre).setBackground(bg).setFontColor("#FFFFFF").setFontWeight("bold").setHorizontalAlignment("center");
-  });
-  ws.setRowHeight(2, 24);
-
-  ws.getRange(3, 1).setValue("Fecha inicio").setBackground("#95D5B2").setFontWeight("bold").setHorizontalAlignment("center");
-  ws.getRange(3, 2).setBackground("#95D5B2");
-  nombresDietas.forEach((nombre, i) => {
-    ws.getRange(3, 3+i).setValue(RECETAS[nombre].fecha).setBackground("#95D5B2").setHorizontalAlignment("center").setFontWeight("bold");
-  });
-
-  ws.getRange(4, 1).setValue("Activo").setBackground("#D8F3DC").setFontWeight("bold").setHorizontalAlignment("center");
-  ws.getRange(4, 2).setBackground("#D8F3DC");
-  nombresDietas.forEach((nombre, i) => {
-    const activo = RECETAS[nombre].activo;
-    ws.getRange(4, 3+i).setValue(activo ? "SÍ" : "NO")
-      .setBackground(activo ? "#D8F3DC" : "#FFD6D6")
-      .setFontColor(activo ? "#006400" : "#CC0000")
-      .setFontWeight("bold").setHorizontalAlignment("center");
-  });
-
-  let row = 5;
-  MATERIAS_PRIMAS.forEach(([cod, nombre]) => {
-    let tieneValor = false;
-    nombresDietas.forEach(d => { if (RECETAS[d].insumos[cod]) tieneValor = true; });
-    if (!tieneValor) return;
-
-    ws.getRange(row, 1).setValue(nombre).setFontWeight("bold").setFontFamily("Arial").setFontSize(10);
-    ws.getRange(row, 2).setValue(cod).setFontColor("#555555").setFontFamily("Arial").setFontSize(9);
-    nombresDietas.forEach((dieta, i) => {
-      const val = RECETAS[dieta].insumos[cod] || "";
-      const c = ws.getRange(row, 3+i);
-      c.setValue(val).setHorizontalAlignment("center").setFontFamily("Arial").setFontSize(10);
-      if (!RECETAS[dieta].activo) c.setFontColor("#AAAAAA");
-    });
-    ws.setRowHeight(row, 18);
-    row++;
-  });
-
-  ws.getRange(row, 1).setValue("TOTAL").setBackground("#1B4332").setFontColor("#FFFFFF").setFontWeight("bold").setHorizontalAlignment("center");
-  ws.getRange(row, 2).setBackground("#1B4332");
-  for (let i = 0; i < nombresDietas.length; i++) {
-    const col = 3 + i;
-    const letra = columnToLetter(col);
-    ws.getRange(row, col)
-      .setFormula(`=SUM(${letra}5:${letra}${row-1})`)
-      .setBackground("#1B4332").setFontColor("#FFFFFF").setFontWeight("bold").setHorizontalAlignment("center");
-  }
-  ws.setRowHeight(row, 22);
-
-  ws.setColumnWidth(1, 240);
-  ws.setColumnWidth(2, 140);
-  for (let i = 0; i < nombresDietas.length; i++) ws.setColumnWidth(3+i, 110);
-  ws.setFrozenRows(4);
+  // Delegado a escribirHojaRecetas, que usa la constante RECETAS
+  // como fallback y escribe todo en batch.
+  escribirHojaRecetas(RECETAS);
 }
 
 // ──────────────────────────────────────────────
@@ -528,7 +461,7 @@ function getRecetas() {
 
   const lastCol = ws.getLastColumn();
   const lastRow = ws.getLastRow();
-  if (lastRow < 5) return { ok: true, data: {} };
+  if (lastRow < 5 || lastCol < 3) return { ok: true, data: {} };
 
   const allData = ws.getRange(2, 1, lastRow - 1, lastCol).getValues();
   const headersRow = allData[0]; // row 2: INSUMO | Código MP | dieta1 | dieta2 ...
@@ -566,18 +499,64 @@ function guardarRecetas(body) {
     return { ok: false, error: "JSON inválido: " + e.message };
   }
   if (!recetas || typeof recetas !== "object") return { ok: false, error: "Datos inválidos" };
-
-  const ss = SpreadsheetApp.openById(SHEET_ID);
-  escribirHojaRecetas(ss, recetas);
-  SpreadsheetApp.flush();
+  guardarRespaldoRecetas(recetas);
+  escribirHojaRecetas(recetas);
   return { ok: true, msg: "Recetas actualizadas", n: Object.keys(recetas).length };
 }
 
-function escribirHojaRecetas(ss, recetasObj) {
+
+// ── Respaldo automático de recetas ──────────────
+// Cada guardarRecetas() deja un snapshot JSON en la hoja
+// RECETAS_HISTORIAL antes de reescribir la hoja RECETAS.
+function guardarRespaldoRecetas(recetasObj) {
+  try {
+    const ss = SpreadsheetApp.openById(SHEET_ID);
+    let ws = ss.getSheetByName("RECETAS_HISTORIAL");
+    if (!ws) {
+      ws = ss.insertSheet("RECETAS_HISTORIAL");
+      ws.getRange(1, 1, 1, 4).setValues([["Fecha", "Hora", "N° dietas", "Snapshot JSON"]])
+        .setBackground("#1B4332").setFontColor("#FFFFFF").setFontWeight("bold");
+      ws.setColumnWidth(1, 100);
+      ws.setColumnWidth(2, 80);
+      ws.setColumnWidth(4, 600);
+      ws.setFrozenRows(1);
+    }
+    const ahora = new Date();
+    ws.appendRow([
+      Utilities.formatDate(ahora, "America/Santiago", "yyyy-MM-dd"),
+      Utilities.formatDate(ahora, "America/Santiago", "HH:mm:ss"),
+      Object.keys(recetasObj).length,
+      JSON.stringify(recetasObj)
+    ]);
+    // Conservar solo los últimos 50 respaldos (los más antiguos arriba)
+    const filas = ws.getLastRow() - 1;
+    if (filas > 50) ws.deleteRows(2, filas - 50);
+  } catch (e) {
+    // El respaldo nunca debe bloquear el guardado principal
+    console.error("Respaldo de recetas falló: " + e.message);
+  }
+}
+
+// ── Restaurar el último respaldo ────────────────
+// Ejecutar desde el editor de Apps Script si la hoja
+// RECETAS queda vacía o corrupta.
+function restaurarUltimoRespaldo() {
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  const ws = ss.getSheetByName("RECETAS_HISTORIAL");
+  if (!ws || ws.getLastRow() < 2) throw new Error("No hay respaldos en RECETAS_HISTORIAL");
+  const json = ws.getRange(ws.getLastRow(), 4).getValue();
+  escribirHojaRecetas(JSON.parse(json));
+}
+
+function escribirHojaRecetas(recetasObj) {
+  const data = (recetasObj && typeof recetasObj === "object" && Object.keys(recetasObj).length)
+               ? recetasObj : RECETAS;
+  const ss = SpreadsheetApp.openById(SHEET_ID);
   const ws = getOrCreate(ss, "RECETAS");
   ws.clearContents();
+  ws.clearFormats();
 
-  const nombresDietas = Object.keys(recetasObj);
+  const nombresDietas = Object.keys(data);
   if (!nombresDietas.length) return;
   const numCols = 2 + nombresDietas.length;
 
@@ -587,73 +566,145 @@ function escribirHojaRecetas(ss, recetasObj) {
     .setFontSize(13).setHorizontalAlignment("center");
   ws.setRowHeight(1, 30);
 
-  ws.getRange(2, 1).setValue("INSUMO").setBackground("#2D6A4F").setFontColor("#FFFFFF").setFontWeight("bold").setHorizontalAlignment("center");
-  ws.getRange(2, 2).setValue("Código MP").setBackground("#2D6A4F").setFontColor("#FFFFFF").setFontWeight("bold").setHorizontalAlignment("center");
-  nombresDietas.forEach((nombre, i) => {
-    const bg = recetasObj[nombre].activo ? "#2D6A4F" : "#888888";
-    ws.getRange(2, 3+i).setValue(nombre).setBackground(bg).setFontColor("#FFFFFF").setFontWeight("bold").setHorizontalAlignment("center");
+  const cabeceras = [
+    ["INSUMO", "Código MP", ...nombresDietas],
+    ["Fecha inicio", "", ...nombresDietas.map(n => data[n].fecha || "")],
+    ["Activo", "", ...nombresDietas.map(n => data[n].activo ? "SÍ" : "NO")]
+  ];
+  ws.getRange(2, 1, 3, numCols).setValues(cabeceras)
+    .setFontWeight("bold").setHorizontalAlignment("center").setFontFamily("Arial").setFontSize(10);
+
+  ws.getRange(2, 1, 1, numCols).setBackground("#2D6A4F").setFontColor("#FFFFFF");
+  ws.getRange(3, 1, 1, numCols).setBackground("#95D5B2");
+  ws.getRange(4, 1, 1, 2).setBackground("#D8F3DC");
+  nombresDietas.forEach((n, i) => {
+    const a = data[n].activo;
+    ws.getRange(2, 3+i).setBackground(a ? "#2D6A4F" : "#888888");
+    ws.getRange(4, 3+i).setBackground(a ? "#D8F3DC" : "#FFD6D6")
+      .setFontColor(a ? "#006400" : "#CC0000");
   });
   ws.setRowHeight(2, 24);
 
-  ws.getRange(3, 1).setValue("Fecha inicio").setBackground("#95D5B2").setFontWeight("bold").setHorizontalAlignment("center");
-  ws.getRange(3, 2).setBackground("#95D5B2");
-  nombresDietas.forEach((nombre, i) => {
-    ws.getRange(3, 3+i).setValue(recetasObj[nombre].fecha || "").setBackground("#95D5B2").setHorizontalAlignment("center").setFontWeight("bold");
-  });
-
-  ws.getRange(4, 1).setValue("Activo").setBackground("#D8F3DC").setFontWeight("bold").setHorizontalAlignment("center");
-  ws.getRange(4, 2).setBackground("#D8F3DC");
-  nombresDietas.forEach((nombre, i) => {
-    const activo = recetasObj[nombre].activo;
-    ws.getRange(4, 3+i).setValue(activo ? "SÍ" : "NO")
-      .setBackground(activo ? "#D8F3DC" : "#FFD6D6")
-      .setFontColor(activo ? "#006400" : "#CC0000")
-      .setFontWeight("bold").setHorizontalAlignment("center");
-  });
-
-  // Collect codes: first from MATERIAS_PRIMAS order, then any extras
   const allCods = [];
   MATERIAS_PRIMAS.forEach(([cod]) => {
-    let tieneValor = false;
-    nombresDietas.forEach(d => { if ((recetasObj[d].insumos || {})[cod]) tieneValor = true; });
-    if (tieneValor) allCods.push(cod);
+    if (nombresDietas.some(d => (data[d].insumos||{})[cod])) allCods.push(cod);
   });
-  nombresDietas.forEach(d => {
-    Object.keys(recetasObj[d].insumos || {}).forEach(cod => {
-      if (!allCods.includes(cod)) allCods.push(cod);
-    });
-  });
+  nombresDietas.forEach(d => Object.keys(data[d].insumos||{}).forEach(cod => {
+    if (!allCods.includes(cod)) allCods.push(cod);
+  }));
 
-  let row = 5;
-  allCods.forEach(cod => {
+  const ingData = allCods.map(cod => {
     const mp = MATERIAS_PRIMAS.find(m => m[0] === cod);
-    const nombre = mp ? mp[1] : cod;
-    ws.getRange(row, 1).setValue(nombre).setFontWeight("bold").setFontFamily("Arial").setFontSize(10);
-    ws.getRange(row, 2).setValue(cod).setFontColor("#555555").setFontFamily("Arial").setFontSize(9);
-    nombresDietas.forEach((dieta, i) => {
-      const val = (recetasObj[dieta].insumos || {})[cod] || "";
-      const c = ws.getRange(row, 3+i);
-      c.setValue(val).setHorizontalAlignment("center").setFontFamily("Arial").setFontSize(10);
-      if (!recetasObj[dieta].activo) c.setFontColor("#AAAAAA");
-    });
-    ws.setRowHeight(row, 18);
-    row++;
+    return [mp ? mp[1] : cod, cod, ...nombresDietas.map(d => (data[d].insumos||{})[cod] || "")];
   });
-
-  ws.getRange(row, 1).setValue("TOTAL").setBackground("#1B4332").setFontColor("#FFFFFF").setFontWeight("bold").setHorizontalAlignment("center");
-  ws.getRange(row, 2).setBackground("#1B4332");
-  for (let i = 0; i < nombresDietas.length; i++) {
-    const col = 3 + i;
-    const letra = columnToLetter(col);
-    ws.getRange(row, col)
-      .setFormula(`=SUM(${letra}5:${letra}${row-1})`)
-      .setBackground("#1B4332").setFontColor("#FFFFFF").setFontWeight("bold").setHorizontalAlignment("center");
+  if (ingData.length) {
+    ws.getRange(5, 1, ingData.length, numCols).setValues(ingData)
+      .setFontFamily("Arial").setFontSize(10).setVerticalAlignment("middle");
+    ws.getRange(5, 1, ingData.length, 1).setFontWeight("bold");
+    ws.getRange(5, 2, ingData.length, 1).setFontColor("#555555").setFontSize(9);
+    ws.getRange(5, 3, ingData.length, nombresDietas.length).setHorizontalAlignment("center");
+    nombresDietas.forEach((d, i) => {
+      if (!data[d].activo) ws.getRange(5, 3+i, ingData.length, 1).setFontColor("#AAAAAA");
+    });
+    for (let r = 5; r < 5 + ingData.length; r++) ws.setRowHeight(r, 18);
   }
-  ws.setRowHeight(row, 22);
+
+  const totalRow = 5 + ingData.length;
+  ws.getRange(totalRow, 1, 1, numCols)
+    .setBackground("#1B4332").setFontColor("#FFFFFF").setFontWeight("bold").setHorizontalAlignment("center");
+  ws.getRange(totalRow, 1).setValue("TOTAL");
+  for (let i = 0; i < nombresDietas.length; i++) {
+    const letra = columnToLetter(3 + i);
+    ws.getRange(totalRow, 3+i).setFormula(`=SUM(${letra}5:${letra}${totalRow-1})`);
+  }
+  ws.setRowHeight(totalRow, 22);
   ws.setColumnWidth(1, 240);
   ws.setColumnWidth(2, 140);
   for (let i = 0; i < nombresDietas.length; i++) ws.setColumnWidth(3+i, 110);
   ws.setFrozenRows(4);
+}
+
+// ── Alertas diarias de stock crítico ────────────
+// enviarAlertaStock(): revisa el stock y envía un correo si hay
+// insumos sin stock, críticos o con menos de 7 días de cobertura.
+// crearTriggerAlertaDiaria(): ejecutar UNA VEZ desde el editor
+// para programar el envío automático todos los días a las 7 am.
+// Destinatario: clave "email_alertas" en la hoja CONFIG;
+// si no existe, se usa el correo del dueño del script.
+
+function crearTriggerAlertaDiaria() {
+  ScriptApp.getProjectTriggers()
+    .filter(t => t.getHandlerFunction() === "enviarAlertaStock")
+    .forEach(t => ScriptApp.deleteTrigger(t));
+  ScriptApp.newTrigger("enviarAlertaStock")
+    .timeBased().everyDays(1).atHour(7).create();
+}
+
+function enviarAlertaStock() {
+  const stock = getStockActual();
+  if (!stock.ok) return;
+
+  const alertas = stock.data.filter(m =>
+    m.estado === "SIN STOCK" || m.estado === "CRÍTICO" ||
+    (typeof m.dias_stock === "number" && m.dias_stock < 7)
+  );
+  if (!alertas.length) return; // sin alertas no se envía correo
+
+  const severidad = { "SIN STOCK": 0, "CRÍTICO": 1, "BAJO": 2, "OK": 3 };
+  alertas.sort((a, b) => (severidad[a.estado] ?? 9) - (severidad[b.estado] ?? 9));
+
+  // OC pendientes por código — para saber si la reposición ya está en camino
+  const pendientes = {};
+  getOrdenes().data.filter(o => o.estado === "PENDIENTE")
+    .forEach(o => { pendientes[o.codigo] = (pendientes[o.codigo] || 0) + (parseFloat(o.cantidad) || 0); });
+
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  const cfg = {};
+  const wsCfg = ss.getSheetByName("CONFIG");
+  if (wsCfg && wsCfg.getLastRow() > 2) {
+    wsCfg.getRange(3, 1, wsCfg.getLastRow() - 2, 2).getValues()
+      .forEach(([k, v]) => { if (k) cfg[String(k).trim()] = String(v); });
+  }
+  const destinatario = cfg.email_alertas || Session.getEffectiveUser().getEmail();
+  const planta = cfg.planta || "Planta de alimentos";
+
+  const colores = { "SIN STOCK": "#CC0000", "CRÍTICO": "#E07C00", "BAJO": "#B5A300" };
+  const filas = alertas.map(m => `
+    <tr>
+      <td style="padding:8px 12px;border-bottom:1px solid #ddd"><b>${m.nombre}</b></td>
+      <td style="padding:8px 12px;border-bottom:1px solid #ddd;text-align:right">${m.stock.toLocaleString("es-CL")} kg</td>
+      <td style="padding:8px 12px;border-bottom:1px solid #ddd;text-align:right">${m.stock_min.toLocaleString("es-CL")} kg</td>
+      <td style="padding:8px 12px;border-bottom:1px solid #ddd;text-align:right">${m.dias_stock === "N/D" ? "—" : m.dias_stock + " días"}</td>
+      <td style="padding:8px 12px;border-bottom:1px solid #ddd;text-align:center;color:${colores[m.estado] || "#333"};font-weight:bold">${m.estado}</td>
+      <td style="padding:8px 12px;border-bottom:1px solid #ddd;text-align:right">${pendientes[m.codigo] ? pendientes[m.codigo].toLocaleString("es-CL") + " kg" : "—"}</td>
+    </tr>`).join("");
+
+  const htmlBody = `
+    <div style="font-family:Arial,sans-serif;max-width:680px">
+      <h2 style="color:#1B4332">⚠ Alerta de stock — ${planta}</h2>
+      <p>${alertas.length} insumo(s) requieren atención (sin stock, bajo el mínimo o con menos de 7 días de cobertura):</p>
+      <table style="border-collapse:collapse;width:100%;font-size:14px">
+        <tr style="background:#1B4332;color:#fff">
+          <th style="padding:8px 12px;text-align:left">Insumo</th>
+          <th style="padding:8px 12px;text-align:right">Stock</th>
+          <th style="padding:8px 12px;text-align:right">Mínimo</th>
+          <th style="padding:8px 12px;text-align:right">Cobertura</th>
+          <th style="padding:8px 12px">Estado</th>
+          <th style="padding:8px 12px;text-align:right">OC pendiente</th>
+        </tr>
+        ${filas}
+      </table>
+      <p style="color:#666;font-size:12px;margin-top:16px">
+        Cobertura calculada con el plan de producción de los próximos 7 días.
+        Correo generado automáticamente por el Sistema de Inventario AviVet.
+      </p>
+    </div>`;
+
+  MailApp.sendEmail({
+    to: destinatario,
+    subject: `⚠ Stock: ${alertas.length} insumo(s) por reponer — ${planta}`,
+    htmlBody: htmlBody
+  });
 }
 
 function getDashboard() {
@@ -910,3 +961,4 @@ function columnToLetter(col) {
   }
   return letter;
 }
+

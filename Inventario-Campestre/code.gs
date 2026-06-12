@@ -10,13 +10,15 @@ const SHEET_ID = "1AhcHJ0rgewyu4FPh_37lih5iLjHEyrtkjpt86HhzQtA";
 // ──────────────────────────────────────────────
 const MATERIAS_PRIMAS = [
   ["30MAIZ-00",  "MAÍZ",                              "kg",  "Energéticos"],
-  ["30AFSY-00",  "AFRECHO SOYA",                      "kg",  "Proteínas"],
-  ["30COCH-00",  "CONCHUELA",                         "kg",  "Minerales"],
+  ["30AFSY-00",  "SOYA HIGH",                         "kg",  "Proteínas"],
+  ["30SOYB-00",  "SOYA BOLIVIANA",                    "kg",  "Proteínas"],
+  ["30SA46-00",  "SOYA ARG 46%",                      "kg",  "Proteínas"],
+  ["30COCH-00",  "CONCHUELA GRUESA",                  "kg",  "Minerales"],
   ["30HTR3-00",  "HARINILLA TRIGO",                   "kg",  "Energéticos"],
-  ["30PHSB-00",  "FOSFATO PHOSBIC",                   "kg",  "Minerales"],
+  ["30PHSB-00",  "FOSFATO MONOCALCICO",               "kg",  "Minerales"],
   ["30MSRB-00",  "SECUESTRANTE",                      "kg",  "Aditivos"],
   ["30MET2-00",  "METIONINA",                         "kg",  "Aminoácidos"],
-  ["30INMU-00",  "REGULADOR INTESTINAL",              "kg",  "Aditivos"],
+  ["30INMU-00",  "INMUNOWALL",                        "kg",  "Aditivos"],
   ["30LIS2-00",  "LISINA 99%",                        "kg",  "Aminoácidos"],
   ["30PLFD-00",  "POLIFEED",                          "kg",  "Aditivos"],
   ["30COCI-00",  "COCCISAN",                          "kg",  "Medicamentos"],
@@ -24,7 +26,7 @@ const MATERIAS_PRIMAS = [
   ["30NSLG-00",  "NUCLEO SOLAGRO PONEDORA CON ENZ",   "kg",  "Núcleos"],
   ["30SAL6-00",  "SAL FINA",                          "kg",  "Minerales"],
   ["30OVTO-00",  "OVOTOP",                            "kg",  "Aditivos"],
-  ["30PIGM-00",  "PIGMENTO",                          "kg",  "Aditivos"],
+  ["30PIGM-00",  "CAPSANTAL",                         "kg",  "Aditivos"],
   ["30EMEL-00",  "EMERAL",                            "kg",  "Aditivos"],
   ["30FITO-00",  "FITOGÉNICO",                        "kg",  "Aditivos"],
   ["10VSCT-00",  "CHICKTONIC 1LT",                   "litro","Aditivos"],
@@ -35,22 +37,22 @@ const MATERIAS_PRIMAS = [
 ];
 
 const RECETAS = {
-  "PONEDORA 1":     { codigo: "20P120-65", activo: true,  fecha: "19-may",
-    insumos: {"30MAIZ-00":562,"30AFSY-00":266,"30COCH-00":106,"30HTR3-00":50,"30PHSB-00":6,"30MSRB-00":0.5,"30MET2-00":2.5,"30INMU-00":0.5,"30LIS2-00":0.5,"30PLFD-00":2,"30NSLP-00":0.5,"30SAL6-00":4,"30OVTO-00":1,"30NSLG-00":1,"30PIGM-00":0.2}},
-  "PONEDORA 2":     { codigo: "20P266-90", activo: true,  fecha: "19-may",
-    insumos: {"30MAIZ-00":552,"30AFSY-00":257,"30COCH-00":127,"30HTR3-00":50,"30PHSB-00":4,"30MSRB-00":0.5,"30MET2-00":2,"30INMU-00":0.5,"30LIS2-00":0.3,"30PLFD-00":2.5,"30SAL6-00":4,"30OVTO-00":1,"30NSLG-00":1,"30PIGM-00":0.2}},
-  "POLLITA INICIAL":{ codigo: "20INI1-08", activo: true,  fecha: "19-may",
-    insumos: {"30MAIZ-00":600,"30AFSY-00":315,"30COCH-00":15,"30HTR3-00":50,"30PHSB-00":10,"30MSRB-00":0.5,"30MET2-00":2.5,"30INMU-00":0.5,"30LIS2-00":1.6,"30COCI-00":0.5,"30NSLP-00":1,"30SAL6-00":2.5}},
-  "RECRÍA":         { codigo: "20REC9-15", activo: true,  fecha: "19-may",
-    insumos: {"30MAIZ-00":661,"30AFSY-00":260,"30COCH-00":13,"30HTR3-00":50,"30PHSB-00":9,"30MSRB-00":0.5,"30MET2-00":1,"30INMU-00":0.5,"30LIS2-00":0.3,"30COCI-00":0.4,"30NSLP-00":1,"30SAL6-00":2.5}},
-  "PREPOSTURA":     { codigo: "",          activo: true,  fecha: "19-may",
-    insumos: {"30MAIZ-00":646,"30AFSY-00":250,"30COCH-00":63,"30HTR3-00":25,"30PHSB-00":9,"30MSRB-00":0.5,"30MET2-00":1,"30INMU-00":0.5,"30LIS2-00":0.3,"30SAL6-00":3,"30NSLG-00":1}},
-  "LOLOL":          { codigo: "",          activo: true,  fecha: "19-may",
-    insumos: {"30MAIZ-00":562,"30AFSY-00":269,"30COCH-00":105,"30HTR3-00":50,"30PHSB-00":6,"30MSRB-00":0.5,"30MET2-00":2,"30INMU-00":0.5,"30LIS2-00":0.3,"30PLFD-00":2,"30SAL6-00":3,"30NSLG-00":1}},
-  "POLLA NUEVA":    { codigo: "",          activo: true,  fecha: "25-ene",
-    insumos: {"30MAIZ-00":558,"30AFSY-00":267,"30COCH-00":108,"30HTR3-00":50,"30PHSB-00":7,"30MSRB-00":0.5,"30MET2-00":2,"30INMU-00":0.5,"30LIS2-00":0.3,"30PLFD-00":3,"30NSLP-00":0.5,"30SAL6-00":3,"30NSLG-00":1,"30PIGM-00":0.2}},
-  "LAMPA":          { codigo: "",          activo: false, fecha: "13-nov",
-    insumos: {"30MAIZ-00":527,"30AFSY-00":315,"30COCH-00":108,"30HTR3-00":25,"30PHSB-00":11,"30MSRB-00":0.5,"30MET2-00":3,"30INMU-00":0.5,"30LIS2-00":1,"30PLFD-00":4,"30NSLP-00":0.5,"30SAL6-00":3.5,"30NSLG-00":1,"30PIGM-00":0.2}},
+  "PONEDORA 1":       { codigo: "20P120-65", activo: true, fecha: "06-jun",
+    insumos: {"30MAIZ-00":555,"30SA46-00":270,"30COCH-00":112,"30HTR3-00":50,"30PHSB-00":4.5,"30MSRB-00":0.5,"30MET2-00":1.3,"30INMU-00":0.5,"30LIS2-00":0.2,"30PLFD-00":3,"30NSLP-00":0.25,"30SAL6-00":2.5,"30NSLG-00":1,"30PIGM-00":0.2}},
+  "PONEDORA 2":       { codigo: "20P266-90", activo: true, fecha: "06-jun",
+    insumos: {"30MAIZ-00":570,"30SA46-00":245,"30COCH-00":125,"30HTR3-00":50,"30PHSB-00":4,"30MSRB-00":0.5,"30MET2-00":1,"30INMU-00":0.5,"30PLFD-00":2.5,"30NSLP-00":0.25,"30SAL6-00":2.5,"30OVTO-00":1,"30NSLG-00":1,"30PIGM-00":0.2}},
+  "POLLITA INICIAL":  { codigo: "20INI1-08", activo: true, fecha: "06-jun",
+    insumos: {"30MAIZ-00":590,"30SA46-00":325,"30COCH-00":19,"30HTR3-00":50,"30PHSB-00":8,"30MSRB-00":0.5,"30MET2-00":2.2,"30INMU-00":0.5,"30LIS2-00":1.4,"30COCI-00":0.5,"30NSLP-00":1.25,"30SAL6-00":3}},
+  "RECRÍA":           { codigo: "20REC9-15", activo: true, fecha: "06-jun",
+    insumos: {"30MAIZ-00":661,"30SA46-00":257,"30COCH-00":17,"30HTR3-00":50,"30PHSB-00":7,"30MSRB-00":0.5,"30MET2-00":1.5,"30INMU-00":0.5,"30LIS2-00":0.25,"30COCI-00":0.4,"30NSLP-00":1.25,"30SAL6-00":3}},
+  "PREPOSTURA":       { codigo: "",          activo: true, fecha: "06-jun",
+    insumos: {"30MAIZ-00":632,"30SA46-00":245,"30COCH-00":61,"30HTR3-00":50,"30PHSB-00":7,"30MSRB-00":0.5,"30MET2-00":1.1,"30INMU-00":0.5,"30LIS2-00":0.2,"30SAL6-00":3,"30NSLG-00":1.25}},
+  "LOLOL":            { codigo: "",          activo: true, fecha: "06-jun",
+    insumos: {"30MAIZ-00":570,"30SA46-00":258,"30COCH-00":111,"30HTR3-00":50,"30PHSB-00":4.5,"30MSRB-00":0.5,"30MET2-00":1.1,"30INMU-00":0.5,"30LIS2-00":0.2,"30PLFD-00":1.5,"30SAL6-00":3,"30NSLG-00":1,"30PIGM-00":0.2}},
+  "GENESIS-HERBERT L2":{ codigo: "",         activo: true, fecha: "06-jun",
+    insumos: {"30MAIZ-00":558,"30SA46-00":270,"30COCH-00":110,"30HTR3-00":50,"30PHSB-00":4.5,"30MSRB-00":0.5,"30MET2-00":1.3,"30INMU-00":0.5,"30LIS2-00":0.2,"30PLFD-00":3,"30NSLP-00":1,"30SAL6-00":3,"30NSLG-00":1,"30PIGM-00":0.2}},
+  "ROMAN-HERBERT L1": { codigo: "",          activo: true, fecha: "06-jun",
+    insumos: {"30MAIZ-00":575,"30SA46-00":245,"30COCH-00":120,"30HTR3-00":50,"30PHSB-00":3,"30MSRB-00":0.5,"30MET2-00":0.6,"30INMU-00":0.5,"30LIS2-00":0.2,"30PLFD-00":3,"30NSLP-00":0.25,"30SAL6-00":3,"30OVTO-00":1,"30NSLG-00":1,"30PIGM-00":0.2}},
 };
 
 // ──────────────────────────────────────────────
@@ -66,6 +68,7 @@ function inicializarSistema() {
   crearHojaOrdenes(ss);
   crearHojaProyecciones(ss);
   crearHojaPlanificacion(ss);
+  crearHojaStockTeorico(ss);
   cargarStocksMinimos();
   const s1 = ss.getSheetByName("Sheet1") || ss.getSheetByName("Hoja 1") || ss.getSheetByName("Hoja1");
   if (s1 && ss.getSheets().length > 1) ss.deleteSheet(s1);
@@ -274,6 +277,32 @@ function crearHojaStockActual(ss) {
 }
 
 // ──────────────────────────────────────────────
+// HOJA: STOCK_TEORICO
+// ──────────────────────────────────────────────
+function crearHojaStockTeorico(ss) {
+  const ws = getOrCreate(ss, "STOCK_TEORICO");
+  ws.clearContents();
+  ws.getRange("A1:I1").merge()
+    .setValue("STOCK TEÓRICO — Calculado desde último conteo físico + plan de producción")
+    .setBackground("#1B4332").setFontColor("#FFFFFF").setFontWeight("bold")
+    .setFontSize(13).setHorizontalAlignment("center");
+  ws.setRowHeight(1, 30);
+
+  const headers = [
+    "Fecha Producción","Código MP","Nombre MP",
+    "Fecha Último Conteo","Stock Último Conteo (kg)",
+    "Consumo Acumulado (kg)","Stock Teórico (kg)",
+    "Conteo Real (kg)","Diferencia (kg)"
+  ];
+  ws.getRange(2, 1, 1, headers.length).setValues([headers]);
+  headerStyle(ws, 2, headers.length, "2D6A4F");
+
+  const widths = [130, 120, 260, 140, 160, 160, 140, 130, 120];
+  widths.forEach((w, i) => ws.setColumnWidth(i + 1, w));
+  ws.setFrozenRows(2);
+}
+
+// ──────────────────────────────────────────────
 // HOJA: ORDENES_COMPRA
 // ──────────────────────────────────────────────
 function crearHojaOrdenes(ss) {
@@ -382,7 +411,9 @@ function doGet(e) {
       case "guardarPlanificacion": result = guardarPlanificacion(JSON.parse(decodeURIComponent(e.parameter.payload||"{}"))); break;
       case "getPlanificacion":     result = getPlanificacion(e.parameter);                break;
       case "getConteosDelDia":     result = getConteosDelDia(e.parameter.fecha);          break;
-      case "actualizarPrecios":    result = actualizarPrecios(JSON.parse(decodeURIComponent(e.parameter.payload||"{}"))); break;
+      case "actualizarPrecios":       result = actualizarPrecios(JSON.parse(decodeURIComponent(e.parameter.payload||"{}"))); break;
+      case "calcularStockTeorico":    result = calcularYGuardarStockTeorico(e.parameter); break;
+      case "getStockTeorico":         result = getStockTeorico(e.parameter); break;
       default: result = { ok: true, msg: "Sistema activo" };
     }
   } catch(err) {
@@ -542,7 +573,8 @@ function getRecetas() {
 
   const lastCol = ws.getLastColumn();
   const lastRow = ws.getLastRow();
-  if (lastRow < 5) return { ok: true, data: {} };
+  // Hoja vacía o incompleta (p.ej. interrumpida al guardar)
+  if (lastRow < 5 || lastCol < 3) return { ok: true, data: {} };
 
   const allData = ws.getRange(2, 1, lastRow - 1, lastCol).getValues();
   const headersRow = allData[0]; // row 2: INSUMO | Código MP | dieta1 | dieta2 ...
@@ -581,93 +613,242 @@ function guardarRecetas(body) {
   }
   if (!recetas || typeof recetas !== "object") return { ok: false, error: "Datos inválidos" };
 
-  const ss = SpreadsheetApp.openById(SHEET_ID);
-  escribirHojaRecetas(ss, recetas);
-  SpreadsheetApp.flush();
+  guardarRespaldoRecetas(recetas);
+  escribirHojaRecetas(recetas);
   return { ok: true, msg: "Recetas actualizadas", n: Object.keys(recetas).length };
 }
 
-function escribirHojaRecetas(ss, recetasObj) {
+
+// ── Respaldo automático de recetas ──────────────
+// Cada guardarRecetas() deja un snapshot JSON en la hoja
+// RECETAS_HISTORIAL antes de reescribir la hoja RECETAS.
+function guardarRespaldoRecetas(recetasObj) {
+  try {
+    const ss = SpreadsheetApp.openById(SHEET_ID);
+    let ws = ss.getSheetByName("RECETAS_HISTORIAL");
+    if (!ws) {
+      ws = ss.insertSheet("RECETAS_HISTORIAL");
+      ws.getRange(1, 1, 1, 4).setValues([["Fecha", "Hora", "N° dietas", "Snapshot JSON"]])
+        .setBackground("#1B4332").setFontColor("#FFFFFF").setFontWeight("bold");
+      ws.setColumnWidth(1, 100);
+      ws.setColumnWidth(2, 80);
+      ws.setColumnWidth(4, 600);
+      ws.setFrozenRows(1);
+    }
+    const ahora = new Date();
+    ws.appendRow([
+      Utilities.formatDate(ahora, "America/Santiago", "yyyy-MM-dd"),
+      Utilities.formatDate(ahora, "America/Santiago", "HH:mm:ss"),
+      Object.keys(recetasObj).length,
+      JSON.stringify(recetasObj)
+    ]);
+    // Conservar solo los últimos 50 respaldos (los más antiguos arriba)
+    const filas = ws.getLastRow() - 1;
+    if (filas > 50) ws.deleteRows(2, filas - 50);
+  } catch (e) {
+    // El respaldo nunca debe bloquear el guardado principal
+    console.error("Respaldo de recetas falló: " + e.message);
+  }
+}
+
+// ── Restaurar el último respaldo ────────────────
+// Ejecutar desde el editor de Apps Script si la hoja
+// RECETAS queda vacía o corrupta.
+function restaurarUltimoRespaldo() {
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  const ws = ss.getSheetByName("RECETAS_HISTORIAL");
+  if (!ws || ws.getLastRow() < 2) throw new Error("No hay respaldos en RECETAS_HISTORIAL");
+  const json = ws.getRange(ws.getLastRow(), 4).getValue();
+  escribirHojaRecetas(JSON.parse(json));
+}
+
+function escribirHojaRecetas(recetasObj) {
+  const data = (recetasObj && typeof recetasObj === "object" && Object.keys(recetasObj).length)
+               ? recetasObj : RECETAS;
+  const ss = SpreadsheetApp.openById(SHEET_ID);
   const ws = getOrCreate(ss, "RECETAS");
   ws.clearContents();
+  ws.clearFormats();
 
-  const nombresDietas = Object.keys(recetasObj);
+  const nombresDietas = Object.keys(data);
   if (!nombresDietas.length) return;
   const numCols = 2 + nombresDietas.length;
 
+  // ── Fila 1: título ──────────────────────────────────────────
   ws.getRange(1, 1, 1, numCols).merge()
     .setValue("RECETAS / FÓRMULAS — kg por 1.000 kg de mezcla")
     .setBackground("#1B4332").setFontColor("#FFFFFF").setFontWeight("bold")
     .setFontSize(13).setHorizontalAlignment("center");
   ws.setRowHeight(1, 30);
 
-  ws.getRange(2, 1).setValue("INSUMO").setBackground("#2D6A4F").setFontColor("#FFFFFF").setFontWeight("bold").setHorizontalAlignment("center");
-  ws.getRange(2, 2).setValue("Código MP").setBackground("#2D6A4F").setFontColor("#FFFFFF").setFontWeight("bold").setHorizontalAlignment("center");
+  // ── Filas 2-4: cabeceras (batch) ────────────────────────────
+  // Valores de las 3 filas de cabecera en una sola llamada
+  const cabeceraValues = [
+    ["INSUMO", "Código MP", ...nombresDietas],
+    ["Fecha inicio", "", ...nombresDietas.map(n => data[n].fecha || "")],
+    ["Activo",       "", ...nombresDietas.map(n => data[n].activo ? "SÍ" : "NO")]
+  ];
+  ws.getRange(2, 1, 3, numCols).setValues(cabeceraValues)
+    .setFontFamily("Arial").setFontSize(10).setFontWeight("bold").setHorizontalAlignment("center");
+
+  // Formato fila 2 (nombres de dieta)
+  ws.getRange(2, 1, 1, 2).setBackground("#2D6A4F").setFontColor("#FFFFFF");
   nombresDietas.forEach((nombre, i) => {
-    const bg = recetasObj[nombre].activo ? "#2D6A4F" : "#888888";
-    ws.getRange(2, 3+i).setValue(nombre).setBackground(bg).setFontColor("#FFFFFF").setFontWeight("bold").setHorizontalAlignment("center");
+    ws.getRange(2, 3+i)
+      .setBackground(data[nombre].activo ? "#2D6A4F" : "#888888")
+      .setFontColor("#FFFFFF");
   });
   ws.setRowHeight(2, 24);
 
-  ws.getRange(3, 1).setValue("Fecha inicio").setBackground("#95D5B2").setFontWeight("bold").setHorizontalAlignment("center");
-  ws.getRange(3, 2).setBackground("#95D5B2");
-  nombresDietas.forEach((nombre, i) => {
-    ws.getRange(3, 3+i).setValue(recetasObj[nombre].fecha || "").setBackground("#95D5B2").setHorizontalAlignment("center").setFontWeight("bold");
-  });
+  // Formato fila 3 (fechas)
+  ws.getRange(3, 1, 1, numCols).setBackground("#95D5B2");
 
-  ws.getRange(4, 1).setValue("Activo").setBackground("#D8F3DC").setFontWeight("bold").setHorizontalAlignment("center");
-  ws.getRange(4, 2).setBackground("#D8F3DC");
+  // Formato fila 4 (activo)
+  ws.getRange(4, 1, 1, 2).setBackground("#D8F3DC");
   nombresDietas.forEach((nombre, i) => {
-    const activo = recetasObj[nombre].activo;
-    ws.getRange(4, 3+i).setValue(activo ? "SÍ" : "NO")
+    const activo = data[nombre].activo;
+    ws.getRange(4, 3+i)
       .setBackground(activo ? "#D8F3DC" : "#FFD6D6")
-      .setFontColor(activo ? "#006400" : "#CC0000")
-      .setFontWeight("bold").setHorizontalAlignment("center");
+      .setFontColor(activo ? "#006400" : "#CC0000");
   });
 
-  // Collect codes: first from MATERIAS_PRIMAS order, then any extras
+  // ── Insumos: recopilar códigos ───────────────────────────────
   const allCods = [];
   MATERIAS_PRIMAS.forEach(([cod]) => {
-    let tieneValor = false;
-    nombresDietas.forEach(d => { if ((recetasObj[d].insumos || {})[cod]) tieneValor = true; });
-    if (tieneValor) allCods.push(cod);
+    if (nombresDietas.some(d => (data[d].insumos || {})[cod])) allCods.push(cod);
   });
   nombresDietas.forEach(d => {
-    Object.keys(recetasObj[d].insumos || {}).forEach(cod => {
+    Object.keys(data[d].insumos || {}).forEach(cod => {
       if (!allCods.includes(cod)) allCods.push(cod);
     });
   });
 
-  let row = 5;
-  allCods.forEach(cod => {
+  // ── Filas de insumos (batch) ─────────────────────────────────
+  const ingData = allCods.map(cod => {
     const mp = MATERIAS_PRIMAS.find(m => m[0] === cod);
     const nombre = mp ? mp[1] : cod;
-    ws.getRange(row, 1).setValue(nombre).setFontWeight("bold").setFontFamily("Arial").setFontSize(10);
-    ws.getRange(row, 2).setValue(cod).setFontColor("#555555").setFontFamily("Arial").setFontSize(9);
-    nombresDietas.forEach((dieta, i) => {
-      const val = (recetasObj[dieta].insumos || {})[cod] || "";
-      const c = ws.getRange(row, 3+i);
-      c.setValue(val).setHorizontalAlignment("center").setFontFamily("Arial").setFontSize(10);
-      if (!recetasObj[dieta].activo) c.setFontColor("#AAAAAA");
-    });
-    ws.setRowHeight(row, 18);
-    row++;
+    const vals = nombresDietas.map(d => (data[d].insumos || {})[cod] || "");
+    return [nombre, cod, ...vals];
   });
 
-  ws.getRange(row, 1).setValue("TOTAL").setBackground("#1B4332").setFontColor("#FFFFFF").setFontWeight("bold").setHorizontalAlignment("center");
-  ws.getRange(row, 2).setBackground("#1B4332");
-  for (let i = 0; i < nombresDietas.length; i++) {
-    const col = 3 + i;
-    const letra = columnToLetter(col);
-    ws.getRange(row, col)
-      .setFormula(`=SUM(${letra}5:${letra}${row-1})`)
-      .setBackground("#1B4332").setFontColor("#FFFFFF").setFontWeight("bold").setHorizontalAlignment("center");
+  if (ingData.length) {
+    const ingRange = ws.getRange(5, 1, ingData.length, numCols);
+    ingRange.setValues(ingData)
+      .setFontFamily("Arial").setFontSize(10).setVerticalAlignment("middle");
+    // Código MP (col 2) en gris
+    ws.getRange(5, 2, ingData.length, 1).setFontColor("#555555").setFontSize(9);
+    // Columna Nombre en negrita
+    ws.getRange(5, 1, ingData.length, 1).setFontWeight("bold");
+    // Valores numéricos centrados
+    ws.getRange(5, 3, ingData.length, nombresDietas.length).setHorizontalAlignment("center");
+    // Dietas inactivas en gris
+    nombresDietas.forEach((d, i) => {
+      if (!data[d].activo) ws.getRange(5, 3+i, ingData.length, 1).setFontColor("#AAAAAA");
+    });
+    // Alturas de fila
+    for (let r = 5; r < 5 + ingData.length; r++) ws.setRowHeight(r, 18);
   }
-  ws.setRowHeight(row, 22);
+
+  // ── Fila TOTAL ───────────────────────────────────────────────
+  const totalRow = 5 + ingData.length;
+  ws.getRange(totalRow, 1).setValue("TOTAL");
+  ws.getRange(totalRow, 1, 1, numCols)
+    .setBackground("#1B4332").setFontColor("#FFFFFF").setFontWeight("bold").setHorizontalAlignment("center");
+  for (let i = 0; i < nombresDietas.length; i++) {
+    const col   = 3 + i;
+    const letra = columnToLetter(col);
+    ws.getRange(totalRow, col).setFormula(`=SUM(${letra}5:${letra}${totalRow-1})`);
+  }
+  ws.setRowHeight(totalRow, 22);
+
+  // ── Anchos de columna ────────────────────────────────────────
   ws.setColumnWidth(1, 240);
   ws.setColumnWidth(2, 140);
   for (let i = 0; i < nombresDietas.length; i++) ws.setColumnWidth(3+i, 110);
   ws.setFrozenRows(4);
+}
+
+// ── Alertas diarias de stock crítico ────────────
+// enviarAlertaStock(): revisa el stock y envía un correo si hay
+// insumos sin stock, críticos o con menos de 7 días de cobertura.
+// crearTriggerAlertaDiaria(): ejecutar UNA VEZ desde el editor
+// para programar el envío automático todos los días a las 7 am.
+// Destinatario: clave "email_alertas" en la hoja CONFIG;
+// si no existe, se usa el correo del dueño del script.
+
+function crearTriggerAlertaDiaria() {
+  ScriptApp.getProjectTriggers()
+    .filter(t => t.getHandlerFunction() === "enviarAlertaStock")
+    .forEach(t => ScriptApp.deleteTrigger(t));
+  ScriptApp.newTrigger("enviarAlertaStock")
+    .timeBased().everyDays(1).atHour(7).create();
+}
+
+function enviarAlertaStock() {
+  const stock = getStockActual();
+  if (!stock.ok) return;
+
+  const alertas = stock.data.filter(m =>
+    m.estado === "SIN STOCK" || m.estado === "CRÍTICO" ||
+    (typeof m.dias_stock === "number" && m.dias_stock < 7)
+  );
+  if (!alertas.length) return; // sin alertas no se envía correo
+
+  const severidad = { "SIN STOCK": 0, "CRÍTICO": 1, "BAJO": 2, "OK": 3 };
+  alertas.sort((a, b) => (severidad[a.estado] ?? 9) - (severidad[b.estado] ?? 9));
+
+  // OC pendientes por código — para saber si la reposición ya está en camino
+  const pendientes = {};
+  getOrdenes().data.filter(o => o.estado === "PENDIENTE")
+    .forEach(o => { pendientes[o.codigo] = (pendientes[o.codigo] || 0) + (parseFloat(o.cantidad) || 0); });
+
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  const cfg = {};
+  const wsCfg = ss.getSheetByName("CONFIG");
+  if (wsCfg && wsCfg.getLastRow() > 2) {
+    wsCfg.getRange(3, 1, wsCfg.getLastRow() - 2, 2).getValues()
+      .forEach(([k, v]) => { if (k) cfg[String(k).trim()] = String(v); });
+  }
+  const destinatario = cfg.email_alertas || Session.getEffectiveUser().getEmail();
+  const planta = cfg.planta || "Planta de alimentos";
+
+  const colores = { "SIN STOCK": "#CC0000", "CRÍTICO": "#E07C00", "BAJO": "#B5A300" };
+  const filas = alertas.map(m => `
+    <tr>
+      <td style="padding:8px 12px;border-bottom:1px solid #ddd"><b>${m.nombre}</b></td>
+      <td style="padding:8px 12px;border-bottom:1px solid #ddd;text-align:right">${m.stock.toLocaleString("es-CL")} kg</td>
+      <td style="padding:8px 12px;border-bottom:1px solid #ddd;text-align:right">${m.stock_min.toLocaleString("es-CL")} kg</td>
+      <td style="padding:8px 12px;border-bottom:1px solid #ddd;text-align:right">${m.dias_stock === "N/D" ? "—" : m.dias_stock + " días"}</td>
+      <td style="padding:8px 12px;border-bottom:1px solid #ddd;text-align:center;color:${colores[m.estado] || "#333"};font-weight:bold">${m.estado}</td>
+      <td style="padding:8px 12px;border-bottom:1px solid #ddd;text-align:right">${pendientes[m.codigo] ? pendientes[m.codigo].toLocaleString("es-CL") + " kg" : "—"}</td>
+    </tr>`).join("");
+
+  const htmlBody = `
+    <div style="font-family:Arial,sans-serif;max-width:680px">
+      <h2 style="color:#1B4332">⚠ Alerta de stock — ${planta}</h2>
+      <p>${alertas.length} insumo(s) requieren atención (sin stock, bajo el mínimo o con menos de 7 días de cobertura):</p>
+      <table style="border-collapse:collapse;width:100%;font-size:14px">
+        <tr style="background:#1B4332;color:#fff">
+          <th style="padding:8px 12px;text-align:left">Insumo</th>
+          <th style="padding:8px 12px;text-align:right">Stock</th>
+          <th style="padding:8px 12px;text-align:right">Mínimo</th>
+          <th style="padding:8px 12px;text-align:right">Cobertura</th>
+          <th style="padding:8px 12px">Estado</th>
+          <th style="padding:8px 12px;text-align:right">OC pendiente</th>
+        </tr>
+        ${filas}
+      </table>
+      <p style="color:#666;font-size:12px;margin-top:16px">
+        Cobertura calculada con el plan de producción de los próximos 7 días.
+        Correo generado automáticamente por el Sistema de Inventario AviVet.
+      </p>
+    </div>`;
+
+  MailApp.sendEmail({
+    to: destinatario,
+    subject: `⚠ Stock: ${alertas.length} insumo(s) por reponer — ${planta}`,
+    htmlBody: htmlBody
+  });
 }
 
 function getDashboard() {
@@ -913,6 +1094,166 @@ function getPlanificacion(body) {
 }
 
 // ──────────────────────────────────────────────
+// STOCK TEÓRICO
+// ──────────────────────────────────────────────
+
+// Calcula el stock teórico para una fecha dada:
+//   Para cada MP, busca su último conteo físico <= fecha
+//   Resta todo el consumo planificado entre ese conteo y la fecha
+//   Persiste el resultado en la hoja STOCK_TEORICO
+function calcularYGuardarStockTeorico(params) {
+  const fecha = params.fecha || Utilities.formatDate(new Date(), "America/Santiago", "yyyy-MM-dd");
+  const ss    = SpreadsheetApp.openById(SHEET_ID);
+
+  // 1 — Último conteo físico por MP (cualquier fecha <= fecha)
+  const wsConteos = ss.getSheetByName("CONTEOS_FISICOS");
+  const ultimoConteo = {}; // { cod: { fecha, cantidad } }
+  if (wsConteos && wsConteos.getLastRow() > 2) {
+    wsConteos.getRange(3, 1, wsConteos.getLastRow() - 2, 8).getValues()
+      .filter(r => r[0] && r[1])
+      .forEach(r => {
+        const f   = normFecha(r[1]);
+        const cod = String(r[3] || "").trim();
+        const kg  = parseFloat(r[5]) || 0;
+        if (f <= fecha && cod) {
+          if (!ultimoConteo[cod] || f > ultimoConteo[cod].fecha ||
+              (f === ultimoConteo[cod].fecha && String(r[2]) > ultimoConteo[cod].hora)) {
+            ultimoConteo[cod] = { fecha: f, hora: String(r[2] || ""), cantidad: kg };
+          }
+        }
+      });
+  }
+
+  // 2 — Plan de producción: sumar consumo por MP desde (ultimo_conteo + 1 día) hasta fecha
+  const recetasRes = getRecetas();
+  const recetas = recetasRes.ok && Object.keys(recetasRes.data).length
+    ? recetasRes.data
+    : Object.fromEntries(Object.entries(RECETAS).map(([k, v]) => [k, v]));
+
+  const consumoAcum = {}; // { cod: kg }
+  const wsPlan = ss.getSheetByName("PLANIFICACION");
+  if (wsPlan && wsPlan.getLastRow() > 2) {
+    wsPlan.getRange(3, 1, wsPlan.getLastRow() - 2, 3).getValues()
+      .filter(r => r[0] && r[2] > 0)
+      .forEach(r => {
+        const fPlan = normFecha(r[0]);
+        if (fPlan > fecha) return; // solo hasta la fecha objetivo
+        const dieta = String(r[1] || "").trim();
+        const kgDia = parseFloat(r[2]) || 0;
+        const rec   = recetas[dieta];
+        if (!rec) return;
+        Object.entries(rec.insumos || {}).forEach(([cod, prop]) => {
+          const uc = ultimoConteo[cod];
+          // Solo contar producción DESPUÉS del último conteo y HASTA la fecha objetivo
+          if (uc && fPlan > uc.fecha && fPlan <= fecha) {
+            consumoAcum[cod] = (consumoAcum[cod] || 0) + kgDia * (prop / 1000);
+          }
+        });
+      });
+  }
+
+  // 3 — Construir resultado
+  const mpsActivas = MATERIAS_PRIMAS.filter(([,, , g]) => g !== "Envases");
+  const resultado  = [];
+  mpsActivas.forEach(([cod, nombre]) => {
+    const uc     = ultimoConteo[cod];
+    if (!uc) return; // sin conteo previo, no se puede calcular
+    const consumo = Math.round((consumoAcum[cod] || 0) * 10) / 10;
+    const teorico = Math.round((uc.cantidad - consumo) * 10) / 10;
+    resultado.push({ cod, nombre, fecha_conteo: uc.fecha, stock_conteo: uc.cantidad, consumo, teorico });
+  });
+
+  // 4 — Persistir en hoja STOCK_TEORICO (reemplaza filas de esa fecha)
+  let wsTeor = ss.getSheetByName("STOCK_TEORICO");
+  if (!wsTeor) { crearHojaStockTeorico(ss); wsTeor = ss.getSheetByName("STOCK_TEORICO"); }
+
+  // Borrar filas previas para esta fecha (sin destruir encabezados)
+  if (wsTeor.getLastRow() > 2) {
+    const existing = wsTeor.getRange(3, 1, wsTeor.getLastRow() - 2, 1).getValues();
+    const toDelete = [];
+    existing.forEach((r, i) => { if (normFecha(r[0]) === fecha) toDelete.push(i + 3); });
+    for (let i = toDelete.length - 1; i >= 0; i--) wsTeor.deleteRow(toDelete[i]);
+  }
+
+  // Obtener conteos reales de ese día (para comparar en la misma pasada)
+  const conteosReales = {};
+  if (wsConteos && wsConteos.getLastRow() > 2) {
+    wsConteos.getRange(3, 1, wsConteos.getLastRow() - 2, 8).getValues()
+      .filter(r => r[0] && normFecha(r[1]) === fecha)
+      .forEach(r => {
+        const cod = String(r[3] || "").trim();
+        const kg  = parseFloat(r[5]) || 0;
+        if (cod) conteosReales[cod] = kg;
+      });
+  }
+
+  const ts = Utilities.formatDate(new Date(), "America/Santiago", "yyyy-MM-dd HH:mm");
+  resultado.forEach(r => {
+    const real = conteosReales[r.cod] !== undefined ? conteosReales[r.cod] : "";
+    const diff = real !== "" ? Math.round((real - r.teorico) * 10) / 10 : "";
+    wsTeor.appendRow([fecha, r.cod, r.nombre, r.fecha_conteo, r.stock_conteo, r.consumo, r.teorico, real, diff, ts]);
+  });
+
+  SpreadsheetApp.flush();
+  return { ok: true, fecha, data: resultado, n: resultado.length,
+           msg: `Stock teórico calculado para ${fecha}: ${resultado.length} insumos` };
+}
+
+// Lee la hoja STOCK_TEORICO para una fecha y agrega conteos reales si existen
+function getStockTeorico(params) {
+  const fecha = params.fecha || "";
+  const ss    = SpreadsheetApp.openById(SHEET_ID);
+  const ws    = ss.getSheetByName("STOCK_TEORICO");
+  if (!ws || ws.getLastRow() < 3) return { ok: true, data: [], calculado: false };
+
+  const rows = ws.getRange(3, 1, ws.getLastRow() - 2, 10).getValues()
+    .filter(r => r[0] && (!fecha || normFecha(r[0]) === fecha));
+
+  if (!rows.length) return { ok: true, data: [], calculado: false };
+
+  // Conteos reales del día (actualiza por si hubo conteos después de calcular)
+  const wsConteos = ss.getSheetByName("CONTEOS_FISICOS");
+  const conteosReales = {};
+  if (wsConteos && wsConteos.getLastRow() > 2) {
+    wsConteos.getRange(3, 1, wsConteos.getLastRow() - 2, 8).getValues()
+      .filter(r => r[0] && normFecha(r[1]) === fecha)
+      .forEach(r => {
+        const cod = String(r[3] || "").trim();
+        const kg  = parseFloat(r[5]) || 0;
+        if (cod) conteosReales[cod] = kg;
+      });
+  }
+
+  return {
+    ok: true,
+    calculado: true,
+    fecha,
+    data: rows.map(r => {
+      const cod     = String(r[1] || "");
+      const teorico = parseFloat(r[6]) || 0;
+      const real    = conteosReales[cod] !== undefined ? conteosReales[cod] : (r[7] !== "" ? parseFloat(r[7]) : null);
+      const diff    = real !== null ? Math.round((real - teorico) * 10) / 10 : null;
+      let estado = "Pendiente";
+      if (real !== null) {
+        const pct = teorico > 0 ? Math.abs(diff) / teorico * 100 : 0;
+        estado = pct <= 3 ? "OK" : pct <= 7 ? "Alerta" : (diff < 0 ? "Pérdida" : "Exceso");
+      }
+      return {
+        codigo:             cod,
+        nombre:             String(r[2] || ""),
+        fecha_ultimo_conteo: normFecha(r[3]),
+        stock_ultimo_conteo: parseFloat(r[4]) || 0,
+        consumo_produccion:  parseFloat(r[5]) || 0,
+        stock_teorico:       teorico,
+        conteo_real:         real,
+        diferencia:          diff,
+        estado
+      };
+    })
+  };
+}
+
+// ──────────────────────────────────────────────
 // UTILIDADES
 // ──────────────────────────────────────────────
 function columnToLetter(col) {
@@ -924,3 +1265,4 @@ function columnToLetter(col) {
   }
   return letter;
 }
+

@@ -135,6 +135,10 @@ tbody tr:hover{background:var(--acento-cl)}
 .eq-lbl{font-size:12px;font-weight:600;color:var(--tinta);margin:6px 0 2px}
 .eq-unit{font-size:11px;color:var(--tenue);font-variant-numeric:tabular-nums}
 .eq-nota{font-family:var(--fuente-m);font-size:10px;color:var(--tenue);margin-top:4px}
+.eq-ref-titulo{font-size:13px;font-weight:600;color:var(--prim);letter-spacing:.02em;
+  margin-bottom:8px;padding-bottom:6px;border-bottom:2px solid var(--acento)}
+.eq-ref-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;margin-top:16px}
+.eq-ref-nota{font-family:var(--fuente-m);font-size:11px;color:var(--tenue);margin-top:10px}
 
 /* ── Notas metodología ──────────────────────────────────────────────── */
 .nota-fuente{display:inline-block;font-family:var(--fuente-m);font-size:11px;color:var(--tenue);
@@ -158,6 +162,72 @@ tbody tr:hover{background:var(--acento-cl)}
 }
 .btn-exportar:hover{background:var(--acento);color:#1a1a1a}
 .btn-exportar svg{width:14px;height:14px;fill:currentColor;flex-shrink:0}
+
+/* ── Técnicas de alimentación ───────────────────────────────────────── */
+.alim-intro{background:var(--papel);border:1px solid var(--linea);border-left:4px solid var(--acento);
+  padding:20px 24px;margin-bottom:32px;font-size:15px;color:var(--suave);line-height:1.75;border-radius:0 4px 4px 0}
+.alim-intro strong{color:var(--prim)}
+.alim-objetivos{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:32px}
+.alim-obj{background:var(--papel);border:1px solid var(--linea);border-top:3px solid var(--prim);
+  padding:14px 16px;border-radius:0 0 4px 4px;font-size:13px;color:var(--suave);line-height:1.5}
+.alim-obj strong{display:block;font-size:12px;font-weight:600;color:var(--prim);letter-spacing:.04em;
+  text-transform:uppercase;margin-bottom:4px}
+.alim-texto{font-size:15px;color:var(--suave);line-height:1.8;margin-bottom:28px;max-width:80ch}
+.alim-texto p{margin-bottom:14px}
+.alim-subtitulo{font-family:var(--fuente-t);font-size:20px;font-weight:600;color:var(--prim);
+  margin:36px 0 16px;padding-bottom:8px;border-bottom:1px solid var(--linea)}
+/* diagrama flujo */
+.flujo-wrap{background:var(--papel);border:1px solid var(--linea);padding:28px 24px;border-radius:4px;overflow-x:auto}
+.flujo-timeline{display:flex;align-items:stretch;min-width:640px;height:64px;border-radius:6px;overflow:hidden;border:1px solid var(--linea-f)}
+.flujo-seg{display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:11px;
+  font-weight:600;text-align:center;padding:6px 4px;line-height:1.3;border-right:1px solid rgba(0,0,0,.08)}
+.flujo-seg:last-child{border-right:none}
+.flujo-noche{background:#2c3e50;color:rgba(255,255,255,.7);flex:1.2}
+.flujo-manana{background:#e8f5e9;color:var(--prim);flex:1.5}
+.flujo-medio{background:var(--fondo);color:var(--tenue);flex:2;font-style:italic}
+.flujo-tarde{background:#fff8e1;color:#7c5800;flex:2}
+.flujo-apagado{background:#37474f;color:rgba(255,255,255,.8);flex:1}
+.flujo-noche2{background:#1a252f;color:rgba(255,255,255,.6);flex:1.2}
+.flujo-leyenda{display:flex;flex-wrap:wrap;gap:16px;margin-top:14px;font-size:12px;color:var(--suave)}
+.flujo-ley-item{display:flex;align-items:center;gap:6px}
+.flujo-ley-dot{width:12px;height:12px;border-radius:2px;flex-shrink:0}
+.flujo-nota{font-family:var(--fuente-m);font-size:11px;color:var(--tenue);margin-top:12px;line-height:1.6}
+.alim-regla{background:var(--acento-cl);border:1px solid #f0c84a;border-left:4px solid var(--acento);
+  padding:14px 20px;border-radius:0 4px 4px 0;font-size:14px;color:#5a3e00;margin:20px 0;font-weight:500}
+
+/* ── Programa de iluminación ────────────────────────────────────────── */
+.luz-regla{background:var(--prim);color:#fff;padding:14px 20px;border-radius:4px;font-size:14px;
+  font-weight:500;margin-bottom:12px;line-height:1.5}
+.luz-regla span{display:block;font-size:11px;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--acento);margin-bottom:4px}
+.luz-objetivos-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:28px}
+.luz-obj-bloque{background:var(--papel);border:1px solid var(--linea);padding:16px 18px}
+.luz-obj-bloque h4{font-family:var(--fuente-t);font-size:16px;font-weight:600;color:var(--prim);
+  margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid var(--acento)}
+.luz-obj-bloque ul{list-style:none;display:grid;gap:6px;font-size:13px;color:var(--suave)}
+.luz-obj-bloque li{padding-left:16px;position:relative}
+.luz-obj-bloque li::before{content:'·';position:absolute;left:4px;font-size:18px;color:var(--acento);top:-3px;font-weight:700}
+.luz-diagram-wrap{background:var(--papel);border:1px solid var(--linea);padding:20px 16px;
+  border-radius:4px;overflow-x:auto;margin-bottom:8px}
+.luz-diagram{min-width:460px}
+.luz-axis-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.luz-row-label-empty{width:52px;flex-shrink:0}
+.luz-axis-horas{flex:1;display:flex;justify-content:space-between;
+  font-family:var(--fuente-m);font-size:10px;color:var(--tenue);padding:0 2px}
+.luz-row-h-empty{width:38px;flex-shrink:0}
+.luz-row{display:flex;align-items:center;gap:8px;margin-bottom:2px}
+.luz-row-label{font-family:var(--fuente-m);font-size:10px;color:var(--suave);
+  width:52px;flex-shrink:0;text-align:right;padding-right:4px}
+.luz-barra{flex:1;height:16px;border-radius:2px}
+.luz-row-h{font-family:var(--fuente-m);font-size:10px;color:var(--tenue);
+  width:38px;flex-shrink:0;text-align:right}
+.luz-leyenda{display:flex;flex-wrap:wrap;gap:14px;font-size:12px;color:var(--suave);margin-top:10px}
+.luz-ley-item{display:flex;align-items:center;gap:6px}
+.luz-ley-dot{width:28px;height:10px;border-radius:2px;flex-shrink:0}
+.luz-fase-sep{font-size:10px;font-family:var(--fuente-m);color:var(--acento);
+  letter-spacing:.06em;text-transform:uppercase;margin:6px 0 4px;padding-left:56px}
+.luz-tabla-wrap{overflow-x:auto;margin-bottom:28px}
+.luz-tabla-wrap table{min-width:560px}
 
 /* ── Responsive ─────────────────────────────────────────────────────── */
 @media(max-width:900px){
@@ -255,6 +325,8 @@ tbody tr:hover{background:var(--acento-cl)}
     <button id="tab-crianza"      class="tab activo"  onclick="selTab('crianza')">Crianza</button>
     <button id="tab-postura"      class="tab"         onclick="selTab('postura')">Postura</button>
     <button id="tab-equipamiento" class="tab"         onclick="selTab('equipamiento')">Equipamiento</button>
+    <button id="tab-alimentacion" class="tab"         onclick="selTab('alimentacion')">Alimentación</button>
+    <button id="tab-iluminacion"  class="tab"         onclick="selTab('iluminacion')">Iluminación</button>
   </div>
 
   <!-- ─── PANEL CRIANZA ────────────────────────────────────────────── -->
@@ -272,6 +344,8 @@ tbody tr:hover{background:var(--acento-cl)}
       <div class="tabla-wrap">
         <table id="tabla-crianza"><thead></thead><tbody></tbody></table>
       </div>
+
+      <div id="crianza-amb-section" style="margin-top:28px"></div>
     </section>
   </div>
 
@@ -316,6 +390,253 @@ tbody tr:hover{background:var(--acento-cl)}
         <h3>Postura</h3>
         <div id="eq-postura"></div>
       </div>
+
+      <div class="eq-seccion" style="margin-top:40px">
+        <h3>Referencia por etapa — Crianza (piso)</h3>
+        <p class="bloque-desc" style="font-size:13px;margin-bottom:4px">
+          Estándares aplicables a todas las líneas genéticas. Fase de postura se agregará próximamente.
+        </p>
+
+        <div class="eq-ref-grid" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr))">
+
+          <!-- Ventilación y Densidad -->
+          <div>
+            <div class="eq-ref-titulo">Ventilación y Densidad</div>
+            <div class="tabla-wrap" style="max-height:none">
+              <table>
+                <thead>
+                  <tr><th style="text-align:left">Parámetro</th><th>0–2 sem</th><th>2–5 sem</th><th>5–10 sem</th><th>10–17 sem</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td style="text-align:left">Ventilación mínima</td><td>0,7 m³/h/kg</td><td>0,7 m³/h/kg</td><td>0,7 m³/h/kg</td><td>0,7 m³/h/kg</td></tr>
+                  <tr><td style="text-align:left">Capacidad ventilación</td><td>4 m³/h/kg</td><td>4 m³/h/kg</td><td>4 m³/h/kg</td><td>4 m³/h/kg</td></tr>
+                  <tr><td style="text-align:left">Densidad (aves/m²)</td><td>30</td><td>20</td><td>15</td><td>10</td></tr>
+                  <tr><td style="text-align:left">Densidad (cm²/ave)</td><td>—</td><td>—</td><td>12</td><td>9</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Suministro de agua -->
+          <div>
+            <div class="eq-ref-titulo">Suministro de agua</div>
+            <div class="tabla-wrap" style="max-height:none">
+              <table>
+                <thead>
+                  <tr><th style="text-align:left">Equipamiento</th><th>0–2 sem</th><th>2–5 sem</th><th>5–10 sem</th><th>10–17 sem</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td style="text-align:left">Bebedero de arranque</td><td>75 aves</td><td>—</td><td>—</td><td>—</td></tr>
+                  <tr><td style="text-align:left">Bebedero</td><td>75 aves</td><td>75 aves</td><td>100 aves</td><td>100 aves</td></tr>
+                  <tr><td style="text-align:left">Tetina (nipple)</td><td>10 aves</td><td>10 aves</td><td>9 aves</td><td>8 aves</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Suministro de alimento -->
+          <div>
+            <div class="eq-ref-titulo">Suministro de alimento</div>
+            <div class="tabla-wrap" style="max-height:none">
+              <table>
+                <thead>
+                  <tr><th style="text-align:left">Equipamiento</th><th>0–2 sem</th><th>2–5 sem</th><th>5–10 sem</th><th>10–17 sem</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td style="text-align:left">Comedero de arranque</td><td>50 aves</td><td>—</td><td>—</td><td>—</td></tr>
+                  <tr><td style="text-align:left">Cadena (cm/ave)</td><td>4</td><td>4</td><td>5</td><td>7</td></tr>
+                  <tr><td style="text-align:left">Comedero redondo</td><td>35 aves</td><td>35 aves</td><td>25 aves</td><td>23 aves</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Comedero redondo — capacidad por diámetro -->
+          <div>
+            <div class="eq-ref-titulo">Comedero redondo — capacidad</div>
+            <div class="tabla-wrap" style="max-height:none">
+              <table>
+                <thead>
+                  <tr><th>Diámetro (cm)</th><th>Aves/comedero (máx)</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>30</td><td>38</td></tr>
+                  <tr><td>40</td><td>50</td></tr>
+                  <tr><td>50</td><td>63</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+        <p class="eq-ref-nota">Fuente: estándares de manejo — todas las líneas genéticas (sistema piso). La cría a elevadas densidades requiere especial atención en los primeros días.</p>
+      </div>
+
+    </section>
+  </div>
+
+  <div id="panel-alimentacion" style="display:none">
+    <section id="alimentacion" class="bloque">
+      <h2>Técnicas de alimentación</h2>
+      <p class="bloque-desc">Manejo del programa de alimentación desde la semana 5 hasta las 16 semanas de vida.</p>
+
+      <!-- Objetivos -->
+      <div class="alim-objetivos">
+        <div class="alim-obj"><strong>Objetivo 1</strong>Evitar la acumulación de finos en el sistema de alimentación</div>
+        <div class="alim-obj"><strong>Objetivo 2</strong>Fomentar el desarrollo del buche mediante un consumo rápido</div>
+      </div>
+
+      <!-- Bloque introductorio -->
+      <div class="alim-intro">
+        Las aves son granívoras por naturaleza, por lo que tienen afinidad por las partículas gruesas. Con los finos les cuesta más,
+        por lo que gastan más energía para consumir lo mismo. La acumulación de finos en el sistema de alimentación tiene como
+        resultado que coman menos de lo que necesitan.
+      </div>
+
+      <!-- Texto principal -->
+      <div class="alim-texto">
+        <p>El manejo del alimento en la cría afecta al consumo en la puesta. El objetivo es el desarrollo del tracto digestivo en la recría
+        para que en la puesta puedan comer lo que necesitarán, especialmente tras el traslado, cuando el consumo debe aumentar
+        mucho en pocas semanas.</p>
+
+        <p>El buche es el órgano de almacenaje de alimento. Permite al ave ingerir bastante al final del día para las necesidades
+        energéticas nocturnas. Una ingesta rápida durante la cría fomenta el desarrollo del buche. Conseguir que coman suficientemente
+        rápido dependerá de la frecuencia de alimentación y la textura del alimento. Así se aprovecha la tendencia de los animales de
+        comer al inicio y al final del día, persiguiendo mantener los comederos vacíos a mitad del día.</p>
+
+        <p>Se recomienda el uso de sistemas de alimentación que distribuyan el alimento rápidamente y que permitan a las aves
+        terminarlo cada día. Esto fomenta el desarrollo de su capacidad de ingestión y evita la acumulación de finos. Los mejores
+        son los comederos alimentados con sistemas rápidos de cadena, pues permiten un buen control. Si se usan platos o
+        comederos de tolva, deben adaptarse a estas técnicas de alimentación.</p>
+
+        <p>La presentación en <strong>partículas gruesas</strong> facilita el desarrollo de la molleja.</p>
+      </div>
+
+      <div class="alim-regla">
+        Para asegurar que las aves ingieren todos los nutrientes que necesitan, deben <strong>vaciar los comederos diariamente desde la semana 5</strong> en adelante. Esta regla se aplica tanto a pollitas como a ponedoras.
+      </div>
+
+      <!-- Diagrama flujo -->
+      <div class="alim-subtitulo">Manejo de la distribución del alimento en la recría</div>
+
+      <div class="flujo-wrap">
+        <div class="flujo-timeline">
+          <div class="flujo-seg flujo-noche">🌙<br>Noche<br><span style="font-weight:400;font-size:10px">comederos vacíos</span></div>
+          <div class="flujo-seg flujo-manana">🌅 Encendido<br>40% ración<br><span style="font-weight:400;font-size:10px">(opcional)</span></div>
+          <div class="flujo-seg flujo-medio">· · · Mediodía · · ·<br><span style="font-size:10px">comederos vacíos</span></div>
+          <div class="flujo-seg flujo-tarde">☀️ Tarde<br><strong>60% ración</strong><br><span style="font-weight:400;font-size:10px">2–3 h antes apagado</span></div>
+          <div class="flujo-seg flujo-apagado">🌆<br>Apagado<br><span style="font-weight:400;font-size:10px">luces</span></div>
+          <div class="flujo-seg flujo-noche2">🌙<br>Noche<br><span style="font-weight:400;font-size:10px">vacíos ≥1–1,5 h</span></div>
+        </div>
+        <div class="flujo-leyenda">
+          <div class="flujo-ley-item"><div class="flujo-ley-dot" style="background:#e8f5e9;border:1px solid #a5d6a7"></div>40% ración al encendido de luces (opcional)</div>
+          <div class="flujo-ley-item"><div class="flujo-ley-dot" style="background:#fff8e1;border:1px solid #ffe082"></div>60% ración en la tarde (distribución principal)</div>
+          <div class="flujo-ley-item"><div class="flujo-ley-dot" style="background:#2c3e50"></div>Comederos vacíos (noche y mediodía)</div>
+        </div>
+        <p class="flujo-nota">
+          · Rutina iniciable entre las semanas 4 y 8 según el sistema de alimentación.<br>
+          · El tiempo con comederos vacíos debe incrementarse gradualmente: a las 10–12 semanas, vacíos al menos 2–3 h/día.<br>
+          · Se pueden hacer 2 distribuciones por la tarde, siempre que el intervalo entre repartos sea corto.<br>
+          · Plateau de luz: 12 horas.
+        </p>
+      </div>
+
+    </section>
+  </div>
+
+  <div id="panel-iluminacion" style="display:none">
+    <section id="iluminacion" class="bloque">
+      <h2>Programa de iluminación</h2>
+      <p class="bloque-desc">Manejo de la luz en recría y puesta para controlar la madurez sexual y el consumo de alimento.</p>
+
+      <!-- Reglas básicas -->
+      <div class="luz-regla"><span>Regla 1</span>No incrementar la duración de la luz en recría antes del momento de la estimulación de las aves.</div>
+      <div class="luz-regla" style="margin-bottom:28px"><span>Regla 2</span>No reducir la duración de la luz en fase de puesta.</div>
+
+      <!-- Texto principal -->
+      <div class="alim-texto">
+        <p>Las pollitas son sensibles a los cambios de luz, y estos afectan la edad de su madurez sexual. Además, el consumo de alimento se ve muy afectado por la duración del día. En la recría, el principal objetivo del programa de iluminación es que las aves crezcan controlando la aparición de su madurez sexual.</p>
+        <p>Los programas de iluminación deberían adaptarse a las instalaciones (naves abiertas o cerradas), las condiciones de producción, el clima y el perfil de peso del huevo deseado.</p>
+        <p><strong>El momento de la estimulación luminosa debe basarse siempre en el peso vivo, no en la edad.</strong> Si se hace prematuramente (peso vivo bajo) puede conllevar unos malos resultados en la fase de puesta (menor pico y persistencia), además de mayor mortalidad y peor calidad de la cáscara.</p>
+        <p>Las primeras semanas de recría, se recomienda un programa decreciente de la duración de la luz para maximizar el crecimiento, seguido de un periodo de duración constante de la luz (meseta). La velocidad de reducción y las horas de luz en la meseta dependerán de la estirpe, sus resultados de crecimiento, el clima, el momento en que se espera la madurez sexual y el perfil de peso del huevo deseado.</p>
+      </div>
+
+      <!-- Objetivos -->
+      <div class="luz-objetivos-grid">
+        <div class="luz-obj-bloque">
+          <h4>En recría</h4>
+          <ul>
+            <li>Fomentar el desarrollo temprano, el crecimiento y el consumo</li>
+            <li>Controlar la madurez sexual de las aves</li>
+          </ul>
+        </div>
+        <div class="luz-obj-bloque">
+          <h4>En puesta</h4>
+          <ul>
+            <li>Fomentar el crecimiento y el inicio de la puesta</li>
+            <li>Contrarrestar los efectos negativos de un día natural decreciente</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Naves abiertas -->
+      <div class="alim-subtitulo">Naves abiertas y semicerradas</div>
+      <div class="alim-texto">
+        <p>Cuando las pollitas se recrían en naves con sistema abierto, el control de la madurez sexual es más complejo. Se recomienda oscurecer la nave y utilizar programas que consideren la duración del día natural en el momento del traslado.</p>
+        <p><strong>La regla de oro es que la duración total de la luz en la fase de meseta nunca debe ser menor que el día más largo entre el periodo que va de las 6 semanas de vida hasta el traslado.</strong></p>
+        <p>Las naves en que la luz que entra del exterior supera los 0,5 lux deberían considerarse semicerradas. A fin de conseguir una fotoestimulación efectiva y evitar que las aves maduren sexualmente de forma prematura, el programa de iluminación debería considerar la duración del día natural cuando las aves tengan 16 semanas.</p>
+        <p>El traslado de aves de naves semicerradas a naves con ventanas puede conllevar un avance de la madurez sexual. Para reducirlo, se recomienda trabajar con una intensidad de luz mayor en recría (40 lux) o incrementarla gradualmente las últimas semanas. El traslado de una nave abierta o semicerrada a una nave cerrada ralentiza la madurez sexual y retrasa el inicio de la puesta — en estas circunstancias es necesario mantener la duración e intensidad de la luz equivalente al día natural al traslado y reajustarla gradualmente una vez completada la transferencia.</p>
+      </div>
+
+      <div class="alim-regla">
+        Puntos clave en naves abiertas: (1) La estimulación efectiva es más difícil cuando el día natural es más largo. (2) En recría, la fotoestimulación es más efectiva si la luz se añade al final del día. (3) Al inicio de la puesta, añadir luz por la mañana <em>y</em> por la tarde mejora el reparto de aves en los nidos.
+      </div>
+
+      <!-- Tabla programa -->
+      <div class="alim-subtitulo">Programa de iluminación — producción alternativa</div>
+      <p class="bloque-desc" style="font-size:13px;margin-bottom:12px">Horas de luz recomendadas según la duración del día natural a las 16 semanas de edad.</p>
+      <div class="luz-tabla-wrap">
+        <div class="tabla-wrap" style="max-height:none">
+          <table>
+            <thead>
+              <tr>
+                <th style="text-align:left">Edad y/o peso</th>
+                <th>10 h</th><th>11 h</th><th>12 h</th><th>13 h</th><th>≥14 h</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td style="text-align:left">1–3 días</td><td>23</td><td>23</td><td>23</td><td>23</td><td>23</td></tr>
+              <tr><td style="text-align:left">4–7 días</td><td>22</td><td>22</td><td>22</td><td>22</td><td>22</td></tr>
+              <tr><td style="text-align:left">8–14 días</td><td>20</td><td>20</td><td>20</td><td>20</td><td>20</td></tr>
+              <tr><td style="text-align:left">15–21 días</td><td>18</td><td>18</td><td>18</td><td>18</td><td>18</td></tr>
+              <tr><td style="text-align:left">22–28 días</td><td>16</td><td>16</td><td>16</td><td>16</td><td>16</td></tr>
+              <tr><td style="text-align:left">29–35 días</td><td>14</td><td>14</td><td>14</td><td>14</td><td>15</td></tr>
+              <tr><td style="text-align:left">36–42 días</td><td>12</td><td>13</td><td>13</td><td>13:30</td><td>14</td></tr>
+              <tr><td style="text-align:left">43–49 días</td><td>11</td><td>12</td><td>12:30</td><td>13</td><td>14</td></tr>
+              <tr><td style="text-align:left">Días decrecientes: 49d → estimulación</td><td>10</td><td colspan="4" style="color:var(--tenue);font-style:italic">Luz natural</td></tr>
+              <tr><td style="text-align:left">Días crecientes: 49d → estimulación</td><td>10</td><td>11</td><td>12</td><td>13</td><td>14</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Diagrama visual -->
+      <div class="alim-subtitulo">Ejemplo: ponedoras marrones — día natural 10 h a las 16 semanas</div>
+      <div class="luz-diagram-wrap">
+        <div id="luz-diagram" class="luz-diagram"></div>
+      </div>
+
+      <!-- 5.4 Intensidad -->
+      <div class="alim-subtitulo">5.4 Intensidad luminosa</div>
+      <div class="alim-texto">
+        <p>La intensidad luminosa es un factor importante los primeros días de cría, pues anima a las aves a explorar su ambiente y a encontrar con rapidez agua y alimento. Más tarde puede reducirse gradualmente hasta un nivel que en la práctica depende de: la luz necesaria para inspeccionar las aves, el grado de oscuridad de la nave y la intensidad luminosa que tendrán en puesta.</p>
+        <p>Existe una fuerte relación entre intensidad luminosa, actividad física y problemas de emplume y picaje. Una elevada intensidad incrementa el nerviosismo de las aves y fomenta la mortalidad por picaje de cloaca. El riesgo es mayor a elevadas densidades de alojamiento.</p>
+        <p>Hoy día se suele mantener la intensidad relativamente alta, pues ayuda en el desarrollo, y solo se reduce si se observan problemas. Así se dispone de una herramienta para combatir los problemas de picaje si aparecen.</p>
+      </div>
+      <div class="alim-intro">
+        La intensidad luminosa necesaria para la puesta es relativamente baja, <strong>5–10 lux</strong>, y no es necesario aumentarla para conseguir una fotoestimulación efectiva. Sin embargo, una intensidad ligeramente superior al inicio de la puesta puede estimular el consumo de alimento si es necesario. Conseguir una <strong>distribución uniforme</strong> de la intensidad de la luz también es muy importante.
+      </div>
+
     </section>
   </div>
 

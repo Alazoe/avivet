@@ -802,6 +802,34 @@ const LINEAS = {
       [96,   1.7, 42.0, 52.7, 3.6], [97,   1.7, 41.8, 52.8, 3.6], [98,   1.7, 41.7, 53.0, 3.7],
       [99,   1.7, 41.5, 53.1, 3.7], [100,  1.6, 41.3, 53.3, 3.8],
     ],
+    // temperatura, humedad e iluminación crianza — Hendrix Genetics, Guía Sistemas Alternativos
+    // columnas: [Edad, T.Calefactor, T.2-3m calef., T.Ambiente, Humedad relativa%]
+    crianzaAmb: {
+      fuente: 'Hendrix Genetics — Guía de Manejo Sistemas Alternativos (Dekalb / ISA)',
+      sistema: 'piso',
+      columnas: ['Edad', 'T. Calefactor (°C)', 'T. 2–3m calef. (°C)', 'T. Ambiente (°C)', 'Humedad (%)'],
+      periodos: [
+        ['0–3 días',    '35',  '29–28', '32–33', '55–60'],
+        ['4–7 días',    '34',  '28–27', '32–31', '55–60'],
+        ['8–14 días',   '32',  '27–26', '30–28', '55–60'],
+        ['15–21 días',  '29',  '26–25', '28–26', '55–60'],
+        ['22–24 días',  '—',   '25–23', '25–23', '55–65'],
+        ['25–28 días',  '—',   '23–21', '23–21', '55–65'],
+        ['29–35 días',  '—',   '21–19', '21–19', '60–70'],
+        ['Pasados 35',  '—',   '19–17', '19–17', '60–70'],
+      ],
+    },
+    // sección 4.4 técnica de alimentación — Hendrix Genetics, Guía Sistemas Alternativos
+    tecnicaAlimentacion: {
+      fuente: 'Hendrix Genetics — Guía de Manejo, Sección 4.4 · Técnicas de alimentación',
+      puntos: [
+        'Vaciar comederos diariamente desde la semana 5 para que las aves ingieran todos los nutrientes.',
+        'Distribuir el 60% de la ración en la tarde, 2–3 h antes del apagado de luces; 40% restante al encendido.',
+        'El tiempo con comederos vacíos debe aumentar gradualmente: a las 10–12 sem., vacíos al menos 2–3 h/día.',
+        'Presentar el alimento en partículas gruesas para estimular el desarrollo del buche (molleja).',
+        'Las aves son granívoras: las partículas gruesas favorecen un consumo rápido y reducen la acumulación de finos.',
+      ],
+    },
   },
 };
 
@@ -841,10 +869,99 @@ function cambiarAves() {
 
 function selTab(tab) {
   tabActual = tab;
-  ['crianza','postura','equipamiento'].forEach(t => {
+  ['crianza','postura','equipamiento','alimentacion','iluminacion'].forEach(t => {
     document.getElementById('tab-' + t).classList.toggle('activo', t === tab);
     document.getElementById('panel-' + t).style.display = t === tab ? '' : 'none';
   });
+  if (tab === 'iluminacion') renderLuzDiagram();
+}
+
+// ── DIAGRAMA PROGRAMA DE ILUMINACIÓN ──────────────────────────────────
+const LUZ_PROGRAMA = [
+  { sem:  1, horas: 23, fase: 'inicio',       label: 'Sem 1'  },
+  { sem:  2, horas: 20, fase: 'inicio',       label: 'Sem 2'  },
+  { sem:  3, horas: 18, fase: 'inicio',       label: 'Sem 3'  },
+  { sem:  4, horas: 16, fase: 'inicio',       label: 'Sem 4'  },
+  { sem:  5, horas: 14, fase: 'descenso',     label: 'Sem 5'  },
+  { sem:  6, horas: 12, fase: 'descenso',     label: 'Sem 6'  },
+  { sem:  7, horas: 11, fase: 'descenso',     label: 'Sem 7'  },
+  { sem:  8, horas: 10, fase: 'meseta',       label: 'Sem 8'  },
+  { sem:  9, horas: 10, fase: 'meseta',       label: 'Sem 9'  },
+  { sem: 10, horas: 10, fase: 'meseta',       label: 'Sem 10' },
+  { sem: 11, horas: 10, fase: 'meseta',       label: 'Sem 11' },
+  { sem: 12, horas: 10, fase: 'meseta',       label: 'Sem 12' },
+  { sem: 13, horas: 10, fase: 'meseta',       label: 'Sem 13' },
+  { sem: 14, horas: 10, fase: 'meseta',       label: 'Sem 14' },
+  { sem: 15, horas: 10, fase: 'meseta',       label: 'Sem 15' },
+  { sem: 16, horas: 10, fase: 'meseta',       label: 'Sem 16' },
+  { sem: 17, horas: 11, fase: 'estimulacion', label: 'Sem 17' },
+  { sem: 18, horas: 12, fase: 'estimulacion', label: 'Sem 18' },
+  { sem: 19, horas: 13, fase: 'estimulacion', label: 'Sem 19' },
+  { sem: 20, horas: 14, fase: 'estimulacion', label: 'Sem 20' },
+  { sem: 21, horas: 15, fase: 'estimulacion', label: 'Sem 21' },
+  { sem: 22, horas: 16, fase: 'puesta',       label: 'Sem 22' },
+  { sem: 23, horas: 16, fase: 'puesta',       label: 'Sem 23' },
+  { sem: 24, horas: 16, fase: 'puesta',       label: 'Sem 24' },
+];
+
+const FASE_COLORES = {
+  inicio:       { barra: '#ffd54f', texto: 'Inicio (descenso rápido)' },
+  descenso:     { barra: '#ffb300', texto: 'Descenso gradual'         },
+  meseta:       { barra: '#42a5f5', texto: 'Meseta (constante)'       },
+  estimulacion: { barra: '#66bb6a', texto: 'Estimulación luminosa'    },
+  puesta:       { barra: '#f0a500', texto: 'Puesta'                   },
+};
+
+const FASE_SEPARADORES = {
+  5:  'Descenso gradual',
+  8:  'Meseta (10 h constantes)',
+  17: 'Estimulación luminosa',
+  22: 'Puesta',
+};
+
+function renderLuzDiagram() {
+  const container = document.getElementById('luz-diagram');
+  if (!container || container.dataset.rendered) return;
+
+  const NOCHE = '#1e2a35';
+  const hLabels = ['00:00','03:00','06:00','09:00','12:00','15:00','18:00','21:00','24:00'];
+
+  let html = '';
+
+  // Eje de horas
+  html += `<div class="luz-axis-row">
+    <div class="luz-row-label-empty"></div>
+    <div class="luz-axis-horas">${hLabels.map(h => `<span>${h}</span>`).join('')}</div>
+    <div class="luz-row-h-empty"></div>
+  </div>`;
+
+  LUZ_PROGRAMA.forEach(row => {
+    if (FASE_SEPARADORES[row.sem]) {
+      html += `<div class="luz-fase-sep">— ${FASE_SEPARADORES[row.sem]}</div>`;
+    }
+    const startH = 12 - row.horas / 2;
+    const endH   = 12 + row.horas / 2;
+    const sp = (startH / 24 * 100).toFixed(1);
+    const ep = (endH   / 24 * 100).toFixed(1);
+    const col = FASE_COLORES[row.fase].barra;
+    const bg  = `linear-gradient(to right, ${NOCHE} 0%, ${NOCHE} ${sp}%, ${col} ${sp}%, ${col} ${ep}%, ${NOCHE} ${ep}%, ${NOCHE} 100%)`;
+    html += `<div class="luz-row">
+      <span class="luz-row-label">${row.label}</span>
+      <div class="luz-barra" style="background:${bg}" title="${row.horas} h luz"></div>
+      <span class="luz-row-h">${row.horas} h</span>
+    </div>`;
+  });
+
+  // Leyenda
+  html += `<div class="luz-leyenda">`;
+  html += `<div class="luz-ley-item"><div class="luz-ley-dot" style="background:${NOCHE}"></div>Oscuridad</div>`;
+  Object.entries(FASE_COLORES).forEach(([, v]) => {
+    html += `<div class="luz-ley-item"><div class="luz-ley-dot" style="background:${v.barra}"></div>${v.texto}</div>`;
+  });
+  html += `</div>`;
+
+  container.innerHTML = html;
+  container.dataset.rendered = '1';
 }
 
 // ── RENDER COMPLETO ────────────────────────────────────────────────────
@@ -891,6 +1008,60 @@ function renderCrianza() {
   }).join('');
   document.querySelector('#tabla-crianza thead').innerHTML = th;
   document.querySelector('#tabla-crianza tbody').innerHTML = filas;
+
+  renderCrianzaAmb();
+}
+
+// ── AMBIENTAL CRIANZA ──────────────────────────────────────────────────
+function renderCrianzaAmb() {
+  const sec = document.getElementById('crianza-amb-section');
+  if (!sec) return;
+  const L = LINEAS[lineaSel];
+  if (!L.crianzaAmb) { sec.innerHTML = ''; return; }
+
+  const amb = L.crianzaAmb;
+  const esJaula = amb.sistema === 'jaula';
+  const sistemaLabel = esJaula ? 'Sistema jaula' : 'Sistema piso (alternativo)';
+
+  // Columnas flexibles (si el manual tiene más columnas que el estándar)
+  let thead, filas;
+  if (amb.columnas) {
+    thead = `<tr>${amb.columnas.map(c => `<th>${c}</th>`).join('')}</tr>`;
+    filas = amb.periodos.map(p =>
+      `<tr>${p.map((v, i) => i === 0
+        ? `<td style="text-align:left;font-weight:500">${v}</td>`
+        : `<td>${v}</td>`).join('')}</tr>`
+    ).join('');
+  } else {
+    const thJaula = esJaula ? '<th>T. Jaula (°C)</th>' : '';
+    thead = `<tr><th>Edad</th>${thJaula}<th>T. Piso (°C)</th><th>Intensidad (lux)</th><th>Horas de luz</th></tr>`;
+    filas = amb.periodos.map(p => {
+      const [edad, tJaula, tPiso, lux, horas] = p;
+      const celJaula = esJaula ? `<td>${tJaula}</td>` : '';
+      return `<tr><td style="text-align:left;font-weight:500">${edad}</td>${celJaula}<td>${tPiso}</td><td>${lux}</td><td>${horas}</td></tr>`;
+    }).join('');
+  }
+
+  // Notas de alimentación si existen
+  const ta = L.tecnicaAlimentacion;
+  const notaAlim = ta ? `
+    <h3 style="font-family:var(--fuente-t);font-size:20px;font-weight:600;color:var(--prim);margin:28px 0 8px">
+      Técnica de alimentación en cría
+    </h3>
+    <span class="nota-fuente">${ta.fuente}</span>
+    <ul style="margin:10px 0 0 20px;line-height:1.9;font-size:14px;color:var(--suave)">
+      ${ta.puntos.map(p => `<li>${p}</li>`).join('')}
+    </ul>` : '';
+
+  sec.innerHTML = `
+    <h3 style="font-family:var(--fuente-t);font-size:20px;font-weight:600;color:var(--prim);margin-bottom:10px">
+      Temperatura${amb.columnas ? ', humedad' : ''} e iluminación crianza
+    </h3>
+    <span class="nota-fuente">${amb.fuente} · ${sistemaLabel}</span>
+    <div class="tabla-wrap" style="margin-top:12px">
+      <table><thead>${thead}</thead><tbody>${filas}</tbody></table>
+    </div>
+    ${notaAlim}`;
 }
 
 // ── POSTURA ────────────────────────────────────────────────────────────
@@ -1161,6 +1332,20 @@ function exportarExcel() {
     const mS = mC ? mortSem(mC, i) : null;
     crianzaData.push([r[0], r[1], r[2], r[3], r[4], r[5], r[6], ...(mC ? [mS, mA] : [])]);
   });
+  // Tabla ambiental al final de la hoja Crianza
+  if (L.crianzaAmb) {
+    const amb = L.crianzaAmb;
+    const esJaula = amb.sistema === 'jaula';
+    crianzaData.push([], ['TEMPERATURA E ILUMINACIÓN CRIANZA'], ['Fuente:', amb.fuente]);
+    const hdrAmb = esJaula
+      ? ['Edad', 'T. Jaula (°C)', 'T. Piso (°C)', 'Intensidad (lux)', 'Horas de luz']
+      : ['Edad', 'T. Piso (°C)', 'Intensidad (lux)', 'Horas de luz'];
+    crianzaData.push(hdrAmb);
+    amb.periodos.forEach(p => {
+      const [edad, tJaula, tPiso, lux, horas] = p;
+      crianzaData.push(esJaula ? [edad, tJaula, tPiso, lux, horas] : [edad, tPiso, lux, horas]);
+    });
+  }
   const wsCrianza = XLSX.utils.aoa_to_sheet(crianzaData);
   wsCrianza['!cols'] = [8,14,14,22,22,22,22,...(mC ? [18,18] : [])].map(w => ({ wch: w }));
   XLSX.utils.book_append_sheet(wb, wsCrianza, 'Crianza');
