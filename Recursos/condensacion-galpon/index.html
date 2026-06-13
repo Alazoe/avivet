@@ -132,6 +132,10 @@ main{max-width:760px;margin:0 auto;padding:0 22px 90px;position:relative;z-index
   .entry{grid-template-columns:1fr;gap:6px;}
   .entry-no{font-size:38px;}
 }
+/* Láminas que rompen el ancho de la columna y usan más pantalla */
+.plate--wide{width:min(1140px,calc(100vw - 44px));margin-left:50%;transform:translateX(-50%);}
+.plate--wide .plate-frame{background:var(--paper2);}
+.plate-cap.wide-cap{max-width:760px;margin-left:auto;margin-right:auto;}
 </style>
 </head>
 <body>
@@ -152,7 +156,7 @@ main{max-width:760px;margin:0 auto;padding:0 22px 90px;position:relative;z-index
   </header>
 
   <!-- OPENING PLATE: la esponja en 3 etapas -->
-  <figure class="plate">
+  <figure class="plate plate--wide">
     <div class="plate-frame">
       <svg viewBox="0 0 900 400" style="width:100%;height:auto;display:block" role="img"
            aria-label="El aire como una esponja: caliente carga agua, al enfriarse se encoge y la suelta en gotas">
@@ -216,7 +220,7 @@ main{max-width:760px;margin:0 auto;padding:0 22px 90px;position:relative;z-index
         </g>
       </svg>
     </div>
-    <figcaption class="plate-cap">
+    <figcaption class="plate-cap wide-cap">
       Lám. I — El aire caliente carga agua como una esponja; al enfriarse se encoge y la suelta en gotas sobre techos y cama.
     </figcaption>
   </figure>
@@ -303,6 +307,80 @@ main{max-width:760px;margin:0 auto;padding:0 22px 90px;position:relative;z-index
       <p class="note"><span class="lbl">La señal típica</span>Verás la cama húmeda y apelmazada pegada a las paredes y bajo el techo, aunque el centro del galpón esté seco. Esa es la firma de la condensación.</p>
     </div>
   </article>
+
+  <!-- LÁMINA ANCHA: corte del galpón -->
+  <figure class="plate plate--wide">
+    <div class="plate-frame">
+      <svg viewBox="0 0 1100 470" style="width:100%;height:auto;display:block" role="img"
+           aria-label="Corte de un galpón: el aire tibio sube, condensa en el techo de zinc frío y la cama se moja en las orillas">
+        <defs>
+          <marker id="warm" markerWidth="9" markerHeight="9" refX="5.5" refY="3" orient="auto">
+            <path d="M0,0 L6,3 L0,6 Z" fill="#a8842e"/>
+          </marker>
+          <g id="hen">
+            <ellipse cx="0" cy="0" rx="22" ry="15" fill="#f5efe0" stroke="#6b6b6b" stroke-width="1.5"/>
+            <path d="M16,-4 L37,-19 L31,4 Z" fill="#f5efe0" stroke="#6b6b6b" stroke-width="1.5"/>
+            <circle cx="-17" cy="-15" r="8.5" fill="#f5efe0" stroke="#6b6b6b" stroke-width="1.5"/>
+            <circle cx="-21" cy="-24" r="3" fill="#c0392b"/><circle cx="-15" cy="-25" r="3" fill="#c0392b"/>
+            <path d="M-25,-14 L-33,-12 L-25,-10 Z" fill="#c9a84c"/>
+            <circle cx="-19" cy="-16" r="1.6" fill="#141414"/>
+            <line x1="-6" y1="14" x2="-6" y2="25" stroke="#6b6b6b" stroke-width="1.6"/>
+            <line x1="7" y1="14" x2="7" y2="25" stroke="#6b6b6b" stroke-width="1.6"/>
+          </g>
+        </defs>
+
+        <!-- afuera: frío -->
+        <text x="60" y="58" font-family="DM Sans, sans-serif" font-size="17" font-weight="600" fill="#2b6cb0">❄ Afuera: frío</text>
+        <text x="1040" y="58" text-anchor="end" font-family="DM Sans, sans-serif" font-size="17" font-weight="600" fill="#2b6cb0">frío ❄</text>
+
+        <!-- techo de zinc (banda) -->
+        <path d="M130,168 L550,78 L970,168 L970,192 L550,102 L130,192 Z"
+              fill="#b0bec5" stroke="#6b6b6b" stroke-width="1.5"/>
+        <text x="550" y="60" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="18" font-weight="600" fill="#3a3a3a">Techo de zinc frío</text>
+        <line x1="550" y1="66" x2="550" y2="86" stroke="#6b6b6b" stroke-width="1.2"/>
+
+        <!-- paredes -->
+        <line x1="146" y1="176" x2="146" y2="392" stroke="#cbb58a" stroke-width="8"/>
+        <line x1="954" y1="176" x2="954" y2="392" stroke="#cbb58a" stroke-width="8"/>
+
+        <!-- cama: centro seco, orillas húmedas -->
+        <rect x="150" y="390" width="804" height="30" fill="#dcc488"/>
+        <rect x="150" y="390" width="150" height="30" fill="#8a6a3b"/>
+        <rect x="804" y="390" width="150" height="30" fill="#8a6a3b"/>
+        <line x1="150" y1="390" x2="954" y2="390" stroke="#a8842e" stroke-width="1.5"/>
+
+        <!-- aire tibio y húmedo que sube -->
+        <path d="M360,360 C348,300 378,250 360,180" fill="none" stroke="#a8842e" stroke-width="3" marker-end="url(#warm)" opacity="0.9"/>
+        <path d="M560,360 C546,295 576,235 560,168" fill="none" stroke="#a8842e" stroke-width="3" marker-end="url(#warm)" opacity="0.9"/>
+        <path d="M760,360 C750,300 780,250 760,180" fill="none" stroke="#a8842e" stroke-width="3" marker-end="url(#warm)" opacity="0.9"/>
+        <text x="600" y="250" font-family="Fraunces, serif" font-style="italic" font-size="17" fill="#a8842e">el aire tibio y húmedo sube…</text>
+
+        <!-- gotas que condensan y caen en las orillas -->
+        <g fill="#2b6cb0">
+          <ellipse cx="205" cy="205" rx="4.5" ry="7"/><ellipse cx="222" cy="245" rx="4" ry="6.5"/>
+          <ellipse cx="198" cy="285" rx="4.5" ry="7"/><ellipse cx="215" cy="325" rx="4" ry="6.5"/>
+          <ellipse cx="205" cy="365" rx="3.5" ry="6"/>
+          <ellipse cx="895" cy="205" rx="4.5" ry="7"/><ellipse cx="878" cy="245" rx="4" ry="6.5"/>
+          <ellipse cx="902" cy="285" rx="4.5" ry="7"/><ellipse cx="885" cy="325" rx="4" ry="6.5"/>
+          <ellipse cx="895" cy="365" rx="3.5" ry="6"/>
+        </g>
+
+        <!-- aves -->
+        <use href="#hen" transform="translate(360,372)"/>
+        <use href="#hen" transform="translate(490,372)"/>
+        <use href="#hen" transform="translate(620,372)"/>
+        <use href="#hen" transform="translate(750,372)"/>
+
+        <!-- etiquetas de cama -->
+        <text x="225" y="445" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="15" font-weight="600" fill="#c0392b">Cama húmeda</text>
+        <text x="552" y="445" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="15" font-weight="600" fill="#2d6a4f">Centro más seco</text>
+        <text x="879" y="445" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="15" font-weight="600" fill="#c0392b">Cama húmeda</text>
+      </svg>
+    </div>
+    <figcaption class="plate-cap wide-cap">
+      Lám. II — El aire tibio sube, condensa en el zinc frío y gotea en las orillas: por eso la cama se moja primero junto a las paredes.
+    </figcaption>
+  </figure>
 
   <!-- 04 FUENTES -->
   <article class="entry" id="fuentes">
