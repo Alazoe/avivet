@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Condensación en el galpón: cómo evitar la cama húmeda — AviVet</title>
+<meta name="description" content="Por qué se moja la cama del gallinero y cómo evitarlo: humedad relativa, condensación y ventilación explicadas para productores avícolas. MV Andrés Lazo — AviVet.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500;1,9..144,600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#fafaf8; --paper2:#f0faf3; --paper3:#e3f0e8;
+  --ink:#141414; --ink2:#3a3a3a; --ink3:#6b6b6b;
+  --line:#d4e6da; --line2:#bcd6c5;
+  --rust:#1b4332; --rust-d:#0d2b1e; --rust-l:#d8f3dc;
+  --olive:#2d6a4f; --olive-d:#1b4332;
+  --amber:#c0392b; --amber-d:#7a1c1c;
+  --gold:#c9a84c; --gold2:#e8c96e; --gold-d:#a8842e;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:"DM Sans",sans-serif;background:var(--paper);color:var(--ink);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;}
+/* paper grain */
+body::before{content:"";position:fixed;inset:0;z-index:1;pointer-events:none;opacity:0.05;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+a{color:inherit;}
+
+/* Masthead bar */
+.topbar{position:sticky;top:0;z-index:200;background:rgba(243,237,225,0.94);backdrop-filter:saturate(1.2) blur(6px);
+  border-bottom:1px solid var(--line);height:48px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;}
+.brand{font-family:"Fraunces",serif;font-weight:600;font-size:17px;letter-spacing:-0.01em;}
+.brand .dotrust{color:var(--rust);}
+.topbar .meta{font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink3);}
+
+main{max-width:760px;margin:0 auto;padding:0 22px 90px;position:relative;z-index:2;animation:fadeIn .5s ease;}
+
+/* Masthead / opening */
+.masthead{padding:56px 0 34px;}
+.kicker{font-size:11.5px;letter-spacing:0.22em;text-transform:uppercase;color:var(--rust);font-weight:600;margin-bottom:22px;
+  display:flex;align-items:center;gap:12px;}
+.kicker::after{content:"";flex:1;height:1px;background:var(--line2);}
+.display{font-family:"Fraunces",serif;font-weight:600;font-size:clamp(40px,8vw,68px);line-height:0.98;letter-spacing:-0.02em;margin-bottom:24px;}
+.display em{font-style:italic;color:var(--rust);}
+.standfirst{font-family:"Fraunces",serif;font-size:clamp(18px,2.6vw,22px);line-height:1.45;color:var(--ink2);max-width:600px;font-weight:400;}
+.byline{margin-top:24px;font-size:12.5px;letter-spacing:0.04em;color:var(--ink3);text-transform:uppercase;}
+.byline b{color:var(--ink);font-weight:600;}
+
+/* Opening plate (photo) */
+.plate{margin:34px 0 6px;}
+.plate-frame{position:relative;border:1px solid var(--line2);padding:10px;background:var(--paper2);}
+.plate-frame img{width:100%;height:auto;display:block;filter:saturate(1.02) contrast(1.02);}
+.plate-cap{font-family:"Fraunces",serif;font-style:italic;font-size:13.5px;color:var(--ink2);margin-top:12px;text-align:center;}
+.plate-cap .credit{font-style:normal;color:var(--ink3);font-size:11px;}
+.plate-cap .credit a{color:var(--ink3);}
+.hint{text-align:center;font-size:12px;letter-spacing:0.04em;color:var(--ink3);margin-top:6px;}
+.dot{position:absolute;width:30px;height:30px;border-radius:50%;background:var(--paper);color:var(--rust);
+  border:1.5px solid var(--rust);font-family:"Fraunces",serif;font-weight:600;font-size:14px;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;text-decoration:none;
+  transform:translate(-50%,-50%);box-shadow:0 1px 4px rgba(60,30,10,0.25);transition:all .15s;}
+.dot:hover{background:var(--rust);color:var(--paper);transform:translate(-50%,-50%) scale(1.15);}
+
+/* Index nav */
+.index{position:sticky;top:48px;z-index:150;background:rgba(243,237,225,0.96);backdrop-filter:blur(6px);
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-top:30px;}
+.index-scroll{display:flex;overflow-x:auto;scrollbar-width:none;}
+.index-scroll::-webkit-scrollbar{display:none;}
+.idx{flex:0 0 auto;padding:11px 15px;font-size:12.5px;font-weight:600;color:var(--ink2);text-decoration:none;
+  white-space:nowrap;border-bottom:2px solid transparent;display:flex;align-items:baseline;gap:6px;transition:color .15s;}
+.idx .n{color:var(--ink3);font-variant-numeric:tabular-nums;font-size:11px;}
+.idx:hover{color:var(--rust);}
+.idx.active{color:var(--rust);border-bottom-color:var(--rust);}
+.idx.active .n{color:var(--rust);}
+
+/* Entries */
+.entry{display:grid;grid-template-columns:96px 1fr;gap:22px;padding:46px 0;border-top:1px solid var(--line);scroll-margin-top:104px;}
+.entry:first-of-type{border-top:none;}
+.entry-no{font-family:"Fraunces",serif;font-weight:500;font-size:54px;line-height:0.8;color:var(--rust);letter-spacing:-0.03em;}
+.entry-title{font-family:"Fraunces",serif;font-weight:600;font-size:30px;line-height:1.05;letter-spacing:-0.015em;margin-bottom:5px;}
+.entry-where{font-size:11.5px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink3);margin-bottom:16px;}
+.lead{font-family:"Fraunces",serif;font-size:18.5px;line-height:1.5;color:var(--ink2);max-width:560px;}
+.entry:first-of-type .lead::first-letter{initial-letter:2;font-weight:600;color:var(--rust);margin-right:8px;}
+
+.cols{display:grid;grid-template-columns:1fr 1fr;margin-top:24px;border-top:1px solid var(--line);}
+.col{padding:18px 0;}
+.col + .col{border-left:1px solid var(--line);padding-left:26px;}
+.col:first-child{padding-right:26px;}
+@media(max-width:540px){.cols{grid-template-columns:1fr;}.col + .col{border-left:none;border-top:1px solid var(--line);padding-left:0;}.col:first-child{padding-right:0;}}
+.tag{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;font-weight:700;display:inline-flex;align-items:center;gap:7px;margin-bottom:13px;}
+.tag::before{content:"";width:9px;height:9px;display:inline-block;}
+.tag-ok{color:var(--olive);}
+.tag-ok::before{background:var(--olive);}
+.tag-warn{color:var(--amber);}
+.tag-warn::before{width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:9px solid var(--amber);}
+.col ul{list-style:none;display:flex;flex-direction:column;gap:9px;}
+.col li{font-size:14.5px;line-height:1.45;color:var(--ink);padding-left:16px;position:relative;}
+.col li::before{content:"";position:absolute;left:0;top:9px;width:6px;height:1.5px;background:var(--line2);}
+.col li em{font-style:italic;color:var(--ink2);}
+
+/* Margin notes */
+.note{margin-top:22px;padding:2px 0 2px 18px;border-left:2px solid var(--amber);
+  font-family:"Fraunces",serif;font-size:15px;font-style:italic;line-height:1.5;color:var(--amber-d);}
+.note.tip{border-left-color:var(--gold);color:#5a4720;}
+.note .lbl{font-style:normal;font-weight:700;font-size:10.5px;letter-spacing:0.16em;text-transform:uppercase;
+  display:block;margin-bottom:3px;color:var(--amber);}
+.note.tip .lbl{color:var(--gold-d);}
+
+/* Pull quote */
+.pull{font-family:"Fraunces",serif;font-style:italic;font-weight:500;font-size:clamp(24px,4vw,32px);line-height:1.25;
+  color:var(--rust);text-align:center;max-width:600px;margin:8px auto;padding:54px 10px;letter-spacing:-0.01em;position:relative;}
+.pull::before,.pull::after{content:"";display:block;width:46px;height:1px;background:var(--line2);margin:0 auto;}
+.pull::before{margin-bottom:30px;}
+.pull::after{margin-top:30px;}
+
+/* Outro */
+.outro{margin-top:30px;border-top:2px solid var(--ink);padding-top:30px;}
+.disclaimer{font-family:"Fraunces",serif;font-style:italic;font-size:15px;line-height:1.55;color:var(--ink2);max-width:560px;margin-bottom:38px;}
+.contact{background:var(--paper2);border:1px solid var(--line2);padding:30px 30px 28px;}
+.contact .kicker{margin-bottom:14px;}
+.contact h3{font-family:"Fraunces",serif;font-weight:600;font-size:26px;line-height:1.1;margin-bottom:8px;letter-spacing:-0.01em;}
+.contact p{font-size:14.5px;color:var(--ink2);margin-bottom:20px;max-width:440px;}
+.contact-links{display:flex;flex-direction:column;gap:11px;}
+.clink{font-size:15px;color:var(--ink);text-decoration:none;display:flex;align-items:baseline;gap:12px;border-top:1px solid var(--line);padding-top:11px;transition:color .15s;}
+.clink:hover{color:var(--rust);}
+.clink .ck{font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink3);width:90px;flex:0 0 90px;}
+.clink b{font-weight:600;}
+.clink .arr{margin-left:auto;color:var(--rust);}
+.foot{text-align:center;font-size:12px;letter-spacing:0.04em;color:var(--ink3);margin-top:40px;text-transform:uppercase;}
+.foot a{color:var(--rust);text-decoration:none;}
+
+@media(max-width:560px){
+  .entry{grid-template-columns:1fr;gap:6px;}
+  .entry-no{font-size:38px;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span class="brand">AviVet<span class="dotrust">.</span></span>
+  <span class="meta">MV Andrés Lazo · Medicina aviar</span>
+</div>
+
+<main>
+
+  <!-- MASTHEAD -->
+  <header class="masthead">
+    <div class="kicker">Manejo de galpón · N.º 02</div>
+    <h1 class="display">Por qué se moja la <em>cama</em> de tu gallinero</h1>
+    <p class="standfirst">La condensación y la humedad relativa explicadas con una idea simple: el aire es una esponja. Entiéndelo y sabrás por qué la cama se echa a perder en invierno y, sobre todo, cómo evitarlo.</p>
+    <p class="byline"><b>MV Andrés Lazo Escobar</b> — Especialista en medicina aviar · Sur de Chile</p>
+  </header>
+
+  <!-- INDEX -->
+  <nav class="index">
+    <div class="index-scroll" id="navScroll">
+      <a class="idx" href="#esponja"><span class="n">01</span>El aire es esponja</a>
+      <a class="idx" href="#humedad"><span class="n">02</span>Humedad relativa</a>
+      <a class="idx" href="#techo"><span class="n">03</span>El techo frío</a>
+      <a class="idx" href="#fuentes"><span class="n">04</span>De dónde sale</a>
+      <a class="idx" href="#problemas"><span class="n">05</span>Por qué importa</a>
+      <a class="idx" href="#punado"><span class="n">06</span>Prueba del puñado</a>
+      <a class="idx" href="#solucion"><span class="n">07</span>Qué hacer</a>
+      <a class="idx" href="#sur"><span class="n">08</span>Sur de Chile</a>
+    </div>
+  </nav>
+
+  <!-- 01 ESPONJA -->
+  <article class="entry" id="esponja">
+    <div class="entry-no">01</div>
+    <div>
+      <h2 class="entry-title">El aire es como una esponja</h2>
+      <p class="entry-where">El concepto que lo explica todo</p>
+      <p class="lead">El aire siempre lleva agua escondida en forma de vapor, y su capacidad de cargarla depende de la temperatura. Piensa en el aire como una esponja: mientras más caliente, más grande la esponja y más agua carga sin que se note.</p>
+      <div class="cols">
+        <div class="col">
+          <span class="tag tag-ok">Aire caliente</span>
+          <ul>
+            <li>Esponja grande</li>
+            <li>Carga mucha agua <em>→ invisible, no se nota</em></li>
+            <li>Es el aire tibio que sube en tu galpón</li>
+          </ul>
+        </div>
+        <div class="col">
+          <span class="tag tag-warn">Aire frío</span>
+          <ul>
+            <li>Esponja chica</li>
+            <li>No aguanta el agua <em>→ la suelta en gotas</em></li>
+            <li>Es lo que pasa al tocar el techo y los muros</li>
+          </ul>
+        </div>
+      </div>
+      <p class="note tip"><span class="lbl">La idea clave</span>El agua de tu galpón casi nunca entra de afuera: la producen las propias aves al respirar, las fecas y los bebederos.</p>
+    </div>
+  </article>
+
+  <!-- 02 HUMEDAD RELATIVA -->
+  <article class="entry" id="humedad">
+    <div class="entry-no">02</div>
+    <div>
+      <h2 class="entry-title">Qué es la humedad relativa</h2>
+      <p class="entry-where">Qué tan llena está la esponja</p>
+      <p class="lead">La humedad relativa (HR) es, en porcentaje, qué tan llena está la esponja de aire para esa temperatura. Cuando llega a 100%, el aire está saturado: cualquier enfriamiento lo hace soltar agua.</p>
+      <div class="cols">
+        <div class="col">
+          <span class="tag tag-ok">Rango sano</span>
+          <ul>
+            <li><em>HR 50–60%</em> — cómodo para las aves y la cama</li>
+            <li>Cama suelta y seca, sin olor fuerte</li>
+          </ul>
+        </div>
+        <div class="col">
+          <span class="tag tag-warn">Zona de riesgo</span>
+          <ul>
+            <li><em>HR 70%+ sostenida</em> — la cama empieza a fallar</li>
+            <li><em>HR 100%</em> — esponja reventada, condensa y gotea</li>
+          </ul>
+        </div>
+      </div>
+      <p class="note"><span class="lbl">Punto de rocío</span>Es la temperatura a la que el aire se satura y empieza a soltar agua. Toda superficie más fría que ese punto —el zinc en una noche helada— se convierte en un lugar donde el agua condensa.</p>
+    </div>
+  </article>
+
+  <div class="pull">El aire caliente carga agua; el aire frío la suelta. Si no saco el aire húmedo a tiempo, lo suelta en mi cama.</div>
+
+  <!-- 03 TECHO FRÍO -->
+  <article class="entry" id="techo">
+    <div class="entry-no">03</div>
+    <div>
+      <h2 class="entry-title">El techo frío suelta el agua</h2>
+      <p class="entry-where">Por qué se moja primero en las orillas</p>
+      <p class="lead">Dentro del galpón, el calor de las aves genera una columna de aire tibio y húmedo que sube. Al tocar el techo de zinc o los muros fríos, ese aire se enfría de golpe, cae bajo el punto de rocío y suelta el agua justo ahí.</p>
+      <p class="note"><span class="lbl">La señal típica</span>Verás la cama húmeda y apelmazada pegada a las paredes y bajo el techo, aunque el centro del galpón esté seco. Esa es la firma de la condensación.</p>
+    </div>
+  </article>
+
+  <!-- 04 FUENTES -->
+  <article class="entry" id="fuentes">
+    <div class="entry-no">04</div>
+    <div>
+      <h2 class="entry-title">¿De dónde sale tanta humedad?</h2>
+      <p class="entry-where">Casi toda se genera adentro</p>
+      <p class="lead">No es la lluvia: la carga de humedad viene del interior del galpón, y se acumula rápido cuando hay muchas aves y poca renovación de aire.</p>
+      <div class="cols">
+        <div class="col">
+          <span class="tag tag-ok">Inevitable</span>
+          <ul>
+            <li>Respiración de las aves <em>→ vapor constante</em></li>
+            <li>Fecas <em>→ son 75–80% agua</em></li>
+          </ul>
+        </div>
+        <div class="col">
+          <span class="tag tag-warn">Evitable</span>
+          <ul>
+            <li>Bebederos que gotean o mal regulados</li>
+            <li>Demasiadas aves juntas <em>→ densidad alta</em></li>
+          </ul>
+        </div>
+      </div>
+      <p class="note tip"><span class="lbl">Revisa primero</span>Un bebedero con fuga o mala altura es la causa número uno de cama mojada en un solo punto. Antes de cambiar la ventilación, revisa el agua.</p>
+    </div>
+  </article>
+
+  <!-- 05 PROBLEMAS -->
+  <article class="entry" id="problemas">
+    <div class="entry-no">05</div>
+    <div>
+      <h2 class="entry-title">Cama húmeda = fábrica de problemas</h2>
+      <p class="entry-where">La cadena que se dispara</p>
+      <p class="lead">Una cama mojada deja de ser un suelo seco y se vuelve un medio de descomposición. De ahí en adelante, los problemas se encadenan.</p>
+      <div class="cols">
+        <div class="col">
+          <span class="tag tag-warn">En el ambiente</span>
+          <ul>
+            <li>Amoníaco (NH₃) <em>→ ese olor que pica los ojos</em></li>
+            <li>Irrita vías respiratorias y baja las defensas</li>
+          </ul>
+        </div>
+        <div class="col">
+          <span class="tag tag-warn">En las aves</span>
+          <ul>
+            <li>Patas quemadas y ampollas de pecho</li>
+            <li>Coccidias y <em>E. coli</em></li>
+            <li>Menos consumo y peor crecimiento</li>
+          </ul>
+        </div>
+      </div>
+      <p class="note"><span class="lbl">Urgente</span>Si al entrar al galpón te pican los ojos, ya hay demasiado amoníaco. Tus aves lo respiran todo el día a la altura del suelo.</p>
+    </div>
+  </article>
+
+  <!-- 06 PRUEBA DEL PUÑADO -->
+  <article class="entry" id="punado">
+    <div class="entry-no">06</div>
+    <div>
+      <h2 class="entry-title">La prueba del puñado</h2>
+      <p class="entry-where">Tu diagnóstico, sin instrumentos</p>
+      <p class="lead">No necesitas aparatos para saber si tu cama está bien. Toma un puñado, apriétalo en la mano y observa qué pasa al soltarlo.</p>
+      <div class="cols">
+        <div class="col">
+          <span class="tag tag-ok">Se desarma solo</span>
+          <ul>
+            <li>Humedad correcta <em>→ ≈20–30%</em></li>
+            <li>Cama suelta, mullida y seca</li>
+          </ul>
+        </div>
+        <div class="col">
+          <span class="tag tag-warn">Queda en bola</span>
+          <ul>
+            <li>Exceso de humedad <em>→ hay que actuar</em></li>
+            <li>Cama apelmazada y pesada</li>
+          </ul>
+        </div>
+      </div>
+      <p class="note tip"><span class="lbl">Hazlo seguido</span>Un higrómetro barato te ayuda a anticipar las noches de más riesgo, pero la mano es el primer medidor que siempre tienes a mano.</p>
+    </div>
+  </article>
+
+  <div class="pull">Tu mano es el primer medidor de humedad que tienes: si la cama queda en bola, ya estás tarde.</div>
+
+  <!-- 07 SOLUCIÓN -->
+  <article class="entry" id="solucion">
+    <div class="entry-no">07</div>
+    <div>
+      <h2 class="entry-title">Qué hacer para evitarlo</h2>
+      <p class="entry-where">Sacar el aire húmedo antes de que condense</p>
+      <p class="lead">El principio es uno solo: renovar el aire interior y eliminar el vapor antes de que toque las superficies frías. Y ojo con esto: ventilar no es enfriar, ventilar es cambiar el aire viejo por aire nuevo.</p>
+      <div class="cols">
+        <div class="col">
+          <span class="tag tag-ok">Haz esto</span>
+          <ul>
+            <li>Ventilación mínima permanente, aunque haga frío</li>
+            <li>Aislar el techo <em>→ cielo falso, poliestireno</em></li>
+            <li>Regular bebederos y tapar fugas</li>
+            <li>Voltear la cama y reponer viruta seca</li>
+            <li>Si hace mucho frío: calefacción + ventilación juntas</li>
+          </ul>
+        </div>
+        <div class="col">
+          <span class="tag tag-warn">Evita esto</span>
+          <ul>
+            <li>Sellar el galpón por completo en invierno</li>
+            <li>Meter más aves de las que el galpón ventila</li>
+            <li>Dejar la cama apelmazada "para después"</li>
+            <li>Confundir ventilar con pasar frío a las aves</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- 08 SUR DE CHILE -->
+  <article class="entry" id="sur">
+    <div class="entry-no">08</div>
+    <div>
+      <h2 class="entry-title">Para el sur de Chile</h2>
+      <p class="entry-where">Por qué aquí es más crítico</p>
+      <p class="lead">En zonas de inviernos fríos y húmedos el problema se agrava: las superficies del galpón se enfrían más y aparece la tentación de sellar todo para conservar calor, lo que encierra la humedad y empeora la condensación.</p>
+      <p class="note tip"><span class="lbl">La estrategia que funciona</span>Aislar bien el techo y los muros, ventilar poco pero <em>siempre</em>, y usar calefacción dimensionada que te permita renovar el aire sin enfriar a las aves. Las tres cosas juntas, no una sola.</p>
+    </div>
+  </article>
+
+  <!-- OUTRO -->
+  <div class="outro">
+    <p class="disclaimer">Esta guía orienta el manejo de la cama y la ventilación, y no reemplaza una evaluación en terreno. Cada galpón es distinto: si la condensación persiste pese a estas medidas, conviene revisar el diseño de ventilación con un profesional.</p>
+
+    <div class="contact">
+      <div class="kicker">Asesoría veterinaria</div>
+      <h3>¿Tienes problemas de cama húmeda en tu galpón?</h3>
+      <p>Medicina aviar y avicultura para el sur de Chile — Los Ríos, La Araucanía y Los Lagos.</p>
+      <div class="contact-links">
+        <a class="clink" href="https://wa.me/56958956340" target="_blank" rel="noopener"><span class="ck">WhatsApp</span><b>+56 9 5895 6340</b><span class="arr">→</span></a>
+        <a class="clink" href="mailto:andreslazomv@outlook.com"><span class="ck">Email</span><b>andreslazomv@outlook.com</b><span class="arr">→</span></a>
+        <a class="clink" href="https://avivet.cl" target="_blank" rel="noopener"><span class="ck">Web</span><b>avivet.cl</b><span class="arr">→</span></a>
+      </div>
+    </div>
+
+    <p class="foot">MV Andrés Lazo Escobar · <a href="https://avivet.cl/">Volver a avivet.cl</a></p>
+  </div>
+
+
+</main>
+
+<script>
+(function(){
+  var navScroll = document.getElementById('navScroll');
+  var chips = {};
+  navScroll.querySelectorAll('.idx').forEach(function(c){
+    chips[c.getAttribute('href').slice(1)] = c;
+  });
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        var id = e.target.id;
+        Object.values(chips).forEach(function(c){c.classList.remove('active');});
+        var active = chips[id];
+        if(active){
+          active.classList.add('active');
+          var off = active.offsetLeft - navScroll.clientWidth/2 + active.clientWidth/2;
+          navScroll.scrollTo({left:off, behavior:'smooth'});
+        }
+      }
+    });
+  }, {rootMargin:'-45% 0px -50% 0px', threshold:0});
+  document.querySelectorAll('article.entry').forEach(function(s){io.observe(s);});
+})();
+</script>
+</body>
+</html>
