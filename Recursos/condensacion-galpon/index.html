@@ -151,6 +151,76 @@ main{max-width:760px;margin:0 auto;padding:0 22px 90px;position:relative;z-index
     <p class="byline"><b>MV Andrés Lazo Escobar</b> — Especialista en medicina aviar · Sur de Chile</p>
   </header>
 
+  <!-- OPENING PLATE: la esponja en 3 etapas -->
+  <figure class="plate">
+    <div class="plate-frame">
+      <svg viewBox="0 0 900 400" style="width:100%;height:auto;display:block" role="img"
+           aria-label="El aire como una esponja: caliente carga agua, al enfriarse se encoge y la suelta en gotas">
+        <defs>
+          <pattern id="poros" width="26" height="26" patternUnits="userSpaceOnUse">
+            <circle cx="7" cy="7" r="3.2" fill="#a8842e" opacity="0.35"/>
+            <circle cx="19" cy="16" r="2.4" fill="#a8842e" opacity="0.3"/>
+            <circle cx="12" cy="21" r="2" fill="#a8842e" opacity="0.25"/>
+          </pattern>
+        </defs>
+
+        <!-- PANEL 1: esponja grande y cargada -->
+        <g>
+          <rect x="55" y="70" width="180" height="155" rx="20" fill="#e8c96e" stroke="#a8842e" stroke-width="2.5"/>
+          <rect x="55" y="70" width="180" height="155" rx="20" fill="url(#poros)"/>
+          <!-- agua dentro -->
+          <g fill="#2b6cb0" opacity="0.85">
+            <circle cx="90" cy="105" r="4.5"/><circle cx="135" cy="98" r="4"/><circle cx="180" cy="110" r="4.5"/>
+            <circle cx="110" cy="140" r="4"/><circle cx="160" cy="135" r="4.5"/><circle cx="200" cy="150" r="4"/>
+            <circle cx="85" cy="175" r="4.5"/><circle cx="130" cy="180" r="4"/><circle cx="175" cy="190" r="4.5"/>
+            <circle cx="205" cy="118" r="3.5"/><circle cx="100" cy="205" r="3.5"/><circle cx="150" cy="160" r="3.5"/>
+          </g>
+          <text x="145" y="270" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="19" font-weight="600" fill="#1b4332">Aire caliente</text>
+          <text x="145" y="296" text-anchor="middle" font-family="Fraunces, serif" font-style="italic" font-size="16" fill="#3a3a3a">carga mucha agua</text>
+        </g>
+
+        <text x="288" y="160" text-anchor="middle" font-family="Fraunces, serif" font-size="44" fill="#a8842e">›</text>
+
+        <!-- PANEL 2: esponja encogida -->
+        <g>
+          <rect x="360" y="92" width="135" height="118" rx="16" fill="#e8c96e" stroke="#a8842e" stroke-width="2.5"/>
+          <rect x="360" y="92" width="135" height="118" rx="16" fill="url(#poros)"/>
+          <g fill="#2b6cb0" opacity="0.85">
+            <circle cx="392" cy="120" r="4.5"/><circle cx="435" cy="115" r="4"/><circle cx="470" cy="128" r="4.5"/>
+            <circle cx="405" cy="155" r="4"/><circle cx="450" cy="158" r="4.5"/><circle cx="425" cy="185" r="4"/>
+            <circle cx="468" cy="180" r="3.5"/><circle cx="385" cy="180" r="3.5"/>
+          </g>
+          <text x="427" y="255" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="19" font-weight="600" fill="#1b4332">Se enfría y se encoge</text>
+          <text x="427" y="281" text-anchor="middle" font-family="Fraunces, serif" font-style="italic" font-size="16" fill="#3a3a3a">queda menos espacio</text>
+        </g>
+
+        <text x="560" y="160" text-anchor="middle" font-family="Fraunces, serif" font-size="44" fill="#a8842e">›</text>
+
+        <!-- PANEL 3: esponja apretada que escurre -->
+        <g>
+          <path d="M640,80 L750,80 Q722,128 718,152 Q722,176 750,224 L640,224 Q668,176 672,152 Q668,128 640,80 Z"
+                fill="#e8c96e" stroke="#a8842e" stroke-width="2.5"/>
+          <path d="M640,80 L750,80 Q722,128 718,152 Q722,176 750,224 L640,224 Q668,176 672,152 Q668,128 640,80 Z"
+                fill="url(#poros)"/>
+          <!-- gotas cayendo -->
+          <g fill="#2b6cb0">
+            <ellipse cx="678" cy="248" rx="4.5" ry="7"/>
+            <ellipse cx="700" cy="262" rx="4" ry="6.5"/>
+            <ellipse cx="715" cy="244" rx="4.5" ry="7"/>
+            <ellipse cx="692" cy="285" rx="4" ry="6.5"/>
+            <ellipse cx="708" cy="300" rx="3.5" ry="6"/>
+            <ellipse cx="683" cy="312" rx="3.5" ry="6"/>
+          </g>
+          <text x="695" y="345" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="19" font-weight="600" fill="#c0392b">Ya no la retiene</text>
+          <text x="695" y="371" text-anchor="middle" font-family="Fraunces, serif" font-style="italic" font-size="16" fill="#3a3a3a">gotea: condensación</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption class="plate-cap">
+      Lám. I — El aire caliente carga agua como una esponja; al enfriarse se encoge y la suelta en gotas sobre techos y cama.
+    </figcaption>
+  </figure>
+
   <!-- INDEX -->
   <nav class="index">
     <div class="index-scroll" id="navScroll">
