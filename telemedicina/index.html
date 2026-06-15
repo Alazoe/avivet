@@ -218,6 +218,27 @@
     .upload-preview img { width: 56px; height: 56px; object-fit: cover; border-radius: 4px; border: 1px solid #ccc; }
     .upload-count { font-size: 8pt; color: #2e7d32; font-weight: 600; margin-top: 4px; }
 
+    /* ── PAGO ── */
+    .pago-banner {
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+      background: linear-gradient(135deg, #009ee3 0%, #0070ba 100%);
+      border-radius: 8px; padding: 16px 20px; margin-bottom: 20px;
+      color: #fff;
+    }
+    .pago-banner-text h3 { font-size: 13pt; font-weight: 800; margin-bottom: 2px; }
+    .pago-banner-text p  { font-size: 9.5pt; opacity: .9; }
+    .btn-pago {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #fff; color: #009ee3;
+      font-weight: 800; font-size: 11pt;
+      padding: 10px 22px; border-radius: 6px;
+      text-decoration: none; white-space: nowrap;
+      box-shadow: 0 2px 8px rgba(0,0,0,.2);
+      transition: opacity .15s;
+    }
+    .btn-pago:hover { opacity: .9; }
+    .btn-pago svg { width: 20px; height: 20px; flex-shrink: 0; }
+
     /* ── FOOTER ── */
     .footer { text-align: center; font-size: 8pt; color: #999; margin-top: 24px; padding-top: 12px; border-top: 1px solid #eee; }
     .footer a { color: #2e7d32; text-decoration: none; }
@@ -265,6 +286,18 @@
   </div>
 
   <form id="planilla-form" onsubmit="enviarFormulario(event)">
+
+    <!-- BANNER PAGO -->
+    <div class="pago-banner">
+      <div class="pago-banner-text">
+        <h3>💳 Pagar consulta de telemedicina</h3>
+        <p>Realiza el pago antes de enviar la planilla para confirmar tu sesión.</p>
+      </div>
+      <a class="btn-pago" href="https://mpago.la/2cCfSwk" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4C2.89 4 2 4.89 2 6v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>
+        Pagar con Mercado Pago
+      </a>
+    </div>
 
     <div class="form-intro">
       <strong>Nota:</strong> Complete solo la información que tenga disponible en este momento.
