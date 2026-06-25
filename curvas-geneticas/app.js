@@ -1296,10 +1296,11 @@ function calcularEdad() {
   document.getElementById('edad-etapa').textContent  = etapaLabel;
   document.getElementById('edad-etapa').style.background = etapaFondo;
   document.getElementById('edad-etapa').style.color      = etapaColor;
+  const diasHastaSig = diasParaSigSem + 1;
   document.getElementById('edad-prox').textContent   =
     diasParaSigSem === 0
-      ? 'Hoy comienza la semana ' + (semana + 1)
-      : 'Semana ' + (semana + 1) + ' comienza el ' + proxStr + ' (' + diasParaSigSem + ' días)';
+      ? 'Semana ' + (semana + 1) + ' comienza mañana (' + proxStr + ')'
+      : 'Semana ' + (semana + 1) + ' comienza el ' + proxStr + ' (' + diasHastaSig + (diasHastaSig === 1 ? ' día' : ' días') + ')';
 
   // Días de vida al nacer (día 1) del lote
   const edadMeses = (diasDesdeNac / 30.44).toFixed(1);
