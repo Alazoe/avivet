@@ -194,6 +194,7 @@ label { font-size:.85rem; color:#666; font-weight:500; }
     <label style="margin-top:10px">Fecha de pesaje
       <input type="date" id="fecha-pesaje">
     </label>
+    <button class="btn btn-gris" style="color:#333;margin-top:12px" onclick="imprimirPlanillaBlanco()">🖨️ Planilla en blanco para pesar a mano</button>
   </div>
 
   <div class="card">
@@ -830,6 +831,14 @@ function renderResumen(registros, curvaRef) {
         </table>
       </div>
     </div>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <h3 style="margin:0">Peso promedio vs curva genética</h3>
+        <button onclick="exportarPDFAcumulado()" style="background:#e3f2fd;color:#1565c0;border:1px solid #bbdefb;border-radius:8px;padding:6px 12px;font-size:.78rem;font-weight:600;cursor:pointer">📄 PDF acumulado</button>
+      </div>
+      <p style="font-size:.75rem;color:#888;margin-bottom:8px">Verde = dentro del rango esperado · Rojo = fuera de rango · Banda verde clara = rango min-max de la curva · Línea rosa punteada = promedio esperado</p>
+      <canvas id="grafico-peso-canvas" height="220"></canvas>
+    </div>
     <div class="card" id="hist-card" style="display:none;border-left:4px solid var(--verde)">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
         <h3 id="hist-titulo" style="margin:0">Distribución de pesos</h3>
@@ -839,18 +848,79 @@ function renderResumen(registros, curvaRef) {
       <div id="hist-container"></div>
     </div>
     <div class="card">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-        <h3 style="margin:0">Uniformidad vs curva esperada</h3>
-        <button onclick="exportarPDFAcumulado()" style="background:#e3f2fd;color:#1565c0;border:1px solid #bbdefb;border-radius:8px;padding:6px 12px;font-size:.78rem;font-weight:600;cursor:pointer">📄 PDF acumulado</button>
-      </div>
+      <h3>Uniformidad vs curva esperada</h3>
       <canvas id="grafico-canvas" height="220"></canvas>
     </div>`;
 
   window._histRegistros = registros;
   window._histCurva     = curvaRef;
   renderGrafico(registros, curvaRef);
+  renderGraficoPeso(registros, curvaRef);
   const primero = registros.find(r => r.pesosRaw?.length > 0);
   if (primero) mostrarHistograma(primero.semana);
+}
+
+function renderGraficoPeso(registros, curvaRef) {
+  const canvas = document.getElementById('grafico-peso-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  canvas.width = canvas.offsetWidth * window.devicePixelRatio;
+  canvas.height = 220 * window.devicePixelRatio;
+  ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+  const W = canvas.offsetWidth, H = 220;
+  const pad = { t:20, r:10, b:40, l:48 };
+  const iW = W-pad.l-pad.r, iH = H-pad.t-pad.b;
+  const semanas = registros.map(r=>r.semana);
+  const minS = Math.min(...semanas)-0.5, maxS = Math.max(...semanas)+0.5;
+  const semsCurva = Object.keys(curvaRef).map(Number).filter(s=>s>=minS&&s<=maxS).sort((a,b)=>a-b);
+
+  let yMin = Math.min(...registros.map(r=>r.promedio));
+  let yMax = Math.max(...registros.map(r=>r.promedio));
+  semsCurva.forEach(s => { yMin=Math.min(yMin,curvaRef[s].min); yMax=Math.max(yMax,curvaRef[s].max); });
+  const yPad = (yMax-yMin)*0.15 || 0.05;
+  yMin = Math.max(0, yMin-yPad); yMax = yMax+yPad;
+
+  const xP = s => pad.l+(s-minS)/(maxS-minS)*iW;
+  const yP = v => pad.t+(1-(v-yMin)/(yMax-yMin))*iH;
+
+  ctx.fillStyle='#fafafa'; ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle='#e0e0e0'; ctx.lineWidth=1;
+  const ySteps=5;
+  for (let i=0;i<=ySteps;i++) {
+    const v = yMin+(yMax-yMin)*i/ySteps, y=yP(v);
+    ctx.beginPath(); ctx.moveTo(pad.l,y); ctx.lineTo(W-pad.r,y); ctx.stroke();
+    ctx.fillStyle='#999'; ctx.font='9.5px system-ui'; ctx.textAlign='right';
+    ctx.fillText(v.toFixed(2), pad.l-5, y+3);
+  }
+
+  if (semsCurva.length) {
+    ctx.beginPath();
+    semsCurva.forEach((s,i) => { const x=xP(s),y=yP(curvaRef[s].max); i===0?ctx.moveTo(x,y):ctx.lineTo(x,y); });
+    for (let i=semsCurva.length-1;i>=0;i--) { const s=semsCurva[i]; ctx.lineTo(xP(s), yP(curvaRef[s].min)); }
+    ctx.closePath();
+    ctx.fillStyle='rgba(76,175,80,0.15)';
+    ctx.fill();
+
+    ctx.strokeStyle='#e91e63'; ctx.lineWidth=1.5; ctx.setLineDash([5,3]);
+    ctx.beginPath();
+    semsCurva.forEach((s,i) => { const y=yP(curvaRef[s].prom); i===0?ctx.moveTo(xP(s),y):ctx.lineTo(xP(s),y); });
+    ctx.stroke(); ctx.setLineDash([]);
+  }
+
+  ctx.strokeStyle='#2e7d32'; ctx.lineWidth=2.5;
+  ctx.beginPath();
+  registros.forEach((r,i) => { const x=xP(r.semana),y=yP(r.promedio); i===0?ctx.moveTo(x,y):ctx.lineTo(x,y); });
+  ctx.stroke();
+  registros.forEach(r => {
+    const x=xP(r.semana), y=yP(r.promedio);
+    const ref = curvaRef[r.semana];
+    const ok = !ref || (r.promedio>=ref.min && r.promedio<=ref.max);
+    ctx.fillStyle = ok?'#2e7d32':'#c62828';
+    ctx.beginPath(); ctx.arc(x,y,4,0,Math.PI*2); ctx.fill();
+  });
+
+  ctx.fillStyle='#555'; ctx.font='10px system-ui'; ctx.textAlign='center';
+  semanas.forEach(s => ctx.fillText('S'+s,xP(s),H-pad.b+16));
 }
 
 function renderGrafico(registros, curvaRef) {
@@ -969,8 +1039,10 @@ function exportarPDFAcumulado() {
   const loteObj   = lotes.find(l => l.id === loteId);
   if (!registros.length) { toast('Sin registros para exportar'); return; }
 
-  const canvas   = document.getElementById('grafico-canvas');
-  const chartImg = canvas ? canvas.toDataURL('image/png') : null;
+  const canvasPeso = document.getElementById('grafico-peso-canvas');
+  const pesoImg    = canvasPeso ? canvasPeso.toDataURL('image/png') : null;
+  const canvas     = document.getElementById('grafico-canvas');
+  const chartImg   = canvas ? canvas.toDataURL('image/png') : null;
 
   const filas = registros.map(r => {
     const ref     = curvaRef[r.semana];
@@ -1017,8 +1089,68 @@ tr:nth-child(even) td{background:#f9f9f9}
   <thead><tr><th>Sem</th><th>Prom kg</th><th>Curva</th><th>Dif</th><th>Uniformidad</th><th>CV%</th><th>N aves</th></tr></thead>
   <tbody>${filas}</tbody>
 </table>
+${pesoImg?`<h2>Peso promedio vs curva genética</h2><div class="chart"><img src="${pesoImg}"/></div>`:''}
 ${chartImg?`<h2>Uniformidad vs curva esperada</h2><div class="chart"><img src="${chartImg}"/></div>`:''}
 <div class="footer">AviVet · avivet.cl · ${new Date().toLocaleDateString('es-CL',{day:'2-digit',month:'long',year:'numeric'})}</div>
+</body></html>`;
+
+  const win = window.open('', '_blank');
+  if (!win) { toast('Activa ventanas emergentes en el navegador para exportar'); return; }
+  win.document.write(html);
+  win.document.close();
+}
+
+// ══ PLANILLA EN BLANCO (registro manual en terreno) ═════════════
+function imprimirPlanillaBlanco() {
+  const loteId  = document.getElementById('sel-lote').value;
+  const semana  = parseInt(document.getElementById('sel-semana').value) || null;
+  const fecha   = document.getElementById('fecha-pesaje').value;
+  const loteObj = lotes.find(l => l.id === loteId);
+  if (!loteObj) { toast('Selecciona un lote primero'); return; }
+
+  const ref = semana ? getCurva(loteObj.lineaGenetica)[semana] : null;
+  const N_CELDAS = 60;
+  let celdas = '';
+  for (let i=1; i<=N_CELDAS; i++) celdas += `<div class="celda"><span class="num">${i}</span></div>`;
+
+  const html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">
+<title>Planilla Pesaje · ${loteObj.nombre}${semana?(' · S'+semana):''}</title>
+<style>
+body{font-family:system-ui,sans-serif;margin:18px;color:#212121;font-size:13px}
+.hdr{display:flex;align-items:center;border-bottom:3px solid #2e7d32;padding-bottom:12px;margin-bottom:14px}
+.logo{font-size:2.3rem;margin-right:12px}
+h1{font-size:1.1rem;color:#2e7d32;margin:0}
+.sub{font-size:.8rem;color:#666;margin:3px 0 0}
+.campos{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0;font-size:.82rem}
+.campo{border-bottom:1px solid #999;padding-bottom:4px;min-height:18px}
+.campo b{display:block;color:#555;font-size:.68rem;margin-bottom:8px;letter-spacing:.03em}
+.ref{background:#e8f5e9;border:1px solid #a5d6a7;border-radius:8px;padding:9px 13px;margin:10px 0;font-size:.83rem;color:#1b5e20}
+.instr{font-size:.78rem;color:#777;margin-top:10px}
+.grid{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin-top:10px}
+.celda{border:1px solid #999;border-radius:4px;height:32px;position:relative}
+.celda .num{position:absolute;top:1px;left:3px;font-size:6.5px;color:#aaa}
+.notas{margin-top:16px;border:1px solid #ccc;border-radius:6px;height:54px;padding:6px;font-size:.76rem;color:#999}
+.firma{display:flex;justify-content:space-between;margin-top:18px;font-size:.78rem;color:#555}
+.firma div{border-top:1px solid #999;width:42%;text-align:center;padding-top:4px}
+.footer{margin-top:16px;font-size:.68rem;color:#aaa;text-align:center;border-top:1px solid #eee;padding-top:6px}
+@media print{body{margin:6mm}}
+</style></head><body onload="window.print()">
+<div class="hdr"><div class="logo">🐔</div><div>
+  <h1>Planilla de Pesaje Manual</h1>
+  <div class="sub">avivet.cl · Registro en terreno — transcribir luego a la app</div>
+</div></div>
+<div class="campos">
+  <div class="campo"><b>LOTE</b>${loteObj.nombre}</div>
+  <div class="campo"><b>LÍNEA GENÉTICA</b>${loteObj.lineaGenetica||'—'}</div>
+  <div class="campo"><b>SEMANA</b>${semana||'________'}</div>
+  <div class="campo"><b>FECHA</b>${fecha||'________'}</div>
+</div>
+${ref ? `<div class="ref">📈 Curva esperada semana ${semana}: <b>${ref.prom.toFixed(3)} kg</b> (rango ${ref.min.toFixed(3)}–${ref.max.toFixed(3)} kg) · Uniformidad mínima esperada: ${(ref.unif*100).toFixed(0)}%</div>` : ''}
+<div class="instr">Escribe el peso en kg de cada ave pesada en las celdas numeradas:</div>
+<div class="grid">${celdas}</div>
+<div class="notas">Observaciones:</div>
+<div class="firma"><div>Responsable del pesaje</div><div>Firma</div></div>
+<div class="footer">AviVet · avivet.cl · Generado el ${new Date().toLocaleDateString('es-CL',{day:'2-digit',month:'long',year:'numeric'})}</div>
 </body></html>`;
 
   const win = window.open('', '_blank');
