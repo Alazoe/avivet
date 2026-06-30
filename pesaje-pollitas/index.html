@@ -1109,31 +1109,58 @@ function imprimirPlanillaBlanco() {
   if (!loteObj) { toast('Selecciona un lote primero'); return; }
 
   const ref = semana ? getCurva(loteObj.lineaGenetica)[semana] : null;
-  const N_CELDAS = 60;
-  let celdas = '';
-  for (let i=1; i<=N_CELDAS; i++) celdas += `<div class="celda"><span class="num">${i}</span></div>`;
+  const sugerido = ref ? Math.round(ref.prom*1000) : '';
+  const entrada = prompt(`Peso promedio esperado (gramos)${ref?` — sugerido por la curva: ${sugerido} g`:''}:`, sugerido ? String(sugerido) : '');
+  if (entrada === null) return;
+  const meanG = parseFloat(entrada);
+  if (!meanG || meanG <= 0) { toast('Ingresa un peso promedio válido'); return; }
+
+  const CV_TIPICO = 0.08; // CV asumido para una buena uniformidad (referencial, ajustable a mano en terreno)
+  const sdG     = meanG * CV_TIPICO;
+  const loG     = Math.max(10, Math.round((meanG - 2*sdG)/10)*10);
+  const hiG     = Math.round((meanG + 2*sdG)/10)*10;
+  const meanRow = Math.round(meanG/10)*10;
+
+  let filasTabla = '';
+  for (let g = loG; g <= hiG; g += 10) {
+    const esProm = g === meanRow;
+    filasTabla += `<tr class="${esProm?'fila-prom':''}">
+      <td class="peso">${esProm?'★ ':''}${g} g</td>
+      <td class="marca"></td>
+      <td class="subtotal"></td>
+    </tr>`;
+  }
 
   const html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">
 <title>Planilla Pesaje · ${loteObj.nombre}${semana?(' · S'+semana):''}</title>
 <style>
-body{font-family:system-ui,sans-serif;margin:18px;color:#212121;font-size:13px}
-.hdr{display:flex;align-items:center;border-bottom:3px solid #2e7d32;padding-bottom:12px;margin-bottom:14px}
-.logo{font-size:2.3rem;margin-right:12px}
-h1{font-size:1.1rem;color:#2e7d32;margin:0}
-.sub{font-size:.8rem;color:#666;margin:3px 0 0}
-.campos{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0;font-size:.82rem}
-.campo{border-bottom:1px solid #999;padding-bottom:4px;min-height:18px}
-.campo b{display:block;color:#555;font-size:.68rem;margin-bottom:8px;letter-spacing:.03em}
-.ref{background:#e8f5e9;border:1px solid #a5d6a7;border-radius:8px;padding:9px 13px;margin:10px 0;font-size:.83rem;color:#1b5e20}
-.instr{font-size:.78rem;color:#777;margin-top:10px}
-.grid{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin-top:10px}
-.celda{border:1px solid #999;border-radius:4px;height:32px;position:relative}
-.celda .num{position:absolute;top:1px;left:3px;font-size:6.5px;color:#aaa}
-.notas{margin-top:16px;border:1px solid #ccc;border-radius:6px;height:54px;padding:6px;font-size:.76rem;color:#999}
-.firma{display:flex;justify-content:space-between;margin-top:18px;font-size:.78rem;color:#555}
+body{font-family:system-ui,sans-serif;margin:16px;color:#212121;font-size:12.5px}
+.hdr{display:flex;align-items:center;border-bottom:3px solid #2e7d32;padding-bottom:10px;margin-bottom:12px}
+.logo{font-size:2.1rem;margin-right:10px}
+h1{font-size:1.05rem;color:#2e7d32;margin:0}
+.sub{font-size:.78rem;color:#666;margin:3px 0 0}
+.campos{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0;font-size:.8rem}
+.campo{border-bottom:1px solid #999;padding-bottom:3px;min-height:16px}
+.campo b{display:block;color:#555;font-size:.65rem;margin-bottom:6px;letter-spacing:.03em}
+.ref{background:#e8f5e9;border:1px solid #a5d6a7;border-radius:7px;padding:8px 12px;margin:8px 0;font-size:.78rem;color:#1b5e20}
+.instr{font-size:.75rem;color:#777;margin:8px 0 4px}
+table.tally{width:100%;border-collapse:collapse;font-size:.82rem;margin-top:4px}
+table.tally thead{display:table-header-group}
+table.tally th{background:#2e7d32;color:#fff;padding:5px 6px;text-align:left}
+table.tally td{border-bottom:1px solid #ddd;padding:0}
+table.tally tr{height:22px;page-break-inside:avoid}
+table.tally td.peso{padding:4px 8px;font-weight:600;color:#333;white-space:nowrap;width:78px;border-right:1px solid #ddd}
+table.tally td.marca{border-right:1px solid #ddd}
+table.tally td.subtotal{width:72px;border-left:1px solid #ddd}
+table.tally tr.fila-prom td.peso{background:#e8f5e9;color:#1b5e20}
+.totales{display:flex;justify-content:space-between;margin-top:14px;font-size:.82rem;color:#333}
+.totales div{border-top:1.5px solid #333;width:46%;text-align:center;padding-top:4px}
+.notas{margin-top:14px;border:1px solid #ccc;border-radius:6px;height:46px;padding:6px;font-size:.76rem;color:#999}
+.firma{display:flex;justify-content:space-between;margin-top:16px;font-size:.78rem;color:#555}
 .firma div{border-top:1px solid #999;width:42%;text-align:center;padding-top:4px}
-.footer{margin-top:16px;font-size:.68rem;color:#aaa;text-align:center;border-top:1px solid #eee;padding-top:6px}
-@media print{body{margin:6mm}}
+.nota{font-size:.68rem;color:#999;margin-top:10px;text-align:center}
+.footer{margin-top:8px;font-size:.65rem;color:#aaa;text-align:center;border-top:1px solid #eee;padding-top:5px}
+@media print{body{margin:5mm}}
 </style></head><body onload="window.print()">
 <div class="hdr"><div class="logo">🐔</div><div>
   <h1>Planilla de Pesaje Manual</h1>
@@ -1146,10 +1173,15 @@ h1{font-size:1.1rem;color:#2e7d32;margin:0}
   <div class="campo"><b>FECHA</b>${fecha||'________'}</div>
 </div>
 ${ref ? `<div class="ref">📈 Curva esperada semana ${semana}: <b>${ref.prom.toFixed(3)} kg</b> (rango ${ref.min.toFixed(3)}–${ref.max.toFixed(3)} kg) · Uniformidad mínima esperada: ${(ref.unif*100).toFixed(0)}%</div>` : ''}
-<div class="instr">Escribe el peso en kg de cada ave pesada en las celdas numeradas:</div>
-<div class="grid">${celdas}</div>
+<div class="instr">Pesa cada ave y marca una raya ( | ) en la fila del peso más cercano (cada 10 g). Al terminar, suma las marcas de cada fila en "Subtotal".</div>
+<table class="tally">
+  <thead><tr><th>Peso</th><th>Marca de conteo</th><th>Subtotal</th></tr></thead>
+  <tbody>${filasTabla}</tbody>
+</table>
+<div class="totales"><div>TOTAL AVES PESADAS</div><div>PROMEDIO CALCULADO (g)</div></div>
 <div class="notas">Observaciones:</div>
 <div class="firma"><div>Responsable del pesaje</div><div>Firma</div></div>
+<div class="nota">Tabla centrada en ${meanG} g · filas cada 10 g · rango ±2 desviaciones estándar (≈ ±${Math.round(2*sdG)} g, CV asumido ${(CV_TIPICO*100).toFixed(0)}%)</div>
 <div class="footer">AviVet · avivet.cl · Generado el ${new Date().toLocaleDateString('es-CL',{day:'2-digit',month:'long',year:'numeric'})}</div>
 </body></html>`;
 
