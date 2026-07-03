@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <title>Pesaje Pollitas</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
 :root {
   --verde:   #2e7d32;
@@ -199,12 +200,15 @@ label { font-size:.85rem; color:#666; font-weight:500; }
 
   <div class="card">
     <h3>Método de ingreso</h3>
-    <div class="modos" style="grid-template-columns:1fr 1fr">
+    <div class="modos">
       <div class="modo-btn active" id="modo-manual" onclick="setModo('manual')">
         <span class="icon">⌨️</span>Manual
       </div>
       <div class="modo-btn" id="modo-foto" onclick="setModo('foto')">
         <span class="icon">📷</span>Foto / PDF
+      </div>
+      <div class="modo-btn" id="modo-excel" onclick="setModo('excel')">
+        <span class="icon">📊</span>Excel / CSV
       </div>
     </div>
     <div id="panel-manual">
@@ -230,6 +234,13 @@ label { font-size:.85rem; color:#666; font-weight:500; }
           🔍 Extraer pesos con IA
         </button>
       </div>
+    </div>
+    <div id="panel-excel" style="display:none;margin-top:8px">
+      <input type="file" id="excel-archivo" accept=".xlsx,.xls,.csv" onchange="onExcelSelected(this)" style="display:none">
+      <button class="btn btn-azul" onclick="document.getElementById('excel-archivo').click()">📊 Seleccionar archivo Excel / CSV</button>
+      <p style="font-size:.75rem;color:#999;margin-top:6px">Formatos: .xlsx, .xls, .csv · Una columna con pesos en kg (ej: 1.250) o gramos (ej: 1250)</p>
+      <p id="excel-status" style="font-size:.85rem;margin-top:8px;color:#555;min-height:20px"></p>
+      <button id="excel-btn-importar" class="btn btn-verde" onclick="importarDesdeExcel()" style="display:none"></button>
     </div>
   </div>
 
@@ -456,7 +467,10 @@ async function inicializarApp() {
 // ══ LOTES ═════════════════════════════════════════════════════
 async function cargarLotes() {
   const { data, error } = await sb.from('lotes').select('*').order('created_at');
-  if (!error) {
+  if (error) {
+    toast('Error cargando lotes: ' + error.message, 6000);
+    console.error('cargarLotes error:', error);
+  } else {
     lotes = data.map(r => ({
       id:           r.id,
       nombre:       r.nombre,
@@ -584,7 +598,7 @@ function irTab(tab) {
 // ══ MODO INGRESO ══════════════════════════════════════════════
 function setModo(m) {
   modoActual = m;
-  ['manual','foto'].forEach(x => {
+  ['manual','foto','excel'].forEach(x => {
     document.getElementById('modo-'+x).classList.toggle('active', x===m);
     document.getElementById('panel-'+x).style.display = x===m ? 'block' : 'none';
   });
@@ -720,6 +734,76 @@ async function procesarFoto() {
   finally { btn.disabled = false; btn.innerHTML = '🔍 Extraer pesos con IA'; }
 }
 
+// ══ EXCEL / CSV ═══════════════════════════════════════════════
+function onExcelSelected(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const statusEl  = document.getElementById('excel-status');
+  const btnImp    = document.getElementById('excel-btn-importar');
+  statusEl.textContent = `Leyendo ${file.name}…`;
+  btnImp.style.display = 'none';
+  window._excelPesos = null;
+
+  const reader = new FileReader();
+  reader.onerror = () => { statusEl.textContent = 'Error leyendo el archivo.'; };
+  reader.onload = e => {
+    try {
+      const wb   = XLSX.read(e.target.result, { type: 'array' });
+      const ws   = wb.Sheets[wb.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
+
+      const allNums = [];
+      rows.forEach(row => row.forEach(cell => {
+        const v = parseFloat(String(cell).replace(',', '.'));
+        if (!isNaN(v) && v > 0) allNums.push(v);
+      }));
+
+      if (!allNums.length) {
+        statusEl.textContent = 'No se encontraron valores numéricos en el archivo.';
+        return;
+      }
+
+      const enKg     = allNums.filter(v => v >= 0.05 && v <= 4);
+      const enGramos = allNums.filter(v => v >= 50   && v <= 4000);
+
+      let pesosImportar = null, unidadDetectada = '';
+      if (enKg.length >= enGramos.length && enKg.length > 0) {
+        pesosImportar    = enKg.map(v => Math.round(v * 1000) / 1000);
+        unidadDetectada  = 'kg';
+      } else if (enGramos.length > 0) {
+        pesosImportar    = enGramos.map(v => Math.round(v) / 1000);
+        unidadDetectada  = 'gramos';
+      }
+
+      if (!pesosImportar?.length) {
+        statusEl.textContent = 'No se encontraron pesos en rango válido (0.05–4 kg o 50–4000 g).';
+        return;
+      }
+
+      window._excelPesos = pesosImportar;
+      const muestra = pesosImportar.slice(0, 3).map(v => v.toFixed(3)).join(', ');
+      statusEl.textContent = `✅ ${pesosImportar.length} pesos en ${unidadDetectada} — Ej: ${muestra}…`;
+      btnImp.textContent   = `📥 Importar ${pesosImportar.length} pesos`;
+      btnImp.style.display = 'block';
+    } catch(err) {
+      statusEl.textContent = 'Error procesando archivo: ' + err.message;
+    }
+  };
+  reader.readAsArrayBuffer(file);
+  input.value = '';
+}
+
+function importarDesdeExcel() {
+  const pesosExcel = window._excelPesos;
+  if (!pesosExcel?.length) return;
+  pesosExcel.forEach(v => agregarPesoVal(v));
+  toast(`✅ ${pesosExcel.length} pesos importados desde Excel`);
+  window._excelPesos = null;
+  document.getElementById('excel-status').textContent = '';
+  document.getElementById('excel-btn-importar').style.display = 'none';
+  setModo('manual');
+}
+
 // ══ GUARDAR PESAJE ════════════════════════════════════════════
 async function guardarPesaje() {
   const lote   = document.getElementById('sel-lote').value;
@@ -779,7 +863,13 @@ async function cargarResumen() {
   document.getElementById('resumen-contenido').innerHTML = '<div class="alerta alerta-info">Cargando…</div>';
   try {
     const { data, error } = await sb.from('pesajes').select('*').eq('lote_id', lote).order('semana');
-    if (error || !data?.length) {
+    if (error) {
+      console.error('cargarResumen error:', error);
+      document.getElementById('resumen-contenido').innerHTML =
+        `<div class="alerta alerta-error">❌ Error al leer pesajes: ${error.message}<br><small style="opacity:.8">Código: ${error.code || '—'} · Verifica tu conexión o contacta soporte.</small></div>`;
+      return;
+    }
+    if (!data?.length) {
       document.getElementById('resumen-contenido').innerHTML = '<div class="alerta alerta-info">Sin registros para este lote</div>';
       return;
     }
