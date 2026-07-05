@@ -309,6 +309,19 @@ label { font-size:.85rem; color:#666; font-weight:500; }
 </div>
 
 </div><!-- /#app -->
+
+<!-- ══ MODAL EDITAR PESAJE ════════════════════════════════════ -->
+<div id="modal-editar" onclick="if(event.target===this)cerrarModalEditar()"
+  style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:300;padding:16px;overflow-y:auto">
+  <div style="background:#fff;border-radius:16px;padding:20px 18px;width:100%;max-width:440px;margin:24px auto">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <h2 style="font-size:1.1rem;color:var(--verde);margin:0">✏️ Editar pesaje</h2>
+      <button onclick="cerrarModalEditar()" style="background:none;border:none;font-size:1.7rem;cursor:pointer;color:#aaa;line-height:1;padding:0 4px">×</button>
+    </div>
+    <div id="modal-editar-body"></div>
+  </div>
+</div>
+
 <div id="toast"></div>
 
 <script>
@@ -874,6 +887,7 @@ async function cargarResumen() {
       return;
     }
     const registros = data.map(r => ({
+      id:          r.id,
       semana:      r.semana,
       fecha:       r.fecha,
       nAves:       r.n_aves,
@@ -906,7 +920,7 @@ function renderResumen(registros, curvaRef) {
       <td>${diff !== '—' ? (parseFloat(diff)>=0?'+':'')+diff+'%' : '—'}</td>
       <td><span class="semaforo ${color}"></span>${unif}%</td>
       <td>${cv}%</td><td>${r.nAves}</td>
-      <td>${hasPesos ? `<button onclick="event.stopPropagation();mostrarHistograma(${r.semana})" style="background:var(--verde);color:#fff;border:none;border-radius:6px;padding:3px 8px;font-size:.75rem;cursor:pointer">📊</button>` : ''}</td>
+      <td style="white-space:nowrap">${hasPesos ? `<button onclick="event.stopPropagation();mostrarHistograma(${r.semana})" style="background:var(--verde);color:#fff;border:none;border-radius:6px;padding:3px 6px;font-size:.75rem;cursor:pointer;margin-right:3px">📊</button>` : ''}<button onclick="event.stopPropagation();editarPesaje(${r.semana})" style="background:#f3e5f5;color:#6a1b9a;border:1px solid #ce93d8;border-radius:6px;padding:3px 6px;font-size:.75rem;cursor:pointer">✏️</button></td>
     </tr>`;
   }).join('');
 
@@ -1458,6 +1472,108 @@ function calcularStats(pesos) {
     uniformidad: Math.round(unif*10000)/10000,
     fueraRango:  fuera,
   };
+}
+
+// ══ EDITAR / ELIMINAR PESAJE ══════════════════════════════════
+let _editPesajeId   = null;
+let _editSemanaOrig = null;
+
+function editarPesaje(semana) {
+  const registros = window._histRegistros || [];
+  const loteId    = document.getElementById('sel-lote-hist').value;
+  const loteObj   = lotes.find(l => l.id === loteId);
+  const r         = registros.find(x => x.semana === semana);
+  if (!r) return;
+
+  _editPesajeId   = r.id;
+  _editSemanaOrig = semana;
+
+  let opsSemana = '';
+  for (let i = 1; i <= 19; i++) {
+    opsSemana += `<option value="${i}" ${i===semana?'selected':''}>${i===semana?'★ ':''}Semana ${i}</option>`;
+  }
+
+  const pesosTexto = r.pesosRaw?.length
+    ? r.pesosRaw.map(v => v.toFixed(3)).join('\n') : '';
+
+  document.getElementById('modal-editar-body').innerHTML = `
+    <p style="font-size:.82rem;color:#888;margin-bottom:14px">${loteObj?.nombre||''} · ${loteObj?.lineaGenetica||''}</p>
+    <label>Semana de vida
+      <select id="edit-semana" style="margin-top:6px">${opsSemana}</select>
+    </label>
+    <label style="margin-top:12px;display:block">Fecha de pesaje
+      <input type="date" id="edit-fecha" value="${r.fecha}" style="margin-top:6px">
+    </label>
+    ${pesosTexto
+      ? `<label style="margin-top:12px;display:block">Pesos individuales (kg, uno por línea o separados por coma)
+          <textarea id="edit-pesos" rows="7"
+            style="width:100%;padding:10px;border:1.5px solid var(--gris-b);border-radius:8px;font-size:.88rem;font-family:monospace;margin-top:6px;resize:vertical">${pesosTexto}</textarea>
+          <span style="font-size:.72rem;color:#999">Puedes agregar, corregir o quitar pesos · las estadísticas se recalculan solas</span>
+         </label>`
+      : `<div class="alerta alerta-info" style="margin-top:12px;font-size:.82rem">Este registro no tiene pesos individuales guardados — solo puedes editar semana y fecha.</div>`}
+    <div style="display:flex;gap:8px;margin-top:18px">
+      <button class="btn btn-verde" onclick="guardarEdicion()" style="flex:2">💾 Guardar cambios</button>
+      <button class="btn btn-rojo" onclick="confirmarEliminarPesaje()" style="flex:1">🗑️ Eliminar</button>
+    </div>
+    <button class="btn btn-gris" onclick="cerrarModalEditar()" style="margin-top:8px;color:#333">Cancelar</button>`;
+
+  document.getElementById('modal-editar').style.display = 'block';
+}
+
+function cerrarModalEditar() {
+  document.getElementById('modal-editar').style.display = 'none';
+  _editPesajeId = null; _editSemanaOrig = null;
+}
+
+async function guardarEdicion() {
+  if (!_editPesajeId) return;
+  const semana  = parseInt(document.getElementById('edit-semana').value);
+  const fecha   = document.getElementById('edit-fecha').value;
+  const loteId  = document.getElementById('sel-lote-hist').value;
+  const loteObj = lotes.find(l => l.id === loteId);
+  if (!semana || !fecha) { toast('Completa semana y fecha'); return; }
+
+  const curvaRef = getCurva(loteObj?.lineaGenetica);
+  let updateData = { semana, fecha };
+
+  const pesosEl = document.getElementById('edit-pesos');
+  if (pesosEl) {
+    const pesosNuevos = pesosEl.value.trim()
+      .split(/[\n,;\s]+/)
+      .map(v => parseFloat(v.replace(',','.')))
+      .filter(v => !isNaN(v) && v > 0);
+    if (!pesosNuevos.length) { toast('Ingresa al menos un peso válido'); return; }
+    const pesosKg = pesosNuevos.map(v => v > 10 ? v/1000 : v);
+    const stats   = calcularStats(pesosKg);
+    const ref     = curvaRef[semana] || {};
+    updateData = {
+      ...updateData,
+      n_aves:      stats.n,
+      promedio_kg: stats.promedio,
+      cv_pct:      stats.cv,
+      uniformidad: stats.uniformidad,
+      rango_min:   ref.min || null,
+      rango_max:   ref.max || null,
+      fuera_rango: stats.fueraRango,
+      pesos_raw:   pesosKg.join(','),
+    };
+  }
+
+  const { error } = await sb.from('pesajes').update(updateData).eq('id', _editPesajeId);
+  if (error) { toast('Error guardando: ' + error.message, 5000); return; }
+  toast('✅ Pesaje actualizado');
+  cerrarModalEditar();
+  cargarResumen();
+}
+
+async function confirmarEliminarPesaje() {
+  if (!_editPesajeId) return;
+  if (!confirm(`¿Eliminar el pesaje de la semana ${_editSemanaOrig}?\nEsta acción no se puede deshacer.`)) return;
+  const { error } = await sb.from('pesajes').delete().eq('id', _editPesajeId);
+  if (error) { toast('Error eliminando: ' + error.message, 5000); return; }
+  toast('🗑️ Pesaje eliminado');
+  cerrarModalEditar();
+  cargarResumen();
 }
 
 // ══ TOAST ═════════════════════════════════════════════════════
