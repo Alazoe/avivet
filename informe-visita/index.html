@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Informe de Visita Técnica · avivet.cl</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ── Base (igual que curvas-geneticas) ────────────────────────────────── */
+:root {
+  --fondo:     #f8f6f1;
+  --papel:     #ffffff;
+  --tinta:     #1a1a1a;
+  --suave:     #555;
+  --tenue:     #888;
+  --linea:     #e0ddd5;
+  --linea-f:   #c4c0b6;
+  --prim:      #1b4332;
+  --prim-osc:  #133024;
+  --acento:    #f0a500;
+  --acento-cl: #fef5e0;
+  --max-w:     1000px;
+  --fuente-t:  'Crimson Pro', Georgia, serif;
+  --fuente-c:  'Inter', system-ui, sans-serif;
+  --fuente-m:  'IBM Plex Mono', ui-monospace, monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--fuente-c);font-size:16px;line-height:1.6;
+  color:var(--tinta);background:var(--fondo);
+  background-image:
+    radial-gradient(circle at 20% 10%,rgba(27,67,50,.04) 0%,transparent 50%),
+    radial-gradient(circle at 80% 90%,rgba(240,165,0,.04) 0%,transparent 50%);
+  -webkit-font-smoothing:antialiased;
+}
+.cont{max-width:var(--max-w);margin:0 auto;padding:0 32px}
+
+.cabecera{background:var(--prim);border-bottom:3px solid var(--acento);padding:14px 0;position:sticky;top:0;z-index:100}
+.cabecera .cont{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.marca{display:flex;flex-direction:column;line-height:1.1}
+.marca-titulo{font-family:var(--fuente-t);font-size:22px;font-weight:700;color:#fff;letter-spacing:-.01em}
+.marca-sub{font-size:11px;color:var(--acento);letter-spacing:.06em;text-transform:uppercase;margin-top:2px}
+.nav a{color:rgba(255,255,255,.85);text-decoration:none;font-size:13px;font-weight:500;
+  margin-left:22px;padding:4px 0;border-bottom:2px solid transparent;transition:border-color .2s,color .2s}
+.nav a:hover{color:var(--acento);border-bottom-color:var(--acento)}
+
+.hero{padding:44px 0 36px;border-bottom:1px solid var(--linea);margin-bottom:36px}
+.hero-meta{font-family:var(--fuente-m);font-size:12px;color:var(--tenue);letter-spacing:.08em;text-transform:uppercase;margin-bottom:16px}
+.hero h1{font-family:var(--fuente-t);font-size:clamp(28px,4vw,42px);font-weight:700;
+  line-height:1.05;letter-spacing:-.02em;color:var(--prim);margin-bottom:16px;max-width:26ch}
+.hero-bajada{font-size:15px;color:var(--suave);max-width:70ch;line-height:1.7}
+
+/* ── Formulario ─────────────────────────────────────────────────────── */
+.form-panel{background:var(--papel);border:1px solid var(--linea);border-top:4px solid var(--prim);
+  border-radius:6px;padding:28px 32px;margin-bottom:40px}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:18px 20px}
+.campo{display:flex;flex-direction:column;gap:6px}
+.campo label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--suave)}
+.campo input,.campo select,.campo textarea{
+  font-family:var(--fuente-c);font-size:14px;padding:9px 12px;
+  border:1px solid var(--linea-f);border-radius:5px;background:#fff;color:var(--tinta);width:100%}
+.campo input:focus,.campo select:focus,.campo textarea:focus{outline:2px solid var(--acento);outline-offset:1px;border-color:transparent}
+.campo-full{grid-column:1/-1}
+.campo textarea{resize:vertical;min-height:64px}
+.campo-check{flex-direction:row;align-items:center;gap:8px;padding-top:22px}
+.campo-check input{width:16px;height:16px;accent-color:var(--prim)}
+.campo-check label{text-transform:none;font-size:13px;letter-spacing:0;color:var(--tinta);font-weight:500}
+.form-acciones{display:flex;gap:12px;margin-top:26px;flex-wrap:wrap;align-items:center}
+.btn-prim{font-family:var(--fuente-c);font-size:14px;font-weight:600;padding:11px 26px;
+  border:none;border-radius:6px;background:var(--prim);color:#fff;cursor:pointer;transition:background .18s}
+.btn-prim:hover{background:var(--prim-osc)}
+.btn-word{font-family:var(--fuente-c);font-size:14px;font-weight:600;padding:10px 24px;
+  border:2px solid var(--acento);border-radius:6px;background:transparent;color:#8a6100;
+  cursor:pointer;transition:all .18s;display:inline-flex;align-items:center;gap:8px}
+.btn-word:hover{background:var(--acento);color:#1a1a1a}
+#iv-error{display:none;background:#ffebee;border:1px solid #e05c5c;color:#b71c1c;
+  padding:10px 16px;border-radius:5px;font-size:13px;font-weight:500}
+
+/* ── Resultado / preview ────────────────────────────────────────────── */
+#iv-resultado{display:none;margin-bottom:64px}
+.prev-cabecera{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;
+  margin-bottom:24px;padding-bottom:14px;border-bottom:2px solid var(--linea)}
+.prev-cabecera h2{font-family:var(--fuente-t);font-size:clamp(22px,3vw,30px);font-weight:600;color:var(--prim);letter-spacing:-.01em}
+.iv-prev-h{font-family:var(--fuente-t);font-size:19px;font-weight:600;color:var(--prim);
+  margin:30px 0 12px;padding-bottom:6px;border-bottom:1px solid var(--linea)}
+.iv-nota{font-family:var(--fuente-m);font-size:11px;color:var(--tenue);font-weight:400}
+.iv-densidad{margin:16px 0;padding:12px 18px;border-radius:5px;font-size:14px}
+.iv-densidad.ok{background:#e8f5e9;border:1px solid #1b4332;color:#1b4332}
+.iv-densidad.alerta{background:#ffebee;border:1px solid #e05c5c;color:#b71c1c}
+
+.tabla-wrap{overflow-x:auto;background:var(--papel);border:1px solid var(--linea)}
+table{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums}
+thead{position:sticky;top:0;background:var(--prim);color:#fff;z-index:2}
+thead th{padding:9px 10px;text-align:center;font-weight:500;font-size:11px;letter-spacing:.04em;
+  text-transform:uppercase;border-right:1px solid rgba(255,255,255,.1);white-space:nowrap}
+thead th:last-child{border-right:0}
+tbody td{padding:6px 10px;text-align:center;border-bottom:1px solid var(--linea);
+  border-right:1px solid var(--linea);white-space:nowrap}
+tbody tr:hover{background:var(--acento-cl)}
+
+.eq-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:12px}
+.eq-ficha{background:var(--papel);border:1px solid var(--linea);border-top:3px solid var(--acento);
+  padding:18px 14px;text-align:center;border-radius:4px}
+.eq-num{font-family:var(--fuente-t);font-size:28px;font-weight:700;color:var(--prim);line-height:1}
+.eq-lbl{font-size:12px;font-weight:600;color:var(--tinta);margin:6px 0 2px}
+.eq-unit{font-size:11px;color:var(--tenue);font-variant-numeric:tabular-nums}
+
+.pie{margin-top:48px;padding:24px 0;border-top:1px solid var(--linea);font-size:13px;color:var(--tenue);text-align:center;line-height:1.7}
+.pie strong{color:var(--prim)}
+
+@media (max-width:640px){
+  .cont{padding:0 18px}
+  .form-panel{padding:20px 18px}
+}
+</style>
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="cont">
+    <div class="marca">
+      <span class="marca-titulo">AviVet</span>
+      <span class="marca-sub">Informe de Visita Técnica</span>
+    </div>
+    <nav class="nav">
+      <a href="../curvas-geneticas/">Curvas Genéticas</a>
+      <a href="../">Inicio</a>
+    </nav>
+  </div>
+</header>
+
+<main class="cont">
+  <section class="hero">
+    <div class="hero-meta">Herramienta veterinaria · <span id="iv-fecha-hoy"></span></div>
+    <h1>Informe de visita en un clic</h1>
+    <p class="hero-bajada">
+      Ingresa los datos del galpón y del lote — línea genética, fecha de nacimiento, número de aves —
+      y obtén un informe técnico con los requerimientos de equipamiento, densidad, ventilación,
+      consumo y proyección, listo para <strong>descargar en Word (.docx)</strong> y editar antes de entregarlo al productor.
+    </p>
+  </section>
+
+  <section class="form-panel">
+    <div class="form-grid">
+      <div class="campo campo-full" style="max-width:480px">
+        <label for="iv-productor">Productor / Predio</label>
+        <input id="iv-productor" type="text" placeholder="Ej: Sra. Juana Pérez — El Manzano">
+      </div>
+      <div class="campo">
+        <label for="iv-ubicacion">Ubicación / Comuna</label>
+        <input id="iv-ubicacion" type="text" placeholder="Ej: Paillaco, Los Ríos">
+      </div>
+      <div class="campo">
+        <label for="iv-fecha-visita">Fecha de visita</label>
+        <input id="iv-fecha-visita" type="date">
+      </div>
+      <div class="campo">
+        <label for="iv-linea">Línea genética</label>
+        <select id="iv-linea"></select>
+      </div>
+      <div class="campo">
+        <label for="iv-nacimiento">Fecha de nacimiento del lote</label>
+        <input id="iv-nacimiento" type="date">
+      </div>
+      <div class="campo">
+        <label for="iv-aves">Número de aves</label>
+        <input id="iv-aves" type="number" min="1" placeholder="Ej: 2000">
+      </div>
+      <div class="campo">
+        <label for="iv-sistema">Sistema</label>
+        <select id="iv-sistema">
+          <option value="piso">Piso</option>
+          <option value="jaula">Jaula</option>
+        </select>
+      </div>
+      <div class="campo">
+        <label for="iv-largo">Galpón — largo (m)</label>
+        <input id="iv-largo" type="number" min="0" step="0.1" oninput="ivDimensiones()" placeholder="Ej: 30">
+      </div>
+      <div class="campo">
+        <label for="iv-ancho">Galpón — ancho (m)</label>
+        <input id="iv-ancho" type="number" min="0" step="0.1" oninput="ivDimensiones()" placeholder="Ej: 10">
+      </div>
+      <div class="campo">
+        <label for="iv-superficie">Superficie (m²)</label>
+        <input id="iv-superficie" type="number" min="0" step="0.1" placeholder="Se calcula sola">
+      </div>
+      <div class="campo campo-check">
+        <input id="iv-exterior" type="checkbox">
+        <label for="iv-exterior">Sistema con acceso exterior (pastoreo)</label>
+      </div>
+      <div class="campo campo-full">
+        <label for="iv-obs">Observaciones de la visita (opcional — puedes completarlas después en Word)</label>
+        <textarea id="iv-obs" placeholder="Estado sanitario, cama, plumaje, hallazgos…"></textarea>
+      </div>
+      <div class="campo campo-full">
+        <label for="iv-reco">Recomendaciones (opcional)</label>
+        <textarea id="iv-reco" placeholder="Ajustes de manejo, equipamiento faltante, próximos pasos…"></textarea>
+      </div>
+    </div>
+    <div class="form-acciones">
+      <button class="btn-prim" onclick="ivGenerar()">Generar informe</button>
+      <div id="iv-error"></div>
+    </div>
+  </section>
+
+  <section id="iv-resultado">
+    <div class="prev-cabecera">
+      <h2 id="iv-prev-titulo"></h2>
+      <button class="btn-word" onclick="ivDescargarWord()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 16l-5-5h3V4h4v7h3l-5 5zm-8 2h16v2H4v-2z"/></svg>
+        Descargar Word (.docx)
+      </button>
+    </div>
+    <div id="iv-prev-cuerpo"></div>
+  </section>
+
+  <footer class="pie">
+    <strong>AviVet</strong> · MV Andrés Lazo Escobar · Medicina Aviar · Sur de Chile<br>
+    Estándares: manuales oficiales por línea genética (ver Curvas Genéticas) + guía de equipamiento de crianza.<br>
+    Los valores son referenciales — el criterio clínico del veterinario prevalece.
+  </footer>
+</main>
+
+<script src="../curvas-geneticas/app.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
