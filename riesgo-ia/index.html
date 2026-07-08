@@ -114,6 +114,12 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:0
 @media(max-width:900px){.eval-layout{grid-template-columns:1fr;}}
 .map-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);}
 #map{height:420px;width:100%;}
+.map-toolbar{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;flex-wrap:wrap;align-items:center;gap:10px;background:var(--surface2);}
+.btn-water{background:var(--surface);color:#0e7490;border:1px solid #67e8f9;border-radius:8px;padding:7px 14px;font-family:"DM Sans",sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;}
+.btn-water:hover{background:#ecfeff;}
+.btn-water.activo{background:#0e7490;color:#fff;border-color:#0e7490;}
+.map-toolbar .hint{font-size:11px;color:var(--text3);}
+.map-toolbar .link-btn{background:none;border:none;color:var(--red);font-size:12px;font-weight:600;cursor:pointer;text-decoration:underline;padding:0;}
 .map-legend{padding:12px 16px;border-top:1px solid var(--border);display:flex;flex-wrap:wrap;gap:12px;}
 .legend-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text2);}
 .legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
@@ -241,6 +247,7 @@ table.data-table{width:100%;border-collapse:collapse;font-size:13px;}
       <div class="sidebar-section">Módulos</div>
       <div class="sidebar-item active" id="nav-eval" onclick="showTab('eval')">🗺️ Evaluación</div>
       <div class="sidebar-item" id="nav-farms" onclick="showTab('farms')">🏭 Mis planteles</div>
+      <div class="sidebar-item" id="nav-brotes" onclick="showTab('brotes')">🦠 Brotes IA</div>
       <div class="sidebar-item" id="nav-met" onclick="showTab('met')">📋 Metodología</div>
     </div>
 
@@ -313,15 +320,22 @@ table.data-table{width:100%;border-collapse:collapse;font-size:13px;}
 
           <!-- Mapa -->
           <div class="map-wrap">
+            <div class="map-toolbar">
+              <button class="btn-water" id="btn-water-mode" onclick="toggleWaterMode()">💧 Marcar agua manualmente</button>
+              <span class="hint">Cambia a 🛰️ Satélite (arriba a la derecha) para ver esteros, tranques y humedales que OSM no tiene.</span>
+              <span class="hint" id="manual-water-info" style="display:none;">· <b id="manual-water-count">0</b> marcados <button class="link-btn" onclick="limpiarAguaManual()">limpiar</button></span>
+            </div>
             <div id="map"></div>
             <div class="map-legend">
               <div class="legend-item"><div class="legend-dot" style="background:#E74C3C;opacity:.5;border:1px solid #E74C3C;"></div>Radio 500 m</div>
               <div class="legend-item"><div class="legend-dot" style="background:#E67E22;opacity:.5;border:1px solid #E67E22;"></div>Radio 2 km</div>
               <div class="legend-item"><div class="legend-dot" style="background:#F1C40F;opacity:.4;border:1px solid #d4a017;"></div>Radio 5 km</div>
               <div class="legend-item"><div class="legend-dot" style="background:#5DADE2;"></div>Agua (OSM)</div>
+              <div class="legend-item"><div class="legend-dot" style="background:#22d3ee;border:1px solid #0e7490;"></div>Agua marcada</div>
               <div class="legend-item"><div class="legend-dot" style="background:#7f8c8d;"></div>Plantel registrado</div>
               <div class="legend-item" style="border-top:1px solid var(--border);padding-top:5px;margin-top:3px;"><div class="legend-dot" style="background:#c0392b;animation:blink 1.4s ease-in-out infinite;"></div>Brote comercial</div>
-              <div class="legend-item"><div class="legend-dot" style="background:#1A6EBF;width:10px;height:10px;"></div>Silvestre +</div>
+              <div class="legend-item"><div class="legend-dot" style="background:#E67E22;"></div>Traspatio</div>
+              <div class="legend-item"><div class="legend-dot" style="background:#1A6EBF;"></div>Silvestre +</div>
             </div>
           </div>
         </div>
@@ -377,6 +391,67 @@ table.data-table{width:100%;border-collapse:collapse;font-size:13px;}
         <div class="card">
           <h3>Planteles registrados</h3>
           <div id="tabla-planteles"></div>
+        </div>
+      </div>
+
+      <!-- ── TAB: BROTES IA ─────────────────────────────── -->
+      <div id="tab-brotes" style="display:none;">
+        <div class="section-header">
+          <div class="section-icon">🦠</div>
+          <div>
+            <div class="section-title">Brotes de Influenza Aviar</div>
+            <div class="section-meta">Registra brotes reales (SAG / WAHIS / prensa) para verlos en el mapa de evaluación</div>
+          </div>
+        </div>
+
+        <div style="background:var(--gold-l);border:1px solid #e8d08a;border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:13px;line-height:1.6;">
+          El mapa ya trae los <b>brotes oficiales base</b> (SAG/WAHIS 2026). Aquí agregas nuevos brotes a medida que se confirman;
+          se guardan en este navegador y aparecen junto a los oficiales. Para que queden fijos en el sitio para todos, envíame los datos y los dejo en el código base.
+        </div>
+
+        <div class="card">
+          <h3>Registrar brote</h3>
+          <div class="grid-3" style="margin-bottom:14px;">
+            <div class="form-group">
+              <label class="form-label">Tipo *</label>
+              <select class="form-select" id="b-tipo">
+                <option value="comercial">🚨 Plantel comercial</option>
+                <option value="traspatio">🏡 Traspatio</option>
+                <option value="silvestre">🦢 Aves silvestres</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Fecha *</label>
+              <input type="text" class="form-input" id="b-fecha" placeholder="Ej. 20 may 2026">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Región *</label>
+              <input type="text" class="form-input" id="b-region" placeholder="Ej. Los Lagos">
+            </div>
+          </div>
+          <div class="grid-2" style="margin-bottom:14px;">
+            <div class="form-group">
+              <label class="form-label">Latitud *</label>
+              <input type="number" class="form-input" id="b-lat" step="0.000001" placeholder="-41.4693">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Longitud *</label>
+              <input type="number" class="form-input" id="b-lon" step="0.000001" placeholder="-72.9424">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Detalle</label>
+            <input type="text" class="form-input" id="b-detalle" placeholder="Ej. Plantel de postura, ~40.000 aves, comuna X">
+          </div>
+          <div style="margin-top:14px;">
+            <button class="btn-secondary" onclick="agregarBrote()">+ Guardar brote</button>
+          </div>
+          <div id="b-msg" style="margin-top:10px;font-size:13px;"></div>
+        </div>
+
+        <div class="card">
+          <h3>Brotes registrados por ti</h3>
+          <div id="tabla-brotes"></div>
         </div>
       </div>
 
@@ -455,6 +530,7 @@ table.data-table{width:100%;border-collapse:collapse;font-size:13px;}
 //  CONSTANTES Y ESTADO
 // ════════════════════════════════════════════════════════════════
 const DB_KEY = 'avivet_planteles_v1';
+const BROTES_KEY = 'avivet_brotes_v1';
 const RADIUS_SEARCH_M = 6000;
 const FARM_RADIUS_KM  = 5.0;
 
@@ -491,6 +567,9 @@ const WAHIS_BROTES = [
 let leafletMap  = null;
 let mapLayers   = [];
 let broteMarkers = [];
+let manualWater  = [];        // cuerpos de agua marcados a mano por el usuario
+let waterMode    = false;     // modo "marcar agua" activo
+let lastEval     = null;      // último cálculo, para recalcular al marcar agua
 
 // ════════════════════════════════════════════════════════════════
 //  RIESGO — CÁLCULO
@@ -580,36 +659,123 @@ function nearbyFarms(lat, lon){
 function initMap(){
   if(leafletMap) return;
   leafletMap = L.map('map').setView([-38.5, -72.5], 7);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{
+
+  // Capas base: mapa claro (etiquetas) y satélite (identificación visual de agua)
+  const claro = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{
     attribution:'© OpenStreetMap / CartoDB', maxZoom:19
   }).addTo(leafletMap);
+  const satelite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{
+    attribution:'© Esri, Maxar, Earthstar Geographics', maxZoom:19
+  });
+  // Etiquetas sobre el satélite (nombres de esteros, lagos, comunas)
+  const etiquetas = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png',{
+    maxZoom:19, pane:'overlayPane'
+  });
+  const sateliteConEtiquetas = L.layerGroup([satelite, etiquetas]);
+
+  L.control.layers(
+    { '🗺️ Mapa claro': claro, '🛰️ Satélite': sateliteConEtiquetas },
+    null,
+    { position:'topright', collapsed:false }
+  ).addTo(leafletMap);
+
+  // Clic en el mapa: si el modo "marcar agua" está activo, agrega un cuerpo de agua
+  leafletMap.on('click', e => {
+    if(!waterMode) return;
+    manualWater.push({ lat:e.latlng.lat, lon:e.latlng.lng });
+    refreshManualWater();
+  });
+
   renderBrotes();
 }
 
+const BROTE_STYLE = {
+  comercial: { color:'#c0392b', size:18, pulse:true,  emoji:'🚨', label:'Plantel comercial' },
+  traspatio: { color:'#E67E22', size:14, pulse:false, emoji:'🏡', label:'Traspatio' },
+  silvestre: { color:'#1A6EBF', size:13, pulse:false, emoji:'🦢', label:'Aves silvestres' },
+};
+
+function getAllBrotes(){
+  const oficiales = WAHIS_BROTES.map(b => ({ ...b, fuente:'SAG / WAHIS' }));
+  return oficiales.concat(loadBrotes());
+}
+
 function renderBrotes(){
-  WAHIS_BROTES.forEach(b => {
-    const isCom = b.tipo === 'comercial';
-    const color = isCom ? '#c0392b' : '#1A6EBF';
-    const size  = isCom ? 18 : 13;
-    const pulse = isCom ? 'animation:blink 1.4s ease-in-out infinite;' : '';
+  broteMarkers.forEach(m => leafletMap.removeLayer(m));
+  broteMarkers = [];
+  getAllBrotes().forEach(b => {
+    const st = BROTE_STYLE[b.tipo] || BROTE_STYLE.silvestre;
+    const pulse = st.pulse ? 'animation:blink 1.4s ease-in-out infinite;' : '';
     const icon  = L.divIcon({
       className:'',
-      html:`<div style="width:${size}px;height:${size}px;border-radius:50%;background:${color};border:2.5px solid #fff;box-shadow:0 1px 5px rgba(0,0,0,.45);${pulse}"></div>`,
-      iconAnchor:[size/2, size/2],
+      html:`<div style="width:${st.size}px;height:${st.size}px;border-radius:50%;background:${st.color};border:2.5px solid #fff;box-shadow:0 1px 5px rgba(0,0,0,.45);${pulse}"></div>`,
+      iconAnchor:[st.size/2, st.size/2],
     });
     const popup = L.popup({ maxWidth:220 }).setContent(`
       <div style="font-family:'DM Sans',sans-serif;font-size:13px;line-height:1.6;">
-        <div style="font-weight:700;color:${color};margin-bottom:3px;">${isCom ? '🚨 Plantel comercial' : '🦢 Aves silvestres'}</div>
+        <div style="font-weight:700;color:${st.color};margin-bottom:3px;">${st.emoji} ${st.label}</div>
         <div><b>Región:</b> ${b.region}</div>
         <div><b>Fecha:</b> ${b.fecha}</div>
-        <div style="margin-top:4px;font-size:11.5px;color:#555;">${b.detalle}</div>
-        <div style="margin-top:5px;font-size:10px;color:#aaa;border-top:1px solid #eee;padding-top:4px;">Fuente: SAG / WAHIS</div>
+        <div style="margin-top:4px;font-size:11.5px;color:#555;">${b.detalle||''}</div>
+        <div style="margin-top:5px;font-size:10px;color:#aaa;border-top:1px solid #eee;padding-top:4px;">Fuente: ${b.fuente||'Registro propio'}</div>
       </div>`);
     const m = L.marker([b.lat, b.lon], { icon }).bindPopup(popup);
     m.addTo(leafletMap);
     broteMarkers.push(m);
   });
 }
+
+// ── Agua manual (identificación satelital) ─────────────────────────
+function toggleWaterMode(){
+  waterMode = !waterMode;
+  const btn = document.getElementById('btn-water-mode');
+  const cont = document.getElementById('map');
+  btn.classList.toggle('activo', waterMode);
+  btn.textContent = waterMode ? '✓ Marcando… (clic en el mapa)' : '💧 Marcar agua manualmente';
+  cont.style.cursor = waterMode ? 'crosshair' : '';
+}
+
+function refreshManualWater(){
+  document.getElementById('manual-water-count').textContent = manualWater.length;
+  document.getElementById('manual-water-info').style.display = manualWater.length ? 'flex' : 'none';
+  // Redibuja marcadores de agua manual sobre el mapa
+  if(lastEval){
+    recalcularConAguaManual();
+  } else {
+    drawManualWaterMarkers();
+  }
+}
+
+function drawManualWaterMarkers(){
+  mapLayers.filter(l => l._esAguaManual).forEach(l => leafletMap.removeLayer(l));
+  mapLayers = mapLayers.filter(l => !l._esAguaManual);
+  manualWater.forEach((w,i) => {
+    const mk = L.circleMarker([w.lat,w.lon],{radius:7,color:'#0e7490',fillColor:'#22d3ee',fillOpacity:.85,weight:2})
+      .bindTooltip(`💧 Agua marcada #${i+1} (clic para quitar)`)
+      .on('click', () => { if(!waterMode){ manualWater.splice(i,1); refreshManualWater(); } });
+    mk._esAguaManual = true;
+    leafletMap.addLayer(mk); mapLayers.push(mk);
+  });
+}
+
+function limpiarAguaManual(){
+  manualWater = [];
+  waterMode = false;
+  document.getElementById('btn-water-mode').classList.remove('activo');
+  document.getElementById('btn-water-mode').textContent = '💧 Marcar agua manualmente';
+  document.getElementById('map').style.cursor = '';
+  refreshManualWater();
+}
+
+function recalcularConAguaManual(){
+  if(!lastEval) return;
+  const { lat, lon, tipo, manualFarms, osmWater } = lastEval;
+  runScore(lat, lon, tipo, manualFarms, osmWater);
+}
+
+// ── Brotes DB (localStorage) ───────────────────────────────────────
+function loadBrotes(){ try{ return JSON.parse(localStorage.getItem(BROTES_KEY)) || []; } catch{ return []; } }
+function saveBrotes(d){ localStorage.setItem(BROTES_KEY, JSON.stringify(d)); }
 
 function clearMapLayers(){
   mapLayers.forEach(l => leafletMap.removeLayer(l));
@@ -631,16 +797,25 @@ function renderMap(lat, lon, tier, waterFeatures, dbFarms){
   ];
   rings.forEach(({r,c,o,t}) => addLayer(L.circle([lat,lon],{radius:r,color:c,weight:1.5,fillColor:c,fillOpacity:o}).bindTooltip(t)));
 
-  // Cuerpos de agua (máximo 8)
-  waterFeatures.slice(0,8).forEach(w => {
+  // Cuerpos de agua (OSM máx. 8 + todos los marcados a mano)
+  const osmShown = waterFeatures.filter(w => !w.manual).slice(0,8);
+  const manualShown = waterFeatures.filter(w => w.manual);
+  osmShown.forEach(w => {
     addLayer(L.circleMarker([w.lat,w.lon],{radius:7,color:'#1A6EBF',fillColor:'#5DADE2',fillOpacity:.75,weight:2})
       .bindTooltip(`💧 ${w.name||w.type} (${w.dist.toFixed(2)} km)`));
+  });
+  manualShown.forEach((w,i) => {
+    const mk = L.circleMarker([w.lat,w.lon],{radius:7,color:'#0e7490',fillColor:'#22d3ee',fillOpacity:.85,weight:2})
+      .bindTooltip(`💧 Agua marcada (${w.dist.toFixed(2)} km) — clic para quitar`)
+      .on('click', () => { if(!waterMode){ manualWater.splice(i,1); refreshManualWater(); } });
+    mk._esAguaManual = true;
+    addLayer(mk);
   });
 
   // Línea al agua más cercana
   if(waterFeatures.length){
     const n = waterFeatures[0];
-    addLayer(L.polyline([[lat,lon],[n.lat,n.lon]],{color:'#1A6EBF',weight:1.5,dashArray:'6'}));
+    addLayer(L.polyline([[lat,lon],[n.lat,n.lon]],{color:n.manual?'#0e7490':'#1A6EBF',weight:1.5,dashArray:'6'}));
   }
 
   // Otros planteles del DB
@@ -722,17 +897,26 @@ async function calcular(){
   setBtnLoading(true);
   setOsmStatus('loading','Consultando OSM…');
 
-  let waterFeatures = [];
-  let nearestKm = 6.0;
-
+  let osmWater = [];
   try{
-    waterFeatures = await fetchWater(lat, lon);
-    nearestKm = waterFeatures.length ? waterFeatures[0].dist : 6.0;
-    setOsmStatus('ok', `${waterFeatures.length} cuerpos de agua`);
+    osmWater = await fetchWater(lat, lon);
+    setOsmStatus('ok', `${osmWater.length} cuerpos de agua`);
   } catch(e){
     setOsmStatus('error','Sin conexión OSM');
-    nearestKm = 6.0;
   }
+
+  runScore(lat, lon, tipo, manualFarms, osmWater);
+  setBtnLoading(false);
+}
+
+// Calcula y dibuja combinando agua OSM + agua marcada a mano.
+function runScore(lat, lon, tipo, manualFarms, osmWater){
+  const manualFeatures = manualWater.map(w => ({
+    lat:w.lat, lon:w.lon, name:'Marcado a mano', type:'manual', manual:true,
+    dist: haversine(lat, lon, w.lat, w.lon)
+  }));
+  const waterFeatures = osmWater.concat(manualFeatures).sort((a,b) => a.dist - b.dist);
+  const nearestKm = waterFeatures.length ? waterFeatures[0].dist : 6.0;
 
   const dbNearby = nearbyFarms(lat, lon);
   const totalFarms = dbNearby.length + manualFarms;
@@ -747,7 +931,7 @@ async function calcular(){
   renderMap(lat, lon, tier, waterFeatures, dbNearby);
   renderResultado(tier, {water:w,farms:f,season:s,type:t}, nearestKm, dbNearby.length, manualFarms);
 
-  setBtnLoading(false);
+  lastEval = { lat, lon, tipo, manualFarms, osmWater };
 }
 
 function setBtnLoading(on){
@@ -821,14 +1005,80 @@ function renderTablaPlantel(){
 }
 
 // ════════════════════════════════════════════════════════════════
+//  BROTES — REGISTRO DE USUARIO
+// ════════════════════════════════════════════════════════════════
+function agregarBrote(){
+  const tipo    = document.getElementById('b-tipo').value;
+  const fecha   = document.getElementById('b-fecha').value.trim();
+  const region  = document.getElementById('b-region').value.trim();
+  const lat     = parseFloat(document.getElementById('b-lat').value);
+  const lon     = parseFloat(document.getElementById('b-lon').value);
+  const detalle = document.getElementById('b-detalle').value.trim();
+  const msg     = document.getElementById('b-msg');
+
+  if(!fecha || !region){ msg.innerHTML='<span style="color:var(--red)">Fecha y región son obligatorias.</span>'; return; }
+  if(isNaN(lat)||isNaN(lon)){ msg.innerHTML='<span style="color:var(--red)">Coordenadas inválidas.</span>'; return; }
+  if(lat < -90||lat > 90||lon < -180||lon > 180){ msg.innerHTML='<span style="color:var(--red)">Coordenadas fuera de rango.</span>'; return; }
+
+  const brotes = loadBrotes();
+  brotes.push({ tipo, fecha, region, lat, lon, detalle, fuente:'Registro propio' });
+  saveBrotes(brotes);
+  msg.innerHTML='<span style="color:var(--ok)">✓ Brote guardado. Ya aparece en el mapa.</span>';
+  ['b-fecha','b-region','b-lat','b-lon','b-detalle'].forEach(id => document.getElementById(id).value='');
+  setTimeout(()=>{ msg.innerHTML=''; }, 2500);
+  renderTablaBrotes();
+  if(leafletMap) renderBrotes();
+}
+
+function eliminarBrote(idx){
+  const brotes = loadBrotes();
+  if(!brotes[idx]) return;
+  if(!confirm(`¿Eliminar el brote de ${brotes[idx].region} (${brotes[idx].fecha})?`)) return;
+  brotes.splice(idx,1);
+  saveBrotes(brotes);
+  renderTablaBrotes();
+  if(leafletMap) renderBrotes();
+}
+
+function renderTablaBrotes(){
+  const brotes = loadBrotes();
+  const wrap = document.getElementById('tabla-brotes');
+  if(!brotes.length){
+    wrap.innerHTML='<div class="empty-state"><span style="font-size:2rem;">🦠</span><p>Aún no has registrado brotes. El mapa igual muestra los oficiales SAG/WAHIS.</p></div>';
+    return;
+  }
+  const rows = brotes.map((b,i) => {
+    const st = BROTE_STYLE[b.tipo] || BROTE_STYLE.silvestre;
+    return `
+    <tr>
+      <td><span style="color:${st.color};font-weight:600;">${st.emoji} ${st.label}</span></td>
+      <td>${b.fecha}</td>
+      <td><strong>${b.region}</strong></td>
+      <td>${b.lat.toFixed(4)}</td>
+      <td>${b.lon.toFixed(4)}</td>
+      <td style="color:var(--text3);font-size:12px;">${b.detalle||'—'}</td>
+      <td><button class="del-btn" onclick="eliminarBrote(${i})">✕</button></td>
+    </tr>`;
+  }).join('');
+  wrap.innerHTML=`
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>Tipo</th><th>Fecha</th><th>Región</th><th>Lat</th><th>Lon</th><th>Detalle</th><th></th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+}
+
+// ════════════════════════════════════════════════════════════════
 //  NAVEGACIÓN
 // ════════════════════════════════════════════════════════════════
 function showTab(tab){
-  ['eval','farms','met'].forEach(t => {
+  ['eval','farms','brotes','met'].forEach(t => {
     document.getElementById('tab-'+t).style.display = t===tab ? 'block' : 'none';
     document.getElementById('nav-'+t).classList.toggle('active', t===tab);
   });
   if(tab==='farms') renderTablaPlantel();
+  if(tab==='brotes') renderTablaBrotes();
   if(tab==='eval'){ initMap(); setTimeout(()=>leafletMap?.invalidateSize(), 100); }
 }
 
