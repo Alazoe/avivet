@@ -41,24 +41,8 @@ const MATERIAS_PRIMAS = [
   ["30INSC-04",  "SACO 50X80 ROJO",                  "unidad","Envases"],
 ];
 
-const RECETAS = {
-  "PONEDORA 1":     { codigo: "20P120-65", activo: true,  fecha: "19-may",
-    insumos: {"30MAIZ-00":562,"30AFSY-00":266,"30COCH-00":106,"30HTR3-00":50,"30PHSB-00":6,"30MSRB-00":0.5,"30MET2-00":2.5,"30INMU-00":0.5,"30LIS2-00":0.5,"30PLFD-00":2,"30NSLP-00":0.5,"30SAL6-00":4,"30OVTO-00":1,"30NSLG-00":1,"30PIGM-00":0.2}},
-  "PONEDORA 2":     { codigo: "20P266-90", activo: true,  fecha: "19-may",
-    insumos: {"30MAIZ-00":552,"30AFSY-00":257,"30COCH-00":127,"30HTR3-00":50,"30PHSB-00":4,"30MSRB-00":0.5,"30MET2-00":2,"30INMU-00":0.5,"30LIS2-00":0.3,"30PLFD-00":2.5,"30SAL6-00":4,"30OVTO-00":1,"30NSLG-00":1,"30PIGM-00":0.2}},
-  "POLLITA INICIAL":{ codigo: "20INI1-08", activo: true,  fecha: "19-may",
-    insumos: {"30MAIZ-00":600,"30AFSY-00":315,"30COCH-00":15,"30HTR3-00":50,"30PHSB-00":10,"30MSRB-00":0.5,"30MET2-00":2.5,"30INMU-00":0.5,"30LIS2-00":1.6,"30COCI-00":0.5,"30NSLP-00":1,"30SAL6-00":2.5}},
-  "RECRÍA":         { codigo: "20REC9-15", activo: true,  fecha: "19-may",
-    insumos: {"30MAIZ-00":661,"30AFSY-00":260,"30COCH-00":13,"30HTR3-00":50,"30PHSB-00":9,"30MSRB-00":0.5,"30MET2-00":1,"30INMU-00":0.5,"30LIS2-00":0.3,"30COCI-00":0.4,"30NSLP-00":1,"30SAL6-00":2.5}},
-  "PREPOSTURA":     { codigo: "",          activo: true,  fecha: "19-may",
-    insumos: {"30MAIZ-00":646,"30AFSY-00":250,"30COCH-00":63,"30HTR3-00":25,"30PHSB-00":9,"30MSRB-00":0.5,"30MET2-00":1,"30INMU-00":0.5,"30LIS2-00":0.3,"30SAL6-00":3,"30NSLG-00":1}},
-  "LOLOL":          { codigo: "",          activo: true,  fecha: "19-may",
-    insumos: {"30MAIZ-00":562,"30AFSY-00":269,"30COCH-00":105,"30HTR3-00":50,"30PHSB-00":6,"30MSRB-00":0.5,"30MET2-00":2,"30INMU-00":0.5,"30LIS2-00":0.3,"30PLFD-00":2,"30SAL6-00":3,"30NSLG-00":1}},
-  "POLLA NUEVA":    { codigo: "",          activo: true,  fecha: "25-ene",
-    insumos: {"30MAIZ-00":558,"30AFSY-00":267,"30COCH-00":108,"30HTR3-00":50,"30PHSB-00":7,"30MSRB-00":0.5,"30MET2-00":2,"30INMU-00":0.5,"30LIS2-00":0.3,"30PLFD-00":3,"30NSLP-00":0.5,"30SAL6-00":3,"30NSLG-00":1,"30PIGM-00":0.2}},
-  "LAMPA":          { codigo: "",          activo: false, fecha: "13-nov",
-    insumos: {"30MAIZ-00":527,"30AFSY-00":315,"30COCH-00":108,"30HTR3-00":25,"30PHSB-00":11,"30MSRB-00":0.5,"30MET2-00":3,"30INMU-00":0.5,"30LIS2-00":1,"30PLFD-00":4,"30NSLP-00":0.5,"30SAL6-00":3.5,"30NSLG-00":1,"30PIGM-00":0.2}},
-};
+// Las recetas deben ser ingresadas por el cliente desde el panel admin (Recetas → Nueva dieta)
+const RECETAS = {};
 
 // ──────────────────────────────────────────────
 // INICIALIZACIÓN — Crea todas las hojas
@@ -73,6 +57,7 @@ function inicializarSistema() {
   crearHojaOrdenes(ss);
   crearHojaProyecciones(ss);
   crearHojaPlanificacion(ss);
+  crearHojaStockTeorico(ss);
   cargarStocksMinimos();
   const s1 = ss.getSheetByName("Sheet1") || ss.getSheetByName("Hoja 1") || ss.getSheetByName("Hoja1");
   if (s1 && ss.getSheets().length > 1) ss.deleteSheet(s1);
@@ -321,8 +306,11 @@ function doGet(e) {
       case "guardarOrden":         result = guardarOrden(e.parameter);                    break;
       case "guardarPlanificacion": result = guardarPlanificacion(JSON.parse(decodeURIComponent(e.parameter.payload||"{}"))); break;
       case "getPlanificacion":     result = getPlanificacion(e.parameter);                break;
-      case "getConteosDelDia":     result = getConteosDelDia(e.parameter.fecha);          break;
-      default: result = { ok: true, msg: "Sistema activo" };
+      case "getConteosDelDia":     result = getConteosDelDia(e.parameter.fecha);                                               break;
+      case "actualizarPrecios":    result = actualizarPrecios(JSON.parse(decodeURIComponent(e.parameter.payload||"{}")));   break;
+      case "calcularStockTeorico": result = calcularYGuardarStockTeorico(e.parameter);                                       break;
+      case "getStockTeorico":      result = getStockTeorico(e.parameter);                                                    break;
+      default: result = { ok: true, msg: "Reinhard — sistema activo" };
     }
   } catch(err) {
     result = { ok: false, error: err.message };
@@ -960,5 +948,99 @@ function columnToLetter(col) {
     col       = Math.floor((col - 1) / 26);
   }
   return letter;
+}
+
+// ──────────────────────────────────────────────
+// STOCK TEÓRICO
+// ──────────────────────────────────────────────
+
+function crearHojaStockTeorico(ss) {
+  const ws = getOrCreate(ss, "STOCK_TEORICO"); ws.clearContents();
+  ws.getRange("A1:J1").merge()
+    .setValue("STOCK TEÓRICO — Calculado desde último conteo + plan de producción")
+    .setBackground("#1B4332").setFontColor("#FFFFFF").setFontWeight("bold").setFontSize(13).setHorizontalAlignment("center");
+  ws.setRowHeight(1, 30);
+  ws.getRange(2, 1, 1, 10).setValues([[
+    "Fecha Producción","Código MP","Nombre MP",
+    "Fecha Último Conteo","Stock Último Conteo (kg)",
+    "Consumo Acumulado (kg)","Stock Teórico (kg)",
+    "Conteo Real (kg)","Diferencia (kg)","Calculado"
+  ]]);
+  headerStyle(ws, 2, 10, "2D6A4F");
+  [130,120,250,140,160,160,140,130,120,130].forEach((w, i) => ws.setColumnWidth(i+1, w));
+  ws.setFrozenRows(2);
+}
+
+function actualizarPrecios(precios) {
+  if (!precios || typeof precios !== "object") return { ok: false, error: "Payload inválido" };
+  const ss = SpreadsheetApp.openById(SHEET_ID); const ws = ss.getSheetByName("MATERIAS_PRIMAS");
+  if (!ws) return { ok: false, error: "Hoja MATERIAS_PRIMAS no encontrada" };
+  const data = ws.getRange(3, 1, ws.getLastRow()-2, 7).getValues(); let actualizados = 0;
+  data.forEach((row, i) => { const cod = row[0]; if (cod && precios[cod] !== undefined) { ws.getRange(3+i, 7).setValue(Number(precios[cod])||0); actualizados++; } });
+  return { ok: true, msg: `${actualizados} precios actualizados`, n: actualizados };
+}
+
+function calcularYGuardarStockTeorico(params) {
+  const fecha = params.fecha || Utilities.formatDate(new Date(), "America/Santiago", "yyyy-MM-dd");
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  const wsConteos = ss.getSheetByName("CONTEOS_FISICOS");
+  const ultimoConteo = {};
+  if (wsConteos && wsConteos.getLastRow() > 2) {
+    wsConteos.getRange(3, 1, wsConteos.getLastRow()-2, 8).getValues().filter(r => r[0] && r[1]).forEach(r => {
+      const f = normFecha(r[1]); const cod = String(r[3]||"").trim(); const kg = parseFloat(r[5])||0;
+      if (f <= fecha && cod) { if (!ultimoConteo[cod] || f > ultimoConteo[cod].fecha || (f === ultimoConteo[cod].fecha && String(r[2]) > ultimoConteo[cod].hora)) ultimoConteo[cod] = { fecha: f, hora: String(r[2]||""), cantidad: kg }; }
+    });
+  }
+  const recetasRes = getRecetas();
+  const recetas = recetasRes.ok && Object.keys(recetasRes.data).length ? recetasRes.data : {};
+  const consumoAcum = {};
+  const wsPlan = ss.getSheetByName("PLANIFICACION");
+  if (wsPlan && wsPlan.getLastRow() > 2) {
+    wsPlan.getRange(3, 1, wsPlan.getLastRow()-2, 3).getValues().filter(r => r[0] && r[2] > 0).forEach(r => {
+      const fPlan = normFecha(r[0]); if (fPlan > fecha) return;
+      const dieta = String(r[1]||"").trim(); const kgDia = parseFloat(r[2])||0; const rec = recetas[dieta]; if (!rec) return;
+      Object.entries(rec.insumos||{}).forEach(([cod, prop]) => { const uc = ultimoConteo[cod]; if (uc && fPlan > uc.fecha && fPlan <= fecha) consumoAcum[cod] = (consumoAcum[cod]||0) + kgDia*(prop/1000); });
+    });
+  }
+  const resultado = [];
+  MATERIAS_PRIMAS.filter(([,,,g]) => g !== "Envases").forEach(([cod, nombre]) => {
+    const uc = ultimoConteo[cod]; if (!uc) return;
+    const consumo = Math.round((consumoAcum[cod]||0)*10)/10; const teorico = Math.round((uc.cantidad - consumo)*10)/10;
+    resultado.push({ cod, nombre, fecha_conteo: uc.fecha, stock_conteo: uc.cantidad, consumo, teorico });
+  });
+  let wsTeor = ss.getSheetByName("STOCK_TEORICO");
+  if (!wsTeor) { crearHojaStockTeorico(ss); wsTeor = ss.getSheetByName("STOCK_TEORICO"); }
+  if (wsTeor.getLastRow() > 2) {
+    const existing = wsTeor.getRange(3, 1, wsTeor.getLastRow()-2, 1).getValues();
+    const toDelete = []; existing.forEach((r, i) => { if (normFecha(r[0]) === fecha) toDelete.push(i+3); });
+    for (let i = toDelete.length-1; i >= 0; i--) wsTeor.deleteRow(toDelete[i]);
+  }
+  const conteosReales = {};
+  if (wsConteos && wsConteos.getLastRow() > 2) {
+    wsConteos.getRange(3, 1, wsConteos.getLastRow()-2, 8).getValues().filter(r => r[0] && normFecha(r[1]) === fecha).forEach(r => { const cod = String(r[3]||"").trim(); if (cod) conteosReales[cod] = parseFloat(r[5])||0; });
+  }
+  const ts = Utilities.formatDate(new Date(), "America/Santiago", "yyyy-MM-dd HH:mm");
+  resultado.forEach(r => { const real = conteosReales[r.cod] !== undefined ? conteosReales[r.cod] : ""; const diff = real !== "" ? Math.round((real - r.teorico)*10)/10 : ""; wsTeor.appendRow([fecha, r.cod, r.nombre, r.fecha_conteo, r.stock_conteo, r.consumo, r.teorico, real, diff, ts]); });
+  SpreadsheetApp.flush();
+  return { ok: true, fecha, data: resultado, n: resultado.length, msg: `Stock teórico calculado para ${fecha}: ${resultado.length} insumos` };
+}
+
+function getStockTeorico(params) {
+  const fecha = params.fecha || ""; const ss = SpreadsheetApp.openById(SHEET_ID);
+  const ws = ss.getSheetByName("STOCK_TEORICO"); if (!ws || ws.getLastRow() < 3) return { ok: true, data: [], calculado: false };
+  const rows = ws.getRange(3, 1, ws.getLastRow()-2, 10).getValues().filter(r => r[0] && (!fecha || normFecha(r[0]) === fecha));
+  if (!rows.length) return { ok: true, data: [], calculado: false };
+  const wsConteos = ss.getSheetByName("CONTEOS_FISICOS"); const conteosReales = {};
+  if (wsConteos && wsConteos.getLastRow() > 2) {
+    wsConteos.getRange(3, 1, wsConteos.getLastRow()-2, 8).getValues().filter(r => r[0] && normFecha(r[1]) === fecha).forEach(r => { const cod = String(r[3]||"").trim(); if (cod) conteosReales[cod] = parseFloat(r[5])||0; });
+  }
+  return { ok: true, calculado: true, fecha, data: rows.map(r => {
+    const cod = String(r[1]||""); const teorico = parseFloat(r[6])||0;
+    const real = conteosReales[cod] !== undefined ? conteosReales[cod] : (r[7] !== "" ? parseFloat(r[7]) : null);
+    const diff = real !== null ? Math.round((real - teorico)*10)/10 : null;
+    let estado = "Pendiente";
+    if (real !== null) { const pct = teorico > 0 ? Math.abs(diff)/teorico*100 : 0; estado = pct <= 3 ? "OK" : pct <= 7 ? "Alerta" : (diff < 0 ? "Pérdida" : "Exceso"); }
+    return { codigo: cod, nombre: String(r[2]||""), fecha_ultimo_conteo: normFecha(r[3]), stock_ultimo_conteo: parseFloat(r[4])||0, consumo_produccion: parseFloat(r[5])||0, stock_teorico: teorico, conteo_real: real, diferencia: diff, estado };
+  })};
 }
 
