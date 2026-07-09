@@ -515,6 +515,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("buscar").addEventListener("input", renderLista);
   cargarDatos();
   actualizarQueueBadge();
+  if (new URLSearchParams(location.search).get("nueva") === "1") {
+    setTimeout(abrirModalNuevaMP, 800);
+  }
 });
 
 async function cargarDatos() {
