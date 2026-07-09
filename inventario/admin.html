@@ -404,6 +404,50 @@ td { padding:11px 14px; }
             <div id="admin-form-msg" style="margin-top:10px;font-size:13px;display:none"></div>
           </div>
         </div>
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-header">
+            <h3>Nueva Materia Prima</h3>
+            <button class="btn-primary" onclick="toggleNuevaMPForm()">+ Agregar MP</button>
+          </div>
+          <div id="nueva-mp-panel" style="display:none;padding:20px;border-top:1px solid var(--borde)">
+            <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:12px;align-items:end">
+              <div>
+                <label style="font-size:12px;font-weight:600;color:var(--gris);display:block;margin-bottom:6px">Nombre</label>
+                <input type="text" id="nmp-admin-nombre" placeholder="Ej: Maíz Amarillo" oninput="autoCodigoAdmin()"
+                  style="width:100%;padding:9px 10px;border:1.5px solid var(--borde);border-radius:var(--radio-sm);font-family:'DM Sans',sans-serif;font-size:14px;outline:none">
+              </div>
+              <div>
+                <label style="font-size:12px;font-weight:600;color:var(--gris);display:block;margin-bottom:6px">Código</label>
+                <input type="text" id="nmp-admin-codigo" placeholder="30MAIZ-00"
+                  style="width:100%;padding:9px 10px;border:1.5px solid var(--borde);border-radius:var(--radio-sm);font-family:'DM Sans',sans-serif;font-size:14px;outline:none">
+              </div>
+              <div>
+                <label style="font-size:12px;font-weight:600;color:var(--gris);display:block;margin-bottom:6px">Unidad</label>
+                <select id="nmp-admin-unidad" style="width:100%;padding:9px 10px;border:1.5px solid var(--borde);border-radius:var(--radio-sm);font-family:'DM Sans',sans-serif;font-size:14px;outline:none">
+                  <option value="kg">kg</option>
+                  <option value="L">L</option>
+                  <option value="g">g</option>
+                  <option value="unidad">unidad</option>
+                </select>
+              </div>
+              <div>
+                <label style="font-size:12px;font-weight:600;color:var(--gris);display:block;margin-bottom:6px">Grupo</label>
+                <select id="nmp-admin-grupo" style="width:100%;padding:9px 10px;border:1.5px solid var(--borde);border-radius:var(--radio-sm);font-family:'DM Sans',sans-serif;font-size:14px;outline:none">
+                  <option value="Energéticos">Energéticos</option>
+                  <option value="Proteicos">Proteicos</option>
+                  <option value="Minerales">Minerales</option>
+                  <option value="Aditivos">Aditivos</option>
+                  <option value="Otros">Otros</option>
+                </select>
+              </div>
+            </div>
+            <div style="margin-top:12px;display:flex;gap:10px;align-items:center">
+              <button class="btn-primary" id="btn-nmp-admin-guardar" onclick="guardarNuevaMPAdmin()">Guardar</button>
+              <button onclick="toggleNuevaMPForm()" style="padding:9px 18px;border:1.5px solid var(--borde);border-radius:var(--radio-sm);background:white;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:14px">Cancelar</button>
+              <span id="nmp-admin-msg" style="font-size:13px"></span>
+            </div>
+          </div>
+        </div>
         <div class="card">
           <div class="card-header"><h3>Inventario completo</h3><button class="btn-primary" onclick="cargarDashboard()">↻ Actualizar</button></div>
           <div class="card-body"><div id="tabla-stock" class="loading-msg">Cargando<span class="dot-anim"></span></div></div>
@@ -769,6 +813,57 @@ function renderTablaStock(stock) {
     sel.innerHTML = '<option value="">— seleccionar —</option>' +
       stock.map(m => `<option value="${m.codigo}|${m.nombre}">${m.nombre} (${m.codigo})</option>`).join("");
     sel.value = current;
+  }
+}
+
+function toggleNuevaMPForm() {
+  const panel = document.getElementById("nueva-mp-panel");
+  const abierto = panel.style.display !== "none";
+  panel.style.display = abierto ? "none" : "block";
+  if (!abierto) {
+    document.getElementById("nmp-admin-nombre").value = "";
+    document.getElementById("nmp-admin-codigo").value = "";
+    document.getElementById("nmp-admin-unidad").value = "kg";
+    document.getElementById("nmp-admin-grupo").value = "Energéticos";
+    document.getElementById("nmp-admin-msg").textContent = "";
+    document.getElementById("btn-nmp-admin-guardar").disabled = false;
+    document.getElementById("nmp-admin-nombre").focus();
+  }
+}
+
+function autoCodigoAdmin() {
+  const nombre = document.getElementById("nmp-admin-nombre").value.trim();
+  if (!nombre) return;
+  const siglas = nombre.toUpperCase().replace(/[^A-Z0-9]/g, "").substring(0, 4);
+  document.getElementById("nmp-admin-codigo").value = "30" + siglas + "-00";
+}
+
+async function guardarNuevaMPAdmin() {
+  const nombre = document.getElementById("nmp-admin-nombre").value.trim();
+  const codigo = document.getElementById("nmp-admin-codigo").value.trim().toUpperCase();
+  const unidad = document.getElementById("nmp-admin-unidad").value;
+  const grupo  = document.getElementById("nmp-admin-grupo").value;
+  const msg    = document.getElementById("nmp-admin-msg");
+  const btn    = document.getElementById("btn-nmp-admin-guardar");
+  if (!nombre || !codigo) { msg.style.color = "var(--rojo)"; msg.textContent = "Completa nombre y código"; return; }
+  btn.disabled = true;
+  msg.style.color = "var(--gris)";
+  msg.textContent = "Guardando…";
+  try {
+    const res = await jsonpGet({ action: "agregarMateriaPrima", codigo, nombre, unidad, grupo });
+    if (res.ok) {
+      msg.style.color = "var(--verde)";
+      msg.textContent = "✓ " + res.msg;
+      setTimeout(() => { toggleNuevaMPForm(); cargarDashboard(); }, 1500);
+    } else {
+      msg.style.color = "var(--rojo)";
+      msg.textContent = res.error || "Error al guardar";
+      btn.disabled = false;
+    }
+  } catch(e) {
+    msg.style.color = "var(--rojo)";
+    msg.textContent = "Error de conexión";
+    btn.disabled = false;
   }
 }
 
