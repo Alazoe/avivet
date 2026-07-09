@@ -444,7 +444,8 @@ function doGet(e) {
       case "guardarOrden":         result = guardarOrden(e.parameter);                                                         break;
       case "guardarPlanificacion": result = guardarPlanificacion(JSON.parse(decodeURIComponent(e.parameter.payload||"{}"))); break;
       case "getPlanificacion":     result = getPlanificacion(e.parameter);                                                     break;
-      case "getConteosDelDia":     result = getConteosDelDia(e.parameter.fecha);                                               break;
+      case "getConteosDelDia":     result = getConteosDelDia(e.parameter.fecha);                          break;
+      case "agregarMateriaPrima": result = agregarMateriaPrima(e.parameter);                                               break;
       case "actualizarPrecios":    result = actualizarPrecios(JSON.parse(decodeURIComponent(e.parameter.payload||"{}")));   break;
       case "calcularStockTeorico": result = calcularYGuardarStockTeorico(e.parameter);                                         break;
       case "getStockTeorico":      result = getStockTeorico(e.parameter);                                                      break;
@@ -722,4 +723,26 @@ function getStockTeorico(params) {
     if (real !== null) { const pct = teorico > 0 ? Math.abs(diff)/teorico*100 : 0; estado = pct <= 3 ? "OK" : pct <= 7 ? "Alerta" : (diff < 0 ? "Pérdida" : "Exceso"); }
     return { codigo: cod, nombre: String(r[2]||""), fecha_ultimo_conteo: normFecha(r[3]), stock_ultimo_conteo: parseFloat(r[4])||0, consumo_produccion: parseFloat(r[5])||0, stock_teorico: teorico, conteo_real: real, diferencia: diff, estado };
   })};
+}
+
+
+function agregarMateriaPrima(params) {
+  var codigo = String(params.codigo || "").trim().toUpperCase();
+  var nombre = String(params.nombre || "").trim();
+  var unidad = String(params.unidad || "kg").trim();
+  var grupo  = String(params.grupo  || "Otros").trim();
+  if (!codigo || !nombre) return { ok: false, error: "Faltan codigo y nombre" };
+  var ss   = SpreadsheetApp.openById(SHEET_ID);
+  var wsMP = ss.getSheetByName("MATERIAS_PRIMAS");
+  if (!wsMP) return { ok: false, error: "Hoja MATERIAS_PRIMAS no encontrada" };
+  var lastMP = wsMP.getLastRow();
+  if (lastMP > 2) {
+    var existing = wsMP.getRange(3, 1, lastMP - 2, 1).getValues().map(function(r){ return String(r[0]); });
+    if (existing.indexOf(codigo) >= 0) return { ok: false, error: "El codigo " + codigo + " ya existe" };
+  }
+  wsMP.appendRow([codigo, nombre, unidad, grupo, 0, "", 0, "SI"]);
+  var wsStock = ss.getSheetByName("STOCK_ACTUAL");
+  if (wsStock) wsStock.appendRow([codigo, nombre, 0, 0, 0, "N/D", "SIN STOCK", "", ""]);
+  SpreadsheetApp.flush();
+  return { ok: true, msg: nombre + " agregada con codigo " + codigo, codigo: codigo, nombre: nombre };
 }
