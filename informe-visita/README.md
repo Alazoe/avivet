@@ -37,7 +37,7 @@ se ingresan las características del galpón y del lote, y se descarga un docume
 - **Equipamiento de crianza por fase** (0–2, 2–5, 5–10, 10–17 semanas): guía de
   equipamiento y control ambiental para pollas de reemplazo (válida para todas
   las líneas).
-- **Densidad postura piso**: 9 aves/m² útil (norma UE sistemas alternativos).
+- **Densidad postura piso**: 6 aves/m² (recomendación MV Andrés Lazo para postura en piso).
 
 ## Stack
 

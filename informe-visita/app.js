@@ -16,7 +16,7 @@ const IV_FASES_CRIANZA = [
 ];
 const IV_ARRANQUE = { bebedero: 75, comedero: 50 };          // aves/unidad, solo 0–2 sem
 const IV_VENT = { minima: 0.7, capacidad: 4 };               // m³/hora/kg de peso vivo
-const IV_DENSIDAD_POSTURA = 9;                               // aves/m² útil — UE sistemas alternativos
+const IV_DENSIDAD_POSTURA = 6;                               // aves/m² — recomendación MV Andrés Lazo (postura piso)
 const IV_COMEDERO_DIAM = [[30, 38], [40, 50], [50, 63]];     // [Ø cm, aves máx/comedero]
 
 // ── UTILIDADES ──────────────────────────────────────────────────────────
@@ -96,7 +96,7 @@ function ivCalcular(inp) {
   } else {
     densidadRec = IV_DENSIDAD_POSTURA;
     const e = EQ.postura;
-    equip.push(['Superficie mínima', ivFmt1(n / IV_DENSIDAD_POSTURA) + ' m²', `${IV_DENSIDAD_POSTURA} aves/m² útil (UE sist. alternativos)`]);
+    equip.push(['Superficie mínima', ivFmt1(n / IV_DENSIDAD_POSTURA) + ' m²', `${IV_DENSIDAD_POSTURA} aves/m² (recomendación AviVet)`]);
     equip.push(['Nidos individuales', ivFmt(Math.ceil(n / e.nido_individual.ratio)) + ' unidades', '1 cada 5 aves']);
     equip.push(['Nido comunitario', ivFmt1(n / e.nido_comunitario.ratio) + ' m lineales', '1 m cada 120 aves']);
     equip.push(['Bebederos campana', ivFmt(Math.ceil(n / e.bebedero_campana.ratio)) + ' unidades', '1 cada 100 aves']);
