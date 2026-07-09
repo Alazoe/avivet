@@ -17,6 +17,7 @@ const IV_FASES_CRIANZA = [
 const IV_ARRANQUE = { bebedero: 75, comedero: 50 };          // aves/unidad, solo 0–2 sem
 const IV_VENT = { minima: 0.7, capacidad: 4 };               // m³/hora/kg de peso vivo
 const IV_DENSIDAD_POSTURA = 6;                               // aves/m² — recomendación MV Andrés Lazo (postura piso)
+const IV_DENSIDAD_CERT = 1 / 0.14;                           // ≈ 7,14 aves/m² — certificación (0,14 m²/ave)
 const IV_COMEDERO_DIAM = [[30, 38], [40, 50], [50, 63]];     // [Ø cm, aves máx/comedero]
 
 // ── UTILIDADES ──────────────────────────────────────────────────────────
@@ -79,10 +80,10 @@ function ivCalcular(inp) {
 
   // ── equipamiento según etapa ──
   const equip = [];
-  let densidadRec;
+  let densidadRefs;   // [{ nombre, densidad(aves/m²) }] — la primera es la usada para el dictamen principal
   if (enCrianza) {
     const fase = ivFasePorSemana(semana);
-    densidadRec = fase.densidad;
+    densidadRefs = [{ nombre: `Manual (${fase.label})`, densidad: fase.densidad }];
     equip.push(['Superficie mínima', ivFmt1(n / fase.densidad) + ' m²', `${fase.densidad} aves/m² (${fase.label})`]);
     if (fase.arranque) {
       equip.push(['Bebederos de arranque', ivFmt(Math.ceil(n / IV_ARRANQUE.bebedero)) + ' unidades', `1 cada ${IV_ARRANQUE.bebedero} aves (solo 0–2 sem)`]);
@@ -94,9 +95,12 @@ function ivCalcular(inp) {
     equip.push(['Comederos redondos', ivFmt(Math.ceil(n / fase.comederoRedondo)) + ' unidades', `1 cada ${fase.comederoRedondo} aves (Ø estándar)`]);
     equip.push(['Perchas', ivFmt1(n * EQ.crianza.perchas.ratio / 100) + ' m lineales', '15 cm/ave']);
   } else {
-    densidadRec = IV_DENSIDAD_POSTURA;
+    densidadRefs = [
+      { nombre: 'Recomendación AviVet', densidad: IV_DENSIDAD_POSTURA },
+      { nombre: 'Certificación (0,14 m²/ave)', densidad: IV_DENSIDAD_CERT },
+    ];
     const e = EQ.postura;
-    equip.push(['Superficie mínima', ivFmt1(n / IV_DENSIDAD_POSTURA) + ' m²', `${IV_DENSIDAD_POSTURA} aves/m² (recomendación AviVet)`]);
+    equip.push(['Superficie mínima', ivFmt1(n / IV_DENSIDAD_POSTURA) + ' m²', `${IV_DENSIDAD_POSTURA} aves/m² (recomendación AviVet) · certificación ${ivFmt1(IV_DENSIDAD_CERT)} aves/m²`]);
     equip.push(['Nidos individuales', ivFmt(Math.ceil(n / e.nido_individual.ratio)) + ' unidades', '1 cada 5 aves']);
     equip.push(['Nido comunitario', ivFmt1(n / e.nido_comunitario.ratio) + ' m lineales', '1 m cada 120 aves']);
     equip.push(['Bebederos campana', ivFmt(Math.ceil(n / e.bebedero_campana.ratio)) + ' unidades', '1 cada 100 aves']);
@@ -106,16 +110,19 @@ function ivCalcular(inp) {
     if (inp.exterior) equip.push(['Acceso exterior', ivFmt1(n * e.acceso_exterior.ratio) + ' m²', '0,19 m²/ave']);
   }
 
-  // ── densidad real vs recomendada ──
+  // ── densidad real vs referencias ──
   let densidad = null;
   if (inp.superficie > 0) {
     const real = n / inp.superficie;
     densidad = {
       real,
-      recomendada: densidadRec,
-      superficieMin: n / densidadRec,
-      ok: real <= densidadRec,
-      exceso: real > densidadRec ? Math.round((real / densidadRec - 1) * 100) : 0,
+      refs: densidadRefs.map(r => ({
+        nombre: r.nombre,
+        densidad: r.densidad,
+        superficieMin: n / r.densidad,
+        ok: real <= r.densidad,
+        exceso: real > r.densidad ? Math.round((real / r.densidad - 1) * 100) : 0,
+      })),
     };
   }
 
@@ -258,13 +265,16 @@ function ivConstruirDoc(inf, D) {
   if (inf.densidad) {
     const d = inf.densidad;
     hijos.push(h2('4. Densidad'));
+    hijos.push(p(`Densidad actual del galpón: ${ivFmt1(d.real)} aves/m²`, { bold: true, after: 100 }));
     hijos.push(tabla([
-      ['Indicador', 'Valor'],
-      ['Densidad actual', ivFmt1(d.real) + ' aves/m²'],
-      ['Densidad recomendada (máx.)', ivFmt1(d.recomendada) + ' aves/m²'],
-      ['Superficie mínima requerida', ivFmt1(d.superficieMin) + ' m²'],
-      ['Evaluación', d.ok ? '✔ CUMPLE — densidad dentro del estándar' : `✘ SOBRECARGA — excede el estándar en ${d.exceso}%`],
-    ], [45, 55]));
+      ['Referencia', 'Densidad máx.', 'Superficie mínima', 'Evaluación'],
+      ...d.refs.map(r => [
+        r.nombre,
+        ivFmt1(r.densidad) + ' aves/m²',
+        ivFmt1(r.superficieMin) + ' m²',
+        r.ok ? '✔ Cumple' : `✘ Sobrecarga +${r.exceso}%`,
+      ]),
+    ], [34, 20, 22, 24]));
   }
 
   // ── 5. ventilación ──
@@ -434,10 +444,17 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
 
     if (inf.densidad) {
       const d = inf.densidad;
-      html += `<div class="iv-densidad ${d.ok ? 'ok' : 'alerta'}">
-        Densidad actual: <strong>${ivFmt1(d.real)} aves/m²</strong> · recomendada máx. ${ivFmt1(d.recomendada)} aves/m² —
-        ${d.ok ? '✔ cumple el estándar' : `✘ sobrecarga de ${d.exceso}% · superficie mínima ${ivFmt1(d.superficieMin)} m²`}
-      </div>`;
+      const todasOk = d.refs.every(r => r.ok);
+      html += `<div class="iv-densidad ${todasOk ? 'ok' : 'alerta'}">
+        Densidad actual del galpón: <strong>${ivFmt1(d.real)} aves/m²</strong>
+      </div>
+      <div class="tabla-wrap" style="max-height:none"><table><thead><tr><th>Referencia</th><th>Densidad máx.</th><th>Superficie mínima</th><th>Evaluación</th></tr></thead>
+      <tbody>${d.refs.map(r => `<tr>
+        <td style="text-align:left;font-weight:500">${r.nombre}</td>
+        <td>${ivFmt1(r.densidad)} aves/m²</td>
+        <td>${ivFmt1(r.superficieMin)} m²</td>
+        <td style="font-weight:600;color:${r.ok ? '#1b4332' : '#b71c1c'}">${r.ok ? '✔ Cumple' : '✘ Sobrecarga +' + r.exceso + '%'}</td>
+      </tr>`).join('')}</tbody></table></div>`;
     }
 
     html += `<h4 class="iv-prev-h">Ventilación (biomasa ≈ ${ivFmt(Math.round(o.biomasa))} kg)</h4>

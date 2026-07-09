@@ -21,7 +21,7 @@ se ingresan las características del galpón y del lote, y se descarga un docume
 | **Edad del lote** | Semana de vida, día de vida, etapa (crianza/postura) y fase de crianza a la fecha de la visita |
 | **Parámetros objetivo** | Peso corporal, consumo de alimento y agua (por ave y total del lote), % postura, huevos/día y bandejas esperadas, mortalidad acumulada esperada |
 | **Equipamiento requerido** | Bebederos (campana, nipple, arranque), comederos (lineal, redondo por diámetro, arranque), perchas, nidos, superficie mínima — según fase |
-| **Densidad** | Densidad real vs. recomendada con dictamen CUMPLE / SOBRECARGA |
+| **Densidad** | Densidad real del galpón comparada contra referencias, con superficie mínima y dictamen Cumple / Sobrecarga por cada una. En postura: recomendación AviVet (6 aves/m²) y certificación (0,14 m²/ave ≈ 7,14 aves/m²) |
 | **Ventilación** | Mínima (0,7 m³/h/kg) y capacidad (4 m³/h/kg) sobre la biomasa estimada |
 | **Ambiente de crianza** | Temperatura, intensidad lumínica y horas de luz por edad (primeras 6 semanas) |
 | **Proyección** | Peso, consumo y postura de las próximas 4 semanas |
@@ -37,7 +37,7 @@ se ingresan las características del galpón y del lote, y se descarga un docume
 - **Equipamiento de crianza por fase** (0–2, 2–5, 5–10, 10–17 semanas): guía de
   equipamiento y control ambiental para pollas de reemplazo (válida para todas
   las líneas).
-- **Densidad postura piso**: 6 aves/m² (recomendación MV Andrés Lazo para postura en piso).
+- **Densidad postura piso**: se comparan dos referencias — 6 aves/m² (recomendación MV Andrés Lazo) y 0,14 m²/ave ≈ 7,14 aves/m² (certificación).
 
 ## Stack
 
