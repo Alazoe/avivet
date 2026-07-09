@@ -8,15 +8,15 @@ Sistema de control de inventario de materias primas para la planta de alimentos 
 
 | App | URL | Usuario |
 |-----|-----|---------|
-| Control de inventario | [avivet.cl/Inventario-Campestre/](https://avivet.cl/avivet/Inventario-Campestre/) | Verónica Gangas |
-| Panel admin | [avivet.cl/Inventario-Campestre/admin.html](https://avivet.cl/avivet/Inventario-Campestre/admin) | Andrés Lazo |
+| Control de inventario | [alazoe.github.io/avivet/inventario/?c=campestre](https://alazoe.github.io/avivet/inventario/?c=campestre) | Verónica Gangas |
+| Panel admin | [alazoe.github.io/avivet/inventario/admin.html?c=campestre](https://alazoe.github.io/avivet/inventario/admin.html?c=campestre) | Andrés Lazo |
 
 ---
 
 ## 🗂 Estructura del proyecto
 
 ```
-Inventario-Campestre/
+inventario/
 ├── index.html       # App móvil de conteo físico (Verónica)
 ├── admin.html       # Panel administrativo (Andrés)
 └── README.md
