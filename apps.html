@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AviVet — Portal de Plantas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ── Tokens ── */
+    :root {
+      --verde:       #1B4332;
+      --verde-med:   #2D6A4F;
+      --verde-clar:  #52B788;
+      --sage:        #95D5B2;
+      --bg:          #F3F6F3;
+      --card:        #FFFFFF;
+      --txt:         #1A2E1F;
+      --txt-sec:     #5A7060;
+      --borde:       #D8E8DC;
+      --shadow:      0 2px 12px rgba(27,67,50,0.09);
+      --radio:       14px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg:      #0D1F17;
+        --card:    #152B1E;
+        --txt:     #E8F0EA;
+        --txt-sec: #7FA88A;
+        --borde:   #1E3D2A;
+        --shadow:  0 2px 16px rgba(0,0,0,0.35);
+      }
+    }
+    :root[data-theme="light"] {
+      --bg:      #F3F6F3;
+      --card:    #FFFFFF;
+      --txt:     #1A2E1F;
+      --txt-sec: #5A7060;
+      --borde:   #D8E8DC;
+      --shadow:  0 2px 12px rgba(27,67,50,0.09);
+    }
+    :root[data-theme="dark"] {
+      --bg:      #0D1F17;
+      --card:    #152B1E;
+      --txt:     #E8F0EA;
+      --txt-sec: #7FA88A;
+      --borde:   #1E3D2A;
+      --shadow:  0 2px 16px rgba(0,0,0,0.35);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--txt);
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px 60px;
+    }
+
+    /* ── Header ── */
+    header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .logo-icon {
+      width: 42px; height: 42px;
+      background: var(--verde);
+      border-radius: 11px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .logo-icon svg { width: 24px; height: 24px; }
+    .logo-text {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--verde);
+      letter-spacing: -0.5px;
+    }
+    .logo-text span {
+      color: var(--verde-clar);
+    }
+    header p {
+      font-size: 14px;
+      color: var(--txt-sec);
+      font-weight: 500;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    /* ── Grid ── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 340px));
+      gap: 20px;
+      width: 100%;
+      max-width: 1060px;
+      justify-content: center;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--borde);
+      border-radius: var(--radio);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: box-shadow 0.18s, transform 0.18s;
+    }
+    .card:hover {
+      box-shadow: 0 6px 24px rgba(27,67,50,0.14);
+      transform: translateY(-2px);
+    }
+    @media (prefers-color-scheme: dark) {
+      .card:hover { box-shadow: 0 6px 28px rgba(0,0,0,0.5); }
+    }
+
+    .card-stripe {
+      height: 5px;
+      background: linear-gradient(90deg, var(--verde), var(--verde-clar));
+    }
+    .card-body {
+      padding: 24px 24px 20px;
+      flex: 1;
+    }
+    .plant-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--verde-clar);
+      margin-bottom: 6px;
+    }
+    .plant-name {
+      font-size: 19px;
+      font-weight: 700;
+      color: var(--txt);
+      letter-spacing: -0.3px;
+      line-height: 1.2;
+      margin-bottom: 4px;
+    }
+    .plant-sub {
+      font-size: 13px;
+      color: var(--txt-sec);
+      font-weight: 400;
+    }
+
+    .card-divider {
+      height: 1px;
+      background: var(--borde);
+      margin: 0 24px;
+    }
+
+    .card-actions {
+      padding: 16px 20px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 16px;
+      border-radius: 9px;
+      text-decoration: none;
+      font-family: 'DM Sans', system-ui, sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      transition: background 0.14s, color 0.14s;
+      cursor: pointer;
+    }
+    .btn-conteo {
+      background: var(--verde);
+      color: #fff;
+    }
+    .btn-conteo:hover { background: var(--verde-med); }
+
+    .btn-admin {
+      background: transparent;
+      border: 1.5px solid var(--borde);
+      color: var(--txt-sec);
+    }
+    .btn-admin:hover {
+      background: var(--bg);
+      color: var(--txt);
+      border-color: var(--verde-clar);
+    }
+
+    .btn svg {
+      width: 16px; height: 16px;
+      flex-shrink: 0;
+      opacity: 0.85;
+    }
+    .btn-conteo svg { opacity: 1; }
+
+    /* ── Footer ── */
+    footer {
+      margin-top: 52px;
+      font-size: 12px;
+      color: var(--txt-sec);
+      text-align: center;
+      opacity: 0.7;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .card { transition: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+      </div>
+      <div class="logo-text">Avi<span>Vet</span></div>
+    </div>
+    <p>Sistema de Inventario — Plantas activas</p>
+  </header>
+
+  <div class="grid">
+
+    <!-- La Campestre -->
+    <div class="card">
+      <div class="card-stripe"></div>
+      <div class="card-body">
+        <div class="plant-label">Planta 1</div>
+        <div class="plant-name">La Campestre</div>
+        <div class="plant-sub">Huevos La Campestre · Verónica Gangas</div>
+      </div>
+      <div class="card-divider"></div>
+      <div class="card-actions">
+        <a class="btn btn-conteo" href="inventario/?c=campestre">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+          </svg>
+          Conteo de bodega
+        </a>
+        <a class="btn btn-admin" href="inventario/admin.html?c=campestre">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/>
+          </svg>
+          Panel de administración
+        </a>
+      </div>
+    </div>
+
+    <!-- Praderas del Ranco -->
+    <div class="card">
+      <div class="card-stripe"></div>
+      <div class="card-body">
+        <div class="plant-label">Planta 2</div>
+        <div class="plant-name">Praderas del Ranco</div>
+        <div class="plant-sub">Planta de alimentos</div>
+      </div>
+      <div class="card-divider"></div>
+      <div class="card-actions">
+        <a class="btn btn-conteo" href="inventario/?c=praderas-ranco">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+          </svg>
+          Conteo de bodega
+        </a>
+        <a class="btn btn-admin" href="inventario/admin.html?c=praderas-ranco">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/>
+          </svg>
+          Panel de administración
+        </a>
+      </div>
+    </div>
+
+    <!-- Reinhard -->
+    <div class="card">
+      <div class="card-stripe"></div>
+      <div class="card-body">
+        <div class="plant-label">Planta 3</div>
+        <div class="plant-name">Reinhard</div>
+        <div class="plant-sub">Planta Reinhard</div>
+      </div>
+      <div class="card-divider"></div>
+      <div class="card-actions">
+        <a class="btn btn-conteo" href="inventario/?c=reinhard">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+          </svg>
+          Conteo de bodega
+        </a>
+        <a class="btn btn-admin" href="inventario/admin.html?c=reinhard">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/>
+          </svg>
+          Panel de administración
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>AviVet · Sistema de Inventario Avícola · avivet.cl</footer>
+
+</body>
+</html>
