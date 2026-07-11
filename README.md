@@ -11,6 +11,11 @@
 | **Calculadoras de Dosis** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/calculadoras-dosis/) | Cálculo de dosis de antibióticos en agua de bebida |
 | **Auditoría SAG Bioseguridad** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/auditoria-sag/) | Pauta de verificación Res. 7695/2024 |
 | **Inventario de Huevos** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/inventario-huevos/) | Control de stock y ventas |
+| **Inventario Alimento — Portal** | [🔗 Plantas de alimento](https://avivet.cl/avivet/plantasdealimento) | Acceso directo a las 3 plantas |
+| **Inventario — La Campestre** | [Conteo](https://avivet.cl/avivet/inventario/?c=campestre) · [Admin](https://avivet.cl/avivet/inventario/admin.html?c=campestre) | Materias primas planta La Campestre |
+| **Inventario — Praderas del Ranco** | [Conteo](https://avivet.cl/avivet/inventario/?c=praderas-ranco) · [Admin](https://avivet.cl/avivet/inventario/admin.html?c=praderas-ranco) | Materias primas Praderas del Ranco |
+| **Inventario — Reinhard** | [Conteo](https://avivet.cl/avivet/inventario/?c=reinhard) · [Admin](https://avivet.cl/avivet/inventario/admin.html?c=reinhard) | Materias primas planta Reinhard |
+| **Manual inventario** | [🔗 Abrir manual](https://avivet.cl/avivet/manual) | Guía bodeguero y administrador |
 | **Gestión de Rutas — La Campestre** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/campestre-rutas/) | Planificación y optimización de rutas de retiro de huevos |
 | **Planilla Telemedicina** | [🔗 Abrir herramienta](https://avivet.cl/avivet/telemedicina/) | Formulario pre/post consulta con envío automático a Google Sheets |
 | **Informe de Visita Técnica** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/informe-visita/) | Genera el informe Word (.docx) de la visita: equipamiento, densidad, ventilación y consumos según edad y línea genética |
