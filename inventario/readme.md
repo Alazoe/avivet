@@ -1,172 +1,118 @@
-# 📦 Sistema de Inventario — Planta de Alimentos La Campestre
+# Sistema de Inventario de Alimento — AviVet
 
-Sistema de control de inventario de materias primas para la planta de alimentos de Huevos La Campestre. Desarrollado con Google Apps Script + Google Sheets como backend y GitHub Pages como frontend.
-
----
-
-## 🔗 URLs
-
-| App | URL | Usuario |
-|-----|-----|---------|
-| Control de inventario | [alazoe.github.io/avivet/inventario/?c=campestre](https://alazoe.github.io/avivet/inventario/?c=campestre) | Verónica Gangas |
-| Panel admin | [alazoe.github.io/avivet/inventario/admin.html?c=campestre](https://alazoe.github.io/avivet/inventario/admin.html?c=campestre) | Andrés Lazo |
+Control de materias primas para plantas de alimento avícola. Cada planta tiene su propia Google Sheet y deploy de Google Apps Script. El frontend es compartido y se personaliza por cliente vía parámetro `?c=`.
 
 ---
 
-## 🗂 Estructura del proyecto
+## Acceso rápido
 
-```
-inventario/
-├── index.html       # App móvil de conteo físico (Verónica)
-├── admin.html       # Panel administrativo (Andrés)
-└── README.md
-```
+| Planta | App Conteo | Panel Admin | Google Sheet |
+|--------|------------|-------------|--------------|
+| **La Campestre** | [Abrir conteo](https://avivet.cl/avivet/inventario/?c=campestre) | [Abrir admin](https://avivet.cl/avivet/inventario/admin.html?c=campestre) | [Ver Sheet](https://docs.google.com/spreadsheets/d/1AhcHJ0rgewyu4FPh_37lih5iLjHEyrtkjpt86HhzQtA/edit) |
+| **Praderas del Ranco** | [Abrir conteo](https://avivet.cl/avivet/inventario/?c=praderas-ranco) | [Abrir admin](https://avivet.cl/avivet/inventario/admin.html?c=praderas-ranco) | [Ver Sheet](https://docs.google.com/spreadsheets/d/1mEr6zgj2IM43FMg0kGePljM1WmKYoi2xnRxhNYMOEYM/edit) |
+| **Reinhard** | [Abrir conteo](https://avivet.cl/avivet/inventario/?c=reinhard) | [Abrir admin](https://avivet.cl/avivet/inventario/admin.html?c=reinhard) | [Ver Sheet](https://docs.google.com/spreadsheets/d/1Ec9SzJayEOddPb0CA7f4P4CCxiWfuv-z6O3WUr7xuls/edit) |
 
-**Backend:**
-- Google Sheet: `1AhcHJ0rgewyu4FPh_37lih5iLjHEyrtkjpt86HhzQtA`
-- Apps Script Web App: desplegado como acceso público
+- **Portal plantas**: https://avivet.cl/avivet/plantasdealimento
+- **Manual de usuario**: https://avivet.cl/avivet/manual
 
 ---
 
-## 📋 Hojas del Google Sheet
+## Detalle por planta
+
+### La Campestre
+
+- **Config**: `config/campestre.json`
+- **Código GAS**: `code.gs`
+- **Google Sheet ID**: `1AhcHJ0rgewyu4FPh_37lih5iLjHEyrtkjpt86HhzQtA`
+- **GAS Deploy URL**:
+  ```
+  https://script.google.com/macros/s/AKfycby8dfFibuDyDeRRK3J44Vqw9pJA1F3sMFKuYPHoC_1OHB-GIeeOlAYCdMDklE8o7b7u/exec
+  ```
+- **Bodeguera**: Verónica Gangas
+
+---
+
+### Praderas del Ranco
+
+- **Config**: `config/praderas-ranco.json`
+- **Código GAS**: `code_praderas-ranco.gs`
+- **Google Sheet ID**: `1mEr6zgj2IM43FMg0kGePljM1WmKYoi2xnRxhNYMOEYM`
+- **GAS Deploy URL**:
+  ```
+  https://script.google.com/macros/s/AKfycbx6LZHLrah39NTTbb8nsNHMw3wEtIptIjwIqt8jnvfMKJepWBh1SbJ3xEjG4CTJhXHHLw/exec
+  ```
+
+---
+
+### Reinhard
+
+- **Config**: `config/reinhard.json`
+- **Código GAS**: `code_reinhard.gs`
+- **Google Sheet ID**: `1Ec9SzJayEOddPb0CA7f4P4CCxiWfuv-z6O3WUr7xuls`
+- **GAS Deploy URL**:
+  ```
+  https://script.google.com/macros/s/AKfycbz7i4BtaB54MtfDy87mafELK3APRPvxSdjZ-zQwOvoEkVsGozrMi5PO8HTRdFopiyFJJA/exec
+  ```
+
+---
+
+## Agregar una nueva planta
+
+1. Crear una Google Sheet nueva y vacía
+2. Ir a **Extensiones → Apps Script**, borrar el contenido por defecto
+3. Copiar el contenido de `code_template.gs` y pegarlo completo
+4. Editar la sección de configuración al inicio:
+   ```javascript
+   var SHEET_ID = "ID_DE_TU_NUEVA_SHEET";
+   var NOMBRE_PLANTA = "Nombre de la planta";
+   ```
+5. Ejecutar `inicializarTemplate()` una sola vez (crea todas las hojas automáticamente)
+6. Desplegar: **Implementar → App web → Ejecutar como yo → Cualquiera puede acceder → Implementar**
+7. Copiar la URL del deploy
+8. Duplicar cualquier `config/*.json`, renombrarlo con el ID del nuevo cliente y actualizar:
+   - `clientId`: ID corto (ej. `mi-planta`)
+   - `clientName`: nombre visible
+   - `backendUrl`: URL del deploy copiada en paso 7
+9. Agregar la card en `plantasdealimento/index.html`
+10. Push a `main` → GitHub Pages publica automáticamente
+
+> Las nuevas plantas parten desde cero (sin materias primas ni recetas). Se cargan desde el panel admin.
+
+---
+
+## Actualizar código GAS (redesplegar)
+
+Cada vez que se modifica el `.gs` hay que crear una nueva versión del deploy para que los cambios tomen efecto. **La URL pública no cambia.**
+
+> Apps Script → **Implementar → Administrar implementaciones → ✏️ (editar) → Nueva versión → Guardar**
+
+---
+
+## Estructura de la Google Sheet
 
 | Hoja | Descripción |
 |------|-------------|
-| `CONFIG` | Parámetros del sistema (responsables, alertas) |
-| `MATERIAS_PRIMAS` | Maestro de insumos con unidad, grupo, proveedor y precio |
-| `RECETAS` | Fórmulas de las 8 dietas en kg por 1.000 kg de mezcla |
-| `CONTEOS_FISICOS` | Registro histórico de todos los conteos de bodega |
-| `STOCK_ACTUAL` | Stock en tiempo real con estado y alertas automáticas |
-| `ORDENES_COMPRA` | Historial y estado de órdenes de compra |
-| `PROYECCIONES` | Consumo estimado de MPs según producción diaria |
-| `RECETAS_HISTORIAL` | Respaldo automático: snapshot JSON de las recetas en cada guardado (últimos 50) |
+| `CONFIG` | Nombre planta, responsable, días de alerta |
+| `MATERIAS_PRIMAS` | Catálogo: código, nombre, unidad, grupo, precio |
+| `RECETAS` | Fórmulas por dieta (kg por 1.000 kg de mezcla) |
+| `RECETAS_HISTORIAL` | Respaldo automático de cada guardado de recetas |
+| `CONTEOS_FISICOS` | Historial de todos los conteos con fecha y hora |
+| `STOCK_ACTUAL` | Stock vigente por MP; columna D = stock mínimo |
+| `ORDENES_COMPRA` | Órdenes con estado (pendiente / recibida / anulada) |
+| `PLANIFICACION` | kg/día por dieta — ventana de planificación |
+| `PROYECCIONES` | Consumo estimado de MPs según planificación |
+| `STOCK_TEORICO` | Stock calculado vs. conteo real |
 
 ---
 
-## 📧 Alerta diaria de stock crítico
+## Stack técnico
 
-El backend incluye `enviarAlertaStock()`: revisa el stock y envía un correo cuando hay insumos **sin stock**, **bajo el mínimo** o con **menos de 7 días de cobertura** (según el plan de producción). El correo incluye stock actual, mínimo, días de cobertura y si ya existe una OC pendiente para ese insumo. Si no hay alertas, no se envía nada.
-
-**Activación (una sola vez, desde el editor de Apps Script):**
-
-1. Ejecutar `crearTriggerAlertaDiaria()` → programa el envío automático todos los días a las 7 am
-2. Autorizar los permisos de correo cuando Google lo solicite
-
-**Destinatario:** por defecto el dueño del script. Para cambiarlo, agregar en la hoja `CONFIG` una fila con clave `email_alertas` y el correo deseado (admite varios separados por coma).
+- **Frontend**: HTML + CSS + Vanilla JS — sin dependencias externas
+- **Backend**: Google Apps Script (`doGet` con router por `action`)
+- **Base de datos**: Google Sheets (una por planta)
+- **Hosting**: GitHub Pages → avivet.cl (prefijo `/avivet/`)
+- **Offline**: `localStorage` + sync queue automático
 
 ---
 
-## 🛟 Recuperación de recetas
-
-Cada vez que se guardan recetas desde el panel admin, el backend deja un snapshot JSON en `RECETAS_HISTORIAL` **antes** de reescribir la hoja `RECETAS`. Si la hoja queda vacía o corrupta:
-
-1. Abrir el editor de Apps Script del Sheet
-2. Ejecutar `restaurarUltimoRespaldo()` → restaura el último snapshot guardado
-3. Si no hay respaldos aún, ejecutar `escribirHojaRecetas()` sin argumentos → restaura desde la constante `RECETAS` del código
-
----
-
-## 📱 App de conteo (Verónica)
-
-Diseñada para uso móvil. Permite:
-
-- Ver todas las materias primas agrupadas por categoría con stock actual
-- Registrar conteos físicos con soporte de expresiones: `770 + 22 + 21 = 813`
-- Funciona **offline** — guarda localmente y sincroniza al recuperar conexión
-- Historial de conteos del día
-- **Exportar PDF** de cierre diario con conteos + stock completo
-
----
-
-## 🖥 Panel admin (Andrés)
-
-Acceso con contraseña. Incluye:
-
-- Dashboard con métricas globales y alertas de stock crítico
-- Tabla de stock ordenada por estado (críticos primero)
-- Gestión de órdenes de compra
-- Vista de recetas y fórmulas comparativas
-- Proyecciones de consumo: ingresa kg/día por dieta → calcula días de stock restantes por MP
-
----
-
-## 🧪 Materias primas registradas (23)
-
-| Grupo | Insumos |
-|-------|---------|
-| Energéticos | Maíz, Harinilla Trigo |
-| Proteínas | Afrecho Soya |
-| Minerales | Conchuela, Fosfato Phosbic, Sal Fina |
-| Aminoácidos | Metionina, Lisina 99% |
-| Núcleos | Nucleo Solagro Ponedora, Nucleo Solagro Pollita |
-| Aditivos | Secuestrante, Regulador Intestinal, Polifeed, Ovotop, Pigmento, Emeral, Fitogénico, Chicktonic |
-| Medicamentos | Coccisan |
-| Envases | Sacos 50x80 (blanco, gris, amarillo, rojo) |
-
----
-
-## 🌾 Dietas activas (7)
-
-| Dieta | Código | Desde |
-|-------|--------|-------|
-| Ponedora 1 | 20P120-65 | may-19 |
-| Ponedora 2 | 20P266-90 | may-19 |
-| Pollita Inicial | 20INI1-08 | may-19 |
-| Recría | 20REC9-15 | may-19 |
-| Prepostura | — | may-19 |
-| Lolol | — | may-19 |
-| Polla Nueva | — | ene-25 |
-
-> Dieta **Lampa** marcada como inactiva.
-
----
-
-## ⚙️ Configuración inicial (Apps Script)
-
-1. Abrir el Google Sheet → **Extensiones → Apps Script**
-2. Pegar el contenido de `backend_inventario.gs`
-3. Ejecutar la función `inicializarSistema()` — crea todas las hojas automáticamente
-4. **Implementar → Nueva implementación**
-   - Tipo: Aplicación web
-   - Ejecutar como: Yo
-   - Acceso: Cualquier persona
-5. Copiar la URL generada y actualizarla en `index.html` y `admin.html` (constante `BACKEND`)
-
----
-
-## 🔄 Integración con Odoo
-
-El Sheet está estructurado para exportación directa a Odoo:
-
-| Módulo Odoo | Hoja de origen | Acción |
-|-------------|---------------|--------|
-| Inventario → Productos | `MATERIAS_PRIMAS` | Importar CSV |
-| Inventario → Stock | `STOCK_ACTUAL` | Importar CSV |
-| Compras → Proveedores | `MATERIAS_PRIMAS` (col. Proveedor) | Importar CSV |
-| Compras → OC | `ORDENES_COMPRA` | Filtrar estado = PENDIENTE |
-| Fabricación → Lista de materiales | `RECETAS` | Una fila por insumo/receta |
-
-> El implementador de Odoo puede exportar cualquier hoja como CSV desde **Archivo → Descargar → CSV** y luego importarla directamente.
-
----
-
-## 🛠 Stack técnico
-
-- **Frontend:** HTML + CSS + Vanilla JS — sin dependencias externas
-- **Backend:** Google Apps Script (doGet / doPost)
-- **Base de datos:** Google Sheets
-- **Hosting:** GitHub Pages → avivet.cl
-- **Offline:** localStorage + sync queue automático
-
----
-
-## 👥 Equipo
-
-| Rol | Nombre | Contacto |
-|-----|--------|---------|
-| Médico Veterinario / Admin | Andrés Lazo Escobar | andreslazomv@outlook.com |
-| Encargada de Bodega | Verónica Gangas | — |
-
----
-
-*Sistema desarrollado bajo la marca [AviVet](https://avivet.cl) · Valdivia, Chile*
+*Sistema bajo la marca [AviVet](https://avivet.cl) · Valdivia, Chile*
