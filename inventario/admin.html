@@ -309,7 +309,12 @@ td { padding:11px 14px; }
     <nav class="sidebar">
       <div class="sidebar-logo">
         <div class="brand">La Campestre</div>
-        <div class="title">Admin Inventario</div>
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <div class="title">Admin Inventario</div>
+          <a href="../manual/" title="Manual de usuario" target="_blank" style="display:flex;align-items:center;opacity:0.6;color:white;text-decoration:none">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </a>
+        </div>
       </div>
       <div class="nav-items">
         <button class="nav-item activo" onclick="irA('dashboard',this)">
