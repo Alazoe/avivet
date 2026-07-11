@@ -300,6 +300,40 @@ td { padding:11px 14px; }
   .nav-item { flex-direction:column; gap:2px; font-size:9px; padding:6px 8px; border-radius:0; flex:1; justify-content:center; }
   .main { margin-left:0; margin-bottom:56px; padding:16px; }
 }
+/* INSTALAR APP */
+.btn-instalar-admin {
+  display:none; align-items:center; justify-content:center;
+  width:28px; height:28px; border-radius:6px;
+  background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.2);
+  cursor:pointer; color:white; flex-shrink:0;
+}
+.btn-instalar-admin.visible { display:flex; }
+.modal-instalar-overlay {
+  display:none; position:fixed; inset:0;
+  background:rgba(0,0,0,0.5); z-index:900; align-items:flex-end;
+}
+.modal-instalar-overlay.open { display:flex; }
+.modal-instalar-card {
+  background:white; border-radius:20px 20px 0 0;
+  padding:28px 24px 44px; width:100%;
+}
+.modal-instalar-card h3 { font-size:18px; font-weight:700; color:var(--verde); margin-bottom:4px; }
+.modal-instalar-card > p { font-size:13px; color:var(--gris); margin-bottom:22px; }
+.inst-paso { display:flex; align-items:flex-start; gap:14px; margin-bottom:14px; }
+.inst-num {
+  flex-shrink:0; width:28px; height:28px; border-radius:50%;
+  background:var(--verde-bg); color:var(--verde);
+  display:flex; align-items:center; justify-content:center;
+  font-size:13px; font-weight:700;
+}
+.inst-txt { font-size:14px; color:var(--texto); line-height:1.5; padding-top:4px; }
+.inst-txt strong { color:var(--verde); }
+.modal-instalar-cerrar {
+  width:100%; margin-top:22px; padding:14px;
+  background:var(--verde-bg); color:var(--verde);
+  border:none; border-radius:var(--radio-sm);
+  font-size:15px; font-weight:600; font-family:'DM Sans',sans-serif; cursor:pointer;
+}
 </style>
 </head>
 <body>
@@ -311,9 +345,14 @@ td { padding:11px 14px; }
         <div class="brand">La Campestre</div>
         <div style="display:flex;align-items:center;justify-content:space-between">
           <div class="title">Admin Inventario</div>
-          <a href="../manual/" title="Manual de usuario" target="_blank" style="display:flex;align-items:center;opacity:0.6;color:white;text-decoration:none">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-          </a>
+          <div style="display:flex;align-items:center;gap:8px">
+            <button id="btnInstalarAdmin" class="btn-instalar-admin" onclick="abrirModalInstalar()" title="Agregar a pantalla de inicio">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="m8 8 4-4 4 4"/><rect x="3" y="18" width="18" height="2" rx="1"/></svg>
+            </button>
+            <a href="../manual/" title="Manual de usuario" target="_blank" style="display:flex;align-items:center;opacity:0.6;color:white;text-decoration:none">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </a>
+          </div>
         </div>
       </div>
       <div class="nav-items">
@@ -2309,6 +2348,65 @@ async function guardarStocksMinimosCobertura() {
     </div>
   </div>
 </div>
+
+<!-- MODAL INSTALAR APP -->
+<div class="modal-instalar-overlay" id="modalInstalar" onclick="if(event.target===this)cerrarModalInstalar()">
+  <div class="modal-instalar-card">
+    <h3>Agregar a pantalla de inicio</h3>
+    <p>Accede directo desde tu celular, sin abrir el navegador</p>
+    <div id="instPasos"></div>
+    <button class="modal-instalar-cerrar" onclick="cerrarModalInstalar()">Entendido</button>
+  </div>
+</div>
+
+<script>
+// INSTALAR APP
+let _deferredInstall = null;
+const _isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+const _isStandalone = !!navigator.standalone || matchMedia("(display-mode: standalone)").matches;
+
+if (!_isStandalone) {
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    _deferredInstall = e;
+    document.getElementById("btnInstalarAdmin").classList.add("visible");
+  });
+  window.addEventListener("appinstalled", () => {
+    document.getElementById("btnInstalarAdmin").classList.remove("visible");
+    _deferredInstall = null;
+  });
+  if (_isIOS) {
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("btnInstalarAdmin").classList.add("visible");
+    });
+  }
+}
+
+function abrirModalInstalar() {
+  if (_deferredInstall) {
+    _deferredInstall.prompt();
+    _deferredInstall.userChoice.then(() => { _deferredInstall = null; });
+    return;
+  }
+  const contenedor = document.getElementById("instPasos");
+  if (_isIOS) {
+    contenedor.innerHTML = `
+      <div class="inst-paso"><div class="inst-num">1</div><div class="inst-txt">En Safari, toca el ícono de compartir <strong>⎋</strong> en la barra inferior</div></div>
+      <div class="inst-paso"><div class="inst-num">2</div><div class="inst-txt">Desliza hacia abajo y toca <strong>"Agregar a pantalla de inicio"</strong></div></div>
+      <div class="inst-paso"><div class="inst-num">3</div><div class="inst-txt">Toca <strong>"Agregar"</strong> en la esquina superior derecha para confirmar</div></div>`;
+  } else {
+    contenedor.innerHTML = `
+      <div class="inst-paso"><div class="inst-num">1</div><div class="inst-txt">En Chrome, toca el menú <strong>⋮</strong> (tres puntos) arriba a la derecha</div></div>
+      <div class="inst-paso"><div class="inst-num">2</div><div class="inst-txt">Selecciona <strong>"Añadir a pantalla de inicio"</strong></div></div>
+      <div class="inst-paso"><div class="inst-num">3</div><div class="inst-txt">Toca <strong>"Añadir"</strong> para confirmar</div></div>`;
+  }
+  document.getElementById("modalInstalar").classList.add("open");
+}
+
+function cerrarModalInstalar() {
+  document.getElementById("modalInstalar").classList.remove("open");
+}
+</script>
 </body>
 </html>
 
