@@ -357,6 +357,10 @@ td { padding:11px 14px; }
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 17H5a2 2 0 00-2 2v1"/><path d="M9 11H5a2 2 0 00-2 2v1"/><path d="M9 5H5a2 2 0 00-2 2v1"/><path d="M13 5h8"/><path d="M13 11h5"/><path d="M13 17h3"/><circle cx="19" cy="17" r="3"/><path d="M21 19l-1.5-1.5"/></svg>
           Stock Teórico
         </button>
+        <button class="nav-item" onclick="irA('cobertura',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Stocks Mínimos
+        </button>
       </div>
       <div class="sidebar-footer">
         <div class="user-info">Administrador</div>
@@ -675,6 +679,64 @@ td { padding:11px 14px; }
         </div>
       </div>
 
+      <!-- ── STOCKS MÍNIMOS POR COBERTURA ── -->
+      <div class="page" id="pg-cobertura">
+        <div class="page-header">
+          <h2>Stocks Mínimos por Cobertura</h2>
+          <p>Calcula el stock mínimo de cada ingrediente según la producción mensual y los días de cobertura deseados.</p>
+        </div>
+
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-header"><h3>Parámetros</h3></div>
+          <div style="padding:20px;display:flex;gap:32px;align-items:flex-end;flex-wrap:wrap">
+            <div>
+              <label style="font-size:12px;font-weight:600;color:var(--gris);display:block;margin-bottom:6px">Días de cobertura deseados</label>
+              <input type="number" id="cob-dias" value="14" min="1" max="90"
+                style="width:120px;padding:9px 10px;border:1.5px solid var(--borde);border-radius:var(--radio-sm);font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;outline:none">
+            </div>
+            <div style="color:var(--gris);font-size:13px;padding-bottom:10px">
+              Stock mínimo = consumo mensual × (días ÷ 30)
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-header">
+            <h3>Producción mensual por dieta</h3>
+            <span style="font-size:12px;color:var(--gris)">kg totales producidos por mes</span>
+          </div>
+          <div style="padding:20px">
+            <div id="cob-dietas-form"><div class="loading-msg">Cargando recetas<span class="dot-anim"></span></div></div>
+            <div style="margin-top:16px">
+              <button class="btn-primary" onclick="calcularCobertura()">Calcular stocks mínimos →</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" id="cob-resultado-card" style="display:none">
+          <div class="card-header">
+            <h3>Stocks mínimos calculados</h3>
+            <button class="btn-primary" id="btn-cob-guardar" onclick="guardarStocksMinimosCobertura()">Guardar en sistema</button>
+          </div>
+          <div style="overflow-x:auto">
+            <table style="width:100%;border-collapse:collapse;font-size:13px">
+              <thead>
+                <tr style="background:var(--verde-light)">
+                  <th style="padding:9px 12px;text-align:left;font-weight:600;color:var(--gris);border-bottom:1px solid var(--borde)">Ingrediente</th>
+                  <th style="padding:9px 12px;text-align:right;font-weight:600;color:var(--gris);border-bottom:1px solid var(--borde)">Consumo/mes (kg)</th>
+                  <th style="padding:9px 12px;text-align:right;font-weight:600;color:var(--gris);border-bottom:1px solid var(--borde)">Stock mínimo (kg)</th>
+                  <th style="padding:9px 12px;text-align:right;font-weight:600;color:var(--gris);border-bottom:1px solid var(--borde)">Mínimo actual (kg)</th>
+                </tr>
+              </thead>
+              <tbody id="cob-resultado-body"></tbody>
+            </table>
+          </div>
+          <div style="padding:14px 16px">
+            <span id="cob-guardar-msg" style="font-size:13px"></span>
+          </div>
+        </div>
+      </div>
+
     </main>
   </div>
 </div>
@@ -765,6 +827,7 @@ function irA(pagina, btn) {
   if(pagina==="graficos")     renderGraficos();
   if(pagina==="precios")      cargarPrecios();
   if(pagina==="teorico")      iniciarStockTeorico();
+  if(pagina==="cobertura")    cargarCobertura();
 }
 
 // ── DASHBOARD ──
@@ -2077,6 +2140,135 @@ async function guardarPrecios() {
     st.className = "save-status err";
   }
   setTimeout(() => { st.textContent = ""; st.className = "save-status"; }, 4000);
+}
+
+// ══════════════════════════════════════════════════════════
+// STOCKS MÍNIMOS POR COBERTURA
+// ══════════════════════════════════════════════════════════
+
+let _cobRecetas   = {};  // recetas cargadas
+let _cobStockMin  = {};  // stocks mínimos actuales { codigo: min_kg }
+let _cobCalculado = {};  // resultado del cálculo { codigo: min_kg }
+
+async function cargarCobertura() {
+  try {
+    const [rRecetas, rStock] = await Promise.all([
+      jsonpGet({ action: "getRecetas" }),
+      jsonpGet({ action: "getStockActual" })
+    ]);
+    _cobRecetas  = (rRecetas.ok  ? rRecetas.data  : {});
+    _cobStockMin = {};
+    if (rStock.ok) rStock.data.forEach(m => { _cobStockMin[m.codigo] = m.stock_min || 0; });
+    renderCobDietasForm();
+  } catch(e) {
+    document.getElementById("cob-dietas-form").innerHTML =
+      `<div style="color:var(--rojo);font-size:13px">Error al cargar recetas</div>`;
+  }
+}
+
+function renderCobDietasForm() {
+  const dietas = Object.entries(_cobRecetas).filter(([,v]) => v.activo);
+  if (!dietas.length) {
+    document.getElementById("cob-dietas-form").innerHTML =
+      `<div style="color:var(--gris);font-size:13px">No hay dietas activas. Crea recetas primero en la sección Recetas.</div>`;
+    return;
+  }
+  const rows = dietas.map(([nombre]) => `
+    <tr>
+      <td style="padding:9px 12px;font-weight:500;font-size:13px">${nombre}</td>
+      <td style="padding:9px 12px">
+        <input type="number" class="cob-kg-input" data-dieta="${nombre}" min="0" step="100" value="0"
+          placeholder="0"
+          style="width:130px;padding:7px 10px;border:1.5px solid var(--borde);border-radius:var(--radio-sm);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;text-align:right">
+      </td>
+    </tr>`).join("");
+  document.getElementById("cob-dietas-form").innerHTML = `
+    <table style="width:100%;border-collapse:collapse;font-size:13px">
+      <thead>
+        <tr style="background:var(--verde-light)">
+          <th style="padding:9px 12px;text-align:left;font-weight:600;color:var(--gris);border-bottom:1px solid var(--borde)">Dieta</th>
+          <th style="padding:9px 12px;text-align:left;font-weight:600;color:var(--gris);border-bottom:1px solid var(--borde)">kg producidos / mes</th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+}
+
+function calcularCobertura() {
+  const dias = parseFloat(document.getElementById("cob-dias").value) || 14;
+  const produccion = {};
+  document.querySelectorAll(".cob-kg-input").forEach(inp => {
+    produccion[inp.dataset.dieta] = parseFloat(inp.value) || 0;
+  });
+
+  // Consumo mensual por ingrediente = Σ(kg_mes_dieta × proporcion/1000)
+  const consumoMes = {};
+  Object.entries(_cobRecetas).filter(([,v]) => v.activo).forEach(([nombre, receta]) => {
+    const kgMes = produccion[nombre] || 0;
+    if (kgMes <= 0) return;
+    Object.entries(receta.insumos || {}).forEach(([cod, prop]) => {
+      consumoMes[cod] = (consumoMes[cod] || 0) + kgMes * (prop / 1000);
+    });
+  });
+
+  // Stock mínimo = consumo_mes × (dias / 30)
+  _cobCalculado = {};
+  const tbody = document.getElementById("cob-resultado-body");
+  const filas = Object.entries(consumoMes)
+    .filter(([, kg]) => kg > 0)
+    .sort((a, b) => b[1] - a[1])
+    .map(([cod, kgMes]) => {
+      const minNuevo = Math.ceil(kgMes * (dias / 30));
+      const minActual = _cobStockMin[cod] || 0;
+      _cobCalculado[cod] = minNuevo;
+      const delta = minNuevo - minActual;
+      const deltaStr = delta === 0 ? '' :
+        `<span style="color:${delta > 0 ? 'var(--verde)' : '#CC4400'};font-size:11px;margin-left:4px">${delta > 0 ? '▲' : '▼'} ${Math.abs(delta).toLocaleString("es-CL")}</span>`;
+      return `<tr style="border-bottom:1px solid var(--borde)">
+        <td style="padding:9px 12px;font-weight:500">${cod}</td>
+        <td style="padding:9px 12px;text-align:right;font-variant-numeric:tabular-nums">${Math.round(kgMes).toLocaleString("es-CL")}</td>
+        <td style="padding:9px 12px;text-align:right;font-weight:600;color:var(--verde);font-variant-numeric:tabular-nums">${minNuevo.toLocaleString("es-CL")} ${deltaStr}</td>
+        <td style="padding:9px 12px;text-align:right;color:var(--gris);font-variant-numeric:tabular-nums">${minActual.toLocaleString("es-CL")}</td>
+      </tr>`;
+    });
+
+  if (!filas.length) {
+    tbody.innerHTML = `<tr><td colspan="4" style="padding:16px;color:var(--gris);text-align:center">Ingresa kg/mes en al menos una dieta</td></tr>`;
+  } else {
+    tbody.innerHTML = filas.join("");
+  }
+  document.getElementById("cob-resultado-card").style.display = "block";
+  document.getElementById("cob-guardar-msg").textContent = "";
+  document.getElementById("btn-cob-guardar").disabled = false;
+}
+
+async function guardarStocksMinimosCobertura() {
+  if (!Object.keys(_cobCalculado).length) return;
+  const btn = document.getElementById("btn-cob-guardar");
+  const msg = document.getElementById("cob-guardar-msg");
+  btn.disabled = true;
+  msg.style.color = "var(--gris)";
+  msg.textContent = "Guardando…";
+  try {
+    const res = await jsonpGet({
+      action: "guardarStocksMinimos",
+      payload: encodeURIComponent(JSON.stringify(_cobCalculado))
+    });
+    if (res.ok) {
+      msg.style.color = "var(--verde)";
+      msg.textContent = "✓ " + res.msg;
+      // actualizar referencia local
+      Object.assign(_cobStockMin, _cobCalculado);
+    } else {
+      msg.style.color = "var(--rojo)";
+      msg.textContent = res.error || "Error al guardar";
+      btn.disabled = false;
+    }
+  } catch(e) {
+    msg.style.color = "var(--rojo)";
+    msg.textContent = "Error de conexión";
+    btn.disabled = false;
+  }
 }
 </script>
 

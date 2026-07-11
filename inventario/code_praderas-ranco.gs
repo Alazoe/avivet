@@ -323,7 +323,8 @@ function doGet(e) {
       case "guardarPlanificacion": result = guardarPlanificacion(JSON.parse(decodeURIComponent(e.parameter.payload||"{}"))); break;
       case "getPlanificacion":     result = getPlanificacion(e.parameter);                break;
       case "getConteosDelDia":     result = getConteosDelDia(e.parameter.fecha);                          break;
-      case "agregarMateriaPrima": result = agregarMateriaPrima(e.parameter);                                               break;
+      case "agregarMateriaPrima":  result = agregarMateriaPrima(e.parameter);                                              break;
+      case "guardarStocksMinimos": result = guardarStocksMinimos(e.parameter);                                              break;
       case "actualizarPrecios":    result = actualizarPrecios(JSON.parse(decodeURIComponent(e.parameter.payload||"{}")));   break;
       case "calcularStockTeorico": result = calcularYGuardarStockTeorico(e.parameter);                                       break;
       case "getStockTeorico":      result = getStockTeorico(e.parameter);                                                    break;
@@ -1082,4 +1083,24 @@ function agregarMateriaPrima(params) {
   if (wsStock) wsStock.appendRow([codigo, nombre, 0, 0, 0, "N/D", "SIN STOCK", "", ""]);
   SpreadsheetApp.flush();
   return { ok: true, msg: nombre + " agregada con codigo " + codigo, codigo: codigo, nombre: nombre };
+}
+
+function guardarStocksMinimos(params) {
+  var minimos;
+  try { minimos = JSON.parse(decodeURIComponent(params.payload || "{}")); }
+  catch(e) { return { ok: false, error: "JSON inválido" }; }
+  var ss = SpreadsheetApp.openById(SHEET_ID);
+  var ws = ss.getSheetByName("STOCK_ACTUAL");
+  if (!ws) return { ok: false, error: "Hoja STOCK_ACTUAL no encontrada" };
+  var data = ws.getRange(3, 1, ws.getLastRow()-2, 4).getValues();
+  var actualizados = 0;
+  data.forEach(function(row, i) {
+    var cod = String(row[0]);
+    if (cod && minimos[cod] !== undefined) {
+      ws.getRange(3+i, 4).setValue(Number(minimos[cod]) || 0);
+      actualizados++;
+    }
+  });
+  SpreadsheetApp.flush();
+  return { ok: true, msg: actualizados + " stocks mínimos actualizados", n: actualizados };
 }
