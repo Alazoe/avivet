@@ -35,7 +35,7 @@ body { font-family: 'DM Sans', sans-serif; color: var(--texto); background: #E9E
 .layout { display:flex; min-height:100vh; }
 .sidebar { width:220px; background:var(--verde); position:fixed; top:0; left:0; bottom:0; z-index:100; display:flex; flex-direction:column; padding:28px 0 20px; }
 .sidebar-logo { padding:0 20px 28px; border-bottom:1px solid rgba(255,255,255,0.1); }
-.sidebar-logo .brand { font-size:11px; font-weight:600; color:#C5D490; letter-spacing:0.12em; text-transform:uppercase; }
+.sidebar-logo .brand,.logo { font-size:11px; font-weight:600; color:#C5D490; letter-spacing:0.12em; text-transform:uppercase; }
 .sidebar-logo .title { font-size:16px; font-weight:600; color:white; margin-top:2px; }
 .nav-items { padding:16px 12px; flex:1; overflow-y:auto; }
 .nav-item { display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:var(--radio-sm); color:#C5D490; font-size:13px; font-weight:500; cursor:pointer; margin-bottom:2px; transition:background 0.15s,color 0.15s; border:none; background:none; width:100%; text-align:left; }
@@ -296,12 +296,10 @@ td { padding:11px 14px; }
   display: none;
   position: sticky; top: 0; z-index: 200;
   background: var(--verde);
-  padding: 44px 16px 10px;
-  align-items: center; justify-content: space-between; gap: 10px;
-  min-height: 0;
+  padding: 52px 20px 14px;
+  align-items: center; justify-content: space-between;
 }
-.mob-brand { font-size: 13px; font-weight: 600; color: white; letter-spacing: 0.05em; text-transform: uppercase; opacity: 0.95; }
-.mob-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.mob-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
 
 @media (max-width:768px) {
   .precios-layout { grid-template-columns:1fr; }
@@ -425,12 +423,12 @@ td { padding:11px 14px; }
 
     <!-- HEADER MÓVIL (solo visible en celular) -->
     <div class="mobile-topbar">
-      <span class="mob-brand brand">La Campestre</span>
+      <span class="logo brand">La Campestre</span>
       <div class="mob-actions">
         <button id="btnInstalarAdminMob" class="btn-instalar-admin" onclick="abrirModalInstalar()" title="Agregar a pantalla de inicio">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="m8 8 4-4 4 4"/><rect x="3" y="18" width="18" height="2" rx="1"/></svg>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="m8 8 4-4 4 4"/><rect x="3" y="18" width="18" height="2" rx="1"/></svg>
         </button>
-        <a href="../manual/" title="Manual de usuario" target="_blank" style="display:flex;align-items:center;opacity:0.6;color:white;text-decoration:none">
+        <a href="../manual/" title="Manual de usuario" target="_blank" style="display:flex;align-items:center;opacity:0.7;color:white;text-decoration:none">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
         </a>
       </div>
