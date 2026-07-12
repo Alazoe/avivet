@@ -291,6 +291,18 @@ td { padding:11px 14px; }
 .save-status.ok   { color:var(--verde-med); font-weight:600; }
 .save-status.err  { color:var(--rojo); font-weight:600; }
 
+/* MOBILE TOP BAR */
+.mobile-topbar {
+  display: none;
+  position: sticky; top: 0; z-index: 200;
+  background: var(--verde);
+  padding: 48px 16px 12px;
+  align-items: center; justify-content: space-between; gap: 12px;
+}
+.mob-brand { font-size: 11px; font-weight: 600; color: #C5D490; letter-spacing: 0.12em; text-transform: uppercase; }
+.mob-title { font-size: 15px; font-weight: 600; color: white; line-height: 1.3; }
+.mob-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+
 @media (max-width:768px) {
   .precios-layout { grid-template-columns:1fr; }
   .graficos-grid { grid-template-columns:1fr; }
@@ -299,6 +311,10 @@ td { padding:11px 14px; }
   .nav-items { display:flex; flex-direction:row; padding:0; overflow-x:auto; }
   .nav-item { flex-direction:column; gap:2px; font-size:9px; padding:6px 8px; border-radius:0; flex:1; justify-content:center; }
   .main { margin-left:0; margin-bottom:56px; padding:16px; }
+  .mobile-topbar { display:flex; }
+  .metricas { grid-template-columns:repeat(2,1fr); gap:10px; }
+  .met-valor { font-size:24px; }
+  .page-header h2 { font-size:18px; }
 }
 /* INSTALAR APP */
 .btn-instalar-admin {
@@ -406,6 +422,22 @@ td { padding:11px 14px; }
         <div class="user-name">Médico Veterinario</div>
       </div>
     </nav>
+
+    <!-- HEADER MÓVIL (solo visible en celular) -->
+    <div class="mobile-topbar">
+      <div>
+        <div class="mob-brand brand">La Campestre</div>
+        <div class="mob-title">Admin Inventario</div>
+      </div>
+      <div class="mob-actions">
+        <button id="btnInstalarAdminMob" class="btn-instalar-admin" onclick="abrirModalInstalar()" title="Agregar a pantalla de inicio">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="m8 8 4-4 4 4"/><rect x="3" y="18" width="18" height="2" rx="1"/></svg>
+        </button>
+        <a href="../manual/" title="Manual de usuario" target="_blank" style="display:flex;align-items:center;opacity:0.6;color:white;text-decoration:none">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </a>
+      </div>
+    </div>
 
     <main class="main">
 
@@ -797,8 +829,7 @@ async function initConfig() {
     BACKEND = "https://script.google.com/macros/s/AKfycby8dfFibuDyDeRRK3J44Vqw9pJA1F3sMFKuYPHoC_1OHB-GIeeOlAYCdMDklE8o7b7u/exec";
   }
   document.title = `Admin — Inventario ${CLIENT_NAME}`;
-  const brandEl = document.querySelector(".brand");
-  if (brandEl) brandEl.textContent = CLIENT_NAME;
+  document.querySelectorAll(".brand").forEach(el => el.textContent = CLIENT_NAME);
 }
 
 let RECETAS_DATA = {}; // cargado desde GAS al iniciar y al navegar a Recetas
@@ -2365,20 +2396,25 @@ let _deferredInstall = null;
 const _isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 const _isStandalone = !!navigator.standalone || matchMedia("(display-mode: standalone)").matches;
 
+function _setBtnInstalarVisible(visible) {
+  ["btnInstalarAdmin", "btnInstalarAdminMob"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle("visible", visible);
+  });
+}
+
 if (!_isStandalone) {
   window.addEventListener("beforeinstallprompt", (e) => {
     e.preventDefault();
     _deferredInstall = e;
-    document.getElementById("btnInstalarAdmin").classList.add("visible");
+    _setBtnInstalarVisible(true);
   });
   window.addEventListener("appinstalled", () => {
-    document.getElementById("btnInstalarAdmin").classList.remove("visible");
+    _setBtnInstalarVisible(false);
     _deferredInstall = null;
   });
   if (_isIOS) {
-    document.addEventListener("DOMContentLoaded", () => {
-      document.getElementById("btnInstalarAdmin").classList.add("visible");
-    });
+    _setBtnInstalarVisible(true);
   }
 }
 
