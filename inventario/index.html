@@ -58,6 +58,7 @@ body { font-family: 'DM Sans', sans-serif; color: var(--texto); overflow-x: hidd
 .search-bar {
   background: var(--verde-med);
   padding: 0 20px 16px;
+  display: flex; gap: 10px; align-items: flex-end;
   position: sticky; top: 100px; z-index: 99;
 }
 .search-wrap { position: relative; }
@@ -71,6 +72,46 @@ body { font-family: 'DM Sans', sans-serif; color: var(--texto); overflow-x: hidd
   outline: none;
 }
 #buscar::placeholder { color: rgba(255,255,255,0.5); }
+.btn-nueva-mp {
+  flex-shrink: 0; width: 44px; height: 44px;
+  background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3);
+  border-radius: var(--radio-sm); color: white; font-size: 22px; line-height: 1;
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
+}
+.btn-nueva-mp:active { background: rgba(255,255,255,0.35); }
+
+/* MODAL NUEVA MP */
+.modal-nueva-mp {
+  display: none; position: fixed; inset: 0; z-index: 300;
+  background: rgba(0,0,0,0.5); align-items: flex-end; justify-content: center;
+}
+.modal-nueva-mp.open { display: flex; }
+.modal-nueva-mp-card {
+  background: white; border-radius: 20px 20px 0 0;
+  padding: 24px 20px 36px; width: 100%; max-width: 500px;
+}
+.modal-nueva-mp-card h3 { font-size: 17px; font-weight: 700; color: var(--verde); margin-bottom: 4px; }
+.modal-nueva-mp-card p { font-size: 12px; color: var(--gris); margin-bottom: 20px; }
+.nmp-field { margin-bottom: 14px; }
+.nmp-field label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--gris); display: block; margin-bottom: 5px; }
+.nmp-field input, .nmp-field select {
+  width: 100%; padding: 11px 12px; border: 1.5px solid var(--borde);
+  border-radius: var(--radio-sm); font-family: 'DM Sans', sans-serif; font-size: 15px; outline: none;
+  background: white; color: var(--texto);
+}
+.nmp-field input:focus, .nmp-field select:focus { border-color: var(--verde-clar); }
+.nmp-field .nmp-hint { font-size: 11px; color: var(--gris); margin-top: 4px; }
+.nmp-row { display: flex; gap: 10px; }
+.nmp-row .nmp-field { flex: 1; }
+.btn-nmp-guardar {
+  width: 100%; padding: 14px; background: var(--verde); color: white;
+  border: none; border-radius: var(--radio-sm); font-family: 'DM Sans', sans-serif;
+  font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 4px;
+}
+.btn-nmp-guardar:disabled { opacity: 0.5; }
+.nmp-msg { font-size: 13px; margin-top: 10px; text-align: center; min-height: 18px; }
+.nmp-msg.ok  { color: var(--verde-med); }
+.nmp-msg.err { color: #CC0000; }
 
 /* FILTROS */
 .filtros {
@@ -272,16 +313,69 @@ body { font-family: 'DM Sans', sans-serif; color: var(--texto); overflow-x: hidd
   border-radius: 8px; height: 72px; margin-bottom: 8px;
 }
 @keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+
+/* INSTALAR APP */
+.btn-instalar {
+  display: none; align-items: center; justify-content: center;
+  width: 32px; height: 32px;
+  background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 8px; cursor: pointer; color: white;
+}
+.btn-instalar.visible { display: flex; }
+.modal-instalar-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.5); z-index: 900; align-items: flex-end;
+}
+.modal-instalar-overlay.open { display: flex; }
+.modal-instalar-card {
+  background: white; border-radius: 20px 20px 0 0;
+  padding: 28px 24px 44px; width: 100%;
+}
+.modal-instalar-card h3 { font-size: 18px; font-weight: 700; color: var(--verde); margin-bottom: 4px; }
+.modal-instalar-card > p { font-size: 13px; color: var(--gris); margin-bottom: 22px; }
+.inst-paso { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 14px; }
+.inst-num {
+  flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%;
+  background: var(--verde-bg); color: var(--verde);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700;
+}
+.inst-txt { font-size: 14px; color: var(--texto); line-height: 1.5; padding-top: 4px; }
+.inst-txt strong { color: var(--verde); }
+.modal-instalar-cerrar {
+  width: 100%; margin-top: 22px; padding: 14px;
+  background: var(--verde-bg); color: var(--verde);
+  border: none; border-radius: var(--radio-sm);
+  font-size: 15px; font-weight: 600; font-family: 'DM Sans', sans-serif; cursor: pointer;
+}
 </style>
 </head>
 <body>
+
+<!-- MODAL INSTALAR APP -->
+<div class="modal-instalar-overlay" id="modalInstalar" onclick="if(event.target===this)cerrarModalInstalar()">
+  <div class="modal-instalar-card">
+    <h3>Agregar a pantalla de inicio</h3>
+    <p>Accede directo desde tu celular, sin abrir el navegador</p>
+    <div id="instPasos"></div>
+    <button class="modal-instalar-cerrar" onclick="cerrarModalInstalar()">Entendido</button>
+  </div>
+</div>
 
 <div class="offline-bar" id="offlineBar">⚠ Sin conexión — los conteos se guardarán localmente</div>
 
 <div class="header">
   <div class="header-top">
     <span class="logo">La Campestre</span>
-    <span class="fecha-badge" id="fechaHoy"></span>
+    <div style="display:flex;align-items:center;gap:10px">
+      <button id="btnInstalar" class="btn-instalar" onclick="abrirModalInstalar()" title="Agregar a pantalla de inicio">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="m8 8 4-4 4 4"/><rect x="3" y="18" width="18" height="2" rx="1"/></svg>
+      </button>
+      <a href="../manual/" title="Manual de usuario" style="display:flex;align-items:center;opacity:0.7;color:white" target="_blank">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </a>
+      <span class="fecha-badge" id="fechaHoy"></span>
+    </div>
   </div>
   <h1>Control de Inventario</h1>
   <div class="header-sub" id="headerSub">Cargando materias primas...</div>
@@ -290,10 +384,11 @@ body { font-family: 'DM Sans', sans-serif; color: var(--texto); overflow-x: hidd
 <!-- VISTA CONTEO -->
 <div id="vistaConteo" class="lista-activa">
   <div class="search-bar">
-    <div class="search-wrap">
+    <div class="search-wrap" style="flex:1">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
       <input type="search" id="buscar" placeholder="Buscar materia prima..." autocomplete="off">
     </div>
+    <button class="btn-nueva-mp" onclick="abrirModalNuevaMP()" title="Agregar nueva materia prima">+</button>
   </div>
 
   <div class="filtros" id="filtros">
@@ -361,6 +456,49 @@ body { font-family: 'DM Sans', sans-serif; color: var(--texto); overflow-x: hidd
 </nav>
 
 <div class="toast" id="toast"></div>
+
+<!-- MODAL NUEVA MATERIA PRIMA -->
+<div class="modal-nueva-mp" id="modalNuevaMP" onclick="if(event.target===this)cerrarModalNuevaMP()">
+  <div class="modal-nueva-mp-card">
+    <h3>Nueva Materia Prima</h3>
+    <p>El insumo se agregará al sistema y quedará disponible para conteos.</p>
+    <div class="nmp-field">
+      <label>Nombre *</label>
+      <input type="text" id="nmp-nombre" placeholder="Ej: Carbonato de Calcio" oninput="autoCodigoMP()">
+    </div>
+    <div class="nmp-row">
+      <div class="nmp-field">
+        <label>Código</label>
+        <input type="text" id="nmp-codigo" placeholder="Ej: 30CARB-00" style="text-transform:uppercase">
+        <div class="nmp-hint">Se genera automáticamente</div>
+      </div>
+      <div class="nmp-field">
+        <label>Unidad</label>
+        <select id="nmp-unidad">
+          <option value="kg">kg</option>
+          <option value="litro">litro</option>
+          <option value="unidad">unidad</option>
+        </select>
+      </div>
+    </div>
+    <div class="nmp-field">
+      <label>Grupo</label>
+      <select id="nmp-grupo">
+        <option value="Energéticos">Energéticos</option>
+        <option value="Proteínas">Proteínas</option>
+        <option value="Minerales">Minerales</option>
+        <option value="Aminoácidos">Aminoácidos</option>
+        <option value="Núcleos">Núcleos</option>
+        <option value="Aditivos">Aditivos</option>
+        <option value="Medicamentos">Medicamentos</option>
+        <option value="Envases">Envases</option>
+        <option value="Otros">Otros</option>
+      </select>
+    </div>
+    <button class="btn-nmp-guardar" id="btn-nmp-guardar" onclick="guardarNuevaMP()">Agregar materia prima</button>
+    <div class="nmp-msg" id="nmp-msg"></div>
+  </div>
+</div>
 
 <script>
 let BACKEND = "";
@@ -430,6 +568,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("buscar").addEventListener("input", renderLista);
   cargarDatos();
   actualizarQueueBadge();
+  if (new URLSearchParams(location.search).get("nueva") === "1") {
+    setTimeout(abrirModalNuevaMP, 800);
+  }
 });
 
 async function cargarDatos() {
@@ -747,6 +888,65 @@ async function guardarConteo(codigo, nombre, unidad) {
   btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20,6 9,17 4,12"/></svg> Registrar conteo`;
 }
 
+// ── NUEVA MATERIA PRIMA ──
+function abrirModalNuevaMP() {
+  document.getElementById("nmp-nombre").value = "";
+  document.getElementById("nmp-codigo").value = "";
+  document.getElementById("nmp-unidad").value = "kg";
+  document.getElementById("nmp-grupo").value  = "Energéticos";
+  document.getElementById("nmp-msg").textContent = "";
+  document.getElementById("btn-nmp-guardar").disabled = false;
+  document.getElementById("modalNuevaMP").classList.add("open");
+  setTimeout(() => document.getElementById("nmp-nombre").focus(), 100);
+}
+
+function cerrarModalNuevaMP() {
+  document.getElementById("modalNuevaMP").classList.remove("open");
+}
+
+function autoCodigoMP() {
+  const nombre = document.getElementById("nmp-nombre").value.trim();
+  if (!nombre) return;
+  const siglas = nombre.toUpperCase().replace(/[^A-Z0-9]/g, "").substring(0, 4);
+  document.getElementById("nmp-codigo").value = "30" + siglas + "-00";
+}
+
+async function guardarNuevaMP() {
+  const nombre = document.getElementById("nmp-nombre").value.trim();
+  const codigo = document.getElementById("nmp-codigo").value.trim().toUpperCase();
+  const unidad = document.getElementById("nmp-unidad").value;
+  const grupo  = document.getElementById("nmp-grupo").value;
+  const msg    = document.getElementById("nmp-msg");
+  const btn    = document.getElementById("btn-nmp-guardar");
+
+  if (!nombre) { msg.textContent = "Ingresa el nombre del insumo."; msg.className = "nmp-msg err"; return; }
+  if (!codigo) { msg.textContent = "Ingresa o genera un código.";   msg.className = "nmp-msg err"; return; }
+
+  btn.disabled = true; btn.textContent = "Guardando...";
+  msg.textContent = ""; msg.className = "nmp-msg";
+
+  try {
+    const params = { action: "agregarMateriaPrima", codigo, nombre, unidad, grupo };
+    const data = await jsonpGet(params);
+    if (data.ok) {
+      msg.textContent = `✓ "${nombre}" agregada correctamente.`; msg.className = "nmp-msg ok";
+      btn.textContent = "Agregar materia prima"; btn.disabled = false;
+      await cargarDatos();
+      setTimeout(() => {
+        cerrarModalNuevaMP();
+        document.getElementById("buscar").value = nombre;
+        renderLista();
+      }, 1200);
+    } else {
+      msg.textContent = data.error || "Error al guardar."; msg.className = "nmp-msg err";
+      btn.textContent = "Agregar materia prima"; btn.disabled = false;
+    }
+  } catch(e) {
+    msg.textContent = "Sin conexión — intenta de nuevo."; msg.className = "nmp-msg err";
+    btn.textContent = "Agregar materia prima"; btn.disabled = false;
+  }
+}
+
 // ── OFFLINE QUEUE ──
 function guardarOffline(registro) {
   offlineQueue.push(registro);
@@ -987,6 +1187,53 @@ function exportarPDF() {
   const win  = window.open(url, "_blank");
   if (!win) mostrarToast("Permite ventanas emergentes para exportar", "error");
   setTimeout(() => URL.revokeObjectURL(url), 10000);
+}
+
+// INSTALAR APP
+let _deferredInstall = null;
+const _isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+const _isStandalone = !!navigator.standalone || matchMedia("(display-mode: standalone)").matches;
+
+if (!_isStandalone) {
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    _deferredInstall = e;
+    document.getElementById("btnInstalar").classList.add("visible");
+  });
+  window.addEventListener("appinstalled", () => {
+    document.getElementById("btnInstalar").classList.remove("visible");
+    _deferredInstall = null;
+  });
+  if (_isIOS) {
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("btnInstalar").classList.add("visible");
+    });
+  }
+}
+
+function abrirModalInstalar() {
+  if (_deferredInstall) {
+    _deferredInstall.prompt();
+    _deferredInstall.userChoice.then(() => { _deferredInstall = null; });
+    return;
+  }
+  const contenedor = document.getElementById("instPasos");
+  if (_isIOS) {
+    contenedor.innerHTML = `
+      <div class="inst-paso"><div class="inst-num">1</div><div class="inst-txt">En Safari, toca el ícono de compartir <strong>⎋</strong> en la barra inferior</div></div>
+      <div class="inst-paso"><div class="inst-num">2</div><div class="inst-txt">Desliza hacia abajo y toca <strong>"Agregar a pantalla de inicio"</strong></div></div>
+      <div class="inst-paso"><div class="inst-num">3</div><div class="inst-txt">Toca <strong>"Agregar"</strong> en la esquina superior derecha para confirmar</div></div>`;
+  } else {
+    contenedor.innerHTML = `
+      <div class="inst-paso"><div class="inst-num">1</div><div class="inst-txt">En Chrome, toca el menú <strong>⋮</strong> (tres puntos) arriba a la derecha</div></div>
+      <div class="inst-paso"><div class="inst-num">2</div><div class="inst-txt">Selecciona <strong>"Añadir a pantalla de inicio"</strong></div></div>
+      <div class="inst-paso"><div class="inst-num">3</div><div class="inst-txt">Toca <strong>"Añadir"</strong> para confirmar</div></div>`;
+  }
+  document.getElementById("modalInstalar").classList.add("open");
+}
+
+function cerrarModalInstalar() {
+  document.getElementById("modalInstalar").classList.remove("open");
 }
 </script>
 </body>

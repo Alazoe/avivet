@@ -22,63 +22,23 @@ const RESPONSABLE_ADMIN   = "Andrés Lazo";
 const PASSWORD_ADMIN      = "admin2025";                    // cambiar antes de entregar
 
 // ──────────────────────────────────────────────
-//  MATERIAS PRIMAS  ← Agregar/quitar según necesidad
-//  Formato: ["CODIGO", "NOMBRE", "UNIDAD", "GRUPO"]
+//  MATERIAS PRIMAS  ← Se cargan desde el admin en la app
+//  Dejar vacío: el usuario agrega los insumos desde el panel
 // ──────────────────────────────────────────────
-const MATERIAS_PRIMAS = [
-  ["MP-MAIZ-00", "MAÍZ GRANO",               "kg",     "Energéticos"],
-  ["MP-TRGO-00", "HARINILLA DE TRIGO",        "kg",     "Energéticos"],
-  ["MP-SOYA-00", "PELLET DE SOYA 46%",        "kg",     "Proteínas"],
-  ["MP-CARC-00", "CARBONATO DE CALCIO",       "kg",     "Minerales"],
-  ["MP-FODB-00", "FOSFATO BICÁLCICO",         "kg",     "Minerales"],
-  ["MP-SAL0-00", "SAL FINA",                  "kg",     "Minerales"],
-  ["MP-METD-00", "METIONINA DL",              "kg",     "Aminoácidos"],
-  ["MP-LIS0-00", "LISINA HCL 98%",            "kg",     "Aminoácidos"],
-  ["MP-NUCL-00", "NÚCLEO VITAMÍNICO PONED.",  "kg",     "Núcleos"],
-  ["MP-SEQM-00", "SECUESTRANTE MICOTOXINAS",  "kg",     "Aditivos"],
-  ["MP-SAC1-00", "SACO 50KG",                "unidad",  "Envases"],
-];
+const MATERIAS_PRIMAS = [];
 
 // ──────────────────────────────────────────────
-//  RECETAS  ← 1 dieta para partir. Agregar más cuando esté listo.
-//  Los kg deben sumar ~1.000 (proporción por cada ton de mezcla)
+//  RECETAS  ← Se cargan desde el admin en la app
+//  Dejar vacío: el usuario define las dietas desde el panel
 // ──────────────────────────────────────────────
-const RECETAS = {
-  "PONEDORA COMERCIAL": {
-    codigo: "PON-COM",
-    activo: true,
-    fecha:  "hoy",
-    insumos: {
-      "MP-MAIZ-00":  560,
-      "MP-SOYA-00":  260,
-      "MP-CARC-00":  108,
-      "MP-TRGO-00":   50,
-      "MP-FODB-00":    7,
-      "MP-SAL0-00":    3.5,
-      "MP-METD-00":    2.5,
-      "MP-LIS0-00":    0.5,
-      "MP-NUCL-00":    2,
-      "MP-SEQM-00":    0.5,
-    }
-  }
-};
+const RECETAS = {};
 
 // ──────────────────────────────────────────────
 //  STOCKS MÍNIMOS  ← Completar con días de cobertura deseados
 //  Recomendación: consumo_diario × días_de_seguridad
 // ──────────────────────────────────────────────
-const STOCKS_MINIMOS = {
-  "MP-MAIZ-00": 0,   // ← completar: ej. 5600  (560 kg/ton × 2 ton/día × 5 días)
-  "MP-TRGO-00": 0,
-  "MP-SOYA-00": 0,
-  "MP-CARC-00": 0,
-  "MP-FODB-00": 0,
-  "MP-SAL0-00": 0,
-  "MP-METD-00": 0,
-  "MP-LIS0-00": 0,
-  "MP-NUCL-00": 0,
-  "MP-SEQM-00": 0,
-};
+// Stocks mínimos: se definen desde el panel una vez que se conoce la producción mensual
+const STOCKS_MINIMOS = {};
 
 // ══════════════════════════════════════════════════════════════
 //  SETUP — ejecutar una sola vez
@@ -86,93 +46,14 @@ const STOCKS_MINIMOS = {
 
 function inicializarTemplate() {
   inicializarSistema();
-  Utilities.sleep(2000);
-  _cargarDemoTemplate();
   SpreadsheetApp.getUi().alert(
     "✅ " + NOMBRE_PLANTA + " inicializada.\n\n" +
     "Próximos pasos:\n" +
-    "1. Completar STOCKS MÍNIMOS en el código\n" +
-    "2. Ingresar stock inicial mediante Conteo Físico\n" +
-    "3. Configurar la planificación diaria"
+    "1. Agregar materias primas desde el panel Admin → Stock → Agregar MP\n" +
+    "2. Crear las recetas/dietas desde Admin → Recetas\n" +
+    "3. Ingresar stock inicial con la app de Conteo\n" +
+    "4. Definir stocks mínimos desde Admin → Precios"
   );
-}
-
-function _cargarDemoTemplate() {
-  const ss  = SpreadsheetApp.openById(SHEET_ID);
-  const tz  = "America/Santiago";
-  const now = new Date();
-
-  // ── Stock demo: muestra distintos estados para que se vea el sistema
-  const wsStock = ss.getSheetByName("STOCK_ACTUAL");
-  const stockDemo = [
-    // [codigo, stock_kg, stock_min_kg, dias_atras_del_conteo]
-    ["MP-MAIZ-00", 12500, 5600, 1],
-    ["MP-SOYA-00",  4800, 2600, 1],
-    ["MP-CARC-00",  2100, 1080, 2],
-    ["MP-TRGO-00",  1800, 1000, 2],
-    ["MP-FODB-00",    42,   70, 3],   // CRÍTICO — bajo mínimo
-    ["MP-SAL0-00",   380,  175, 2],
-    ["MP-METD-00",    18,   25, 3],   // CRÍTICO
-    ["MP-LIS0-00",    85,   25, 2],
-    ["MP-NUCL-00",     0,   40, 5],   // SIN STOCK
-    ["MP-SEQM-00",    55,   25, 3],
-  ];
-  const wsStockData = wsStock.getRange(3, 1, wsStock.getLastRow() - 2, 9).getValues();
-  stockDemo.forEach(([cod, stock, min, dias]) => {
-    const idx = wsStockData.findIndex(r => r[0] === cod);
-    if (idx < 0) return;
-    const row    = idx + 3;
-    const fecha  = new Date(now); fecha.setDate(fecha.getDate() - dias);
-    const fechaS = Utilities.formatDate(fecha, tz, "yyyy-MM-dd HH:mm");
-    wsStock.getRange(row, 3).setValue(stock);
-    wsStock.getRange(row, 4).setValue(min);
-    wsStock.getRange(row, 8).setValue(fechaS);
-    let estado = stock === 0 ? "SIN STOCK" : stock < min ? "CRÍTICO" : stock < min * 1.5 ? "BAJO" : "OK";
-    wsStock.getRange(row, 7).setValue(estado);
-  });
-
-  // ── Plan: 10 días producción (1.500 kg/día de la única dieta)
-  const wsPlan = ss.getSheetByName("PLANIFICACION");
-  const ahora  = Utilities.formatDate(now, tz, "yyyy-MM-dd HH:mm");
-  const planRows = [];
-  for (let i = -2; i <= 7; i++) {
-    const d = new Date(now); d.setDate(d.getDate() + i);
-    if (d.getDay() === 0) continue; // sin domingos
-    const f = Utilities.formatDate(d, tz, "yyyy-MM-dd");
-    planRows.push([f, "PONEDORA COMERCIAL", 1500, ahora]);
-  }
-  if (planRows.length) wsPlan.getRange(3, 1, planRows.length, 4).setValues(planRows);
-
-  // ── Conteos físicos de los últimos 3 días
-  const wsConteos = ss.getSheetByName("CONTEOS_FISICOS");
-  let id = 1;
-  const conteos = [
-    { d: 0, h: "09:10", cod: "MP-MAIZ-00", nom: "Maíz Grano",              kg: 12500 },
-    { d: 0, h: "09:25", cod: "MP-SOYA-00", nom: "Pellet de Soya 46%",      kg:  4800 },
-    { d: 0, h: "09:40", cod: "MP-FODB-00", nom: "Fosfato Bicálcico",       kg:    42, obs: "Urgente reponer" },
-    { d: 1, h: "08:50", cod: "MP-CARC-00", nom: "Carbonato de Calcio",     kg:  2100 },
-    { d: 1, h: "09:05", cod: "MP-METD-00", nom: "Metionina DL",            kg:    18, obs: "Por debajo del mínimo" },
-    { d: 3, h: "09:30", cod: "MP-NUCL-00", nom: "Núcleo Vitamínico Pon.",  kg:     0, obs: "Sin stock" },
-  ];
-  conteos.forEach(c => {
-    const fecha = new Date(now); fecha.setDate(fecha.getDate() - c.d);
-    wsConteos.appendRow([
-      id++,
-      Utilities.formatDate(fecha, tz, "yyyy-MM-dd"),
-      c.h, c.cod, c.nom, c.kg,
-      RESPONSABLE_BODEGA, c.obs || ""
-    ]);
-  });
-
-  // ── Orden de compra: insumos críticos
-  const wsOC  = ss.getSheetByName("ORDENES_COMPRA");
-  const hoy   = Utilities.formatDate(now, tz, "yyyy-MM-dd");
-  const en4   = Utilities.formatDate(new Date(now.getTime() + 4*86400000), tz, "yyyy-MM-dd");
-  wsOC.appendRow(["OC-001", hoy, "MP-FODB-00", "Fosfato Bicálcico",       500, 0, 0, "", en4, "PENDIENTE", "", "Urgente"]);
-  wsOC.appendRow(["OC-002", hoy, "MP-NUCL-00", "Núcleo Vitamínico Pon.", 200,  0, 0, "", en4, "PENDIENTE", "", ""]);
-  wsOC.appendRow(["OC-003", hoy, "MP-METD-00", "Metionina DL",           100,  0, 0, "", en4, "PENDIENTE", "", ""]);
-
-  SpreadsheetApp.flush();
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -444,7 +325,9 @@ function doGet(e) {
       case "guardarOrden":         result = guardarOrden(e.parameter);                                                         break;
       case "guardarPlanificacion": result = guardarPlanificacion(JSON.parse(decodeURIComponent(e.parameter.payload||"{}"))); break;
       case "getPlanificacion":     result = getPlanificacion(e.parameter);                                                     break;
-      case "getConteosDelDia":     result = getConteosDelDia(e.parameter.fecha);                                               break;
+      case "getConteosDelDia":     result = getConteosDelDia(e.parameter.fecha);                          break;
+      case "agregarMateriaPrima":  result = agregarMateriaPrima(e.parameter);                                              break;
+      case "guardarStocksMinimos": result = guardarStocksMinimos(e.parameter);                                              break;
       case "actualizarPrecios":    result = actualizarPrecios(JSON.parse(decodeURIComponent(e.parameter.payload||"{}")));   break;
       case "calcularStockTeorico": result = calcularYGuardarStockTeorico(e.parameter);                                         break;
       case "getStockTeorico":      result = getStockTeorico(e.parameter);                                                      break;
@@ -722,4 +605,46 @@ function getStockTeorico(params) {
     if (real !== null) { const pct = teorico > 0 ? Math.abs(diff)/teorico*100 : 0; estado = pct <= 3 ? "OK" : pct <= 7 ? "Alerta" : (diff < 0 ? "Pérdida" : "Exceso"); }
     return { codigo: cod, nombre: String(r[2]||""), fecha_ultimo_conteo: normFecha(r[3]), stock_ultimo_conteo: parseFloat(r[4])||0, consumo_produccion: parseFloat(r[5])||0, stock_teorico: teorico, conteo_real: real, diferencia: diff, estado };
   })};
+}
+
+
+function agregarMateriaPrima(params) {
+  var codigo = String(params.codigo || "").trim().toUpperCase();
+  var nombre = String(params.nombre || "").trim();
+  var unidad = String(params.unidad || "kg").trim();
+  var grupo  = String(params.grupo  || "Otros").trim();
+  if (!codigo || !nombre) return { ok: false, error: "Faltan codigo y nombre" };
+  var ss   = SpreadsheetApp.openById(SHEET_ID);
+  var wsMP = ss.getSheetByName("MATERIAS_PRIMAS");
+  if (!wsMP) return { ok: false, error: "Hoja MATERIAS_PRIMAS no encontrada" };
+  var lastMP = wsMP.getLastRow();
+  if (lastMP > 2) {
+    var existing = wsMP.getRange(3, 1, lastMP - 2, 1).getValues().map(function(r){ return String(r[0]); });
+    if (existing.indexOf(codigo) >= 0) return { ok: false, error: "El codigo " + codigo + " ya existe" };
+  }
+  wsMP.appendRow([codigo, nombre, unidad, grupo, 0, "", 0, "SI"]);
+  var wsStock = ss.getSheetByName("STOCK_ACTUAL");
+  if (wsStock) wsStock.appendRow([codigo, nombre, 0, 0, 0, "N/D", "SIN STOCK", "", ""]);
+  SpreadsheetApp.flush();
+  return { ok: true, msg: nombre + " agregada con codigo " + codigo, codigo: codigo, nombre: nombre };
+}
+
+function guardarStocksMinimos(params) {
+  var minimos;
+  try { minimos = JSON.parse(decodeURIComponent(params.payload || "{}")); }
+  catch(e) { return { ok: false, error: "JSON inválido" }; }
+  var ss = SpreadsheetApp.openById(SHEET_ID);
+  var ws = ss.getSheetByName("STOCK_ACTUAL");
+  if (!ws) return { ok: false, error: "Hoja STOCK_ACTUAL no encontrada" };
+  var data = ws.getRange(3, 1, ws.getLastRow()-2, 4).getValues();
+  var actualizados = 0;
+  data.forEach(function(row, i) {
+    var cod = String(row[0]);
+    if (cod && minimos[cod] !== undefined) {
+      ws.getRange(3+i, 4).setValue(Number(minimos[cod]) || 0);
+      actualizados++;
+    }
+  });
+  SpreadsheetApp.flush();
+  return { ok: true, msg: actualizados + " stocks mínimos actualizados", n: actualizados };
 }

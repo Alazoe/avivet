@@ -35,7 +35,7 @@ body { font-family: 'DM Sans', sans-serif; color: var(--texto); background: #E9E
 .layout { display:flex; min-height:100vh; }
 .sidebar { width:220px; background:var(--verde); position:fixed; top:0; left:0; bottom:0; z-index:100; display:flex; flex-direction:column; padding:28px 0 20px; }
 .sidebar-logo { padding:0 20px 28px; border-bottom:1px solid rgba(255,255,255,0.1); }
-.sidebar-logo .brand { font-size:11px; font-weight:600; color:#C5D490; letter-spacing:0.12em; text-transform:uppercase; }
+.sidebar-logo .brand,.logo { font-size:11px; font-weight:600; color:#C5D490; letter-spacing:0.12em; text-transform:uppercase; }
 .sidebar-logo .title { font-size:16px; font-weight:600; color:white; margin-top:2px; }
 .nav-items { padding:16px 12px; flex:1; overflow-y:auto; }
 .nav-item { display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:var(--radio-sm); color:#C5D490; font-size:13px; font-weight:500; cursor:pointer; margin-bottom:2px; transition:background 0.15s,color 0.15s; border:none; background:none; width:100%; text-align:left; }
@@ -291,6 +291,20 @@ td { padding:11px 14px; }
 .save-status.ok   { color:var(--verde-med); font-weight:600; }
 .save-status.err  { color:var(--rojo); font-weight:600; }
 
+/* MOBILE TOP BAR */
+.mobile-topbar {
+  display: none;
+  position: sticky; top: 0; z-index: 200;
+  background: var(--verde);
+  padding: env(safe-area-inset-top, 0px) 20px 0;
+  align-items: center; justify-content: space-between;
+}
+.mob-topbar-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  width: 100%; padding: 10px 0;
+}
+.mob-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+
 @media (max-width:768px) {
   .precios-layout { grid-template-columns:1fr; }
   .graficos-grid { grid-template-columns:1fr; }
@@ -298,18 +312,81 @@ td { padding:11px 14px; }
   .sidebar-logo,.sidebar-footer { display:none; }
   .nav-items { display:flex; flex-direction:row; padding:0; overflow-x:auto; }
   .nav-item { flex-direction:column; gap:2px; font-size:9px; padding:6px 8px; border-radius:0; flex:1; justify-content:center; }
-  .main { margin-left:0; margin-bottom:56px; padding:16px; }
+  .main { margin-left:0; margin-bottom:56px; padding:16px; padding-top:12px; }
+  .mobile-topbar { display:flex; }
+  .metricas { grid-template-columns:repeat(2,1fr); gap:10px; }
+  .met-valor { font-size:24px; }
+  .page-header h2 { font-size:18px; }
+}
+/* INSTALAR APP */
+.btn-instalar-admin {
+  display:none; align-items:center; justify-content:center;
+  width:28px; height:28px; border-radius:6px;
+  background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.2);
+  cursor:pointer; color:white; flex-shrink:0;
+}
+.btn-instalar-admin.visible { display:flex; }
+.modal-instalar-overlay {
+  display:none; position:fixed; inset:0;
+  background:rgba(0,0,0,0.5); z-index:900; align-items:flex-end;
+}
+.modal-instalar-overlay.open { display:flex; }
+.modal-instalar-card {
+  background:white; border-radius:20px 20px 0 0;
+  padding:28px 24px 44px; width:100%;
+}
+.modal-instalar-card h3 { font-size:18px; font-weight:700; color:var(--verde); margin-bottom:4px; }
+.modal-instalar-card > p { font-size:13px; color:var(--gris); margin-bottom:22px; }
+.inst-paso { display:flex; align-items:flex-start; gap:14px; margin-bottom:14px; }
+.inst-num {
+  flex-shrink:0; width:28px; height:28px; border-radius:50%;
+  background:var(--verde-bg); color:var(--verde);
+  display:flex; align-items:center; justify-content:center;
+  font-size:13px; font-weight:700;
+}
+.inst-txt { font-size:14px; color:var(--texto); line-height:1.5; padding-top:4px; }
+.inst-txt strong { color:var(--verde); }
+.modal-instalar-cerrar {
+  width:100%; margin-top:22px; padding:14px;
+  background:var(--verde-bg); color:var(--verde);
+  border:none; border-radius:var(--radio-sm);
+  font-size:15px; font-weight:600; font-family:'DM Sans',sans-serif; cursor:pointer;
 }
 </style>
 </head>
 <body>
 
 <div id="app">
+  <!-- HEADER MÓVIL (solo visible en celular) -->
+  <div class="mobile-topbar">
+    <div class="mob-topbar-inner">
+      <span class="logo brand">La Campestre</span>
+      <div class="mob-actions">
+        <button id="btnInstalarAdminMob" class="btn-instalar-admin" onclick="abrirModalInstalar()" title="Agregar a pantalla de inicio">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="m8 8 4-4 4 4"/><rect x="3" y="18" width="18" height="2" rx="1"/></svg>
+        </button>
+        <a href="../manual/" title="Manual de usuario" target="_blank" style="display:flex;align-items:center;opacity:0.7;color:white;text-decoration:none">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+
   <div class="layout">
     <nav class="sidebar">
       <div class="sidebar-logo">
         <div class="brand">La Campestre</div>
-        <div class="title">Admin Inventario</div>
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <div class="title">Admin Inventario</div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <button id="btnInstalarAdmin" class="btn-instalar-admin" onclick="abrirModalInstalar()" title="Agregar a pantalla de inicio">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="m8 8 4-4 4 4"/><rect x="3" y="18" width="18" height="2" rx="1"/></svg>
+            </button>
+            <a href="../manual/" title="Manual de usuario" target="_blank" style="display:flex;align-items:center;opacity:0.6;color:white;text-decoration:none">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </a>
+          </div>
+        </div>
       </div>
       <div class="nav-items">
         <button class="nav-item activo" onclick="irA('dashboard',this)">
@@ -351,6 +428,10 @@ td { padding:11px 14px; }
         <button class="nav-item" onclick="irA('teorico',this)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 17H5a2 2 0 00-2 2v1"/><path d="M9 11H5a2 2 0 00-2 2v1"/><path d="M9 5H5a2 2 0 00-2 2v1"/><path d="M13 5h8"/><path d="M13 11h5"/><path d="M13 17h3"/><circle cx="19" cy="17" r="3"/><path d="M21 19l-1.5-1.5"/></svg>
           Stock Teórico
+        </button>
+        <button class="nav-item" onclick="irA('cobertura',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Stocks Mínimos
         </button>
       </div>
       <div class="sidebar-footer">
@@ -402,6 +483,50 @@ td { padding:11px 14px; }
               <button onclick="toggleStockForm()" style="padding:9px 18px;border:1.5px solid var(--borde);border-radius:var(--radio-sm);background:white;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:14px">Cancelar</button>
             </div>
             <div id="admin-form-msg" style="margin-top:10px;font-size:13px;display:none"></div>
+          </div>
+        </div>
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-header">
+            <h3>Nueva Materia Prima</h3>
+            <button class="btn-primary" onclick="toggleNuevaMPForm()">+ Agregar MP</button>
+          </div>
+          <div id="nueva-mp-panel" style="display:none;padding:20px;border-top:1px solid var(--borde)">
+            <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:12px;align-items:end">
+              <div>
+                <label style="font-size:12px;font-weight:600;color:var(--gris);display:block;margin-bottom:6px">Nombre</label>
+                <input type="text" id="nmp-admin-nombre" placeholder="Ej: Maíz Amarillo" oninput="autoCodigoAdmin()"
+                  style="width:100%;padding:9px 10px;border:1.5px solid var(--borde);border-radius:var(--radio-sm);font-family:'DM Sans',sans-serif;font-size:14px;outline:none">
+              </div>
+              <div>
+                <label style="font-size:12px;font-weight:600;color:var(--gris);display:block;margin-bottom:6px">Código</label>
+                <input type="text" id="nmp-admin-codigo" placeholder="30MAIZ-00"
+                  style="width:100%;padding:9px 10px;border:1.5px solid var(--borde);border-radius:var(--radio-sm);font-family:'DM Sans',sans-serif;font-size:14px;outline:none">
+              </div>
+              <div>
+                <label style="font-size:12px;font-weight:600;color:var(--gris);display:block;margin-bottom:6px">Unidad</label>
+                <select id="nmp-admin-unidad" style="width:100%;padding:9px 10px;border:1.5px solid var(--borde);border-radius:var(--radio-sm);font-family:'DM Sans',sans-serif;font-size:14px;outline:none">
+                  <option value="kg">kg</option>
+                  <option value="L">L</option>
+                  <option value="g">g</option>
+                  <option value="unidad">unidad</option>
+                </select>
+              </div>
+              <div>
+                <label style="font-size:12px;font-weight:600;color:var(--gris);display:block;margin-bottom:6px">Grupo</label>
+                <select id="nmp-admin-grupo" style="width:100%;padding:9px 10px;border:1.5px solid var(--borde);border-radius:var(--radio-sm);font-family:'DM Sans',sans-serif;font-size:14px;outline:none">
+                  <option value="Energéticos">Energéticos</option>
+                  <option value="Proteicos">Proteicos</option>
+                  <option value="Minerales">Minerales</option>
+                  <option value="Aditivos">Aditivos</option>
+                  <option value="Otros">Otros</option>
+                </select>
+              </div>
+            </div>
+            <div style="margin-top:12px;display:flex;gap:10px;align-items:center">
+              <button class="btn-primary" id="btn-nmp-admin-guardar" onclick="guardarNuevaMPAdmin()">Guardar</button>
+              <button onclick="toggleNuevaMPForm()" style="padding:9px 18px;border:1.5px solid var(--borde);border-radius:var(--radio-sm);background:white;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:14px">Cancelar</button>
+              <span id="nmp-admin-msg" style="font-size:13px"></span>
+            </div>
           </div>
         </div>
         <div class="card">
@@ -626,6 +751,64 @@ td { padding:11px 14px; }
         </div>
       </div>
 
+      <!-- ── STOCKS MÍNIMOS POR COBERTURA ── -->
+      <div class="page" id="pg-cobertura">
+        <div class="page-header">
+          <h2>Stocks Mínimos por Cobertura</h2>
+          <p>Calcula el stock mínimo de cada ingrediente según la producción mensual y los días de cobertura deseados.</p>
+        </div>
+
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-header"><h3>Parámetros</h3></div>
+          <div style="padding:20px;display:flex;gap:32px;align-items:flex-end;flex-wrap:wrap">
+            <div>
+              <label style="font-size:12px;font-weight:600;color:var(--gris);display:block;margin-bottom:6px">Días de cobertura deseados</label>
+              <input type="number" id="cob-dias" value="14" min="1" max="90"
+                style="width:120px;padding:9px 10px;border:1.5px solid var(--borde);border-radius:var(--radio-sm);font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;outline:none">
+            </div>
+            <div style="color:var(--gris);font-size:13px;padding-bottom:10px">
+              Stock mínimo = consumo mensual × (días ÷ 30)
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-header">
+            <h3>Producción mensual por dieta</h3>
+            <span style="font-size:12px;color:var(--gris)">kg totales producidos por mes</span>
+          </div>
+          <div style="padding:20px">
+            <div id="cob-dietas-form"><div class="loading-msg">Cargando recetas<span class="dot-anim"></span></div></div>
+            <div style="margin-top:16px">
+              <button class="btn-primary" onclick="calcularCobertura()">Calcular stocks mínimos →</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" id="cob-resultado-card" style="display:none">
+          <div class="card-header">
+            <h3>Stocks mínimos calculados</h3>
+            <button class="btn-primary" id="btn-cob-guardar" onclick="guardarStocksMinimosCobertura()">Guardar en sistema</button>
+          </div>
+          <div style="overflow-x:auto">
+            <table style="width:100%;border-collapse:collapse;font-size:13px">
+              <thead>
+                <tr style="background:var(--verde-light)">
+                  <th style="padding:9px 12px;text-align:left;font-weight:600;color:var(--gris);border-bottom:1px solid var(--borde)">Ingrediente</th>
+                  <th style="padding:9px 12px;text-align:right;font-weight:600;color:var(--gris);border-bottom:1px solid var(--borde)">Consumo/mes (kg)</th>
+                  <th style="padding:9px 12px;text-align:right;font-weight:600;color:var(--gris);border-bottom:1px solid var(--borde)">Stock mínimo (kg)</th>
+                  <th style="padding:9px 12px;text-align:right;font-weight:600;color:var(--gris);border-bottom:1px solid var(--borde)">Mínimo actual (kg)</th>
+                </tr>
+              </thead>
+              <tbody id="cob-resultado-body"></tbody>
+            </table>
+          </div>
+          <div style="padding:14px 16px">
+            <span id="cob-guardar-msg" style="font-size:13px"></span>
+          </div>
+        </div>
+      </div>
+
     </main>
   </div>
 </div>
@@ -647,8 +830,7 @@ async function initConfig() {
     BACKEND = "https://script.google.com/macros/s/AKfycby8dfFibuDyDeRRK3J44Vqw9pJA1F3sMFKuYPHoC_1OHB-GIeeOlAYCdMDklE8o7b7u/exec";
   }
   document.title = `Admin — Inventario ${CLIENT_NAME}`;
-  const brandEl = document.querySelector(".brand");
-  if (brandEl) brandEl.textContent = CLIENT_NAME;
+  document.querySelectorAll(".brand").forEach(el => el.textContent = CLIENT_NAME);
 }
 
 let RECETAS_DATA = {}; // cargado desde GAS al iniciar y al navegar a Recetas
@@ -716,6 +898,7 @@ function irA(pagina, btn) {
   if(pagina==="graficos")     renderGraficos();
   if(pagina==="precios")      cargarPrecios();
   if(pagina==="teorico")      iniciarStockTeorico();
+  if(pagina==="cobertura")    cargarCobertura();
 }
 
 // ── DASHBOARD ──
@@ -769,6 +952,57 @@ function renderTablaStock(stock) {
     sel.innerHTML = '<option value="">— seleccionar —</option>' +
       stock.map(m => `<option value="${m.codigo}|${m.nombre}">${m.nombre} (${m.codigo})</option>`).join("");
     sel.value = current;
+  }
+}
+
+function toggleNuevaMPForm() {
+  const panel = document.getElementById("nueva-mp-panel");
+  const abierto = panel.style.display !== "none";
+  panel.style.display = abierto ? "none" : "block";
+  if (!abierto) {
+    document.getElementById("nmp-admin-nombre").value = "";
+    document.getElementById("nmp-admin-codigo").value = "";
+    document.getElementById("nmp-admin-unidad").value = "kg";
+    document.getElementById("nmp-admin-grupo").value = "Energéticos";
+    document.getElementById("nmp-admin-msg").textContent = "";
+    document.getElementById("btn-nmp-admin-guardar").disabled = false;
+    document.getElementById("nmp-admin-nombre").focus();
+  }
+}
+
+function autoCodigoAdmin() {
+  const nombre = document.getElementById("nmp-admin-nombre").value.trim();
+  if (!nombre) return;
+  const siglas = nombre.toUpperCase().replace(/[^A-Z0-9]/g, "").substring(0, 4);
+  document.getElementById("nmp-admin-codigo").value = "30" + siglas + "-00";
+}
+
+async function guardarNuevaMPAdmin() {
+  const nombre = document.getElementById("nmp-admin-nombre").value.trim();
+  const codigo = document.getElementById("nmp-admin-codigo").value.trim().toUpperCase();
+  const unidad = document.getElementById("nmp-admin-unidad").value;
+  const grupo  = document.getElementById("nmp-admin-grupo").value;
+  const msg    = document.getElementById("nmp-admin-msg");
+  const btn    = document.getElementById("btn-nmp-admin-guardar");
+  if (!nombre || !codigo) { msg.style.color = "var(--rojo)"; msg.textContent = "Completa nombre y código"; return; }
+  btn.disabled = true;
+  msg.style.color = "var(--gris)";
+  msg.textContent = "Guardando…";
+  try {
+    const res = await jsonpGet({ action: "agregarMateriaPrima", codigo, nombre, unidad, grupo });
+    if (res.ok) {
+      msg.style.color = "var(--verde)";
+      msg.textContent = "✓ " + res.msg;
+      setTimeout(() => { toggleNuevaMPForm(); cargarDashboard(); }, 1500);
+    } else {
+      msg.style.color = "var(--rojo)";
+      msg.textContent = res.error || "Error al guardar";
+      btn.disabled = false;
+    }
+  } catch(e) {
+    msg.style.color = "var(--rojo)";
+    msg.textContent = "Error de conexión";
+    btn.disabled = false;
   }
 }
 
@@ -1978,6 +2212,135 @@ async function guardarPrecios() {
   }
   setTimeout(() => { st.textContent = ""; st.className = "save-status"; }, 4000);
 }
+
+// ══════════════════════════════════════════════════════════
+// STOCKS MÍNIMOS POR COBERTURA
+// ══════════════════════════════════════════════════════════
+
+let _cobRecetas   = {};  // recetas cargadas
+let _cobStockMin  = {};  // stocks mínimos actuales { codigo: min_kg }
+let _cobCalculado = {};  // resultado del cálculo { codigo: min_kg }
+
+async function cargarCobertura() {
+  try {
+    const [rRecetas, rStock] = await Promise.all([
+      jsonpGet({ action: "getRecetas" }),
+      jsonpGet({ action: "getStockActual" })
+    ]);
+    _cobRecetas  = (rRecetas.ok  ? rRecetas.data  : {});
+    _cobStockMin = {};
+    if (rStock.ok) rStock.data.forEach(m => { _cobStockMin[m.codigo] = m.stock_min || 0; });
+    renderCobDietasForm();
+  } catch(e) {
+    document.getElementById("cob-dietas-form").innerHTML =
+      `<div style="color:var(--rojo);font-size:13px">Error al cargar recetas</div>`;
+  }
+}
+
+function renderCobDietasForm() {
+  const dietas = Object.entries(_cobRecetas).filter(([,v]) => v.activo);
+  if (!dietas.length) {
+    document.getElementById("cob-dietas-form").innerHTML =
+      `<div style="color:var(--gris);font-size:13px">No hay dietas activas. Crea recetas primero en la sección Recetas.</div>`;
+    return;
+  }
+  const rows = dietas.map(([nombre]) => `
+    <tr>
+      <td style="padding:9px 12px;font-weight:500;font-size:13px">${nombre}</td>
+      <td style="padding:9px 12px">
+        <input type="number" class="cob-kg-input" data-dieta="${nombre}" min="0" step="100" value="0"
+          placeholder="0"
+          style="width:130px;padding:7px 10px;border:1.5px solid var(--borde);border-radius:var(--radio-sm);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;text-align:right">
+      </td>
+    </tr>`).join("");
+  document.getElementById("cob-dietas-form").innerHTML = `
+    <table style="width:100%;border-collapse:collapse;font-size:13px">
+      <thead>
+        <tr style="background:var(--verde-light)">
+          <th style="padding:9px 12px;text-align:left;font-weight:600;color:var(--gris);border-bottom:1px solid var(--borde)">Dieta</th>
+          <th style="padding:9px 12px;text-align:left;font-weight:600;color:var(--gris);border-bottom:1px solid var(--borde)">kg producidos / mes</th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+}
+
+function calcularCobertura() {
+  const dias = parseFloat(document.getElementById("cob-dias").value) || 14;
+  const produccion = {};
+  document.querySelectorAll(".cob-kg-input").forEach(inp => {
+    produccion[inp.dataset.dieta] = parseFloat(inp.value) || 0;
+  });
+
+  // Consumo mensual por ingrediente = Σ(kg_mes_dieta × proporcion/1000)
+  const consumoMes = {};
+  Object.entries(_cobRecetas).filter(([,v]) => v.activo).forEach(([nombre, receta]) => {
+    const kgMes = produccion[nombre] || 0;
+    if (kgMes <= 0) return;
+    Object.entries(receta.insumos || {}).forEach(([cod, prop]) => {
+      consumoMes[cod] = (consumoMes[cod] || 0) + kgMes * (prop / 1000);
+    });
+  });
+
+  // Stock mínimo = consumo_mes × (dias / 30)
+  _cobCalculado = {};
+  const tbody = document.getElementById("cob-resultado-body");
+  const filas = Object.entries(consumoMes)
+    .filter(([, kg]) => kg > 0)
+    .sort((a, b) => b[1] - a[1])
+    .map(([cod, kgMes]) => {
+      const minNuevo = Math.ceil(kgMes * (dias / 30));
+      const minActual = _cobStockMin[cod] || 0;
+      _cobCalculado[cod] = minNuevo;
+      const delta = minNuevo - minActual;
+      const deltaStr = delta === 0 ? '' :
+        `<span style="color:${delta > 0 ? 'var(--verde)' : '#CC4400'};font-size:11px;margin-left:4px">${delta > 0 ? '▲' : '▼'} ${Math.abs(delta).toLocaleString("es-CL")}</span>`;
+      return `<tr style="border-bottom:1px solid var(--borde)">
+        <td style="padding:9px 12px;font-weight:500">${cod}</td>
+        <td style="padding:9px 12px;text-align:right;font-variant-numeric:tabular-nums">${Math.round(kgMes).toLocaleString("es-CL")}</td>
+        <td style="padding:9px 12px;text-align:right;font-weight:600;color:var(--verde);font-variant-numeric:tabular-nums">${minNuevo.toLocaleString("es-CL")} ${deltaStr}</td>
+        <td style="padding:9px 12px;text-align:right;color:var(--gris);font-variant-numeric:tabular-nums">${minActual.toLocaleString("es-CL")}</td>
+      </tr>`;
+    });
+
+  if (!filas.length) {
+    tbody.innerHTML = `<tr><td colspan="4" style="padding:16px;color:var(--gris);text-align:center">Ingresa kg/mes en al menos una dieta</td></tr>`;
+  } else {
+    tbody.innerHTML = filas.join("");
+  }
+  document.getElementById("cob-resultado-card").style.display = "block";
+  document.getElementById("cob-guardar-msg").textContent = "";
+  document.getElementById("btn-cob-guardar").disabled = false;
+}
+
+async function guardarStocksMinimosCobertura() {
+  if (!Object.keys(_cobCalculado).length) return;
+  const btn = document.getElementById("btn-cob-guardar");
+  const msg = document.getElementById("cob-guardar-msg");
+  btn.disabled = true;
+  msg.style.color = "var(--gris)";
+  msg.textContent = "Guardando…";
+  try {
+    const res = await jsonpGet({
+      action: "guardarStocksMinimos",
+      payload: encodeURIComponent(JSON.stringify(_cobCalculado))
+    });
+    if (res.ok) {
+      msg.style.color = "var(--verde)";
+      msg.textContent = "✓ " + res.msg;
+      // actualizar referencia local
+      Object.assign(_cobStockMin, _cobCalculado);
+    } else {
+      msg.style.color = "var(--rojo)";
+      msg.textContent = res.error || "Error al guardar";
+      btn.disabled = false;
+    }
+  } catch(e) {
+    msg.style.color = "var(--rojo)";
+    msg.textContent = "Error de conexión";
+    btn.disabled = false;
+  }
+}
 </script>
 
 <!-- MODAL EDITAR DIETA -->
@@ -2017,6 +2380,70 @@ async function guardarPrecios() {
     </div>
   </div>
 </div>
+
+<!-- MODAL INSTALAR APP -->
+<div class="modal-instalar-overlay" id="modalInstalar" onclick="if(event.target===this)cerrarModalInstalar()">
+  <div class="modal-instalar-card">
+    <h3>Agregar a pantalla de inicio</h3>
+    <p>Accede directo desde tu celular, sin abrir el navegador</p>
+    <div id="instPasos"></div>
+    <button class="modal-instalar-cerrar" onclick="cerrarModalInstalar()">Entendido</button>
+  </div>
+</div>
+
+<script>
+// INSTALAR APP
+let _deferredInstall = null;
+const _isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+const _isStandalone = !!navigator.standalone || matchMedia("(display-mode: standalone)").matches;
+
+function _setBtnInstalarVisible(visible) {
+  ["btnInstalarAdmin", "btnInstalarAdminMob"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle("visible", visible);
+  });
+}
+
+if (!_isStandalone) {
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    _deferredInstall = e;
+    _setBtnInstalarVisible(true);
+  });
+  window.addEventListener("appinstalled", () => {
+    _setBtnInstalarVisible(false);
+    _deferredInstall = null;
+  });
+  if (_isIOS) {
+    _setBtnInstalarVisible(true);
+  }
+}
+
+function abrirModalInstalar() {
+  if (_deferredInstall) {
+    _deferredInstall.prompt();
+    _deferredInstall.userChoice.then(() => { _deferredInstall = null; });
+    return;
+  }
+  const contenedor = document.getElementById("instPasos");
+  if (_isIOS) {
+    contenedor.innerHTML = `
+      <div class="inst-paso"><div class="inst-num">1</div><div class="inst-txt">En Safari, toca el ícono de compartir <strong>⎋</strong> en la barra inferior</div></div>
+      <div class="inst-paso"><div class="inst-num">2</div><div class="inst-txt">Desliza hacia abajo y toca <strong>"Agregar a pantalla de inicio"</strong></div></div>
+      <div class="inst-paso"><div class="inst-num">3</div><div class="inst-txt">Toca <strong>"Agregar"</strong> en la esquina superior derecha para confirmar</div></div>`;
+  } else {
+    contenedor.innerHTML = `
+      <div class="inst-paso"><div class="inst-num">1</div><div class="inst-txt">En Chrome, toca el menú <strong>⋮</strong> (tres puntos) arriba a la derecha</div></div>
+      <div class="inst-paso"><div class="inst-num">2</div><div class="inst-txt">Selecciona <strong>"Añadir a pantalla de inicio"</strong></div></div>
+      <div class="inst-paso"><div class="inst-num">3</div><div class="inst-txt">Toca <strong>"Añadir"</strong> para confirmar</div></div>`;
+  }
+  document.getElementById("modalInstalar").classList.add("open");
+}
+
+function cerrarModalInstalar() {
+  document.getElementById("modalInstalar").classList.remove("open");
+}
+</script>
 </body>
 </html>
 

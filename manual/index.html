@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manual de Usuario — AviVet Inventario</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --verde:      #1B4332;
+      --verde-med:  #2D6A4F;
+      --verde-cl:   #52B788;
+      --sage:       #95D5B2;
+      --sage-bg:    #D8F3DC;
+      --amber:      #D4A017;
+      --amber-bg:   #FEF9EC;
+      --bg:         #F3F6F3;
+      --sidebar-bg: #FFFFFF;
+      --card:       #FFFFFF;
+      --txt:        #1A2E1F;
+      --txt-sec:    #5A7060;
+      --txt-faint:  #8AA490;
+      --borde:      #D8E8DC;
+      --borde-med:  #C0D8C8;
+      --shadow:     0 1px 6px rgba(27,67,50,0.08);
+      --radio:      10px;
+      --font:       'DM Sans', system-ui, sans-serif;
+      --mono:       'DM Mono', monospace;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg:         #0D1F17;
+        --sidebar-bg: #111F17;
+        --card:       #152B1E;
+        --txt:        #E2EDE5;
+        --txt-sec:    #7FA88A;
+        --txt-faint:  #4A6A55;
+        --borde:      #1E3D2A;
+        --borde-med:  #2A4D38;
+        --sage-bg:    #1A3A25;
+        --amber-bg:   #2A2010;
+        --shadow:     0 1px 8px rgba(0,0,0,0.3);
+      }
+    }
+    :root[data-theme="light"] {
+      --bg:#F3F6F3;--sidebar-bg:#FFFFFF;--card:#FFFFFF;--txt:#1A2E1F;
+      --txt-sec:#5A7060;--txt-faint:#8AA490;--borde:#D8E8DC;
+      --borde-med:#C0D8C8;--sage-bg:#D8F3DC;--amber-bg:#FEF9EC;
+      --shadow:0 1px 6px rgba(27,67,50,0.08);
+    }
+    :root[data-theme="dark"] {
+      --bg:#0D1F17;--sidebar-bg:#111F17;--card:#152B1E;--txt:#E2EDE5;
+      --txt-sec:#7FA88A;--txt-faint:#4A6A55;--borde:#1E3D2A;
+      --borde-med:#2A4D38;--sage-bg:#1A3A25;--amber-bg:#2A2010;
+      --shadow:0 1px 8px rgba(0,0,0,0.3);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--txt);
+      font-size: 15px;
+      line-height: 1.65;
+    }
+
+    /* ── Layout ── */
+    .shell {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      min-height: 100dvh;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--borde);
+      position: sticky;
+      top: 0;
+      height: 100dvh;
+      overflow-y: auto;
+      padding: 28px 0 40px;
+      display: flex;
+      flex-direction: column;
+    }
+    .sidebar-logo {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 0 20px 24px;
+      border-bottom: 1px solid var(--borde);
+      margin-bottom: 20px;
+    }
+    .logo-icon {
+      width: 34px; height: 34px;
+      background: var(--verde);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .logo-icon svg { width: 18px; height: 18px; }
+    .logo-name { font-size: 15px; font-weight: 700; color: var(--verde); letter-spacing: -0.3px; }
+    .logo-name span { color: var(--verde-cl); }
+    .logo-sub { font-size: 10px; color: var(--txt-faint); font-weight: 500; letter-spacing: 0.03em; }
+
+    .nav-section {
+      padding: 0 12px;
+      margin-bottom: 6px;
+    }
+    .nav-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--txt-faint);
+      padding: 8px 8px 4px;
+    }
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 10px;
+      border-radius: 7px;
+      text-decoration: none;
+      color: var(--txt-sec);
+      font-size: 13.5px;
+      font-weight: 500;
+      transition: background 0.12s, color 0.12s;
+    }
+    .nav-link:hover { background: var(--bg); color: var(--txt); }
+    .nav-link.activo { background: var(--sage-bg); color: var(--verde); }
+    .nav-link svg { width: 14px; height: 14px; flex-shrink: 0; opacity: 0.7; }
+    .nav-link.activo svg { opacity: 1; }
+    .badge {
+      margin-left: auto;
+      font-size: 9px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 20px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .badge-b { background: var(--sage-bg); color: var(--verde); }
+    .badge-a { background: var(--amber-bg); color: #9A6A00; }
+
+    /* ── Contenido ── */
+    .content {
+      padding: 48px 56px 80px;
+      max-width: 780px;
+    }
+
+    /* ── Secciones ── */
+    section { margin-bottom: 64px; scroll-margin-top: 32px; }
+
+    .role-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+    .role-pill {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+    .pill-b { background: var(--sage-bg); color: var(--verde); }
+    .pill-a { background: var(--amber-bg); color: #9A6A00; }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--txt);
+      letter-spacing: -0.5px;
+      text-wrap: balance;
+      margin-bottom: 8px;
+    }
+    h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--txt);
+      letter-spacing: -0.3px;
+      text-wrap: balance;
+      margin-bottom: 16px;
+    }
+    h3 {
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--txt-faint);
+      margin: 28px 0 10px;
+    }
+    p { color: var(--txt-sec); margin-bottom: 14px; }
+    p:last-child { margin-bottom: 0; }
+    strong { color: var(--txt); font-weight: 600; }
+
+    /* ── Cards de pasos ── */
+    .steps { display: flex; flex-direction: column; gap: 10px; }
+    .step {
+      display: flex;
+      gap: 14px;
+      padding: 14px 16px;
+      background: var(--card);
+      border: 1px solid var(--borde);
+      border-radius: var(--radio);
+      box-shadow: var(--shadow);
+      align-items: flex-start;
+    }
+    .step-num {
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      background: var(--verde);
+      color: white;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .step-body { flex: 1; }
+    .step-body strong { display: block; font-size: 14px; color: var(--txt); margin-bottom: 2px; }
+    .step-body p { font-size: 13.5px; margin: 0; }
+
+    /* ── URL block ── */
+    .url-box {
+      background: var(--card);
+      border: 1px solid var(--borde);
+      border-left: 3px solid var(--verde-cl);
+      border-radius: var(--radio);
+      padding: 12px 16px;
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--verde-med);
+      margin: 12px 0;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+
+    /* ── Tip / nota ── */
+    .tip {
+      display: flex;
+      gap: 10px;
+      padding: 12px 14px;
+      border-radius: var(--radio);
+      font-size: 13.5px;
+      margin: 14px 0;
+      align-items: flex-start;
+    }
+    .tip-info { background: var(--sage-bg); border: 1px solid var(--borde-med); }
+    .tip-warn { background: var(--amber-bg); border: 1px solid #E8C870; }
+    .tip svg { width: 15px; height: 15px; flex-shrink: 0; margin-top: 2px; }
+    .tip-info svg { color: var(--verde); }
+    .tip-warn svg { color: #9A6A00; }
+    .tip p { margin: 0; }
+    .tip-info p { color: var(--verde); }
+    .tip-warn p { color: #7A5200; }
+
+    /* ── Tabla de funciones ── */
+    .func-grid {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: 1fr 1fr;
+      margin: 16px 0;
+    }
+    .func-card {
+      background: var(--card);
+      border: 1px solid var(--borde);
+      border-radius: var(--radio);
+      padding: 14px 16px;
+      box-shadow: var(--shadow);
+    }
+    .func-card .icon {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      background: var(--sage-bg);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 10px;
+    }
+    .func-card .icon svg { width: 16px; height: 16px; color: var(--verde); }
+    .func-card strong { display: block; font-size: 13px; color: var(--txt); margin-bottom: 3px; }
+    .func-card p { font-size: 12.5px; color: var(--txt-sec); margin: 0; }
+
+    /* ── Divider ── */
+    .divider { height: 1px; background: var(--borde); margin: 40px 0; }
+
+    /* ── Intro header ── */
+    .intro-header {
+      margin-bottom: 48px;
+      padding-bottom: 32px;
+      border-bottom: 1px solid var(--borde);
+    }
+    .intro-header .eyebrow {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--verde-cl);
+      margin-bottom: 8px;
+    }
+    .intro-header h1 { margin-bottom: 10px; }
+    .intro-header p { font-size: 16px; }
+    .roles-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+    .role-card {
+      flex: 1;
+      min-width: 200px;
+      background: var(--card);
+      border: 1px solid var(--borde);
+      border-radius: var(--radio);
+      padding: 16px;
+      box-shadow: var(--shadow);
+    }
+    .role-card .pill { margin-bottom: 8px; display: inline-block; }
+    .role-card strong { display: block; font-size: 14px; color: var(--txt); margin-bottom: 4px; }
+    .role-card p { font-size: 13px; color: var(--txt-sec); margin: 0; }
+
+    /* ── Accesos rápidos ── */
+    .links-table { width: 100%; border-collapse: collapse; margin: 14px 0; }
+    .links-table td { padding: 9px 12px; font-size: 13.5px; border-bottom: 1px solid var(--borde); vertical-align: middle; }
+    .links-table td:first-child { font-weight: 600; color: var(--txt); width: 140px; }
+    .links-table td:last-child { font-family: var(--mono); font-size: 12px; color: var(--verde-med); }
+    .links-table tr:last-child td { border-bottom: none; }
+
+    /* ── Mobile ── */
+    .menu-toggle {
+      display: none;
+      position: fixed;
+      bottom: 20px; right: 20px;
+      background: var(--verde);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 48px; height: 48px;
+      font-size: 20px;
+      cursor: pointer;
+      z-index: 200;
+      box-shadow: 0 4px 16px rgba(27,67,50,0.35);
+      align-items: center; justify-content: center;
+    }
+
+    @media (max-width: 768px) {
+      .shell { grid-template-columns: 1fr; }
+      .sidebar {
+        position: fixed;
+        left: -280px;
+        top: 0; bottom: 0;
+        width: 260px;
+        z-index: 100;
+        transition: left 0.25s;
+        box-shadow: 4px 0 24px rgba(0,0,0,0.15);
+      }
+      .sidebar.open { left: 0; }
+      .menu-toggle { display: flex; }
+      .content { padding: 32px 20px 60px; }
+      .func-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .sidebar { transition: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- ── Sidebar ── -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+      </div>
+      <div>
+        <div class="logo-name">Avi<span>Vet</span></div>
+        <div class="logo-sub">Manual de usuario</div>
+      </div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">Introducción</div>
+      <a class="nav-link activo" href="#inicio" onclick="setActivo(this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg>
+        ¿Qué es este sistema?
+      </a>
+      <a class="nav-link" href="#acceso" onclick="setActivo(this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+        Links de acceso
+      </a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">Bodeguero <span class="badge badge-b">Conteo</span></div>
+      <a class="nav-link" href="#conteo-inicio" onclick="setActivo(this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+        Abrir la app
+      </a>
+      <a class="nav-link" href="#conteo-registrar" onclick="setActivo(this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14m-7-7h14"/></svg>
+        Registrar un conteo
+      </a>
+      <a class="nav-link" href="#conteo-offline" onclick="setActivo(this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 1l22 22M16.72 11.06A10.94 10.94 0 0119 12.55M5 12.55a10.94 10.94 0 015.17-2.39M10.71 5.05A16 16 0 0122.56 9M1.42 9a15.91 15.91 0 014.7-2.88M8.53 16.11a6 6 0 016.95 0M12 20h.01"/></svg>
+        Sin conexión
+      </a>
+      <a class="nav-link" href="#conteo-nueva-mp" onclick="setActivo(this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8m-4-4h8"/></svg>
+        Nueva materia prima
+      </a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">Administrador <span class="badge badge-a">Admin</span></div>
+      <a class="nav-link" href="#admin-dashboard" onclick="setActivo(this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </a>
+      <a class="nav-link" href="#admin-stock" onclick="setActivo(this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
+        Stock Actual
+      </a>
+      <a class="nav-link" href="#admin-ordenes" onclick="setActivo(this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        Órdenes de Compra
+      </a>
+      <a class="nav-link" href="#admin-recetas" onclick="setActivo(this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+        Recetas / Fórmulas
+      </a>
+      <a class="nav-link" href="#admin-planificacion" onclick="setActivo(this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Planificación
+      </a>
+      <a class="nav-link" href="#admin-precios" onclick="setActivo(this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+        Precios
+      </a>
+      <a class="nav-link" href="#admin-teorico" onclick="setActivo(this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        Stock Teórico
+      </a>
+    </div>
+  </nav>
+
+  <!-- ── Contenido ── -->
+  <main class="content">
+
+    <!-- INTRO -->
+    <div class="intro-header" id="inicio">
+      <div class="eyebrow">AviVet — Sistema de Inventario</div>
+      <h1>Manual de Usuario</h1>
+      <p>Guía de uso del sistema de inventario de materias primas para plantas de alimento avícola. Cubre dos niveles de acceso: <strong>Bodeguero</strong> (conteo físico) y <strong>Administrador</strong> (gestión completa).</p>
+      <div class="roles-row">
+        <div class="role-card">
+          <span class="pill pill-b role-pill">Bodeguero</span>
+          <strong>Conteo de bodega</strong>
+          <p>Registra cantidades de materias primas desde el celular o tablet. Funciona sin conexión a internet.</p>
+        </div>
+        <div class="role-card">
+          <span class="pill pill-a role-pill">Administrador</span>
+          <strong>Panel de administración</strong>
+          <p>Gestiona recetas, planificación, órdenes de compra, precios y análisis de stock.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACCESO -->
+    <section id="acceso">
+      <h2>Links de acceso</h2>
+      <p>Tu administrador te entregará el link específico de tu planta. Guárdalo como marcador en el navegador o agrégalo a la pantalla de inicio de tu celular.</p>
+      <div class="tip tip-info">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4m0-4h.01"/></svg>
+        <p>Para agregar la app a la pantalla de inicio, toca el ícono <strong>↑</strong> (descarga) en la parte superior de la app y sigue los pasos.</p>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ════════════════════════
+         BODEGUERO
+    ════════════════════════ -->
+    <div class="role-header">
+      <span class="role-pill pill-b">Bodeguero</span>
+      <h2 style="margin:0">App de Conteo</h2>
+    </div>
+
+    <!-- Abrir la app -->
+    <section id="conteo-inicio">
+      <h2>Abrir la app</h2>
+      <p>La app de conteo está diseñada para usarse desde el <strong>celular</strong> durante el recorrido por bodega. No requiere instalar nada.</p>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <strong>Abre el link de tu planta en el navegador</strong>
+            <p>Usa el link de Conteo correspondiente a tu planta. Guárdalo como marcador para acceso rápido.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <strong>La app carga la lista de materias primas</strong>
+            <p>Verás todas las materias primas organizadas por grupo. La fecha del día aparece en la barra superior.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <strong>Filtra por grupo si necesitas</strong>
+            <p>Usa los botones de filtro bajo el buscador: Todos, Energéticos, Proteínas, Minerales, Aditivos, etc.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Registrar conteo -->
+    <section id="conteo-registrar">
+      <h2>Registrar un conteo</h2>
+      <p>El conteo registra la <strong>cantidad física actual</strong> de una materia prima en bodega.</p>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <strong>Busca o desplázate hasta la materia prima</strong>
+            <p>Usa el buscador en la parte superior o filtra por grupo para encontrarla rápido.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <strong>Toca el nombre de la materia prima</strong>
+            <p>Se abre un panel en la parte inferior con el nombre y un campo para ingresar la cantidad.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <strong>Ingresa la cantidad en kg (o unidades)</strong>
+            <p>Escribe el número directamente. Puedes incluir decimales, por ejemplo <strong>1250.5</strong>.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <strong>Toca "Guardar conteo"</strong>
+            <p>Aparece una confirmación verde. El stock de esa materia prima se actualiza inmediatamente.</p>
+          </div>
+        </div>
+      </div>
+      <div class="tip tip-info">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4m0-4h.01"/></svg>
+        <p>Puedes registrar el mismo insumo varias veces en el día. El sistema guarda todos los conteos con hora, y el administrador puede ver el historial completo.</p>
+      </div>
+    </section>
+
+    <!-- Sin conexión -->
+    <section id="conteo-offline">
+      <h2>Trabajar sin conexión</h2>
+      <p>La app funciona aunque no haya wifi o señal en bodega. Los conteos se guardan en el teléfono y se envían solos cuando vuelve la conexión.</p>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <strong>Aparece un aviso naranja "Sin conexión"</strong>
+            <p>La app detecta automáticamente cuando no hay internet y lo indica en la barra superior.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <strong>Sigue registrando conteos normalmente</strong>
+            <p>Los conteos se guardan en el teléfono. Un número en el botón de sincronía indica cuántos están pendientes.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <strong>Al recuperar la conexión, se sincronizan solos</strong>
+            <p>La app envía todos los conteos pendientes automáticamente. Aparece un mensaje de confirmación.</p>
+          </div>
+        </div>
+      </div>
+      <div class="tip tip-warn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <p>No cierres el navegador ni borres los datos del sitio mientras haya conteos pendientes. El número en el botón de sincronía indica cuántos faltan por enviar.</p>
+      </div>
+    </section>
+
+    <!-- Nueva MP desde conteo -->
+    <section id="conteo-nueva-mp">
+      <h2>Agregar una nueva materia prima</h2>
+      <p>Si necesitas ingresar una materia prima que no aparece en la lista, puedes crearla desde la misma app.</p>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <strong>Toca el botón "+" junto al buscador</strong>
+            <p>Se abre un formulario en la parte inferior de la pantalla.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <strong>Escribe el nombre</strong>
+            <p>El código se genera automáticamente a partir del nombre. Puedes cambiarlo manualmente si es necesario.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <strong>Selecciona unidad y grupo</strong>
+            <p>Unidad: kg, L, g o unidad. Grupo: Energéticos, Proteicos, Minerales, Aditivos u Otros.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <strong>Toca "Agregar"</strong>
+            <p>La materia prima queda disponible de inmediato para registrar conteos.</p>
+          </div>
+        </div>
+      </div>
+      <div class="tip tip-info">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4m0-4h.01"/></svg>
+        <p>También puedes abrir directamente el formulario agregando <strong>?nueva=1</strong> al link de conteo.</p>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ════════════════════════
+         ADMINISTRADOR
+    ════════════════════════ -->
+    <div class="role-header">
+      <span class="role-pill pill-a">Administrador</span>
+      <h2 style="margin:0">Panel de Administración</h2>
+    </div>
+
+    <!-- Dashboard -->
+    <section id="admin-dashboard">
+      <h2>Dashboard</h2>
+      <p>Es la pantalla de inicio del panel. Muestra un resumen del estado actual de la planta.</p>
+      <div class="func-grid">
+        <div class="func-card">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+          <strong>Métricas clave</strong>
+          <p>Total de MPs, críticos, sin stock y órdenes pendientes de un vistazo.</p>
+        </div>
+        <div class="func-card">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg></div>
+          <strong>Alertas de stock</strong>
+          <p>Listado de materias primas en estado CRÍTICO o SIN STOCK que requieren atención inmediata.</p>
+        </div>
+        <div class="func-card">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg></div>
+          <strong>Órdenes pendientes</strong>
+          <p>Compras en estado PENDIENTE con fecha de entrega estimada.</p>
+        </div>
+        <div class="func-card">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><polyline points="3 9 21 9"/><polyline points="9 21 9 9"/></svg></div>
+          <strong>Tabla de stock completa</strong>
+          <p>Inventario actualizado con estado, días de cobertura y último conteo por MP.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stock Actual -->
+    <section id="admin-stock">
+      <h2>Stock Actual</h2>
+      <p>Inventario completo de materias primas con sus cantidades, estado y cobertura de días.</p>
+
+      <h3>Registrar conteo desde el panel</h3>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <strong>Haz clic en "+ Nuevo conteo"</strong>
+            <p>Se despliega un formulario con selector de materia prima, cantidad y observación opcional.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <strong>Selecciona la materia prima, ingresa kg y guarda</strong>
+            <p>El stock se actualiza inmediatamente en la tabla.</p>
+          </div>
+        </div>
+      </div>
+
+      <h3>Agregar nueva materia prima</h3>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <strong>Haz clic en "+ Agregar MP"</strong>
+            <p>Aparece el formulario de nueva materia prima.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <strong>Completa nombre, código, unidad y grupo</strong>
+            <p>El código se auto-genera desde el nombre. Puedes editarlo antes de guardar.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <strong>Guarda</strong>
+            <p>La MP queda disponible en el sistema, en la hoja MATERIAS_PRIMAS y en el stock.</p>
+          </div>
+        </div>
+      </div>
+
+      <h3>Estados de stock</h3>
+      <div class="func-grid">
+        <div class="func-card"><strong>✅ OK</strong><p>Stock sobre el mínimo establecido. Sin riesgo inmediato.</p></div>
+        <div class="func-card"><strong>⚠ BAJO</strong><p>Entre el mínimo y 1.5× el mínimo. Planificar reposición.</p></div>
+        <div class="func-card"><strong>🔴 CRÍTICO</strong><p>Bajo el stock mínimo. Requiere orden de compra urgente.</p></div>
+        <div class="func-card"><strong>⛔ SIN STOCK</strong><p>Cantidad en cero. Producción afectada si se usa en receta.</p></div>
+      </div>
+    </section>
+
+    <!-- Órdenes de Compra -->
+    <section id="admin-ordenes">
+      <h2>Órdenes de Compra</h2>
+      <p>Registro y seguimiento de compras de materias primas.</p>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <strong>Haz clic en "+ Nueva OC"</strong>
+            <p>Se abre el formulario de orden de compra.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <strong>Completa los campos</strong>
+            <p>Materia prima, cantidad (kg), precio unitario, proveedor y fecha de entrega estimada.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <strong>La OC queda en estado PENDIENTE</strong>
+            <p>Aparece en el dashboard hasta que se marque como recibida desde la hoja de Google Sheets.</p>
+          </div>
+        </div>
+      </div>
+      <div class="tip tip-info">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4m0-4h.01"/></svg>
+        <p>El total se calcula automáticamente multiplicando cantidad × precio unitario.</p>
+      </div>
+    </section>
+
+    <!-- Recetas -->
+    <section id="admin-recetas">
+      <h2>Recetas / Fórmulas</h2>
+      <p>Gestiona las fórmulas de cada dieta: ingredientes y proporciones en kg por 1.000 kg de mezcla.</p>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <strong>Las recetas se muestran en una tabla por columnas</strong>
+            <p>Cada columna es una dieta. Las filas son las materias primas. Los valores son kg por tonelada de mezcla.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <strong>Edita los valores directamente en la tabla</strong>
+            <p>Haz clic en cualquier celda de ingrediente para modificar su proporción.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <strong>Usa "Agregar dieta" para crear una nueva</strong>
+            <p>Escribe el nombre y define sus ingredientes. Puedes activar o desactivar dietas sin borrarlas.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <strong>Guarda los cambios</strong>
+            <p>El sistema actualiza la hoja RECETAS en Google Sheets y guarda un respaldo automático en RECETAS_HISTORIAL.</p>
+          </div>
+        </div>
+      </div>
+      <div class="tip tip-warn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <p>Las recetas afectan directamente al cálculo de consumo diario y días de stock. Guarda siempre después de modificar.</p>
+      </div>
+    </section>
+
+    <!-- Planificación -->
+    <section id="admin-planificacion">
+      <h2>Planificación de Producción</h2>
+      <p>Ingresa los kg a producir por dieta en una ventana de 14 días. Esto alimenta el cálculo de consumo de materias primas.</p>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <strong>Navega entre semanas con las flechas</strong>
+            <p>La vista muestra 14 días desde hoy. El día actual aparece destacado.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <strong>Ingresa los kg/día por dieta</strong>
+            <p>Haz clic en la celda correspondiente a la dieta y la fecha, escribe los kg y presiona Enter o Tab para avanzar.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <strong>Guarda la semana</strong>
+            <p>El botón "Guardar" envía la planificación al servidor. Los consumos estimados se actualizan automáticamente en el stock.</p>
+          </div>
+        </div>
+      </div>
+      <div class="tip tip-info">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4m0-4h.01"/></svg>
+        <p>Los "días de stock" en el inventario se calculan dividiendo el stock actual por el consumo diario promedio de los próximos 7 días del plan.</p>
+      </div>
+    </section>
+
+    <!-- Precios -->
+    <section id="admin-precios">
+      <h2>Precios</h2>
+      <p>Mantén actualizados los precios por kg de cada materia prima para el cálculo de costos de producción.</p>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <strong>Ingresa el precio unitario ($/kg) de cada insumo</strong>
+            <p>La tabla muestra todas las materias primas con su precio actual.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <strong>Guarda los cambios</strong>
+            <p>Los precios se actualizan en la hoja MATERIAS_PRIMAS y el costo de producción por dieta se recalcula.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stock Teórico -->
+    <section id="admin-teorico">
+      <h2>Stock Teórico</h2>
+      <p>Calcula el stock esperado para una fecha determinada a partir del último conteo físico y el plan de producción. Útil para detectar pérdidas o errores.</p>
+      <div class="func-grid">
+        <div class="func-card">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+          <strong>Último conteo</strong>
+          <p>Punto de partida del cálculo: el conteo físico más reciente de cada MP.</p>
+        </div>
+        <div class="func-card">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+          <strong>Consumo acumulado</strong>
+          <p>Kg consumidos según el plan de producción desde el último conteo hasta la fecha seleccionada.</p>
+        </div>
+        <div class="func-card">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg></div>
+          <strong>Stock teórico vs real</strong>
+          <p>Compara el stock calculado con el conteo físico real de esa fecha.</p>
+        </div>
+        <div class="func-card">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+          <strong>Estado de diferencia</strong>
+          <p>OK (≤3%), Alerta (≤7%), Pérdida o Exceso según la diferencia porcentual.</p>
+        </div>
+      </div>
+      <div class="tip tip-info">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4m0-4h.01"/></svg>
+        <p>Selecciona la fecha, haz clic en "Calcular" y el sistema genera la tabla comparativa automáticamente.</p>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<button class="menu-toggle" id="menuToggle" aria-label="Menú">☰</button>
+
+<script>
+  const sidebar = document.getElementById('sidebar');
+  const toggle  = document.getElementById('menuToggle');
+  toggle.addEventListener('click', () => sidebar.classList.toggle('open'));
+  document.addEventListener('click', e => {
+    if (sidebar.classList.contains('open') && !sidebar.contains(e.target) && e.target !== toggle)
+      sidebar.classList.remove('open');
+  });
+
+  function setActivo(el) {
+    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('activo'));
+    el.classList.add('activo');
+    if (window.innerWidth <= 768) sidebar.classList.remove('open');
+  }
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const id = e.target.id;
+        const link = document.querySelector(`.nav-link[href="#${id}"]`);
+        if (link) {
+          document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('activo'));
+          link.classList.add('activo');
+        }
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+
+  document.querySelectorAll('section[id], div[id]').forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>
