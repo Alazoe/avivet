@@ -19,10 +19,13 @@ Hoy el registro es en papel: el correlativo de cada maxisaco se anota a mano y e
 ## Flujo de uso
 
 1. **Nueva recepción de camión** → completa materia prima, camión/proveedor, peso total de la guía y fecha → "Calcular división en maxisacos" (puedes ajustar la cantidad sugerida) → "Crear recepción y generar correlativos".
-2. **Imprimir etiquetas** → una por cada maxisaco generado, con su correlativo grande para pegar en el saco físico.
-3. Según se van llenando los sacos, en **Recepción activa** eliges el correlativo pendiente y registras su peso real.
-4. Si el camión no alcanza a llenar todos los sacos planeados, usa **Cancelar** en los sobrantes.
-5. **Cerrar recepción** cuando termines de descargar el camión — muestra la diferencia final vs la guía.
+2. **Imprimir etiquetas en blanco** → una por cada maxisaco generado, con su correlativo grande para pegar en el saco físico.
+3. La recepción queda **abierta indefinidamente**: los sacos no tienen que usarse todos el mismo día ni en orden. En **Recepción activa** hay una cuadrícula con el número de cada maxisaco — tocas el que usaste ese día (aunque sea el N° 15 de 30), ingresas su peso real y se **tacha visualmente**. Lo que queda sin tachar es el stock real pendiente.
+4. Tocar un saco ya tachado (registrado) precarga su peso para corregirlo si te equivocaste.
+5. Si el camión no alcanza a llenar todos los sacos planeados, usa **Cancelar** en los sobrantes (tabla de detalle).
+6. **Reimprimir con pesos** → reimprime las mismas etiquetas pero mostrando el peso real ya registrado de cada saco, útil como respaldo impreso una vez terminada la descarga.
+7. **Cerrar recepción** cuando termines de descargar el camión — muestra la diferencia final vs la guía.
+8. El selector de recepciones muestra **abiertas y cerradas**. Al elegir una **cerrada**, la cuadrícula cambia de función: ya no registra peso del camión, sino que sirve para ir **tachando cada maxisaco a medida que lo usas en tu producción diaria** (sin importar el día ni el orden). El stat "Stock real (sin usar en producción)" muestra cuántos maxisacos de esa descarga quedan disponibles todavía. Tocar un saco tachado lo destacha (por si te equivocaste).
 
 ## Formato de correlativo
 

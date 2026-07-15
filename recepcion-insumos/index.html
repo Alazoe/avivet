@@ -119,6 +119,33 @@
 
   .vacio { color: var(--gris); font-size: 0.85rem; text-align: center; padding: 12px 0; }
 
+  .saco-grid { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; }
+  .chip-saco {
+    width: 56px;
+    height: 56px;
+    border-radius: 8px;
+    border: 2px solid var(--borde);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.72rem;
+    font-weight: 600;
+    cursor: pointer;
+    background: #fff;
+    color: var(--texto);
+    text-align: center;
+    line-height: 1.15;
+  }
+  .chip-saco .peso-mini { font-size: 0.62rem; font-weight: 400; }
+  .chip-saco.pendiente { border-color: var(--ambar); color: var(--ambar); }
+  .chip-saco.registrado { background: #e8f5e9; border-color: var(--verde); color: var(--verde-osc); }
+  .chip-saco.registrado.usado { background: #cfd8dc; border-color: #78909c; color: #455a64; text-decoration: line-through; }
+  .chip-saco.cancelado { background: #eee; border-style: dashed; color: #999; text-decoration: line-through; }
+  .chip-saco.seleccionado { outline: 3px solid #1565c0; outline-offset: 1px; }
+  .saco-actual { font-size: 0.85rem; color: var(--gris); margin-top: 4px; }
+  .saco-actual b { color: var(--texto); }
+
   #print-area { display: none; }
   @media print {
     body * { visibility: hidden; }
@@ -181,19 +208,23 @@
 
   <!-- ── RECEPCIÓN ACTIVA ────────────────────────────────────── -->
   <div class="card">
-    <h2>2. Recepción activa</h2>
-    <label for="recepcion-select">Elige una recepción abierta</label>
+    <h2>2. Recepciones</h2>
+    <label for="recepcion-select">Elige una recepción (abierta o cerrada)</label>
     <select id="recepcion-select"></select>
 
     <div id="panel-activa" style="display:none; margin-top:14px;">
       <div class="panel-header" id="panel-header"></div>
 
-      <label for="saco-select">Registrar peso real de un maxisaco</label>
-      <select id="saco-select"></select>
-      <label for="pesoReal">Peso real (kg)</label>
-      <input id="pesoReal" type="number" step="0.1" min="0" placeholder="Ej: 967.5">
-      <button class="bloque" id="btn-registrar-peso">Registrar peso</button>
-      <div class="msg" id="msg-peso"></div>
+      <label id="label-grid">Toca el maxisaco que usaste</label>
+      <div class="saco-grid" id="saco-grid"></div>
+      <div class="saco-actual" id="saco-actual"></div>
+
+      <div id="form-peso-wrap">
+        <label for="pesoReal">Peso real (kg)</label>
+        <input id="pesoReal" type="number" step="0.1" min="0" placeholder="Ej: 967.5">
+        <button class="bloque" id="btn-registrar-peso">Registrar peso</button>
+        <div class="msg" id="msg-peso"></div>
+      </div>
 
       <div style="margin-top:18px;">
         <table>
@@ -203,13 +234,16 @@
       </div>
 
       <div class="fila-botones">
-        <button class="secundario" id="btn-imprimir">🖨️ Imprimir etiquetas</button>
-        <button class="peligro" id="btn-cerrar">Cerrar recepción</button>
+        <button class="secundario" id="btn-imprimir">🖨️ Etiquetas en blanco</button>
+        <button class="secundario" id="btn-reimprimir">🖨️ Reimprimir con pesos</button>
+      </div>
+      <div class="fila-botones">
+        <button class="peligro bloque" id="btn-cerrar">Cerrar recepción</button>
       </div>
       <div class="msg" id="msg-cierre"></div>
     </div>
 
-    <p class="vacio" id="sin-recepciones" style="display:none;">No hay recepciones abiertas. Crea una arriba.</p>
+    <p class="vacio" id="sin-recepciones" style="display:none;">No hay recepciones registradas aún. Crea una arriba.</p>
   </div>
 
 </div>
@@ -318,7 +352,7 @@
         btn.disabled = true;
 
         recepcionActivaId = data.idRecepcion;
-        await cargarRecepcionesAbiertas();
+        await cargarRecepciones();
         document.getElementById('recepcion-select').value = recepcionActivaId;
         await cargarRecepcionActiva();
       } else {
@@ -335,17 +369,17 @@
     }
   });
 
-  // ── 2. RECEPCIONES ABIERTAS ────────────────────────────────
-  async function cargarRecepcionesAbiertas() {
+  // ── 2. TODAS LAS RECEPCIONES (abiertas y cerradas) ──────────
+  async function cargarRecepciones() {
     const sel = document.getElementById('recepcion-select');
     try {
-      const resp = await fetch(`${APP_URL}?action=getRecepcionesAbiertas`);
+      const resp = await fetch(`${APP_URL}?action=getRecepciones`);
       const data = await resp.json();
       const lista = data.data || [];
 
       document.getElementById('sin-recepciones').style.display = lista.length ? 'none' : 'block';
       sel.innerHTML = lista.map(r =>
-        `<option value="${r.idRecepcion}">${r.idRecepcion} — ${r.materiaPrima} — ${r.camion} (${r.pesoTotalGuia} kg)</option>`
+        `<option value="${r.idRecepcion}">${r.idRecepcion} — ${r.materiaPrima} — ${r.camion} — ${r.estado}</option>`
       ).join('');
 
       if (lista.length && !lista.find(r => r.idRecepcion === recepcionActivaId)) {
@@ -363,14 +397,9 @@
     cargarRecepcionActiva();
   });
 
-  // Al elegir manualmente un saco ya registrado, precarga su peso para poder corregirlo
-  document.getElementById('saco-select').addEventListener('change', (ev) => {
-    const bag = (recepcionData?.bags || []).find(b => b.correlativo === ev.target.value);
-    document.getElementById('pesoReal').value = (bag && bag.estado === 'registrado') ? bag.pesoReal : '';
-  });
-
   // ── 2b. DETALLE DE RECEPCIÓN ACTIVA ────────────────────────
   let recepcionData = null;
+  let sacoSeleccionado = null;
 
   async function cargarRecepcionActiva(enfocarPeso) {
     if (!recepcionActivaId) return;
@@ -385,53 +414,99 @@
     }
   }
 
-  function opcionSaco(b) {
-    const sufijo = b.estado === 'registrado' ? ` — registrado (${b.pesoReal} kg)`
-                 : b.estado === 'cancelado'  ? ' — cancelado'
-                 : ' — pendiente';
-    return `<option value="${b.correlativo}">${b.correlativo}${sufijo}</option>`;
+  // Número de saco dentro de la recepción (los 3 últimos dígitos del correlativo)
+  function numeroSaco(correlativo) {
+    return correlativo.split('-').pop();
+  }
+
+  function seleccionarSaco(correlativo, enfocarPeso) {
+    sacoSeleccionado = correlativo;
+    const bag = (recepcionData?.bags || []).find(b => b.correlativo === correlativo);
+
+    document.querySelectorAll('.chip-saco').forEach(chip => {
+      chip.classList.toggle('seleccionado', chip.dataset.correlativo === correlativo);
+    });
+
+    document.getElementById('saco-actual').innerHTML = bag ? `Seleccionado: <b>${bag.correlativo}</b> (${bag.estado})` : '';
+    document.getElementById('pesoReal').value = (bag && bag.estado === 'registrado') ? bag.pesoReal : '';
+    if (enfocarPeso) document.getElementById('pesoReal').focus();
   }
 
   function renderPanel(enfocarPeso) {
-    const { header, bags, saldo, sacosPendientes, promedioRestante } = recepcionData;
+    const { header, bags, saldo, sacosPendientes, promedioRestante, stockReal } = recepcionData;
+    const cerrada = header.estado === 'cerrada';
 
     document.getElementById('panel-header').innerHTML = `
       <div class="stat">Materia prima<b>${header.materiaPrima}</b></div>
       <div class="stat">Camión<b>${header.camion}</b></div>
       <div class="stat">Peso total guía<b>${header.pesoTotalGuia} kg</b></div>
       <div class="stat">Peso acumulado<b>${header.pesoAcumulado} kg</b></div>
-      <div class="stat ${saldo < 0 ? 'saldo-neg' : ''}">Saldo restante<b>${saldo} kg</b></div>
-      <div class="stat">Sacos pendientes<b>${sacosPendientes}</b></div>
-      ${sacosPendientes > 0 ? `<div class="stat">Promedio sugerido restante<b>${promedioRestante} kg</b></div>` : ''}
+      ${!cerrada ? `<div class="stat ${saldo < 0 ? 'saldo-neg' : ''}">Saldo restante<b>${saldo} kg</b></div>` : ''}
+      ${!cerrada ? `<div class="stat">Sacos pendientes<b>${sacosPendientes}</b></div>` : ''}
+      ${!cerrada && sacosPendientes > 0 ? `<div class="stat">Promedio sugerido restante<b>${promedioRestante} kg</b></div>` : ''}
+      <div class="stat">Stock real (sin usar en producción)<b>${stockReal}</b></div>
     `;
 
-    // El selector incluye TODOS los sacos (no solo pendientes) para poder editar
-    // un peso ya registrado; por defecto salta al próximo saco pendiente.
-    const sacoSelect = document.getElementById('saco-select');
-    sacoSelect.innerHTML = bags.map(opcionSaco).join('') || '<option value="">— sin sacos —</option>';
-    const siguientePendiente = bags.find(b => b.estado === 'pendiente');
-    sacoSelect.value = siguientePendiente ? siguientePendiente.correlativo : (bags[0] ? bags[0].correlativo : '');
-    document.getElementById('pesoReal').value = '';
-    if (enfocarPeso) document.getElementById('pesoReal').focus();
+    document.getElementById('label-grid').textContent = cerrada
+      ? 'Toca el maxisaco que usaste en producción (tachado = ya usado)'
+      : 'Toca el maxisaco que llenaste desde el camión (stock real = sin tachar)';
+
+    // Cuadrícula con TODOS los sacos. Recepción abierta → tocar registra el peso
+    // real desde el camión. Recepción cerrada → tocar marca/desmarca "usado" en
+    // producción diaria, sin tocar el peso.
+    document.getElementById('saco-grid').innerHTML = bags.map(b => `
+      <div class="chip-saco ${b.estado} ${b.usado ? 'usado' : ''}" data-correlativo="${b.correlativo}"
+           onclick="${cerrada ? `toggleUsadoUI('${b.correlativo}')` : `seleccionarSaco('${b.correlativo}', true)`}">
+        ${numeroSaco(b.correlativo)}
+        ${b.estado === 'registrado' ? `<span class="peso-mini">${b.pesoReal}kg</span>` : ''}
+      </div>
+    `).join('') || '<p class="vacio">Sin sacos</p>';
+
+    document.getElementById('form-peso-wrap').style.display = cerrada ? 'none' : '';
+    document.getElementById('btn-imprimir').style.display = cerrada ? 'none' : '';
+    document.getElementById('btn-cerrar').style.display = cerrada ? 'none' : '';
+
+    if (!cerrada) {
+      const siguientePendiente = bags.find(b => b.estado === 'pendiente');
+      seleccionarSaco(siguientePendiente ? siguientePendiente.correlativo : (bags[0] ? bags[0].correlativo : null), enfocarPeso);
+    } else {
+      sacoSeleccionado = null;
+      document.getElementById('saco-actual').innerHTML = '';
+    }
 
     document.getElementById('tabla-sacos').innerHTML = bags.map(b => `
       <tr>
         <td>${b.correlativo}</td>
-        <td class="estado-${b.estado}">${b.estado}</td>
+        <td class="estado-${b.estado}">${b.estado}${b.usado ? ' (usado)' : ''}</td>
         <td>${b.pesoReal || ''}</td>
-        <td class="accion">${b.estado === 'pendiente' ? `<button class="secundario" onclick="cancelarSaco('${b.correlativo}')">Cancelar</button>` : ''}</td>
+        <td class="accion">${!cerrada && b.estado === 'pendiente' ? `<button class="secundario" onclick="cancelarSaco('${b.correlativo}')">Cancelar</button>` : ''}</td>
       </tr>
     `).join('');
   }
 
+  async function toggleUsadoUI(correlativo) {
+    try {
+      const resp = await fetch(APP_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'toggleUsado', correlativo })
+      });
+      const data = await resp.json();
+      if (!data.ok) { alert('❌ ' + data.error); return; }
+      await cargarRecepcionActiva();
+    } catch (err) {
+      alert('Error de conexión: ' + err.message);
+    }
+  }
+
   document.getElementById('btn-registrar-peso').addEventListener('click', async () => {
-    const correlativo = document.getElementById('saco-select').value;
+    const correlativo = sacoSeleccionado;
     const pesoReal = document.getElementById('pesoReal').value;
     const msg = document.getElementById('msg-peso');
 
     if (!correlativo || !pesoReal) {
       msg.className = 'msg error';
-      msg.textContent = '❌ Selecciona un saco pendiente e ingresa el peso real';
+      msg.textContent = '❌ Toca un maxisaco en la cuadrícula e ingresa el peso real';
       return;
     }
 
@@ -488,7 +563,7 @@
         const signo = data.diferenciaFinal > 0 ? '+' : '';
         msg.innerHTML = `✅ Recepción cerrada. Diferencia final vs guía: <b>${signo}${data.diferenciaFinal} kg</b>`;
         recepcionActivaId = null;
-        await cargarRecepcionesAbiertas();
+        await cargarRecepciones();
         if (document.getElementById('recepcion-select').value) await cargarRecepcionActiva();
       } else {
         msg.className = 'msg error';
@@ -500,7 +575,7 @@
     }
   });
 
-  // ── IMPRIMIR ETIQUETAS ──────────────────────────────────────
+  // ── IMPRIMIR ETIQUETAS (en blanco, para pegar antes de llenar) ──
   document.getElementById('btn-imprimir').addEventListener('click', () => {
     if (!recepcionData) return;
     const { header, bags } = recepcionData;
@@ -515,7 +590,22 @@
     window.print();
   });
 
-  cargarRecepcionesAbiertas();
+  // ── REIMPRIMIR CON PESOS REALES YA REGISTRADOS ───────────────
+  document.getElementById('btn-reimprimir').addEventListener('click', () => {
+    if (!recepcionData) return;
+    const { header, bags } = recepcionData;
+    const area = document.getElementById('print-area');
+    area.innerHTML = bags.map(b => `
+      <div class="etiqueta">
+        <span class="correlativo">${b.correlativo}</span>
+        <span class="detalle">${header.materiaPrima} · ${header.camion} · ${header.fecha}</span>
+        <div class="linea-peso">Peso real: ${b.estado === 'registrado' ? b.pesoReal + ' kg' : '— sin registrar —'}</div>
+      </div>
+    `).join('');
+    window.print();
+  });
+
+  cargarRecepciones();
 </script>
 
 </body>

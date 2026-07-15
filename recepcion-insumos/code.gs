@@ -14,9 +14,9 @@ const PREFIJOS = {
 // ── ROUTER ─────────────────────────────────────────────────────
 function doGet(e) {
   const action = e && e.parameter && e.parameter.action;
-  if (action === 'getSugerencia')        return jsonResp(calcularSugerencia(parseFloat(e.parameter.pesoTotal)));
-  if (action === 'getRecepcionesAbiertas') return jsonResp(getRecepcionesAbiertas());
-  if (action === 'getRecepcion')          return jsonResp(getRecepcion(e.parameter.id));
+  if (action === 'getSugerencia')  return jsonResp(calcularSugerencia(parseFloat(e.parameter.pesoTotal)));
+  if (action === 'getRecepciones') return jsonResp(getRecepciones());
+  if (action === 'getRecepcion')   return jsonResp(getRecepcion(e.parameter.id));
 
   const html = HtmlService.createTemplateFromFile('index').evaluate()
     .setTitle('Recepción de Insumos')
@@ -34,6 +34,7 @@ function doPost(e) {
     if (body.action === 'registrarPeso')     return jsonResp(registrarPeso(body));
     if (body.action === 'cancelarSaco')      return jsonResp(cancelarSaco(body));
     if (body.action === 'cerrarRecepcion')   return jsonResp(cerrarRecepcion(body));
+    if (body.action === 'toggleUsado')       return jsonResp(toggleUsado(body));
     return jsonResp({ ok: false, error: 'Acción desconocida: ' + body.action });
   } catch (err) {
     return jsonResp({ ok: false, error: err.toString() });
@@ -68,7 +69,8 @@ function calcularSugerencia(pesoTotal) {
 //                       peso_total_guia(4), n_sacos(5), peso_promedio_sugerido(6),
 //                       peso_acumulado(7), estado(8), timestamp(9)
 // MAXISACOS columns:   correlativo(0), id_recepcion(1), fecha(2), materia_prima(3),
-//                       camion_proveedor(4), peso_real_kg(5), estado(6), timestamp(7)
+//                       camion_proveedor(4), peso_real_kg(5), estado(6), timestamp(7), usado(8)
+//                       "usado" = ya se consumió en producción diaria (independiente de estado)
 function crearRecepcion(body) {
   const { materiaPrima, camion, pesoTotalGuia, fecha, nSacos } = body;
 
@@ -111,7 +113,7 @@ function crearRecepcion(body) {
     let wsBag = ss.getSheetByName('MAXISACOS');
     if (!wsBag) {
       wsBag = ss.insertSheet('MAXISACOS');
-      wsBag.appendRow(['correlativo', 'id_recepcion', 'fecha', 'materia_prima', 'camion_proveedor', 'peso_real_kg', 'estado', 'timestamp']);
+      wsBag.appendRow(['correlativo', 'id_recepcion', 'fecha', 'materia_prima', 'camion_proveedor', 'peso_real_kg', 'estado', 'timestamp', 'usado']);
       wsBag.setFrozenRows(1);
     }
 
@@ -119,10 +121,10 @@ function crearRecepcion(body) {
     const filasNuevas = [];
     for (let i = 1; i <= nFinal; i++) {
       const correlativo = idRecepcion + '-' + String(i).padStart(3, '0');
-      filasNuevas.push([correlativo, idRecepcion, fechaObj, materiaPrima, camion.trim(), '', 'pendiente', '']);
+      filasNuevas.push([correlativo, idRecepcion, fechaObj, materiaPrima, camion.trim(), '', 'pendiente', '', false]);
       correlativos.push(correlativo);
     }
-    wsBag.getRange(wsBag.getLastRow() + 1, 1, filasNuevas.length, 8).setValues(filasNuevas);
+    wsBag.getRange(wsBag.getLastRow() + 1, 1, filasNuevas.length, 9).setValues(filasNuevas);
 
     return {
       ok: true,
@@ -203,6 +205,38 @@ function cancelarSaco(body) {
   }
 }
 
+// ── MARCAR/DESMARCAR SACO COMO USADO EN PRODUCCIÓN DIARIA ───────
+// Independiente del cierre de la recepción: un saco ya registrado (con
+// peso real) se puede ir tachando cuando se consume, sin importar el día.
+function toggleUsado(body) {
+  const { correlativo } = body;
+  if (!correlativo) return { ok: false, error: 'Falta el correlativo' };
+
+  const lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try {
+    const ss = SpreadsheetApp.openById(SHEET_ID);
+    const wsBag = ss.getSheetByName('MAXISACOS');
+    if (!wsBag) return { ok: false, error: 'No hay maxisacos registrados aún' };
+
+    const filas = wsBag.getDataRange().getValues();
+    let fila = -1;
+    for (let i = 1; i < filas.length; i++) {
+      if (String(filas[i][0]).trim() === String(correlativo).trim()) { fila = i; break; }
+    }
+    if (fila === -1) return { ok: false, error: 'Correlativo no encontrado: ' + correlativo };
+    if (filas[fila][6] !== 'registrado')
+      return { ok: false, error: 'Solo se puede marcar como usado un saco ya registrado (con peso real)' };
+
+    const usadoNuevo = filas[fila][8] !== true;
+    wsBag.getRange(fila + 1, 9).setValue(usadoNuevo); // usado
+
+    return { ok: true, correlativo, usado: usadoNuevo };
+  } finally {
+    lock.releaseLock();
+  }
+}
+
 // ── CERRAR RECEPCIÓN (cancela pendientes restantes) ─────────────
 function cerrarRecepcion(body) {
   const { idRecepcion } = body;
@@ -268,22 +302,24 @@ function actualizarAcumuladoRecepcion(ss, idRecepcion) {
   return { idRecepcion, pesoAcumulado, pesoTotalGuia, saldo, sacosRegistrados, sacosPendientes, promedioRestante };
 }
 
-// ── RECEPCIONES ABIERTAS (para el selector) ─────────────────────
-function getRecepcionesAbiertas() {
+// ── TODAS LAS RECEPCIONES, abiertas y cerradas (para el selector) ──
+function getRecepciones() {
   const ss = SpreadsheetApp.openById(SHEET_ID);
   const wsRec = ss.getSheetByName('RECEPCIONES');
   if (!wsRec) return { ok: true, data: [] };
 
   const rows = wsRec.getDataRange().getValues().slice(1);
   const data = rows
-    .filter(r => r[0] && r[8] === 'abierta')
+    .filter(r => r[0])
     .map(r => ({
       idRecepcion: r[0],
       fecha: Utilities.formatDate(new Date(r[1]), 'America/Santiago', 'yyyy-MM-dd'),
       materiaPrima: r[2],
       camion: r[3],
       pesoTotalGuia: r[4],
-      nSacos: r[5]
+      nSacos: r[5],
+      pesoAcumulado: r[7],
+      estado: r[8]
     }))
     .reverse();
 
@@ -317,12 +353,13 @@ function getRecepcion(idRecepcion) {
   const bags = wsBag
     ? wsBag.getDataRange().getValues().slice(1)
         .filter(r => String(r[1]).trim() === String(idRecepcion).trim())
-        .map(r => ({ correlativo: r[0], pesoReal: r[5], estado: r[6] }))
+        .map(r => ({ correlativo: r[0], pesoReal: r[5], estado: r[6], usado: r[8] === true }))
     : [];
 
   const saldo = Math.round((header.pesoTotalGuia - header.pesoAcumulado) * 100) / 100;
   const sacosPendientes = bags.filter(b => b.estado === 'pendiente').length;
   const promedioRestante = sacosPendientes > 0 ? Math.round((saldo / sacosPendientes) * 100) / 100 : 0;
+  const stockReal = bags.filter(b => b.estado === 'registrado' && !b.usado).length;
 
-  return { ok: true, header, bags, saldo, sacosPendientes, promedioRestante };
+  return { ok: true, header, bags, saldo, sacosPendientes, promedioRestante, stockReal };
 }
