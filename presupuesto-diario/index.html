@@ -983,6 +983,7 @@ function proyectarCrianza(lote) {
   const costoDieta       = lote.costoDieta || {};
   const margenAve        = +(lote.margenAve ?? 1000);
   const preciosPorSemana = lote.preciosPorSemana || {};
+  const precioMult       = +(lote._precioVentaMult ?? 1); // multiplicador de escenario (no persiste)
   const factorMort       = lote.factorMortalidad ?? 1.0;
   const fn               = new Date(lote.fechaNacimiento + 'T12:00:00');
   const diasCiclo        = semCrianza * 7;
@@ -1015,10 +1016,10 @@ function proyectarCrianza(lote) {
 
     acumCostos += costoAlim + gastoDia + gastoEsp;
 
-    // Precio de venta: custom por semana si existe, sino costo/ave + margen
+    // Precio de venta: custom por semana si existe, sino costo/ave + margen; ×mult de escenario
     const costoPorAve = avesFin > 0 ? acumCostos / avesFin : 0;
     const pvCustom    = preciosPorSemana[semCiclo] != null ? +preciosPorSemana[semCiclo] : null;
-    const precioVenta = pvCustom ?? Math.round(costoPorAve + margenAve);
+    const precioVenta = Math.round((pvCustom ?? (costoPorAve + margenAve)) * precioMult);
 
     const esUltimoDia  = n === diasCiclo - 1;
     const ingresoVenta = esUltimoDia ? Math.round(avesFin * precioVenta) : 0;
@@ -1118,6 +1119,10 @@ let tablaVista = 'sem';
 let sensibEsc  = {
   pes: { precioPct: -20, factorPost:  85, factorMort: 1.5, alimentoPct:  15 },
   opt: { precioPct:  15, factorPost: 105, factorMort: 0.8, alimentoPct: -10 },
+};
+let sensibEscCrianza = {
+  pes: { precioPct: -15, factorMort: 1.5, alimentoPct:  15, fijosPct: 10 },
+  opt: { precioPct:  10, factorMort: 0.8, alimentoPct: -10, fijosPct:  0 },
 };
 const HOY      = new Date().toISOString().slice(0, 10);
 const tFont    = { font:{ size:10, family:"'IBM Plex Mono', monospace" } };
@@ -1875,6 +1880,7 @@ function renderDashboardCrianza(lote) {
     <div class="tabs">
       <button class="tab activo" data-tab="tc-graficos" onclick="setTabCrianza(event,'tc-graficos')">Gráficos</button>
       <button class="tab" data-tab="tc-tabla"   onclick="setTabCrianza(event,'tc-tabla')">Proyección</button>
+      <button class="tab" data-tab="tc-sensib"  onclick="setTabCrianza(event,'tc-sensib')">Sensibilidad</button>
       <button class="tab" data-tab="tc-precios" onclick="setTabCrianza(event,'tc-precios')">Precio sem.</button>
       <button class="tab" data-tab="tc-gastos"  onclick="setTabCrianza(event,'tc-gastos')">Gastos especiales</button>
       <button class="tab" data-tab="tc-config"  onclick="setTabCrianza(event,'tc-config')">Configuración</button>
@@ -1909,6 +1915,7 @@ function renderDashboardCrianza(lote) {
     </div>
 
     <div id="tc-tabla"   class="tab-panel" style="display:none"><div id="tc-tabla-panel"></div></div>
+    <div id="tc-sensib"  class="tab-panel" style="display:none"><div id="tc-sensib-panel"></div></div>
     <div id="tc-precios" class="tab-panel" style="display:none"><div id="tc-precios-panel"></div></div>
     <div id="tc-gastos"  class="tab-panel" style="display:none"><div id="gastos-panel"></div></div>
     <div id="tc-config"  class="tab-panel" style="display:none"><div id="tc-config-panel"></div></div>
@@ -1919,6 +1926,7 @@ function renderDashboardCrianza(lote) {
 
   renderGraficosCrianza(lote);
   renderTablaCrianza(lote);
+  renderSensibilidadCrianza(lote);
   renderPreciosSemana(lote);
   renderGastosEspeciales(lote);
   renderConfigCrianza(lote);
@@ -1934,6 +1942,7 @@ function setTabCrianza(e, id) {
   const l = getLote(loteId);
   if (id === 'tc-graficos') renderGraficosCrianza(l);
   if (id === 'tc-tabla')    renderTablaCrianza(l);
+  if (id === 'tc-sensib')   renderSensibilidadCrianza(l);
   if (id === 'tc-precios')  renderPreciosSemana(l);
   if (id === 'tc-gastos')   renderGastosEspeciales(l);
   if (id === 'tc-config')   renderConfigCrianza(l);
@@ -2208,6 +2217,202 @@ function aplicarConfigCrianza() {
   const p = document.getElementById('tc-config');
   if (p) { p.classList.add('activo'); p.style.display = 'block'; }
   toast('Configuración guardada y proyección recalculada');
+}
+
+/* ════════════════════════════════════════════════════════════
+   CRIANZA — SENSIBILIDAD
+   ════════════════════════════════════════════════════════════ */
+function proyectarEscenarioCrianza(lote, {precioPct=0, factorMort=null, alimentoPct=0, fijosPct=0}={}) {
+  const am = 1 + alimentoPct / 100;
+  const fm = 1 + fijosPct / 100;
+  const l = {
+    ...lote,
+    _precioVentaMult: 1 + precioPct / 100,
+    factorMortalidad: factorMort ?? lote.factorMortalidad ?? 1.0,
+    gastosMes:        (+lote.gastosMes) * fm,
+    costoDieta:       Object.fromEntries(
+      [1,2,3,4,5,6,7].map(d => [d, (+(lote.costoDieta?.[d] || 520)) * am])
+    ),
+  };
+  return proyectarCrianza(l);
+}
+
+function kpisEscCrianza(p, lote) {
+  const dFin     = p[p.length - 1];
+  const avesFin  = Math.round(dFin.aves);
+  const ingresos = p.reduce((a,d) => a + d.ingreso, 0);
+  const costos   = p.reduce((a,d) => a + d.costoAlim + d.gastoDia + (d.gastoEsp||0), 0);
+  const be       = calcBreakEven(p);
+  return {
+    resultado:  dFin.acum,
+    ingresos,
+    avesFin,
+    precioAve:  dFin.precioVenta || 0,
+    costoAve:   avesFin > 0 ? Math.round(costos / avesFin) : 0,
+    margenAve:  avesFin > 0 ? Math.round(dFin.acum / avesFin) : 0,
+    be,
+  };
+}
+
+function renderSensibilidadCrianza(lote) {
+  const panel = document.getElementById('tc-sensib-panel');
+  if (!panel || !proy) return;
+
+  // Leer inputs del DOM (persistir en sensibEscCrianza)
+  const gv = (id, fb) => { const el = document.getElementById(id); return el ? +el.value : fb; };
+  const pes = {
+    precioPct:   gv('sc-precio-pes', sensibEscCrianza.pes.precioPct),
+    factorMort:  gv('sc-mort-pes',   sensibEscCrianza.pes.factorMort),
+    alimentoPct: gv('sc-alim-pes',   sensibEscCrianza.pes.alimentoPct),
+    fijosPct:    gv('sc-fijos-pes',  sensibEscCrianza.pes.fijosPct),
+  };
+  const opt = {
+    precioPct:   gv('sc-precio-opt', sensibEscCrianza.opt.precioPct),
+    factorMort:  gv('sc-mort-opt',   sensibEscCrianza.opt.factorMort),
+    alimentoPct: gv('sc-alim-opt',   sensibEscCrianza.opt.alimentoPct),
+    fijosPct:    gv('sc-fijos-opt',  sensibEscCrianza.opt.fijosPct),
+  };
+  sensibEscCrianza.pes = pes;
+  sensibEscCrianza.opt = opt;
+
+  const kP = kpisEscCrianza(proyectarEscenarioCrianza(lote, pes), lote);
+  const kB = kpisEscCrianza(proy, lote);
+  const kO = kpisEscCrianza(proyectarEscenarioCrianza(lote, opt), lote);
+
+  const cls  = v => v >= 0 ? 'ok' : 'mal';
+  const fmtR = (v, bold=false) =>
+    `<span class="${cls(v)}" style="font-family:var(--fm);font-weight:${bold?'800':'600'};font-size:${bold?'15':'13'}px">${MN(v)}</span>`;
+  const fmtA = (v, bold=false) =>
+    `<span class="${cls(v)}" style="font-family:var(--fm);font-weight:${bold?'700':'600'};font-size:12px">${MN(v)}/ave</span>`;
+  const fmtN = (v, bold=false) =>
+    `<span style="font-family:var(--fm);font-size:12px;font-weight:${bold?'700':'400'}">${MN(v)}</span>`;
+  const beStr = be => be ? `Sem ${be.semCiclo}` : 'Sin retorno';
+  const beCls = (be, beB) => !be ? 'mal' : (be.semCiclo <= (beB?.semCiclo ?? 999) ? 'ok' : '');
+  const deltaStr = (v, b) => {
+    const d = v - b;
+    if (Math.abs(d) < 500) return '';
+    const color = d > 0 ? '#2e7d32' : '#c62828';
+    return ` <small style="color:${color};font-size:10px">(${d>0?'+':''}${MN(d)})</small>`;
+  };
+
+  const inp = (id, val, step) =>
+    `<input id="${id}" type="number" value="${val}" step="${step}"
+     style="width:76px;padding:5px 8px;border:1px solid var(--linea);border-radius:3px;
+            font-family:var(--fm);font-size:12px;text-align:center;background:white"
+     oninput="recalcSensibCrianza()">`;
+
+  const paramRow = (lbl, hint, idP, valP, baseVal, idO, valO, step) =>
+    `<tr>
+       <td style="padding:8px 12px 8px 0;font-size:12px;color:var(--texto);border-bottom:1px solid var(--linea)">
+         ${lbl}<br><small style="color:var(--tenue)">${hint}</small>
+       </td>
+       <td style="padding:8px 14px;text-align:center;border-bottom:1px solid var(--linea);background:#fff8f8">${inp(idP,valP,step)}</td>
+       <td style="padding:8px 14px;text-align:center;border-bottom:1px solid var(--linea);background:#f4f8f4;color:var(--suave);font-family:var(--fm);font-size:12px">${baseVal}</td>
+       <td style="padding:8px 14px;text-align:center;border-bottom:1px solid var(--linea);background:#f0f7f0">${inp(idO,valO,step)}</td>
+     </tr>`;
+
+  const resRow = (lbl, vP, vB, vO, border=true) =>
+    `<tr>
+       <td style="padding:10px 12px 10px 0;font-size:12px;color:var(--texto)${border?';border-bottom:1px solid var(--linea)':''}">${lbl}</td>
+       <td style="padding:10px 14px;text-align:center;background:#fff8f8${border?';border-bottom:1px solid var(--linea)':''}">${vP}</td>
+       <td style="padding:10px 14px;text-align:center;background:#f4f8f4${border?';border-bottom:1px solid var(--linea)':''}">${vB}</td>
+       <td style="padding:10px 14px;text-align:center;background:#f0f7f0${border?';border-bottom:1px solid var(--linea)':''}">${vO}</td>
+     </tr>`;
+
+  const thead = `<thead><tr>
+    <th style="text-align:left;padding:8px 0 10px;font-size:11px;color:var(--tenue);text-transform:uppercase;letter-spacing:.06em;border-bottom:2px solid var(--linea)">·</th>
+    <th style="padding:8px 14px 10px;font-size:11px;color:#c62828;text-transform:uppercase;letter-spacing:.06em;border-bottom:2px solid #ffcdd2;background:#fff8f8">🔴 Pesimista</th>
+    <th style="padding:8px 14px 10px;font-size:11px;color:#1b4332;text-transform:uppercase;letter-spacing:.06em;border-bottom:2px solid #a5d6a7;background:#f4f8f4">⬤ Base actual</th>
+    <th style="padding:8px 14px 10px;font-size:11px;color:#1b5e20;text-transform:uppercase;letter-spacing:.06em;border-bottom:2px solid #80cbc4;background:#f0f7f0">🟢 Optimista</th>
+  </tr></thead>`;
+
+  // Espectro visual del resultado
+  const vals = [kP.resultado, kB.resultado, kO.resultado];
+  const minV = Math.min(...vals), maxV = Math.max(...vals), rng = maxV - minV || 1;
+  const sp = v => Math.round((v - minV) / rng * 100);
+  const specHtml = `
+    <div style="margin-top:28px;padding:18px 14px;background:var(--fondo);border:1px solid var(--linea);border-radius:4px">
+      <div style="font-size:11px;color:var(--tenue);text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px">
+        Espectro · Resultado neto de la crianza
+      </div>
+      <div style="position:relative;height:6px;background:linear-gradient(to right,#ffcdd2 0%,#e8f5e9 100%);border-radius:3px;margin:14px 6px 10px">
+        ${[kP,kB,kO].map((k,i) => {
+          const v = k.resultado;
+          const col = ['#c62828','#1b4332','#1b5e20'][i];
+          const lbl = ['Pesimista','Base','Optimista'][i];
+          const p = sp(v);
+          const side = p < 20 ? 'left:0;transform:none' : p > 80 ? 'right:0;left:auto;transform:none' : `left:${p}%;transform:translateX(-50%)`;
+          return `<div style="position:absolute;top:-12px;${side};text-align:center">
+            <div style="width:14px;height:14px;border-radius:50%;background:${col};border:2px solid white;margin:0 auto;box-shadow:0 1px 3px rgba(0,0,0,.2)"></div>
+            <div style="font-size:9.5px;font-weight:600;color:${col};white-space:nowrap;margin-top:8px">${lbl}</div>
+            <div style="font-size:9px;color:var(--suave);white-space:nowrap">${MN(v)}</div>
+          </div>`;
+        }).join('')}
+      </div>
+      <div style="height:36px"></div>
+    </div>`;
+
+  panel.innerHTML = `
+    <p style="font-size:13px;color:var(--suave);margin-bottom:20px">
+      Ajusta los parámetros de cada escenario — los resultados se recalculan automáticamente.
+      El precio de venta se ajusta en % sobre el precio calculado (costo/ave + margen o precio personalizado por semana).
+    </p>
+
+    <div style="font-size:11px;font-weight:600;color:var(--prim);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Parámetros de escenario</div>
+    <div class="tabla-scroll" style="margin-bottom:28px">
+    <table style="width:100%;border-collapse:collapse">
+      ${thead}
+      <tbody>
+        ${paramRow('Precio de venta (Δ%)','sobre el precio calculado o personalizado',
+          'sc-precio-pes', pes.precioPct, `${MN(kB.precioAve)}/ave base`,
+          'sc-precio-opt', opt.precioPct, '1')}
+        ${paramRow('Factor mortalidad (×)','multiplicador sobre tabla de mortalidad semanal',
+          'sc-mort-pes', pes.factorMort, `${lote.factorMortalidad??1.0}× base`,
+          'sc-mort-opt', opt.factorMort, '0.1')}
+        ${paramRow('Costo alimento (Δ%)','variación sobre $/kg de todas las dietas',
+          'sc-alim-pes', pes.alimentoPct, 'dietas base',
+          'sc-alim-opt', opt.alimentoPct, '1')}
+        ${paramRow('Gastos fijos (Δ%)','variación sobre gastos fijos mensuales',
+          'sc-fijos-pes', pes.fijosPct, `${MN(+lote.gastosMes)}/mes base`,
+          'sc-fijos-opt', opt.fijosPct, '1')}
+      </tbody>
+    </table>
+    </div>
+
+    <div style="font-size:11px;font-weight:600;color:var(--prim);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Resultados proyectados</div>
+    <div class="tabla-scroll">
+    <table style="width:100%;border-collapse:collapse">
+      ${thead}
+      <tbody>
+        ${resRow('Resultado neto de la crianza',
+          fmtR(kP.resultado) + deltaStr(kP.resultado, kB.resultado),
+          fmtR(kB.resultado, true),
+          fmtR(kO.resultado) + deltaStr(kO.resultado, kB.resultado))}
+        ${resRow('Ingreso por venta de aves',
+          fmtN(kP.ingresos), fmtN(kB.ingresos, true), fmtN(kO.ingresos))}
+        ${resRow('Aves a vender',
+          `<span style="font-family:var(--fm);font-size:12px">${NUM(kP.avesFin)}</span>`,
+          `<span style="font-family:var(--fm);font-size:12px;font-weight:700">${NUM(kB.avesFin)}</span>`,
+          `<span style="font-family:var(--fm);font-size:12px">${NUM(kO.avesFin)}</span>`)}
+        ${resRow('Precio de venta / ave',
+          fmtN(kP.precioAve), fmtN(kB.precioAve, true), fmtN(kO.precioAve))}
+        ${resRow('Costo / ave',
+          fmtN(kP.costoAve), fmtN(kB.costoAve, true), fmtN(kO.costoAve))}
+        ${resRow('Margen / ave',
+          fmtA(kP.margenAve), fmtA(kB.margenAve, true), fmtA(kO.margenAve))}
+        ${resRow('Break-even',
+          `<span class="${beCls(kP.be, kB.be)}" style="font-family:var(--fm);font-size:13px">${beStr(kP.be)}</span>`,
+          `<span style="font-family:var(--fm);font-size:13px;font-weight:700;color:var(--prim)">${beStr(kB.be)}</span>`,
+          `<span class="${beCls(kO.be, kB.be)}" style="font-family:var(--fm);font-size:13px">${beStr(kO.be)}</span>`, false)}
+      </tbody>
+    </table>
+    </div>
+    ${specHtml}`;
+}
+
+function recalcSensibCrianza() {
+  const lote = getLote(loteId);
+  if (lote) renderSensibilidadCrianza(lote);
 }
 
 /* ════════════════════════════════════════════════════════════
