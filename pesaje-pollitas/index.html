@@ -141,6 +141,25 @@ label { font-size:.85rem; color:#666; font-weight:500; }
 .alerta-ok      { background:#e8f5e9; color:#2e7d32; }
 .alerta-warning { background:#fff8e1; color:#f57f17; }
 .alerta-error   { background:#ffebee; color:#c62828; }
+
+/* MANUAL (acordeón) */
+.manual-section { border:1.5px solid var(--gris-b); border-radius:var(--radio); margin-bottom:10px; overflow:hidden; }
+.manual-section summary { padding:13px 14px; font-weight:600; font-size:.9rem; cursor:pointer; list-style:none; display:flex; align-items:center; gap:8px; color:var(--texto); background:#fff; }
+.manual-section summary::-webkit-details-marker { display:none; }
+.manual-section[open] summary { border-bottom:1.5px solid var(--gris-b); color:var(--verde); }
+.manual-section summary .ms-arrow { margin-left:auto; font-size:.75rem; transition:.2s; color:#aaa; }
+.manual-section[open] .ms-arrow { transform:rotate(90deg); }
+.manual-body { padding:12px 14px; font-size:.84rem; line-height:1.6; color:#444; background:#fafafa; }
+.manual-body p { margin-bottom:8px; }
+.manual-body ul { padding-left:18px; margin-bottom:8px; }
+.manual-body li { margin-bottom:3px; }
+.manual-body strong { color:var(--texto); }
+.manual-body .tip { background:#e8f5e9; border-left:3px solid var(--verde-c); padding:7px 10px; border-radius:0 6px 6px 0; margin:8px 0; font-size:.82rem; }
+.manual-body .warn { background:#fff8e1; border-left:3px solid var(--amarillo); padding:7px 10px; border-radius:0 6px 6px 0; margin:8px 0; font-size:.82rem; }
+.manual-body table { width:100%; border-collapse:collapse; font-size:.8rem; margin:8px 0; }
+.manual-body th { background:var(--verde); color:#fff; padding:6px 8px; text-align:left; }
+.manual-body td { padding:5px 8px; border-bottom:1px solid var(--gris-b); vertical-align:top; }
+.manual-body tr:nth-child(even) td { background:#f5f5f5; }
 </style>
 </head>
 <body>
@@ -176,6 +195,7 @@ label { font-size:.85rem; color:#666; font-weight:500; }
   <div class="tab active" onclick="irTab('registro')">📋 Registro</div>
   <div class="tab" onclick="irTab('resumen')">📊 Historial</div>
   <div class="tab" onclick="irTab('lotes')">🐔 Lotes</div>
+  <div class="tab" onclick="irTab('manual')">📖 Ayuda</div>
 </div>
 
 <!-- ══ TAB REGISTRO ═══════════════════════════════════════════ -->
@@ -306,6 +326,134 @@ label { font-size:.85rem; color:#666; font-weight:500; }
   <div id="resumen-contenido">
     <div class="alerta alerta-info">Selecciona un lote para ver el historial</div>
   </div>
+</div>
+
+<!-- ══ TAB MANUAL ════════════════════════════════════════════ -->
+<div class="page" id="page-manual">
+  <div class="card" style="text-align:center;background:linear-gradient(135deg,#e8f5e9,#f1f8e9)">
+    <div style="font-size:2.5rem">📖</div>
+    <h2 style="color:var(--verde);font-size:1.1rem;margin:6px 0 4px">Manual de uso · Pesaje Pollitas</h2>
+    <p style="font-size:.78rem;color:#666">avivet.cl — AviVet</p>
+  </div>
+
+  <details class="manual-section">
+    <summary>🐔 Gestión de Lotes <span class="ms-arrow">▶</span></summary>
+    <div class="manual-body">
+      <p><strong>Crear un lote:</strong> Ve a la pestaña Lotes y completa nombre, fecha de nacimiento (BB), número de aves y línea genética. La fecha de nacimiento es clave — la app calcula la semana de vida automáticamente.</p>
+      <p><strong>Archivar:</strong> El lote desaparece de los selectores pero conserva todos sus datos. Usa esto cuando el lote terminó su crianza.</p>
+      <p><strong>Eliminar:</strong> Borra el lote <strong>y todos sus pesajes permanentemente</strong>. Se pide confirmación escribiendo el nombre exacto del lote.</p>
+    </div>
+  </details>
+
+  <details class="manual-section">
+    <summary>📋 Registrar un pesaje <span class="ms-arrow">▶</span></summary>
+    <div class="manual-body">
+      <p>En la pestaña <strong>Registro</strong>: selecciona lote → semana → fecha → ingresa pesos → guarda.</p>
+      <p><strong>⌨️ Manual:</strong> escribe en kg (ej: <code>1.250</code>) o gramos (ej: <code>1250</code>). Presiona Enter o toca +. Toca un chip para eliminarlo.</p>
+      <p><strong>🎤 Voz:</strong> toca el micrófono y di el peso en voz alta. Ejemplos: <em>"uno con doscientos cincuenta"</em>, <em>"mil trescientos gramos"</em>. Disponible en Chrome y Safari.</p>
+      <p><strong>📷 Foto / PDF:</strong> fotografía la pantalla de la balanza o sube un PDF. Toca <em>🔍 Extraer pesos con IA</em> para detectar los valores automáticamente.</p>
+      <p><strong>📊 Excel / CSV:</strong> sube un archivo .xlsx, .xls o .csv. La app detecta si los pesos están en kg o gramos y muestra una vista previa antes de importar.</p>
+      <div class="tip">Con 3 o más pesos ingresados aparecen estadísticas en tiempo real: promedio, uniformidad, CV% y comparación con la curva genética.</div>
+    </div>
+  </details>
+
+  <details class="manual-section">
+    <summary>🖨️ Planilla imprimible para pesar a mano <span class="ms-arrow">▶</span></summary>
+    <div class="manual-body">
+      <p>Selecciona lote y semana en la pestaña Registro, luego toca <strong>🖨️ Planilla en blanco para pesar a mano</strong>.</p>
+      <p>La app pide el peso promedio esperado (lo sugiere desde la curva genética) y genera una tabla tipo Gauss con filas cada 10 g, centrada en ese promedio y abarcando ±2 desviaciones estándar (~20 filas).</p>
+      <p>En terreno: pesa cada ave y marca una raya en la fila del peso más cercano. Al terminar, suma las marcas de cada fila en "Subtotal" y calcula el promedio manualmente.</p>
+      <p>Luego transcribe los pesos a la app (modo manual o Excel).</p>
+    </div>
+  </details>
+
+  <details class="manual-section">
+    <summary>📊 Historial y gráficos <span class="ms-arrow">▶</span></summary>
+    <div class="manual-body">
+      <p>Selecciona un lote en la pestaña <strong>Historial</strong> para ver:</p>
+      <ul>
+        <li><strong>Tabla de pesajes:</strong> semana, promedio real, curva esperada, diferencia, uniformidad, CV% y número de aves</li>
+        <li><strong>Gráfico peso vs curva:</strong> línea verde = medido, banda verde = rango esperado, línea rosa = promedio de curva</li>
+        <li><strong>Gráfico uniformidad:</strong> línea verde = real, línea gris punteada = mínimo esperado</li>
+        <li><strong>Histograma:</strong> toca 📊 en una fila para ver la distribución de pesos de esa semana con campana de Gauss, CV, y bracket de uniformidad</li>
+      </ul>
+      <div class="tip">Los puntos rojos en los gráficos indican semanas fuera del rango esperado de la curva genética.</div>
+    </div>
+  </details>
+
+  <details class="manual-section">
+    <summary>✏️ Editar o eliminar un pesaje <span class="ms-arrow">▶</span></summary>
+    <div class="manual-body">
+      <p>Si cometiste un error al guardar (semana incorrecta, pesos equivocados, fecha mal ingresada):</p>
+      <ol style="padding-left:18px;margin-bottom:8px">
+        <li>Ve al <strong>Historial</strong> y selecciona el lote</li>
+        <li>Toca el botón <strong>✏️</strong> en la fila correspondiente</li>
+        <li>Cambia la semana, la fecha y/o los pesos individuales</li>
+        <li>Toca <strong>💾 Guardar cambios</strong> — las estadísticas se recalculan solas</li>
+      </ol>
+      <p>Para eliminar ese pesaje: toca <strong>🗑️ Eliminar</strong> dentro del mismo modal (pide confirmación).</p>
+      <div class="warn">Cerrar el modal tocando la × o el fondo oscuro descarta todos los cambios sin guardar.</div>
+    </div>
+  </details>
+
+  <details class="manual-section">
+    <summary>📄 Exportar PDF <span class="ms-arrow">▶</span></summary>
+    <div class="manual-body">
+      <p><strong>PDF semanal:</strong> en el historial, abre el histograma de la semana (📊) y toca <em>📄 PDF semana</em>. Incluye estadísticas, comparación con curva e histograma de distribución.</p>
+      <p><strong>PDF acumulado:</strong> toca <em>📄 PDF acumulado</em> en la tarjeta del gráfico de peso. Incluye la tabla completa y ambos gráficos.</p>
+      <div class="tip">Si el navegador bloquea la ventana emergente, busca la notificación en la barra de direcciones y permite las ventanas emergentes para este sitio.</div>
+    </div>
+  </details>
+
+  <details class="manual-section">
+    <summary>📈 Entender los indicadores <span class="ms-arrow">▶</span></summary>
+    <div class="manual-body">
+      <p><strong>Uniformidad:</strong> % de aves con peso dentro del ±10% del promedio del lote.</p>
+      <table>
+        <thead><tr><th>Valor</th><th>Interpretación</th></tr></thead>
+        <tbody>
+          <tr><td>≥ 85%</td><td>✅ Buena uniformidad</td></tr>
+          <tr><td>75–84%</td><td>⚠️ Aceptable, monitorear</td></tr>
+          <tr><td>&lt; 75%</td><td>❌ Deficiente — revisar manejo</td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top:10px"><strong>CV% (Coeficiente de Variación):</strong> mide la dispersión relativa de pesos respecto al promedio.</p>
+      <table>
+        <thead><tr><th>Valor</th><th>Interpretación</th></tr></thead>
+        <tbody>
+          <tr><td>≤ 10%</td><td>✅ Lote uniforme</td></tr>
+          <tr><td>10–15%</td><td>⚠️ Dispersión moderada</td></tr>
+          <tr><td>&gt; 15%</td><td>❌ Alta dispersión</td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top:10px"><strong>Diferencia vs curva:</strong></p>
+      <ul>
+        <li><strong>±5%</strong> — dentro del rango aceptable ✅</li>
+        <li><strong>Negativa (−):</strong> lote bajo curva → revisar dieta, salud, densidad</li>
+        <li><strong>Positiva (+):</strong> lote sobre curva → buena ganancia o sobrealimentación</li>
+      </ul>
+      <p style="margin-top:8px"><strong>Curvas por línea genética:</strong> Hy-Line / Lohmann → curva Hy-Line · Dekalb Brown → curva Dekalb · ISA Brown → curva ISA.</p>
+    </div>
+  </details>
+
+  <details class="manual-section">
+    <summary>❓ Preguntas frecuentes <span class="ms-arrow">▶</span></summary>
+    <div class="manual-body">
+      <p><strong>¿Puedo ingresar más de un pesaje por semana?</strong><br>La app no lo impide. Si ocurre por error, usa el botón ✏️ en el historial para eliminar el duplicado.</p>
+      <p><strong>¿Cuántas aves debo pesar?</strong><br>Se recomiendan 30–100 aves por galpón, elegidas al azar de distintos sectores. Con menos de 10 los estadísticos son poco representativos.</p>
+      <p><strong>¿Por qué el histograma 📊 no aparece en algunas filas?</strong><br>Requiere pesos individuales guardados. Registros ingresados con versiones muy antiguas pueden no tenerlos.</p>
+      <p><strong>¿Qué formatos acepta el modo Excel?</strong><br>.xlsx, .xls y .csv. Los pesos deben estar en una columna, en kg (ej: 1.250) o gramos (ej: 1250). La unidad se detecta automáticamente.</p>
+      <p><strong>¿El modo voz funciona sin internet?</strong><br>No. El reconocimiento de voz requiere conexión en la mayoría de los navegadores.</p>
+      <p><strong>¿Los datos están en la nube?</strong><br>Sí, en Supabase. Disponibles desde cualquier dispositivo con tu cuenta.</p>
+    </div>
+  </details>
+
+  <div style="text-align:center;padding:12px 0 4px;font-size:.75rem;color:#aaa">
+    AviVet · avivet.cl ·
+    <a href="https://github.com/Alazoe/avivet/blob/main/pesaje-pollitas/MANUAL.md"
+       target="_blank" style="color:var(--azul)">Manual completo en GitHub →</a>
+  </div>
+  <div style="height:20px"></div>
 </div>
 
 </div><!-- /#app -->
@@ -601,7 +749,7 @@ async function eliminarLote(id, nombre) {
 
 // ══ TABS ══════════════════════════════════════════════════════
 function irTab(tab) {
-  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', ['registro','resumen','lotes'][i]===tab));
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', ['registro','resumen','lotes','manual'][i]===tab));
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-'+tab).classList.add('active');
   if (tab === 'resumen') cargarResumen();
