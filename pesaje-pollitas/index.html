@@ -718,6 +718,8 @@ function renderListaLotes() {
             <div style="font-size:.82rem;color:var(--verde);margin-top:2px">${fn ? `Semana ${sem} de vida` : ''}</div>
           </div>
           <div style="display:flex;flex-direction:column;gap:5px;align-items:flex-end">
+            <button class="btn" style="width:auto;padding:5px 10px;margin:0;font-size:.75rem;background:#f3e5f5;color:#6a1b9a;border:1px solid #ce93d8;border-radius:8px"
+              onclick="renombrarLote('${l.id}')">✏️ Renombrar</button>
             ${l.activo
               ? `<button class="btn btn-rojo" style="width:auto;padding:6px 10px;margin:0;font-size:.78rem"
                   onclick="desactivarLote('${l.id}')">Archivar</button>`
@@ -728,6 +730,16 @@ function renderListaLotes() {
         </div>
       </div>`;
   }).join('');
+}
+
+async function renombrarLote(id) {
+  const l = lotes.find(x => x.id === id);
+  if (!l) return;
+  const nuevo = prompt(`Nuevo nombre para el lote:`, l.nombre);
+  if (nuevo === null || nuevo.trim() === '' || nuevo.trim() === l.nombre) return;
+  const { error } = await sb.from('lotes').update({ nombre: nuevo.trim() }).eq('id', id);
+  if (!error) { toast('✅ Lote renombrado'); await cargarLotes(); renderListaLotes(); }
+  else toast('Error: ' + error.message);
 }
 
 async function desactivarLote(id) {
