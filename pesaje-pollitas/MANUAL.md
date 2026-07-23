@@ -192,16 +192,15 @@ Mide la dispersión relativa de los pesos respecto al promedio:
 - **Dif negativa (−)** — el lote está bajo la curva (revisar dieta, salud, densidad)
 - Diferencias menores al **±5%** generalmente son aceptables
 
-### Curvas genéticas disponibles
-| Línea | Curva utilizada |
-|-------|----------------|
-| Hy-line Brown | CURVA_HYLINE |
-| Hy-line W-80 | CURVA_HYLINE |
-| Hy-line Brown Jaula | CURVA_HYLINE |
-| Lohmann Brown | CURVA_HYLINE |
-| Lohmann White | CURVA_HYLINE |
-| Dekalb Brown | CURVA_DEKALB |
-| ISA Brown | CURVA_ISA |
+### Curvas genéticas disponibles (semanas 1–100)
+| Línea | Curva de referencia | Fuente |
+|-------|---------------------|--------|
+| Hy-Line Brown / Hy-Line Brown Jaula | Hy-Line Brown 2024 | Guía de manejo Hy-Line |
+| Hy-Line W-80 | Hy-Line W-80 2024 | Guía de manejo Hy-Line |
+| Lohmann Brown / Lohmann White | Lohmann Brown-Lite 2021 | Guía Sist. Alternativos |
+| Nick Brown | Nick Brown (H&N) | Guía de manejo H&N |
+| Dekalb Brown | Dekalb Brown Product Guide | Hendrix Genetics |
+| ISA Brown | Dekalb Brown (proxy) | Hendrix Genetics (misma empresa) |
 
 ---
 
