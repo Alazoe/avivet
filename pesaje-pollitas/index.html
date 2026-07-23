@@ -617,7 +617,7 @@ async function inicializarApp() {
   document.getElementById('fecha-pesaje').valueAsDate = new Date();
   const sel = document.getElementById('sel-semana');
   sel.innerHTML = '<option value="">— seleccionar —</option>';
-  for (let i = 1; i <= 19; i++) {
+  for (let i = 1; i <= 80; i++) {
     const o = document.createElement('option');
     o.value = i; o.textContent = `Semana ${i}`;
     sel.appendChild(o);
@@ -1649,7 +1649,7 @@ function editarPesaje(semana) {
   _editSemanaOrig = semana;
 
   let opsSemana = '';
-  for (let i = 1; i <= 19; i++) {
+  for (let i = 1; i <= 80; i++) {
     opsSemana += `<option value="${i}" ${i===semana?'selected':''}>${i===semana?'★ ':''}Semana ${i}</option>`;
   }
 
