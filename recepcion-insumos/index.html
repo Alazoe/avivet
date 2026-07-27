@@ -433,7 +433,7 @@
   }
 
   function renderPanel(enfocarPeso) {
-    const { header, bags, saldo, sacosPendientes, promedioRestante, stockReal } = recepcionData;
+    const { header, bags, saldo, sacosPendientes, promedioRestante, stockReal, stockRealKg, usadoCount, usadoKg } = recepcionData;
     const cerrada = header.estado === 'cerrada';
 
     document.getElementById('panel-header').innerHTML = `
@@ -444,7 +444,8 @@
       ${!cerrada ? `<div class="stat ${saldo < 0 ? 'saldo-neg' : ''}">Saldo restante<b>${saldo} kg</b></div>` : ''}
       ${!cerrada ? `<div class="stat">Sacos pendientes<b>${sacosPendientes}</b></div>` : ''}
       ${!cerrada && sacosPendientes > 0 ? `<div class="stat">Promedio sugerido restante<b>${promedioRestante} kg</b></div>` : ''}
-      <div class="stat">Stock real (sin usar en producción)<b>${stockReal}</b></div>
+      <div class="stat">Stock real (sin usar)<b>${stockReal} sacos · ${stockRealKg} kg</b></div>
+      <div class="stat">Usado en producción<b>${usadoCount} sacos · ${usadoKg} kg</b></div>
     `;
 
     document.getElementById('label-grid').textContent = cerrada

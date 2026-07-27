@@ -359,7 +359,13 @@ function getRecepcion(idRecepcion) {
   const saldo = Math.round((header.pesoTotalGuia - header.pesoAcumulado) * 100) / 100;
   const sacosPendientes = bags.filter(b => b.estado === 'pendiente').length;
   const promedioRestante = sacosPendientes > 0 ? Math.round((saldo / sacosPendientes) * 100) / 100 : 0;
-  const stockReal = bags.filter(b => b.estado === 'registrado' && !b.usado).length;
 
-  return { ok: true, header, bags, saldo, sacosPendientes, promedioRestante, stockReal };
+  const noUsados = bags.filter(b => b.estado === 'registrado' && !b.usado);
+  const usados = bags.filter(b => b.estado === 'registrado' && b.usado);
+  const stockReal = noUsados.length;
+  const stockRealKg = Math.round(noUsados.reduce((s, b) => s + (Number(b.pesoReal) || 0), 0) * 100) / 100;
+  const usadoCount = usados.length;
+  const usadoKg = Math.round(usados.reduce((s, b) => s + (Number(b.pesoReal) || 0), 0) * 100) / 100;
+
+  return { ok: true, header, bags, saldo, sacosPendientes, promedioRestante, stockReal, stockRealKg, usadoCount, usadoKg };
 }
