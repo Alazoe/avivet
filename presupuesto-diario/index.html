@@ -468,7 +468,7 @@ td.real { background: rgba(27,94,32,.07) !important; font-weight: 600; }
             </div>
             <div class="modal-field">
               <label>Factor mortalidad (1.0 = normal)</label>
-              <input type="number" name="factorMortalidad" value="1.0" min="0.5" max="5.0" step="0.1">
+              <input type="number" name="factorMortalidadCrianza" value="1.0" min="0.5" max="5.0" step="0.1">
               <small style="font-size:10px;color:var(--tenue)">1.5 = 50% más muertes que la curva</small>
             </div>
           </div>
@@ -3469,7 +3469,7 @@ function abrirModal(id) {
       if (sel) sel.value = l.edadIngresoSem ?? 0;
       if (form.semanasCrianza)  form.semanasCrianza.value  = l.semanasCrianza ?? 8;
       if (form.margenAve) form.margenAve.value = l.margenAve ?? 1000;
-      if (form.factorMortalidad) form.factorMortalidad.value = l.factorMortalidad ?? 1.0;
+      if (form.factorMortalidadCrianza) form.factorMortalidadCrianza.value = l.factorMortalidad ?? 1.0;
     } else {
       if (form.semanasCiclo)     form.semanasCiclo.value     = l.semanasCiclo    || 100;
       if (form.factorPostura)    form.factorPostura.value    = l.factorPostura    ?? 100;
@@ -3530,7 +3530,7 @@ function guardarLote(e) {
       semanasCrianza:   Math.max(1, +(f.semanasCrianza?.value ?? 8)),
       margenAve:        +(f.margenAve?.value ?? 1000),
       preciosPorSemana: modoEditar ? (getLote(modoEditar)?.preciosPorSemana || {}) : {},
-      factorMortalidad: +(f.factorMortalidad?.value ?? 1.0),
+      factorMortalidad: +(f.factorMortalidadCrianza?.value ?? 1.0),
       gastosMes:        +f.gastosMes.value,
       costoDieta,
       consumoGrDieta:   Object.fromEntries([1,2,3,4,5,6,7].map(d => [d, +(f[`gr${d}`]?.value) || 0])),
