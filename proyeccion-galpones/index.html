@@ -7,25 +7,256 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="estilos.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+<style>
+:root {
+  --color-fondo: #f8f6f1;
+  --color-papel: #ffffff;
+  --color-tinta: #1a1a1a;
+  --color-tinta-suave: #555;
+  --color-tinta-tenue: #888;
+  --color-linea: #e0ddd5;
+  --color-linea-fuerte: #c4c0b6;
+
+  --color-primario: #1b4332;
+  --color-primario-oscuro: #133024;
+  --color-acento: #f0a500;
+  --color-acento-suave: #fef5e0;
+
+  --total: #2d4a2b;
+  --color-texto: var(--color-tinta);
+
+  --color-alerta: #b85c00;
+  --color-alerta-fondo: #fdf3e0;
+
+  --fuente-titulo: 'Crimson Pro', Georgia, serif;
+  --fuente-cuerpo: 'Inter', system-ui, sans-serif;
+  --fuente-mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+  --max-w: 1200px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--fuente-cuerpo);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--color-tinta);
+  background: var(--color-fondo);
+  background-image:
+    radial-gradient(circle at 20% 10%, rgba(27, 67, 50, 0.04) 0%, transparent 50%),
+    radial-gradient(circle at 80% 90%, rgba(240, 165, 0, 0.04) 0%, transparent 50%);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+.contenedor { max-width: var(--max-w); margin: 0 auto; padding: 0 32px; }
+
+/* ── Cabecera ── */
+.cabecera {
+  background: var(--color-primario);
+  border-bottom: 3px solid var(--color-acento);
+  padding: 14px 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(6px);
+}
+.cabecera .contenedor { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+.marca { display: flex; flex-direction: column; line-height: 1.1; text-decoration: none; }
+.marca-titulo { font-family: var(--fuente-titulo); font-size: 22px; font-weight: 700; color: var(--color-papel); letter-spacing: -0.01em; }
+.marca-sub { font-size: 11px; color: var(--color-acento); letter-spacing: 0.06em; text-transform: uppercase; margin-top: 2px; }
+.nav-cab { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.nav-cab a { color: rgba(255,255,255,.85); text-decoration: none; font-size: 13px; font-weight: 500; letter-spacing: .02em; padding: 4px 0; border-bottom: 2px solid transparent; transition: border-color .2s, color .2s; }
+.nav-cab a:hover { color: var(--color-acento); border-bottom-color: var(--color-acento); }
+.btn-cab { font-family: var(--fuente-cuerpo); font-size: 13px; font-weight: 600; padding: 7px 16px; border-radius: 5px; border: 1px solid rgba(255,255,255,.3); background: rgba(255,255,255,.08); color: #fff; cursor: pointer; transition: background .15s; }
+.btn-cab:hover { background: rgba(255,255,255,.18); }
+
+/* ── Botones ── */
+.btn { font-family: var(--fuente-cuerpo); font-size: 14px; font-weight: 600; padding: 10px 22px; border: none; border-radius: 5px; cursor: pointer; transition: background .15s; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; }
+.btn-acento { background: var(--color-acento); color: #1a1a1a; }
+.btn-acento:hover { background: #d89200; }
+.btn-prim { background: var(--color-primario); color: #fff; }
+.btn-prim:hover { background: var(--color-primario-oscuro); }
+.btn-linea { background: none; border: 1px solid var(--color-linea-fuerte); color: var(--color-tinta-suave); }
+.btn-linea:hover { border-color: var(--color-primario); color: var(--color-primario); }
+.btn-sm { padding: 6px 14px; font-size: 12px; }
+
+/* ── Hero ── */
+.hero { padding: 80px 0 40px; border-bottom: 1px solid var(--color-linea); margin-bottom: 40px; }
+.hero-meta { font-family: var(--fuente-mono); font-size: 12px; color: var(--color-tinta-tenue); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 24px; }
+.hero h1 { font-family: var(--fuente-titulo); font-size: clamp(34px, 5vw, 56px); font-weight: 700; line-height: 1.05; letter-spacing: -0.02em; color: var(--color-primario); margin-bottom: 24px; max-width: 24ch; }
+.hero-bajada { font-size: 17px; color: var(--color-tinta-suave); max-width: 68ch; margin-bottom: 32px; font-weight: 400; line-height: 1.7; }
+.hero-bienvenida { display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; background: var(--color-papel); border: 1px dashed var(--color-linea-fuerte); padding: 24px 28px; max-width: 760px; }
+.hero-bienvenida h3 { font-family: var(--fuente-titulo); font-size: 20px; color: var(--color-primario); margin-bottom: 6px; }
+.hero-bienvenida p { font-size: 13.5px; color: var(--color-tinta-suave); }
+.hero-fichas { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1px; background: var(--color-linea); border: 1px solid var(--color-linea); max-width: 720px; }
+.ficha { background: var(--color-papel); padding: 22px 20px; display: flex; flex-direction: column; gap: 4px; }
+.ficha-num { font-family: var(--fuente-titulo); font-size: 34px; font-weight: 700; color: var(--color-primario); line-height: 1; }
+.ficha-lbl { font-size: 11px; color: var(--color-tinta-tenue); letter-spacing: 0.08em; text-transform: uppercase; }
+
+/* ── Selector de escenario ── */
+.panel-escenario { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; background: var(--color-papel); border: 1px solid var(--color-linea); padding: 16px 20px; margin-bottom: 40px; }
+.cfg-lbl { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--color-tinta-tenue); margin-bottom: 6px; }
+.sel-escenario { font-family: var(--fuente-cuerpo); font-size: 14px; padding: 8px 12px; border: 1px solid var(--color-linea-fuerte); border-radius: 5px; background: var(--color-fondo); min-width: 300px; }
+.esc-meta-txt { font-size: 13px; color: var(--color-tinta-suave); margin-top: 2px; }
+.sep-v { width: 1px; align-self: stretch; background: var(--color-linea); }
+
+/* ── Vacío ── */
+.vacio { text-align: center; padding: 80px 24px; color: var(--color-tinta-tenue); border: 1px dashed var(--color-linea-fuerte); background: var(--color-papel); }
+.vacio h2 { font-family: var(--fuente-titulo); font-size: 26px; color: var(--color-primario); margin-bottom: 10px; }
+.vacio p { font-size: 14px; margin-bottom: 24px; }
+
+/* ── Bloques ── */
+.bloque { margin-bottom: 60px; scroll-margin-top: 80px; }
+.bloque h2 { font-family: var(--fuente-titulo); font-size: clamp(24px, 3vw, 32px); font-weight: 600; color: var(--color-primario); letter-spacing: -0.01em; margin-bottom: 12px; }
+.bloque-desc { color: var(--color-tinta-suave); margin-bottom: 20px; max-width: 75ch; font-size: 14.5px; }
+
+/* ── Tabs ── */
+.tabs { display: flex; gap: 4px; flex-wrap: wrap; border-bottom: 2px solid var(--color-linea); margin-bottom: 28px; }
+.tab { font-family: var(--fuente-cuerpo); font-size: 13px; font-weight: 600; padding: 10px 18px; border: none; border-bottom: 3px solid transparent; background: none; cursor: pointer; color: var(--color-tinta-tenue); letter-spacing: .02em; transition: color .18s, border-color .18s; margin-bottom: -2px; }
+.tab:hover { color: var(--color-primario); }
+.tab.activo { color: var(--color-primario); border-bottom-color: var(--color-acento); }
+.tab-panel { display: none; }
+.tab-panel.activo { display: block; }
+
+/* ── Galpones grid ── */
+.galpones-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+.galpon-card { background: var(--color-papel); border: 1px solid var(--color-linea); border-top: 4px solid var(--color-acento); padding: 28px 24px; position: relative; }
+.galpon-id { font-family: var(--fuente-mono); font-size: 11px; color: var(--color-tinta-tenue); letter-spacing: 0.1em; text-transform: uppercase; }
+.galpon-nombre { font-family: var(--fuente-titulo); font-size: 22px; font-weight: 600; color: var(--color-primario); margin: 6px 0 16px; }
+.galpon-fechas { display: grid; grid-template-columns: 1fr auto; gap: 8px 16px; font-size: 14px; border-top: 1px dashed var(--color-linea); padding-top: 16px; }
+.galpon-fechas dt { color: var(--color-tinta-tenue); }
+.galpon-fechas dd { font-weight: 500; color: var(--color-tinta); font-variant-numeric: tabular-nums; }
+
+/* ── Gráficos ── */
+.grafico-wrap { background: var(--color-papel); border: 1px solid var(--color-linea); padding: 20px 18px 14px; }
+.leyenda { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 14px; font-size: 13px; color: var(--color-tinta-suave); }
+.leyenda-item { display: inline-flex; align-items: center; gap: 8px; }
+.cuad { display: inline-block; width: 13px; height: 13px; border-radius: 2px; flex-shrink: 0; }
+
+/* ── Infraestructura ── */
+.infra-fichas { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; margin-bottom: 24px; }
+.infra-ficha { background: var(--color-papel); border: 1px solid var(--color-linea); border-radius: 8px; padding: 20px 16px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px; }
+.infra-ficha.destac { border-color: var(--color-primario); background: #fffbf0; }
+.infra-num { font-family: var(--fuente-mono); font-size: 2rem; font-weight: 700; color: var(--color-texto); }
+.infra-num.ok { color: #2d6a2d; }
+.infra-num.alerta { color: #b05000; }
+.infra-lbl { font-size: 12px; color: var(--color-tinta-tenue); line-height: 1.4; }
+.infra-detalle { font-size: 14px; line-height: 1.7; color: var(--color-texto); }
+.infra-detalle p { margin: 0 0 10px; }
+.recomendacion { margin-top: 16px; padding: 18px 20px; background: var(--color-papel); border-left: 3px solid var(--color-primario); font-size: 14px; line-height: 1.6; }
+
+/* ── Producción anual ── */
+.anual-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+.anual-card { background: var(--color-papel); border: 1px solid var(--color-linea); padding: 24px; position: relative; overflow: hidden; }
+.anual-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--color-acento), var(--color-primario)); }
+.anual-anio { font-family: var(--fuente-mono); font-size: 12px; color: var(--color-tinta-tenue); letter-spacing: 0.1em; }
+.anual-total { font-family: var(--fuente-titulo); font-size: 30px; font-weight: 700; color: var(--color-primario); margin: 6px 0 4px; line-height: 1; font-variant-numeric: tabular-nums; }
+.anual-unidad { font-size: 13px; color: var(--color-tinta-suave); margin-bottom: 16px; }
+.anual-detalle { font-size: 13px; border-top: 1px dashed var(--color-linea); padding-top: 12px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; font-variant-numeric: tabular-nums; }
+.anual-detalle-item { display: flex; flex-direction: column; gap: 2px; }
+.anual-detalle-lbl { font-size: 10px; color: var(--color-tinta-tenue); letter-spacing: 0.06em; text-transform: uppercase; }
+.anual-detalle-val { font-family: var(--fuente-mono); font-size: 12px; color: var(--color-tinta); }
+.anual-card.parcial { opacity: 0.85; }
+.anual-parcial { font-size: 10px; color: var(--color-alerta); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 12px; font-family: var(--fuente-mono); }
+.anual-nota { grid-column: 1 / -1; font-size: 13px; color: var(--color-tinta-suave); font-style: italic; padding: 16px 20px; background: var(--color-fondo); border-left: 3px solid var(--color-acento); line-height: 1.6; }
+
+/* ── Config / modal galpón rows (compartido) ── */
+.config-top-row { display: flex; flex-wrap: wrap; gap: 24px; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--color-linea); }
+.config-field { display: flex; flex-direction: column; gap: 6px; }
+.config-field span { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--color-tinta-tenue); }
+.config-field input[type="text"], .config-field input[type="number"], .config-field input[type="date"], .config-field select {
+  font-family: var(--fuente-cuerpo); font-size: 14px; padding: 6px 10px; border: 1px solid var(--color-linea-fuerte); border-radius: 5px; background: var(--color-fondo); color: var(--color-tinta); width: 140px;
+}
+.config-field input:focus, .config-field select:focus { outline: 2px solid var(--color-acento); outline-offset: 1px; }
+.numb-btns { display: flex; gap: 4px; }
+.numb-btn { width: 36px; height: 36px; border: 1px solid var(--color-linea-fuerte); border-radius: 5px; background: var(--color-fondo); font-family: var(--fuente-mono); font-size: 14px; cursor: pointer; transition: background .15s, color .15s; }
+.numb-btn:hover { background: var(--color-acento-suave); }
+.numb-btn.active { background: var(--color-acento); color: #fff; border-color: var(--color-acento); font-weight: 600; }
+#tcfg-galpones, #modal-esc-galpones { display: flex; flex-direction: column; gap: 12px; margin-bottom: 4px; }
+.config-galpon-row { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 16px; padding: 12px 16px; background: var(--color-fondo); border-radius: 6px; }
+.config-galpon-id { font-family: var(--fuente-mono); font-size: 16px; font-weight: 700; min-width: 32px; align-self: center; }
+.config-footer { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 10px; }
+.btn-recalcular { font-family: var(--fuente-cuerpo); font-size: 14px; font-weight: 600; padding: 10px 28px; background: var(--color-acento); color: #fff; border: none; border-radius: 6px; cursor: pointer; transition: background .15s; }
+.btn-recalcular:hover { background: #d89200; }
+
+/* ── Tabla ── */
+.tabla-controles { display: flex; gap: 24px; align-items: center; flex-wrap: wrap; margin-bottom: 16px; padding: 16px 20px; background: var(--color-papel); border: 1px solid var(--color-linea); }
+.filtro { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--color-tinta-suave); cursor: pointer; }
+.filtro select, .filtro input[type="checkbox"] { font-family: var(--fuente-cuerpo); font-size: 13px; border: 1px solid var(--color-linea-fuerte); background: var(--color-fondo); padding: 5px 10px; }
+.conteo { margin-left: auto; font-family: var(--fuente-mono); font-size: 12px; color: var(--color-tinta-tenue); }
+.tabla-wrap { overflow-x: auto; background: var(--color-papel); border: 1px solid var(--color-linea); max-height: 600px; overflow-y: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; }
+thead { position: sticky; top: 0; background: var(--color-primario); color: var(--color-papel); z-index: 2; }
+thead th { padding: 10px 12px; text-align: center; font-weight: 500; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; border-right: 1px solid rgba(255,255,255,0.1); white-space: nowrap; }
+thead th:last-child { border-right: 0; }
+thead .grupo-tot { background: var(--total); }
+tbody td { padding: 7px 10px; text-align: center; border-bottom: 1px solid var(--color-linea); border-right: 1px solid var(--color-linea); white-space: nowrap; }
+tbody tr:hover { background: var(--color-acento-suave); }
+tbody td.estado { font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-tinta-tenue); }
+tbody td.estado-postura { color: var(--color-primario); font-weight: 500; }
+tbody td.estado-crianza-ext { color: #5c6bc0; font-weight: 500; }
+tbody td.fecha { font-family: var(--fuente-mono); font-size: 12px; }
+tbody td.total-celda { background: rgba(45, 74, 43, 0.05); font-weight: 600; color: var(--color-primario); }
+
+/* ── Modal ── */
+.modal-bg { display: none; position: fixed; inset: 0; background: rgba(27,67,50,.5); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
+.modal-bg.abierto { display: flex; }
+.modal { background: var(--color-papel); border-radius: 8px; padding: 30px; width: 100%; max-width: 700px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,.3); }
+.modal h2 { font-family: var(--fuente-titulo); font-size: 26px; font-weight: 700; color: var(--color-primario); margin-bottom: 20px; }
+.modal-close { float: right; background: none; border: none; font-size: 22px; cursor: pointer; color: var(--color-tinta-tenue); }
+.modal-close:hover { color: var(--color-tinta); }
+.modal-field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 16px; }
+.modal-field label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--color-tinta-tenue); }
+.modal-field input { font-family: var(--fuente-cuerpo); font-size: 14px; padding: 9px 12px; border: 1px solid var(--color-linea-fuerte); border-radius: 5px; background: var(--color-fondo); color: var(--color-tinta); width: 100%; }
+.modal-field input:focus { outline: 2px solid var(--color-acento); outline-offset: 1px; border-color: transparent; }
+.modal-acciones { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
+
+/* ── Toast ── */
+.toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--color-primario); color: #fff; font-size: 13.5px; font-weight: 500; padding: 12px 24px; border-radius: 6px; box-shadow: 0 8px 30px rgba(0,0,0,.25); z-index: 300; opacity: 0; pointer-events: none; transition: opacity .25s, transform .25s; }
+.toast.visible { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast .tick { color: var(--color-acento); margin-right: 8px; font-weight: 700; }
+
+/* ── Metodología / pie ── */
+.metodo { background: var(--color-papel); border: 1px solid var(--color-linea); padding: 36px; }
+.metodo-lista { list-style: none; display: grid; gap: 14px; font-size: 14.5px; color: var(--color-tinta-suave); }
+.metodo-lista li { padding-left: 24px; position: relative; line-height: 1.6; }
+.metodo-lista li::before { content: '·'; position: absolute; left: 8px; top: -2px; font-size: 24px; color: var(--color-acento); font-weight: 700; }
+.metodo-lista strong { color: var(--color-primario); font-weight: 600; }
+.pie { margin-top: 60px; padding: 30px 0; border-top: 1px solid var(--color-linea); font-size: 13px; color: var(--color-tinta-tenue); text-align: center; line-height: 1.7; }
+.pie strong { color: var(--color-primario); }
+
+@media (max-width: 768px) {
+  .contenedor { padding: 0 20px; }
+  .hero { padding: 50px 0 32px; }
+  .hero-fichas { grid-template-columns: repeat(2, 1fr); }
+  .nav-cab a { display: none; }
+  .tabs { flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .tab { white-space: nowrap; flex-shrink: 0; }
+  .sel-escenario { min-width: 0; width: 100%; }
+  .sep-v { display: none; }
+  .metodo { padding: 24px; }
+  thead th, tbody td { padding: 7px 8px; font-size: 11px; }
+}
+</style>
 </head>
 <body>
 
 <header class="cabecera">
   <div class="contenedor">
-    <div class="marca">
+    <a href="https://avivet.cl" class="marca">
       <span class="marca-titulo">avivet.cl</span>
       <span class="marca-sub">medicina aviar · sur de Chile</span>
-    </div>
-    <nav class="nav-anclas">
-      <a href="#config">Configurar</a>
+    </a>
+    <div class="nav-cab">
       <a href="#resumen">Galpones</a>
-      <a href="#cronograma">Cronograma</a>
-      <a href="#produccion">Producción</a>
-      <a href="#infraestructura">Infraestructura</a>
-      <a href="#anual">Anual</a>
-      <a href="#tabla">Detalle</a>
-    </nav>
+      <a href="#metodo">Metodología</a>
+      <button class="btn-cab" onclick="generarPDF()">↓ PDF</button>
+      <button class="btn-cab" onclick="exportarExcel()">↓ Excel</button>
+      <button class="btn-cab" onclick="abrirModalEscenario()">+ Nuevo escenario</button>
+    </div>
   </div>
 </header>
 
@@ -33,114 +264,1106 @@
 
   <section class="hero">
     <div class="hero-meta">Informe técnico · <span id="fecha-hoy"></span></div>
-    <h1>Proyección de producción · configuración personalizable</h1>
-    <p class="hero-bajada" id="hero-bajada">
+    <h1>Proyección de producción · escenarios de galpones desfasados</h1>
+    <p class="hero-bajada">
       Modelo basado en curva Hy-Line Brown adaptada a sistemas no convencionales del sur de Chile.
+      Guarda distintos escenarios (N° de galpones, sistema productivo, fechas de ingreso) y compáralos.
     </p>
-    <div class="hero-fichas">
-      <div class="ficha"><span class="ficha-num" id="kpi-galpones">—</span><span class="ficha-lbl">galpones</span></div>
-      <div class="ficha"><span class="ficha-num" id="kpi-aves">—</span><span class="ficha-lbl">aves/galpón</span></div>
-      <div class="ficha"><span class="ficha-num" id="kpi-ciclo">—</span><span class="ficha-lbl">horizonte</span></div>
-      <div class="ficha"><span class="ficha-num" id="kpi-horizonte">—</span><span class="ficha-lbl">semanas modeladas</span></div>
+
+    <div class="hero-bienvenida" id="hero-vacio">
+      <div>
+        <h3>Bienvenido a la proyección de galpones</h3>
+        <p>Selecciona un escenario existente o crea uno nuevo para ver la proyección completa de producción.</p>
+      </div>
+      <button class="btn btn-acento" onclick="abrirModalEscenario()" style="flex-shrink:0">+ Nuevo escenario</button>
+    </div>
+
+    <div id="hero-kpis" style="display:none">
+      <div class="hero-fichas">
+        <div class="ficha"><span class="ficha-num" id="kpi-galpones">—</span><span class="ficha-lbl">galpones</span></div>
+        <div class="ficha"><span class="ficha-num" id="kpi-aves">—</span><span class="ficha-lbl">aves/galpón</span></div>
+        <div class="ficha"><span class="ficha-num" id="kpi-ciclo">—</span><span class="ficha-lbl">horizonte</span></div>
+        <div class="ficha"><span class="ficha-num" id="kpi-horizonte">—</span><span class="ficha-lbl">semanas modeladas</span></div>
+      </div>
     </div>
   </section>
 
-  <!-- ░░ CONFIG ░░ -->
-  <section id="config" class="bloque config-section">
-    <div id="config-panel"></div>
-  </section>
-
-  <!-- ░░ GALPONES ░░ -->
-  <section id="resumen" class="bloque">
-    <h2>Galpones del modelo</h2>
-    <div class="galpones-grid" id="galpones-grid"></div>
-  </section>
-
-  <!-- ░░ CRONOGRAMA ░░ -->
-  <section id="cronograma" class="bloque">
-    <h2>Cronograma de lotes</h2>
-    <p class="bloque-desc">
-      Cada barra es el ciclo completo de un lote: crianza exterior (índigo), crianza en producción (gris), postura (color) y descarte.
-      El círculo blanco marca el pico de producción estimado. La fila GC muestra la ocupación del galpón de crianza.
-    </p>
-    <div class="grafico-wrap" id="cronograma-svg"></div>
-    <div class="leyenda" id="prod-leyenda"></div>
-  </section>
-
-  <!-- ░░ PRODUCCIÓN ░░ -->
-  <section id="produccion" class="bloque">
-    <h2>Producción semanal proyectada</h2>
-    <p class="bloque-desc">
-      Huevos por semana de cada galpón y total agregado. Las zonas grises son períodos sin
-      producción (crianza entre lotes). La línea oscura es el total combinado.
-    </p>
-    <div class="grafico-wrap" id="produccion-svg"></div>
-  </section>
-
-  <!-- ░░ INFRAESTRUCTURA ░░ -->
-  <section id="infraestructura" class="bloque">
-    <h2>Infraestructura para flujo continuo</h2>
-    <p class="bloque-desc">
-      Análisis de eficiencia con la configuración actual y cuántos galpones adicionales
-      se necesitarían para eliminar todas las brechas.
-    </p>
-    <div id="infra-grid"></div>
-    <div class="grafico-wrap" id="infra-svg" style="margin-top:24px"></div>
-  </section>
-
-  <!-- ░░ ANUAL ░░ -->
-  <section id="anual" class="bloque">
-    <h2>Producción anual estimada</h2>
-    <p class="bloque-desc">
-      Acumulado por año en huevos y docenas. Los años parciales (inicio/fin del horizonte)
-      están marcados con *.
-    </p>
-    <div class="anual-grid" id="anual-grid"></div>
-  </section>
-
-  <!-- ░░ TABLA ░░ -->
-  <section id="tabla" class="bloque">
-    <h2>Detalle semanal</h2>
-    <div class="tabla-controles">
-      <label class="filtro">
-        <span>Filtrar año</span>
-        <select id="filtro-anio"><option value="todos">Todos</option></select>
-      </label>
-      <label class="filtro">
-        <span>Solo semanas con producción</span>
-        <input type="checkbox" id="filtro-produccion" checked>
-      </label>
-      <span class="conteo" id="tabla-conteo"></span>
+  <div class="panel-escenario">
+    <div>
+      <div class="cfg-lbl">Escenario activo</div>
+      <select class="sel-escenario" id="sel-escenario" onchange="selEscenario(this.value)">
+        <option value="">— Selecciona un escenario —</option>
+      </select>
     </div>
-    <div class="tabla-wrap">
-      <table id="tabla-semanal">
-        <thead></thead>
-        <tbody></tbody>
-      </table>
+    <div class="sep-v"></div>
+    <div>
+      <div class="cfg-lbl" id="esc-nombre-txt"></div>
+      <div class="esc-meta-txt" id="esc-meta-txt"></div>
     </div>
-  </section>
+  </div>
 
-  <!-- ░░ METODOLOGÍA ░░ -->
-  <section class="bloque metodo">
+  <div id="contenido">
+    <div class="vacio">
+      <h2>Crea tu primer escenario</h2>
+      <p>Define número de galpones, sistema productivo y fechas de ingreso para generar la proyección</p>
+      <button class="btn btn-prim" onclick="abrirModalEscenario()">+ Nuevo escenario</button>
+    </div>
+  </div>
+
+  <section class="bloque metodo" id="metodo" style="display:none">
     <h2>Metodología y supuestos</h2>
     <ul class="metodo-lista">
-      <li><strong>Curva genética:</strong> Hy-Line Brown según Commercial Management Guide, ajustada a condiciones de manejo no convencional del sur de Chile.</li>
-      <li><strong>Mortalidad:</strong> varía según sistema productivo seleccionado. Jaula: ~3,5% crianza + ~6% postura. Piso convencional: ~5% + ~10%. Piso no convencional: ~7% + ~15% acumulada.</li>
+      <li><strong>Curva genética:</strong> Hy-Line Brown según Commercial Management Guide, ajustada según el sistema productivo seleccionado.</li>
+      <li><strong>Mortalidad:</strong> varía según sistema productivo. Jaula: ~3,5% crianza + ~6% postura. Piso convencional: ~5% + ~10%. Piso no convencional: ~7% + ~15% acumulada.</li>
       <li><strong>Ciclo por lote:</strong> 18 sem. crianza (configurable: exterior + producción) → 82 sem. postura (sem 19–100) → 2 sem. limpieza. Total: 102 semanas por ciclo.</li>
-      <li><strong>Datos personalizables:</strong> número de galpones (1–7), aves por galpón, fecha de ingreso del primer lote, y horizonte de proyección.</li>
+      <li><strong>Escenarios guardados:</strong> cada escenario (N° de galpones, sistema, fechas, horizonte) se guarda en este navegador y puede editarse, recalcularse o eliminarse de forma independiente.</li>
       <li><strong>Las cifras son proyecciones:</strong> el manejo real (sanidad, alimentación, fotoperiodo, estrés) puede modificar los resultados ±10–15%.</li>
     </ul>
   </section>
 
-  <footer class="pie">
+  <footer class="pie" id="pie" style="display:none">
     <p>
       <strong>avivet.cl</strong> · MV Andrés Lazo Escobar · Valdivia, Chile<br>
-      Modelo generado el <span id="fecha-pie"></span>. Revisar parámetros antes de uso comercial.
+      Escenario generado el <span id="fecha-pie"></span>. Revisar parámetros antes de uso comercial.
     </p>
   </footer>
 
 </main>
 
-<script src="app.js"></script>
+<!-- MODAL NUEVO / EDITAR ESCENARIO -->
+<div class="modal-bg" id="modal-escenario">
+  <div class="modal">
+    <button class="modal-close" onclick="cerrarModalEscenario()">×</button>
+    <h2 id="modal-esc-titulo">Nuevo escenario</h2>
+    <form id="form-escenario" onsubmit="guardarEscenario(event)">
+      <div class="modal-field">
+        <label>Nombre del escenario</label>
+        <input type="text" id="esc-nombre" placeholder="Ej: Plan 3 galpones sur" required>
+      </div>
+      <div id="modal-esc-body"></div>
+      <div class="modal-acciones">
+        <button type="submit" class="btn btn-acento">Guardar escenario</button>
+        <button type="button" class="btn btn-linea" onclick="cerrarModalEscenario()">Cancelar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+/* ════════════════════════════════════════════════════════════
+   UTILIDADES
+   ════════════════════════════════════════════════════════════ */
+const FORMATO_FECHA = (iso) => {
+  const [y, m, d] = iso.split('-').map(Number);
+  return `${String(d).padStart(2,'0')}-${String(m).padStart(2,'0')}-${y}`;
+};
+const FORMATO_MES = (iso) => {
+  const [y, m] = iso.split('-').map(Number);
+  const M = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+  return `${M[m-1]} ${String(y).slice(-2)}`;
+};
+const NUM = (n) => n == null ? '—' : Math.round(n).toLocaleString('es-CL');
+
+function addWeeks(iso, w) {
+  const d = new Date(iso); d.setDate(d.getDate() + w * 7);
+  return d.toISOString().slice(0, 10);
+}
+
+let _toastTimer = null;
+function toast(msg) {
+  let el = document.getElementById('toast');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'toast'; el.className = 'toast';
+    document.body.appendChild(el);
+  }
+  el.innerHTML = `<span class="tick">✓</span>${msg}`;
+  el.classList.add('visible');
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => el.classList.remove('visible'), 2600);
+}
+
+/* ════════════════════════════════════════════════════════════
+   CONSTANTES DEL MODELO
+   ════════════════════════════════════════════════════════════ */
+const CICLO = 102, CRIANZA = 18, POSTURA = 82;
+const PALETA = ['#f0a500','#4a90a4','#e05c5c','#5cae5c','#9b6bb5','#e08c3c','#5c7db5'];
+const COLOR_TOTAL = '#2d4a2b';
+const COLOR_ACENTO = '#f0a500';
+const tFont = { font:{ size:10, family:"'IBM Plex Mono', monospace" } };
+const gColor = '#e0ddd5';
+
+const SISTEMAS = {
+  jaula: {
+    label: 'Jaula enriquecida',
+    mort_c: 0.002, mort_p: 0.0008, factor_pos: 1.00,
+    desc: 'Menor mortalidad, máximo aprovechamiento de la curva.'
+  },
+  piso_conv: {
+    label: 'Piso convencional',
+    mort_c: 0.003, mort_p: 0.0013, factor_pos: 0.95,
+    desc: 'Sistema de piso con manejo tecnificado.'
+  },
+  piso_ext: {
+    label: 'Piso no convencional (sur de Chile)',
+    mort_c: 0.004, mort_p: 0.002, factor_pos: 0.88,
+    desc: 'Manejo extensivo o semi-intensivo, menor postura y mayor mortalidad.'
+  }
+};
+
+// Curva oficial Hy-Line Brown (semanas 19-100, % postura y peso huevo g)
+const CURVA_HYLINE_BROWN = {
+  19:{pct:5.0,peso:45.0},20:{pct:25.0,peso:47.0},21:{pct:55.0,peso:49.0},22:{pct:78.0,peso:51.0},
+  23:{pct:88.0,peso:53.0},24:{pct:91.0,peso:55.0},25:{pct:93.0,peso:56.5},26:{pct:94.0,peso:57.5},
+  27:{pct:94.5,peso:58.5},28:{pct:94.5,peso:59.5},29:{pct:94.5,peso:60.5},30:{pct:94.0,peso:61.5},
+  31:{pct:93.5,peso:62.0},32:{pct:93.0,peso:62.5},33:{pct:92.5,peso:63.0},34:{pct:92.0,peso:63.5},
+  35:{pct:91.5,peso:64.0},36:{pct:91.0,peso:64.5},37:{pct:90.5,peso:64.5},38:{pct:90.0,peso:65.0},
+  39:{pct:89.5,peso:65.0},40:{pct:89.0,peso:65.5},41:{pct:88.5,peso:65.5},42:{pct:88.0,peso:66.0},
+  43:{pct:87.5,peso:66.0},44:{pct:87.0,peso:66.5},45:{pct:86.5,peso:66.5},46:{pct:86.0,peso:66.5},
+  47:{pct:85.5,peso:67.0},48:{pct:85.0,peso:67.0},49:{pct:84.5,peso:67.0},50:{pct:84.0,peso:67.1},
+  51:{pct:83.5,peso:67.1},52:{pct:83.0,peso:67.2},53:{pct:82.5,peso:67.2},54:{pct:82.0,peso:67.2},
+  55:{pct:81.5,peso:67.3},56:{pct:81.0,peso:67.3},57:{pct:80.5,peso:67.3},58:{pct:80.0,peso:67.4},
+  59:{pct:79.5,peso:67.4},60:{pct:79.0,peso:67.4},61:{pct:78.5,peso:67.4},62:{pct:78.0,peso:67.4},
+  63:{pct:77.5,peso:67.4},64:{pct:77.0,peso:67.4},65:{pct:76.5,peso:67.4},66:{pct:76.0,peso:67.4},
+  67:{pct:75.5,peso:67.4},68:{pct:75.0,peso:67.4},69:{pct:74.5,peso:67.4},70:{pct:74.0,peso:67.4},
+  71:{pct:73.5,peso:67.5},72:{pct:73.0,peso:67.5},73:{pct:72.5,peso:67.5},74:{pct:72.0,peso:67.5},
+  75:{pct:71.5,peso:67.5},76:{pct:71.0,peso:67.5},77:{pct:70.5,peso:67.5},78:{pct:70.0,peso:67.5},
+  79:{pct:69.5,peso:67.5},80:{pct:69.0,peso:67.5},81:{pct:68.5,peso:67.5},82:{pct:68.0,peso:67.5},
+  83:{pct:67.5,peso:67.5},84:{pct:67.0,peso:67.4},85:{pct:67.0,peso:67.4},86:{pct:67.0,peso:67.4},
+  87:{pct:67.0,peso:67.4},88:{pct:67.0,peso:67.4},89:{pct:67.0,peso:67.4},90:{pct:67.0,peso:67.4},
+  91:{pct:67.0,peso:67.4},92:{pct:67.5,peso:67.4},93:{pct:67.0,peso:67.4},94:{pct:67.5,peso:67.4},
+  95:{pct:67.0,peso:67.4},96:{pct:66.5,peso:67.5},97:{pct:66.0,peso:67.5},98:{pct:65.5,peso:67.5},
+  99:{pct:65.0,peso:67.6},100:{pct:64.5,peso:67.6},
+};
+
+/* ════════════════════════════════════════════════════════════
+   ESTADO GLOBAL
+   ════════════════════════════════════════════════════════════ */
+let escId = null;      // id del escenario activo
+let ESC   = null;      // escenario activo (objeto guardado)
+let D     = null;      // proyección construida a partir de ESC
+let IDS   = [];
+let COLMAP = {};
+let modoEditar = null; // id del escenario en edición dentro del modal, o null si es nuevo
+let modalEsc   = null; // copia de trabajo del escenario mientras se edita en el modal
+let charts = {};
+
+function dc(id) { if (charts[id]) { charts[id].destroy(); delete charts[id]; } }
+
+/* ════════════════════════════════════════════════════════════
+   ALMACENAMIENTO — escenarios guardados en localStorage
+   ════════════════════════════════════════════════════════════ */
+const CLAVE = 'avivet_galpones_v1';
+function getEscenarios() { return JSON.parse(localStorage.getItem(CLAVE) || '[]'); }
+function setEscenarios(arr) { localStorage.setItem(CLAVE, JSON.stringify(arr)); }
+function getEscenario(id) { return getEscenarios().find(e => e.id === id); }
+function saveEscenario(esc) {
+  const arr = getEscenarios();
+  const idx = arr.findIndex(e => e.id === esc.id);
+  if (idx >= 0) arr[idx] = esc; else arr.push(esc);
+  setEscenarios(arr);
+}
+
+/* ════════════════════════════════════════════════════════════
+   MOTOR DE PROYECCIÓN
+   ════════════════════════════════════════════════════════════ */
+function construirProyeccion(esc) {
+  const fechas = esc.galpones.map(g => new Date(g.fecha_nacimiento));
+  const fechaMin = new Date(Math.min(...fechas));
+  const fechaMax = new Date(fechaMin);
+  fechaMax.setFullYear(fechaMax.getFullYear() + esc.horizonte_anios);
+
+  const dow = fechaMin.getDay();
+  const lunes = new Date(fechaMin);
+  if (dow !== 1) lunes.setDate(lunes.getDate() + (dow === 0 ? -6 : 1 - dow));
+
+  const semanas = [];
+  let cur = new Date(lunes);
+  let semCal = 1;
+  const sys = SISTEMAS[esc.sistema];
+  const salida = esc.galpon_crianza?.activo ? esc.galpon_crianza.semana_salida : 0;
+
+  while (cur <= fechaMax) {
+    const isoLunes = cur.toISOString().slice(0, 10);
+    const fila = {
+      semana_cal: semCal, fecha_lunes: isoLunes,
+      anio: cur.getFullYear(), mes: cur.getMonth() + 1,
+      total: { aves_en_postura: 0, huevos_dia: 0, huevos_semana: 0, crianza_ext_ids: [] }
+    };
+
+    esc.galpones.forEach(g => {
+      const semVida = Math.round((cur - new Date(g.fecha_nacimiento)) / (7 * 86400000));
+
+      if (semVida < 0) {
+        fila[g.id] = { sem_vida: 0, estado: 'no nacido', aves: 0, pct_postura: 0, peso_huevo_g: 0, huevos_dia: 0, huevos_semana: 0 };
+        return;
+      }
+
+      const semCiclo = semVida % CICLO;
+      let estado, aves = 0, pct = 0, peso = 0, huevos_dia = 0;
+
+      if (semCiclo < salida) {
+        estado = 'crianza_ext';
+        aves = Math.round(g.aves * Math.pow(1 - sys.mort_c, semCiclo));
+      } else if (semCiclo < CRIANZA) {
+        estado = 'crianza';
+        aves = Math.round(g.aves * Math.pow(1 - sys.mort_c, semCiclo));
+      } else if (semCiclo < CRIANZA + POSTURA) {
+        estado = 'postura';
+        const avesCrianzaFin = Math.round(g.aves * Math.pow(1 - sys.mort_c, CRIANZA));
+        aves = Math.round(avesCrianzaFin * Math.pow(1 - sys.mort_p, semCiclo - CRIANZA));
+        pct = (CURVA_HYLINE_BROWN[semCiclo + 1]?.pct || 0) * sys.factor_pos;
+        peso = CURVA_HYLINE_BROWN[semCiclo + 1]?.peso || 0;
+        huevos_dia = Math.round(aves * pct / 100);
+      } else {
+        estado = 'descartado';
+      }
+
+      fila[g.id] = { sem_vida: semVida, estado, aves, pct_postura: pct, peso_huevo_g: peso, huevos_dia, huevos_semana: huevos_dia * 7 };
+      if (estado === 'crianza_ext') fila.total.crianza_ext_ids.push(g.id);
+      if (estado === 'postura') {
+        fila.total.aves_en_postura += aves;
+        fila.total.huevos_dia += huevos_dia;
+        fila.total.huevos_semana += huevos_dia * 7;
+      }
+    });
+
+    semanas.push(fila);
+    cur.setDate(cur.getDate() + 7);
+    semCal++;
+  }
+  return semanas;
+}
+
+function recalcularProyeccion() {
+  IDS = ESC.galpones.map(g => g.id);
+  COLMAP = Object.fromEntries(ESC.galpones.map(g => [g.id, g.color]));
+  const proyeccion = construirProyeccion(ESC);
+  D = {
+    metadata: {
+      fecha_generacion: new Date().toISOString().slice(0, 10),
+      aves_por_galpon: ESC.galpones[0]?.aves || 0,
+      galpones_construidos: ESC.galpones.length,
+      horizonte: { total_semanas: proyeccion.length }
+    },
+    galpones: ESC.galpones.map(g => ({
+      id: g.id, nombre: g.nombre, fecha_nacimiento: g.fecha_nacimiento, color: g.color, aves_iniciales: g.aves,
+      fecha_inicio_postura_estimada: addWeeks(g.fecha_nacimiento, CRIANZA),
+      fecha_pico_estimada: addWeeks(g.fecha_nacimiento, 28),
+      fecha_descarte_estimada: addWeeks(g.fecha_nacimiento, CRIANZA + POSTURA)
+    })),
+    proyeccion_semanal: proyeccion
+  };
+  actualizarHeroKPIs();
+}
+
+function actualizarHeroKPIs() {
+  document.getElementById('fecha-hoy').textContent = FORMATO_FECHA(D.metadata.fecha_generacion);
+  document.getElementById('fecha-pie').textContent = FORMATO_FECHA(D.metadata.fecha_generacion);
+  document.getElementById('kpi-galpones').textContent = D.metadata.galpones_construidos;
+  document.getElementById('kpi-aves').textContent = NUM(D.metadata.aves_por_galpon);
+  document.getElementById('kpi-horizonte').textContent = D.metadata.horizonte.total_semanas;
+  document.getElementById('kpi-ciclo').textContent = ESC.horizonte_anios + ' años';
+  document.getElementById('esc-nombre-txt').textContent = ESC.nombre;
+  const sys = SISTEMAS[ESC.sistema];
+  document.getElementById('esc-meta-txt').textContent =
+    `${ESC.galpones.length} ${ESC.galpones.length > 1 ? 'galpones' : 'galpón'} · ${sys.label} · ${NUM(ESC.galpones[0].aves)} aves c/u`;
+}
+
+/* ════════════════════════════════════════════════════════════
+   SELECTOR / ESTADO VACÍO
+   ════════════════════════════════════════════════════════════ */
+function cargarSelector() {
+  const escs = getEscenarios();
+  const sel = document.getElementById('sel-escenario');
+  sel.innerHTML = '<option value="">— Selecciona un escenario —</option>';
+  escs.forEach(e => {
+    const o = document.createElement('option');
+    o.value = e.id;
+    const sys = SISTEMAS[e.sistema];
+    o.textContent = `${e.nombre} · ${e.galpones.length} ${e.galpones.length > 1 ? 'galpones' : 'galpón'} · ${sys?.label || e.sistema} · ${e.horizonte_anios} años`;
+    sel.appendChild(o);
+  });
+  if (escId) sel.value = escId;
+}
+
+function selEscenario(id) {
+  if (!id) { escId = null; ESC = null; D = null; mostrarVacio(); return; }
+  const esc = getEscenario(id);
+  if (!esc) return;
+  escId = id; ESC = esc;
+  recalcularProyeccion();
+
+  document.getElementById('hero-vacio').style.display = 'none';
+  document.getElementById('hero-kpis').style.display = '';
+  document.getElementById('metodo').style.display = '';
+  document.getElementById('pie').style.display = '';
+
+  construirSkeletonContenido();
+  activarTab('t-resumen');
+  renderResumen();
+}
+
+function mostrarVacio() {
+  document.getElementById('hero-kpis').style.display = 'none';
+  document.getElementById('hero-vacio').style.display = '';
+  document.getElementById('metodo').style.display = 'none';
+  document.getElementById('pie').style.display = 'none';
+  document.getElementById('contenido').innerHTML = `
+    <div class="vacio">
+      <h2>Crea tu primer escenario</h2>
+      <p>Define número de galpones, sistema productivo y fechas de ingreso para generar la proyección</p>
+      <button class="btn btn-prim" onclick="abrirModalEscenario()">+ Nuevo escenario</button>
+    </div>`;
+}
+
+/* ════════════════════════════════════════════════════════════
+   MODAL — NUEVO / EDITAR ESCENARIO
+   ════════════════════════════════════════════════════════════ */
+function abrirModalEscenario(id) {
+  modoEditar = id || null;
+  if (id) {
+    modalEsc = JSON.parse(JSON.stringify(getEscenario(id)));
+  } else {
+    modalEsc = {
+      id: null, nombre: '',
+      horizonte_anios: 4, sistema: 'piso_conv',
+      galpon_crianza: { activo: true, semana_salida: 16 },
+      galpones: [{ id: 'G1', nombre: 'Galpón 1', fecha_nacimiento: '2025-07-17', aves: 2000, color: PALETA[0] }]
+    };
+  }
+  document.getElementById('modal-esc-titulo').textContent = id ? 'Editar escenario' : 'Nuevo escenario';
+  document.getElementById('esc-nombre').value = modalEsc.nombre;
+  renderModalBody();
+  document.getElementById('modal-escenario').classList.add('abierto');
+}
+
+function cerrarModalEscenario() {
+  document.getElementById('modal-escenario').classList.remove('abierto');
+}
+
+function renderModalBody() {
+  const botones = [1,2,3,4,5,6,7].map(n =>
+    `<button type="button" class="numb-btn${modalEsc.galpones.length === n ? ' active' : ''}" onclick="setNGalponesModal(${n})">${n}</button>`
+  ).join('');
+
+  const filas = modalEsc.galpones.map((g, i) => `
+    <div class="config-galpon-row" style="border-left:4px solid ${g.color}">
+      <div class="config-galpon-id" style="color:${g.color}">${g.id}</div>
+      <label class="config-field"><span>Nombre</span>
+        <input type="text" value="${g.nombre}" oninput="modalEsc.galpones[${i}].nombre=this.value">
+      </label>
+      <label class="config-field"><span>Aves</span>
+        <input type="number" min="100" max="50000" value="${g.aves}" style="width:100px" oninput="modalEsc.galpones[${i}].aves=+this.value||100">
+      </label>
+      <label class="config-field"><span>Ingreso 1er lote</span>
+        <input type="date" value="${g.fecha_nacimiento}" oninput="modalEsc.galpones[${i}].fecha_nacimiento=this.value">
+      </label>
+    </div>`).join('');
+
+  document.getElementById('modal-esc-body').innerHTML = `
+    <div class="config-top-row" style="border-bottom:none;padding-bottom:0;margin-bottom:14px">
+      <label class="config-field"><span>N° de galpones</span><div class="numb-btns">${botones}</div></label>
+      <label class="config-field"><span>Sistema productivo</span>
+        <select style="width:230px" onchange="modalEsc.sistema=this.value; document.getElementById('modal-esc-sistema-desc').textContent=SISTEMAS[this.value].desc">
+          ${Object.entries(SISTEMAS).map(([k,s]) => `<option value="${k}"${modalEsc.sistema===k?' selected':''}>${s.label}</option>`).join('')}
+        </select>
+        <small id="modal-esc-sistema-desc" style="font-size:11px;color:var(--color-tinta-tenue)">${SISTEMAS[modalEsc.sistema].desc}</small>
+      </label>
+      <label class="config-field"><span>Horizonte (años)</span>
+        <input type="number" min="1" max="15" value="${modalEsc.horizonte_anios}" style="width:70px" oninput="modalEsc.horizonte_anios=Math.max(1,+this.value||4)">
+      </label>
+      <label class="config-field"><span>Galpón de crianza externo</span>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <label style="display:flex;align-items:center;gap:4px;font-weight:400">
+            <input type="checkbox"${modalEsc.galpon_crianza.activo?' checked':''} onchange="modalEsc.galpon_crianza.activo=this.checked"> Activo
+          </label>
+          Salida sem.
+          <input type="number" min="1" max="17" value="${modalEsc.galpon_crianza.semana_salida}" style="width:56px" oninput="modalEsc.galpon_crianza.semana_salida=Math.max(1,Math.min(17,+this.value||16))">
+        </div>
+      </label>
+    </div>
+    <div id="modal-esc-galpones">${filas}</div>`;
+}
+
+function setNGalponesModal(n) {
+  while (modalEsc.galpones.length < n) {
+    const i = modalEsc.galpones.length;
+    const prev = modalEsc.galpones[i-1].fecha_nacimiento;
+    const stagger = Math.round(CICLO / n);
+    modalEsc.galpones.push({
+      id: `G${i+1}`, nombre: `Galpón ${i+1}`,
+      fecha_nacimiento: addWeeks(prev, stagger),
+      aves: modalEsc.galpones[0].aves,
+      color: PALETA[i % PALETA.length]
+    });
+  }
+  modalEsc.galpones = modalEsc.galpones.slice(0, n);
+  renderModalBody();
+}
+
+function guardarEscenario(e) {
+  e.preventDefault();
+  const nombre = document.getElementById('esc-nombre').value.trim();
+  if (!nombre) return;
+  modalEsc.nombre = nombre;
+  modalEsc.id = modoEditar || `esc${Date.now()}`;
+  saveEscenario(modalEsc);
+  escId = modalEsc.id;
+  cargarSelector();
+  selEscenario(escId);
+  cerrarModalEscenario();
+  toast(modoEditar ? 'Escenario actualizado' : 'Escenario creado — proyección generada');
+}
+
+function confirmarEliminarEscenario() {
+  const esc = getEscenario(escId);
+  if (!esc) return;
+  if (!confirm(`¿Eliminar el escenario "${esc.nombre}"? Esta acción no se puede deshacer.`)) return;
+  setEscenarios(getEscenarios().filter(e => e.id !== escId));
+  escId = null; ESC = null; D = null;
+  cargarSelector();
+  mostrarVacio();
+  toast('Escenario eliminado');
+}
+
+/* ════════════════════════════════════════════════════════════
+   TABS
+   ════════════════════════════════════════════════════════════ */
+function activarTab(id) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('activo', t.dataset.tab === id));
+  document.querySelectorAll('.tab-panel').forEach(p => { p.classList.remove('activo'); p.style.display = 'none'; });
+  const p = document.getElementById(id);
+  if (p) { p.classList.add('activo'); p.style.display = 'block'; }
+}
+
+function setTab(e, id) {
+  activarTab(id);
+  RENDER_TAB[id]?.();
+}
+
+function construirSkeletonContenido() {
+  const alturaCronograma = Math.max(220, 70 * (IDS.length + (ESC.galpon_crianza?.activo ? 1 : 0)));
+  document.getElementById('contenido').innerHTML = `
+    <div class="tabs">
+      <button class="tab activo" data-tab="t-resumen" onclick="setTab(event,'t-resumen')">Resumen</button>
+      <button class="tab" data-tab="t-cronograma" onclick="setTab(event,'t-cronograma')">Cronograma</button>
+      <button class="tab" data-tab="t-produccion" onclick="setTab(event,'t-produccion')">Producción</button>
+      <button class="tab" data-tab="t-infraestructura" onclick="setTab(event,'t-infraestructura')">Infraestructura</button>
+      <button class="tab" data-tab="t-anual" onclick="setTab(event,'t-anual')">Anual</button>
+      <button class="tab" data-tab="t-curvas" onclick="setTab(event,'t-curvas')">Curva genética</button>
+      <button class="tab" data-tab="t-tabla" onclick="setTab(event,'t-tabla')">Detalle</button>
+      <button class="tab" data-tab="t-config" onclick="setTab(event,'t-config')">Configuración</button>
+    </div>
+
+    <div id="t-resumen" class="tab-panel activo"><div id="resumen-panel"></div></div>
+
+    <div id="t-cronograma" class="tab-panel" style="display:none">
+      <p class="bloque-desc">Cada barra es un ciclo de lote: crianza exterior, crianza en producción, postura (color propio del galpón) y descarte. La fila GC muestra qué galpón ocupa el galpón de crianza compartido.</p>
+      <div class="leyenda" id="cronograma-leyenda"></div>
+      <div class="grafico-wrap"><div style="height:${alturaCronograma}px"><canvas id="cCronograma"></canvas></div></div>
+    </div>
+
+    <div id="t-produccion" class="tab-panel" style="display:none">
+      <p class="bloque-desc">Huevos por día de cada galpón (áreas apiladas) y total combinado (línea).</p>
+      <div class="grafico-wrap"><div style="height:320px"><canvas id="cProduccion"></canvas></div></div>
+    </div>
+
+    <div id="t-infraestructura" class="tab-panel" style="display:none"><div id="infra-panel"></div></div>
+    <div id="t-anual" class="tab-panel" style="display:none"><div id="anual-panel"></div></div>
+    <div id="t-curvas" class="tab-panel" style="display:none"><div id="curvas-panel"></div></div>
+
+    <div id="t-tabla" class="tab-panel" style="display:none">
+      <div class="tabla-controles">
+        <label class="filtro"><span>Filtrar año</span><select id="filtro-anio" onchange="renderTabla()"><option value="todos">Todos</option></select></label>
+        <label class="filtro"><input type="checkbox" id="filtro-produccion" checked onchange="renderTabla()"> Solo semanas con producción</label>
+        <span class="conteo" id="tabla-conteo"></span>
+      </div>
+      <div class="tabla-wrap"><table id="tabla-semanal"><thead></thead><tbody></tbody></table></div>
+    </div>
+
+    <div id="t-config" class="tab-panel" style="display:none"><div id="config-panel"></div></div>
+  `;
+}
+
+/* ════════════════════════════════════════════════════════════
+   RESUMEN — tarjetas de galpones
+   ════════════════════════════════════════════════════════════ */
+function renderResumen() {
+  const el = document.getElementById('resumen-panel');
+  el.innerHTML = `<div class="galpones-grid">${D.galpones.map(g => `
+    <div class="galpon-card" style="border-top-color:${g.color}">
+      <div class="galpon-id">${g.id}</div>
+      <div class="galpon-nombre">${g.nombre}</div>
+      <dl class="galpon-fechas">
+        <dt>Ingreso 1er lote</dt><dd>${FORMATO_FECHA(g.fecha_nacimiento)}</dd>
+        <dt>Aves iniciales</dt><dd>${NUM(g.aves_iniciales)}</dd>
+        <dt>Inicio postura est.</dt><dd>${FORMATO_FECHA(g.fecha_inicio_postura_estimada)}</dd>
+        <dt>Pico estimado</dt><dd>${FORMATO_FECHA(g.fecha_pico_estimada)}</dd>
+        <dt>Descarte estimado</dt><dd>${FORMATO_FECHA(g.fecha_descarte_estimada)}</dd>
+      </dl>
+    </div>`).join('')}</div>`;
+}
+
+/* ════════════════════════════════════════════════════════════
+   CRONOGRAMA — Gantt (floating bars, Chart.js)
+   ════════════════════════════════════════════════════════════ */
+function datosCronograma() {
+  const filas = D.proyeccion_semanal;
+  const categorias = [...IDS];
+  const gcActivo = ESC.galpon_crianza?.activo;
+  if (gcActivo) categorias.push('GC');
+
+  const runsPorEstado = {};
+  const push = (estado, cat, color, a, b) => {
+    if (!runsPorEstado[estado]) runsPorEstado[estado] = [];
+    runsPorEstado[estado].push({ x: [a, b], y: cat, backgroundColor: color });
+  };
+
+  IDS.forEach(id => {
+    let curEstado = null, curInicio = null;
+    filas.forEach((f, i) => {
+      const st = f[id].estado;
+      if (st !== curEstado) {
+        if (curEstado && curEstado !== 'no nacido') push(curEstado, id, COLMAP[id], curInicio, i);
+        curEstado = st; curInicio = i;
+      }
+    });
+    if (curEstado && curEstado !== 'no nacido') push(curEstado, id, COLMAP[id], curInicio, filas.length);
+  });
+
+  if (gcActivo) {
+    let cur = null, inicio = null;
+    filas.forEach((f, i) => {
+      const occ = f.total.crianza_ext_ids[0] || null;
+      if (occ !== cur) {
+        if (cur) push('crianza_ext', 'GC', COLMAP[cur], inicio, i);
+        cur = occ; inicio = i;
+      }
+    });
+    if (cur) push('crianza_ext', 'GC', COLMAP[cur], inicio, filas.length);
+  }
+
+  return { categorias, runsPorEstado };
+}
+
+const ESTADOS_CRONO = [
+  { k: 'crianza_ext', label: 'Crianza exterior', fallback: '#c5cae9' },
+  { k: 'crianza', label: 'Crianza en producción', fallback: '#cfcfcf' },
+  { k: 'postura', label: 'Postura', fallback: null },
+  { k: 'descartado', label: 'Descarte', fallback: '#e8e5e1' },
+];
+
+function renderCronograma() {
+  const leyenda = document.getElementById('cronograma-leyenda');
+  if (leyenda) {
+    leyenda.innerHTML = `
+      <span class="leyenda-item"><span class="cuad" style="background:#c5cae9"></span>Crianza exterior</span>
+      <span class="leyenda-item"><span class="cuad" style="background:#cfcfcf"></span>Crianza en producción</span>
+      <span class="leyenda-item"><span class="cuad" style="background:linear-gradient(90deg,${IDS.map(id=>COLMAP[id]).join(',')})"></span>Postura (color propio)</span>
+      <span class="leyenda-item"><span class="cuad" style="background:#e8e5e1"></span>Descarte</span>
+      ${ESC.galpon_crianza?.activo ? '<span class="leyenda-item">Fila <strong>GC</strong>: ocupación del galpón de crianza compartido</span>' : ''}`;
+  }
+
+  dc('cronograma');
+  const { categorias, runsPorEstado } = datosCronograma();
+  const datasets = ESTADOS_CRONO.filter(e => runsPorEstado[e.k]?.length).map(e => ({
+    label: e.label,
+    data: runsPorEstado[e.k],
+    backgroundColor: runsPorEstado[e.k].map(r => e.k === 'postura' ? r.backgroundColor : (r.y === 'GC' ? r.backgroundColor : e.fallback)),
+    borderRadius: 2, barPercentage: 0.6, categoryPercentage: 0.7,
+  }));
+
+  charts.cronograma = new Chart(document.getElementById('cCronograma'), {
+    type: 'bar',
+    data: { labels: categorias, datasets },
+    options: {
+      indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { font: { size: 11 } } },
+        tooltip: { callbacks: { label: ctx => `${ctx.dataset.label} · Sem ${ctx.raw.x[0]+1}–${ctx.raw.x[1]}` } }
+      },
+      scales: {
+        x: { min: 0, max: D.proyeccion_semanal.length, ticks: { ...tFont, callback: v => 'S'+v }, grid: { color: gColor } },
+        y: { ticks: tFont, grid: { display: false } }
+      }
+    }
+  });
+}
+
+/* ════════════════════════════════════════════════════════════
+   PRODUCCIÓN SEMANAL
+   ════════════════════════════════════════════════════════════ */
+function datosSemanales() {
+  return D.proyeccion_semanal.map(f => {
+    const por = {}; IDS.forEach(id => por[id] = f[id].huevos_dia);
+    return { fecha: f.fecha_lunes, por, tot: f.total.huevos_dia };
+  });
+}
+
+function renderProduccion() {
+  dc('produccion');
+  const series = datosSemanales();
+  const labels = series.map(s => FORMATO_MES(s.fecha));
+  const datasets = IDS.map(id => ({
+    label: id, data: series.map(s => s.por[id]),
+    borderColor: COLMAP[id], backgroundColor: COLMAP[id] + '55',
+    fill: true, stack: 'prod', tension: .25, pointRadius: 0, borderWidth: 1.5,
+  }));
+  datasets.push({ label: 'Total', data: series.map(s => s.tot), borderColor: COLOR_TOTAL, borderWidth: 2.5, fill: false, pointRadius: 0, tension: .25 });
+
+  charts.produccion = new Chart(document.getElementById('cProduccion'), {
+    type: 'line',
+    data: { labels, datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } },
+      scales: {
+        x: { ticks: { ...tFont, maxTicksLimit: 16 }, grid: { color: gColor } },
+        y: { stacked: true, ticks: { ...tFont, callback: v => NUM(v) }, grid: { color: gColor } }
+      }
+    }
+  });
+}
+
+/* ════════════════════════════════════════════════════════════
+   INFRAESTRUCTURA
+   ════════════════════════════════════════════════════════════ */
+function renderInfraestructura() {
+  const el = document.getElementById('infra-panel');
+  const filas = D.proyeccion_semanal;
+  const N = IDS.length;
+  const semsTotal = filas.length;
+  const semsProd = filas.filter(f => f.total.huevos_dia > 0).length;
+  const semsVacio = semsTotal - semsProd;
+  const pctEfic = Math.round(semsProd / semsTotal * 100);
+
+  const brechas = [];
+  let ini = null;
+  filas.forEach(f => {
+    const enBrecha = f.total.huevos_semana === 0;
+    if (enBrecha && !ini) ini = f.fecha_lunes;
+    else if (!enBrecha && ini) { brechas.push({ ini, fin: f.fecha_lunes }); ini = null; }
+  });
+  const nBrechas = brechas.length;
+  const durMedia = nBrechas ? Math.round(semsVacio / nBrechas) : 0;
+
+  const galpNecesarios = Math.ceil(CICLO / POSTURA);
+  const galpFaltantes = Math.max(0, galpNecesarios - N);
+  const desfaseOpt = galpFaltantes > 0 ? Math.round(CICLO / (N + galpFaltantes)) : 0;
+  const fechaSig = galpFaltantes > 0 ? addWeeks(D.galpones[N-1].fecha_nacimiento, desfaseOpt) : null;
+
+  const estadoEfic = nBrechas === 0 ? 'ok' : pctEfic >= 90 ? 'ok' : 'alerta';
+
+  const fichas = [
+    { num: pctEfic + '%', cls: estadoEfic, lbl: `eficiencia productiva<br>${N} ${N>1?'galpones':'galpón'} configurado${N>1?'s':''}` },
+    { num: nBrechas === 0 ? '✓' : String(nBrechas), cls: nBrechas === 0 ? 'ok' : 'alerta', lbl: nBrechas === 0 ? 'sin brechas en<br>el horizonte' : `brecha${nBrechas>1?'s':''} de producción<br>en ${ESC.horizonte_anios} años` },
+    ...(nBrechas > 0 ? [{ num: String(durMedia), cls: '', lbl: 'semanas sin producción<br>por transición' }] : []),
+    ...(galpFaltantes > 0 ? [{ num: '+' + galpFaltantes, cls: '', lbl: `${galpFaltantes>1?'galpones':'galpón'} adicional${galpFaltantes>1?'es':''}<br>para flujo continuo`, color: 'var(--color-acento)' }] : []),
+  ];
+
+  let texto = '';
+  if (nBrechas === 0) {
+    texto = `<p>Con <strong>${N} ${N>1?'galpones':'galpón'} desfasado${N>1?'s':''}</strong>, la operación no presenta brechas en los ${ESC.horizonte_anios} años proyectados. La producción es continua.</p>`;
+  } else {
+    const gcActivo = ESC.galpon_crianza?.activo;
+    const salida = gcActivo ? ESC.galpon_crianza.semana_salida : 0;
+    const desglose = gcActivo && salida > 0
+      ? `2 limpieza + ${salida} crianza exterior + ${CRIANZA - salida} crianza en producción`
+      : `2 limpieza + ${CRIANZA} crianza`;
+    texto = `<p>Con <strong>${N} ${N>1?'galpones':'galpón'}</strong>, hay ${nBrechas} brecha${nBrechas>1?'s':''} de ~${durMedia} semanas (${desglose}) en ${ESC.horizonte_anios} años.</p>`;
+    if (galpFaltantes > 0) {
+      texto += `<p>Para <strong>eliminar las brechas</strong> se necesita${galpFaltantes>1?'n':''} <strong>${galpFaltantes} ${galpFaltantes>1?'galpones':'galpón'} adicional${galpFaltantes>1?'es':''} (${N+galpFaltantes} en total)</strong>, con desfase de ~${desfaseOpt} semanas (≈ ${Math.round(desfaseOpt/4.33)} meses) entre galpones. Puedes ajustarlo editando el escenario.</p>`;
+    } else {
+      texto += `<p><em>Nota:</em> con ${N} galpones el desfase configurado igual genera brechas. El mínimo teórico de ${galpNecesarios} galpones no garantiza flujo continuo si las fechas de ingreso no están bien distribuidas — prueba otro desfase editando el escenario.</p>`;
+    }
+  }
+
+  el.innerHTML = `
+    <div class="infra-fichas">${fichas.map(f => `
+      <div class="infra-ficha${f.color?' destac':''}">
+        <span class="infra-num ${f.cls||''}" ${f.color?`style="color:${f.color}"`:''}>${f.num}</span>
+        <span class="infra-lbl">${f.lbl}</span>
+      </div>`).join('')}
+    </div>
+    <div class="infra-detalle">${texto}</div>
+    ${fechaSig ? `<div class="recomendacion"><strong>Fecha ideal de entrada del próximo galpón:</strong> semana del ${FORMATO_FECHA(fechaSig)} — desfase ~${desfaseOpt} semanas desde el último galpón configurado.</div>` : ''}
+    <div class="grafico-wrap" style="margin-top:24px"><div style="height:280px"><canvas id="cInfra"></canvas></div></div>`;
+
+  dc('infra');
+  const series = datosSemanales();
+  const labels = series.map(s => FORMATO_MES(s.fecha));
+  const datasets = IDS.map(id => ({ label:id, data: series.map(s=>s.por[id]), borderColor:COLMAP[id], backgroundColor:COLMAP[id]+'55', fill:true, stack:'inf', tension:.25, pointRadius:0, borderWidth:1.5 }));
+  datasets.push({ label:'Total', data: series.map(s=>s.tot), borderColor:COLOR_TOTAL, borderWidth:2.5, fill:false, pointRadius:0, tension:.25 });
+  charts.infra = new Chart(document.getElementById('cInfra'), {
+    type: 'line', data: { labels, datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } },
+      scales: {
+        x: { ticks: { ...tFont, maxTicksLimit: 16 }, grid: { color: gColor } },
+        y: { stacked: true, ticks: { ...tFont, callback: v => NUM(v) }, grid: { color: gColor } }
+      }
+    }
+  });
+}
+
+/* ════════════════════════════════════════════════════════════
+   PRODUCCIÓN ANUAL
+   ════════════════════════════════════════════════════════════ */
+function calcularPorAnio() {
+  const porAnio = {};
+  D.proyeccion_semanal.forEach(f => {
+    if (!porAnio[f.anio]) { porAnio[f.anio] = { total: 0 }; IDS.forEach(id => porAnio[f.anio][id] = 0); }
+    IDS.forEach(id => porAnio[f.anio][id] += f[id].huevos_semana);
+    porAnio[f.anio].total += f.total.huevos_semana;
+  });
+  return porAnio;
+}
+
+function renderAnual() {
+  const el = document.getElementById('anual-panel');
+  const porAnio = calcularPorAnio();
+  const anios = Object.keys(porAnio).sort();
+  const primerA = anios[0], ultimoA = anios[anios.length - 1];
+
+  const cards = anios.map(a => {
+    const da = porAnio[a];
+    const parcial = a === primerA || a === ultimoA;
+    const docenas = Math.round(da.total / 12);
+    const detalles = IDS.map(id => da[id] > 0
+      ? `<div class="anual-detalle-item"><span class="anual-detalle-lbl" style="color:${COLMAP[id]}">${id}</span><span class="anual-detalle-val">${NUM(da[id])}</span></div>`
+      : '').join('');
+    return `
+      <article class="anual-card${parcial ? ' parcial' : ''}">
+        <div class="anual-anio">año ${a}${parcial ? ' *' : ''}</div>
+        <div class="anual-total">${NUM(da.total)}</div>
+        <div class="anual-unidad">huevos · ${NUM(docenas)} docenas</div>
+        ${parcial ? '<div class="anual-parcial">año parcial</div>' : ''}
+        <div class="anual-detalle">${detalles}</div>
+      </article>`;
+  }).join('');
+
+  const medios = anios.filter(a => a !== primerA && a !== ultimoA).map(a => porAnio[a].total);
+  const promAnual = medios.length ? Math.round(medios.reduce((s,v) => s+v, 0) / medios.length) : 0;
+
+  el.innerHTML = `
+    <div class="anual-grid">${cards}
+      <p class="anual-nota">* Años parciales. ${promAnual ? `Año completo en régimen: ~${NUM(promAnual)} huevos/año.` : ''}</p>
+    </div>
+    <div class="grafico-wrap" style="margin-top:24px"><div style="height:280px"><canvas id="cAnual"></canvas></div></div>`;
+
+  dc('anual');
+  charts.anual = new Chart(document.getElementById('cAnual'), {
+    type: 'bar',
+    data: { labels: anios, datasets: IDS.map(id => ({ label: id, data: anios.map(a => porAnio[a][id]), backgroundColor: COLMAP[id], stack: 'a' })) },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } },
+      scales: {
+        x: { stacked: true, ticks: tFont, grid: { display: false } },
+        y: { stacked: true, ticks: { ...tFont, callback: v => NUM(v) }, grid: { color: gColor } }
+      }
+    }
+  });
+}
+
+/* ════════════════════════════════════════════════════════════
+   CURVA GENÉTICA DE REFERENCIA
+   ════════════════════════════════════════════════════════════ */
+function renderCurvas() {
+  const el = document.getElementById('curvas-panel');
+  const sys = SISTEMAS[ESC.sistema];
+  el.innerHTML = `
+    <p class="bloque-desc">Curva oficial Hy-Line Brown (% de postura por semana de vida) y cómo la ajusta el sistema productivo seleccionado — <strong>${sys.label}</strong> aplica un factor de ${Math.round(sys.factor_pos*100)}% sobre la curva oficial.</p>
+    <div class="grafico-wrap"><div style="height:300px"><canvas id="cCurva"></canvas></div></div>`;
+
+  dc('curva');
+  const semanas = Object.keys(CURVA_HYLINE_BROWN).map(Number).sort((a,b) => a-b);
+  charts.curva = new Chart(document.getElementById('cCurva'), {
+    type: 'line',
+    data: {
+      labels: semanas.map(s => 'S'+s),
+      datasets: [
+        { label: 'Curva oficial', data: semanas.map(s => CURVA_HYLINE_BROWN[s].pct), borderColor: '#888', borderDash: [4,4], pointRadius: 0, borderWidth: 1.5, tension: .2 },
+        { label: sys.label, data: semanas.map(s => Math.min(CURVA_HYLINE_BROWN[s].pct * sys.factor_pos, 100)), borderColor: COLOR_ACENTO, backgroundColor: COLOR_ACENTO+'22', fill: true, pointRadius: 0, borderWidth: 2.5, tension: .2 },
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } },
+      scales: {
+        x: { ticks: { ...tFont, maxTicksLimit: 20 }, grid: { color: gColor } },
+        y: { min: 0, max: 100, ticks: { ...tFont, callback: v => v+'%' }, grid: { color: gColor } }
+      }
+    }
+  });
+}
+
+/* ════════════════════════════════════════════════════════════
+   TABLA DETALLE SEMANAL
+   ════════════════════════════════════════════════════════════ */
+function poblarFiltros() {
+  const anios = [...new Set(D.proyeccion_semanal.map(f => f.anio))].sort();
+  const sel = document.getElementById('filtro-anio');
+  sel.innerHTML = '<option value="todos">Todos</option>';
+  anios.forEach(a => { const o = document.createElement('option'); o.value = a; o.textContent = a; sel.appendChild(o); });
+}
+
+function renderTabla() {
+  const thead = document.querySelector('#tabla-semanal thead');
+  const cols = IDS.map(id => `<th colspan="3" style="background:${COLMAP[id]}22;color:${COLMAP[id]}">${id}</th>`).join('');
+  const subcols = IDS.map(() => `<th>Sem</th><th>Estado</th><th>Huev/día</th>`).join('');
+  thead.innerHTML = `<tr><th rowspan="2">Sem.</th><th rowspan="2">Fecha</th>${cols}<th class="grupo-tot" colspan="2">Total</th></tr>
+    <tr>${subcols}<th class="grupo-tot">Aves</th><th class="grupo-tot">Huev/día</th></tr>`;
+  poblarFiltros();
+  renderTablaBody();
+}
+
+function renderTablaBody() {
+  const anioSel = document.getElementById('filtro-anio').value;
+  const soloP = document.getElementById('filtro-produccion').checked;
+  let filas = D.proyeccion_semanal;
+  if (anioSel !== 'todos') filas = filas.filter(f => f.anio === Number(anioSel));
+  if (soloP) filas = filas.filter(f => f.total.huevos_dia > 0);
+
+  const tbody = document.querySelector('#tabla-semanal tbody');
+  tbody.innerHTML = filas.map(f => {
+    const celdas = IDS.map(id => {
+      const g = f[id];
+      const cls = g.estado === 'postura' ? 'estado-postura' : g.estado === 'crianza_ext' ? 'estado-crianza-ext' : '';
+      return `<td>${g.sem_vida || ''}</td><td class="estado ${cls}">${g.estado}</td><td>${g.huevos_dia ? NUM(g.huevos_dia) : '—'}</td>`;
+    }).join('');
+    return `<tr><td>${f.semana_cal}</td><td class="fecha">${FORMATO_FECHA(f.fecha_lunes)}</td>${celdas}
+      <td class="total-celda">${NUM(f.total.aves_en_postura)}</td><td class="total-celda">${NUM(f.total.huevos_dia)}</td></tr>`;
+  }).join('');
+  document.getElementById('tabla-conteo').textContent = `${filas.length} semanas`;
+}
+
+/* ════════════════════════════════════════════════════════════
+   CONFIGURACIÓN — ajuste rápido del escenario activo
+   ════════════════════════════════════════════════════════════ */
+function renderConfigTab() {
+  const el = document.getElementById('config-panel');
+  el.innerHTML = `
+    <div class="config-top-row" style="border-bottom:none;margin-bottom:16px;padding-bottom:0">
+      <label class="config-field"><span>Sistema productivo</span>
+        <select id="tcfg-sistema" style="width:230px">${Object.entries(SISTEMAS).map(([k,s]) => `<option value="${k}"${ESC.sistema===k?' selected':''}>${s.label}</option>`).join('')}</select>
+      </label>
+      <label class="config-field"><span>Horizonte (años)</span>
+        <input type="number" id="tcfg-horizonte" min="1" max="15" value="${ESC.horizonte_anios}" style="width:70px">
+      </label>
+      <label class="config-field"><span>Galpón de crianza externo</span>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <label style="display:flex;align-items:center;gap:4px;font-weight:400">
+            <input type="checkbox" id="tcfg-crianza-activo"${ESC.galpon_crianza.activo?' checked':''}> Activo
+          </label>
+          Salida sem. <input type="number" id="tcfg-crianza-salida" min="1" max="17" value="${ESC.galpon_crianza.semana_salida}" style="width:56px">
+        </div>
+      </label>
+    </div>
+    <div id="tcfg-galpones">${ESC.galpones.map(g => `
+      <div class="config-galpon-row" style="border-left:4px solid ${g.color}">
+        <div class="config-galpon-id" style="color:${g.color}">${g.id}</div>
+        <label class="config-field"><span>Nombre</span><input type="text" class="tcfg-nombre" value="${g.nombre}"></label>
+        <label class="config-field"><span>Aves</span><input type="number" class="tcfg-aves" min="100" max="50000" value="${g.aves}" style="width:100px"></label>
+        <label class="config-field"><span>Ingreso 1er lote</span><input type="date" class="tcfg-fecha" value="${g.fecha_nacimiento}"></label>
+      </div>`).join('')}</div>
+    <div class="config-footer" style="margin-top:16px">
+      <button type="button" class="btn btn-linea" onclick="abrirModalEscenario(escId)">Editar N° de galpones</button>
+      <button type="button" class="btn-recalcular" onclick="aplicarConfigTab()">Recalcular proyección</button>
+      <button type="button" class="btn btn-linea" style="border-color:#b71c1c;color:#b71c1c" onclick="confirmarEliminarEscenario()">Eliminar escenario</button>
+    </div>`;
+}
+
+function aplicarConfigTab() {
+  ESC.sistema = document.getElementById('tcfg-sistema').value;
+  ESC.horizonte_anios = Math.max(1, +document.getElementById('tcfg-horizonte').value || 4);
+  ESC.galpon_crianza.activo = document.getElementById('tcfg-crianza-activo').checked;
+  ESC.galpon_crianza.semana_salida = Math.max(1, Math.min(17, +document.getElementById('tcfg-crianza-salida').value || 16));
+  document.querySelectorAll('#tcfg-galpones .config-galpon-row').forEach((row, i) => {
+    ESC.galpones[i].nombre = row.querySelector('.tcfg-nombre').value.trim() || `Galpón ${i+1}`;
+    ESC.galpones[i].aves = Math.max(100, +row.querySelector('.tcfg-aves').value || 2000);
+    ESC.galpones[i].fecha_nacimiento = row.querySelector('.tcfg-fecha').value;
+  });
+  saveEscenario(ESC);
+  cargarSelector();
+  recalcularProyeccion();
+  renderConfigTab();
+  toast('Configuración guardada y proyección recalculada');
+}
+
+const RENDER_TAB = {
+  't-resumen': renderResumen,
+  't-cronograma': renderCronograma,
+  't-produccion': renderProduccion,
+  't-infraestructura': renderInfraestructura,
+  't-anual': renderAnual,
+  't-curvas': renderCurvas,
+  't-tabla': renderTabla,
+  't-config': renderConfigTab,
+};
+
+/* ════════════════════════════════════════════════════════════
+   EXPORTAR PDF
+   ════════════════════════════════════════════════════════════ */
+function generarPDF() {
+  if (!D) return;
+  const noAnim = { animation: false, responsive: false, maintainAspectRatio: false };
+  const mkCanvas = (w=860, h=260) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
+
+  const { categorias, runsPorEstado } = datosCronograma();
+  const dsCron = ESTADOS_CRONO.filter(e => runsPorEstado[e.k]?.length).map(e => ({
+    label: e.label, data: runsPorEstado[e.k],
+    backgroundColor: runsPorEstado[e.k].map(r => e.k==='postura' ? r.backgroundColor : (r.y==='GC'?r.backgroundColor:e.fallback)),
+    borderRadius: 2, barPercentage: .6, categoryPercentage: .7,
+  }));
+  const cCron = mkCanvas(860, 60*categorias.length + 60);
+  const chCron = new Chart(cCron, {
+    type: 'bar', data: { labels: categorias, datasets: dsCron },
+    options: { ...noAnim, indexAxis: 'y', plugins: { legend: { position: 'bottom', labels: { font: { size: 10 } } } },
+      scales: { x: { min: 0, max: D.proyeccion_semanal.length, ticks: { ...tFont, callback: v=>'S'+v } }, y: { ticks: tFont } } }
+  });
+  const imgCron = cCron.toDataURL('image/png'); chCron.destroy();
+
+  const series = datosSemanales();
+  const labelsProd = series.map(s => FORMATO_MES(s.fecha));
+  const dsProd = IDS.map(id => ({ label: id, data: series.map(s=>s.por[id]), borderColor: COLMAP[id], backgroundColor: COLMAP[id]+'55', fill: true, stack: 'p', tension: .25, pointRadius: 0, borderWidth: 1.5 }));
+  dsProd.push({ label: 'Total', data: series.map(s=>s.tot), borderColor: COLOR_TOTAL, borderWidth: 2.5, fill: false, pointRadius: 0, tension: .25 });
+  const cProd = mkCanvas();
+  const chProd = new Chart(cProd, { type: 'line', data: { labels: labelsProd, datasets: dsProd },
+    options: { ...noAnim, plugins: { legend: { position: 'bottom', labels: { font: { size: 10 } } } }, scales: { x: { ticks: { ...tFont, maxTicksLimit: 14 } }, y: { stacked: true, ticks: { ...tFont, callback: v=>NUM(v) } } } } });
+  const imgProd = cProd.toDataURL('image/png'); chProd.destroy();
+
+  const porAnio = calcularPorAnio();
+  const anios = Object.keys(porAnio).sort();
+  const cAnual = mkCanvas();
+  const chAnual = new Chart(cAnual, { type: 'bar', data: { labels: anios, datasets: IDS.map(id => ({ label: id, data: anios.map(a=>porAnio[a][id]), backgroundColor: COLMAP[id], stack: 'a' })) },
+    options: { ...noAnim, plugins: { legend: { position: 'bottom', labels: { font: { size: 10 } } } }, scales: { x: { stacked: true, ticks: tFont }, y: { stacked: true, ticks: { ...tFont, callback: v=>NUM(v) } } } } });
+  const imgAnual = cAnual.toDataURL('image/png'); chAnual.destroy();
+
+  const sys = SISTEMAS[ESC.sistema];
+  const tarjetasHtml = D.galpones.map(g => `
+    <tr><td style="text-align:left"><strong style="color:${g.color}">${g.id}</strong> · ${g.nombre}</td>
+    <td>${FORMATO_FECHA(g.fecha_nacimiento)}</td><td>${NUM(g.aves_iniciales)}</td>
+    <td>${FORMATO_FECHA(g.fecha_inicio_postura_estimada)}</td><td>${FORMATO_FECHA(g.fecha_descarte_estimada)}</td></tr>`).join('');
+
+  const anualHtml = anios.map(a => `<tr><td style="text-align:left">${a}</td><td>${NUM(porAnio[a].total)}</td><td>${NUM(Math.round(porAnio[a].total/12))}</td></tr>`).join('');
+
+  const html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">
+  <title>Informe · ${ESC.nombre} · avivet.cl</title>
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    @page { margin: 18mm 14mm; }
+    * { box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; font-size: 12px; }
+    h1 { font-family: 'Crimson Pro', serif; font-size: 26px; color: #1b4332; margin-bottom: 4px; }
+    h2 { font-family: 'Crimson Pro', serif; font-size: 17px; color: #1b4332; margin: 22px 0 8px; border-left: 3px solid #f0a500; padding-left: 8px; }
+    .sub { color: #666; font-size: 11px; margin-bottom: 18px; }
+    table { width: 100%; border-collapse: collapse; font-size: 10.5px; margin-top: 6px; }
+    th, td { padding: 5px 8px; text-align: center; border-bottom: 1px solid #e0ddd5; }
+    th { background: #1b4332; color: #fff; font-weight: 500; }
+    img { width: 100%; height: auto; margin-top: 6px; }
+    .kpis { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin: 10px 0; }
+    .kpi { border: 1px solid #e0ddd5; padding: 10px; text-align: center; }
+    .kpi b { display: block; font-size: 18px; color: #1b4332; font-family: 'IBM Plex Mono', monospace; }
+    .kpi span { font-size: 9.5px; color: #888; text-transform: uppercase; }
+    ul { font-size: 10.5px; color: #555; line-height: 1.6; padding-left: 16px; }
+  </style></head><body>
+    <h1>${ESC.nombre}</h1>
+    <div class="sub">avivet.cl · MV Andrés Lazo Escobar · Informe generado el ${FORMATO_FECHA(D.metadata.fecha_generacion)}</div>
+    <div class="kpis">
+      <div class="kpi"><b>${D.metadata.galpones_construidos}</b><span>Galpones</span></div>
+      <div class="kpi"><b>${NUM(D.metadata.aves_por_galpon)}</b><span>Aves/galpón</span></div>
+      <div class="kpi"><b>${sys.label}</b><span>Sistema</span></div>
+      <div class="kpi"><b>${ESC.horizonte_anios} años</b><span>Horizonte</span></div>
+    </div>
+    <h2>Galpones del modelo</h2>
+    <table><thead><tr><th>Galpón</th><th>Ingreso 1er lote</th><th>Aves</th><th>Inicio postura</th><th>Descarte est.</th></tr></thead><tbody>${tarjetasHtml}</tbody></table>
+    <h2>Cronograma de lotes</h2><img src="${imgCron}">
+    <h2>Producción semanal proyectada</h2><img src="${imgProd}">
+    <h2>Producción anual estimada</h2>
+    <table><thead><tr><th>Año</th><th>Huevos</th><th>Docenas</th></tr></thead><tbody>${anualHtml}</tbody></table>
+    <img src="${imgAnual}">
+    <h2>Metodología y supuestos</h2>
+    <ul>
+      <li>Curva genética: Hy-Line Brown, ajustada por el factor del sistema productivo seleccionado (${sys.label}: ${Math.round(sys.factor_pos*100)}% de la curva oficial).</li>
+      <li>Ciclo por lote: 18 sem. crianza → 82 sem. postura (sem 19–100) → 2 sem. limpieza. Total 102 semanas.</li>
+      <li>Mortalidad y aprovechamiento de curva según sistema: ${sys.desc}</li>
+      <li>Las cifras son proyecciones: el manejo real puede modificar los resultados ±10–15%.</li>
+    </ul>
+  <script>window.onload=function(){setTimeout(()=>window.print(),450)}<\/script>
+  </body></html>`;
+
+  const win = window.open('', '_blank', 'width=960,height=800');
+  if (win) { win.document.write(html); win.document.close(); }
+}
+
+/* ════════════════════════════════════════════════════════════
+   EXPORTAR EXCEL
+   ════════════════════════════════════════════════════════════ */
+function exportarExcel() {
+  if (!D) return;
+  const wb = XLSX.utils.book_new();
+  const sys = SISTEMAS[ESC.sistema];
+
+  const paramData = [
+    ['Parámetro', 'Valor'],
+    ['Nombre del escenario', ESC.nombre],
+    ['N° de galpones', ESC.galpones.length],
+    ['Sistema productivo', sys.label],
+    ['Horizonte (años)', ESC.horizonte_anios],
+    ['Galpón de crianza externo activo', ESC.galpon_crianza.activo ? 'Sí' : 'No'],
+    ['Semana de salida crianza exterior', ESC.galpon_crianza.semana_salida],
+    ['', ''],
+    ['Galpón', 'Ingreso 1er lote', 'Aves iniciales'],
+    ...ESC.galpones.map(g => [g.nombre, g.fecha_nacimiento, g.aves]),
+  ];
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(paramData), 'Parametros');
+
+  const resData = [
+    ['Proyección Galpones — Resumen', ''],
+    ['Escenario', ESC.nombre],
+    ['Fecha generación', D.metadata.fecha_generacion],
+    ['Galpones construidos', D.metadata.galpones_construidos],
+    ['Aves por galpón', D.metadata.aves_por_galpon],
+    ['Semanas proyectadas', D.metadata.horizonte.total_semanas],
+    ['Sistema productivo', sys.label],
+  ];
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(resData), 'Resumen');
+
+  const detHeader = ['Semana', 'Fecha', ...IDS.flatMap(id => [`${id} sem`, `${id} estado`, `${id} huev/día`]), 'Total aves postura', 'Total huev/día'];
+  const detRows = D.proyeccion_semanal.map(f => [
+    f.semana_cal, f.fecha_lunes,
+    ...IDS.flatMap(id => [f[id].sem_vida || '', f[id].estado, f[id].huevos_dia || 0]),
+    f.total.aves_en_postura, f.total.huevos_dia,
+  ]);
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet([detHeader, ...detRows]), 'Produccion semanal');
+
+  const porAnio = calcularPorAnio();
+  const anios = Object.keys(porAnio).sort();
+  const anualHeader = ['Año', ...IDS, 'Total', 'Docenas'];
+  const anualRows = anios.map(a => [a, ...IDS.map(id => porAnio[a][id]), porAnio[a].total, Math.round(porAnio[a].total/12)]);
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet([anualHeader, ...anualRows]), 'Anual');
+
+  const curvaHeader = ['Semana', '% Postura oficial', 'Peso huevo (g)', `% Postura (${sys.label})`];
+  const curvaRows = Object.keys(CURVA_HYLINE_BROWN).map(Number).sort((a,b) => a-b)
+    .map(s => [s, CURVA_HYLINE_BROWN[s].pct, CURVA_HYLINE_BROWN[s].peso, +(Math.min(CURVA_HYLINE_BROWN[s].pct * sys.factor_pos, 100)).toFixed(1)]);
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet([curvaHeader, ...curvaRows]), 'Curva genetica');
+
+  XLSX.writeFile(wb, `proyeccion-${ESC.nombre.replace(/[^a-z0-9]+/gi,'-').toLowerCase()}.xlsx`);
+  toast('Excel generado');
+}
+
+/* ════════════════════════════════════════════════════════════
+   INIT
+   ════════════════════════════════════════════════════════════ */
+(function init() {
+  cargarSelector();
+  const escs = getEscenarios();
+  if (escs.length === 1) selEscenario(escs[0].id);
+  else mostrarVacio();
+})();
+</script>
 </body>
 </html>

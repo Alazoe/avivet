@@ -1,18 +1,21 @@
-# Proyección 3 Galpones · avivet.cl
+# Proyección Galpones · avivet.cl
 
-Visualización web de la proyección de producción de huevos para tres galpones desfasados de gallinas Hy-Line Brown.
+Herramienta web para proyectar la producción de huevos de N galpones desfasados de gallinas Hy-Line Brown, con escenarios guardados, gráficos (Chart.js) y exportación a PDF/Excel.
 
 ## Contenido
 
 ```
 proyeccion-galpones/
-├── index.html      Página principal
-├── estilos.css     Estilos (paleta avivet.cl)
-├── app.js          Render SVG vanilla y tabla
-└── datos.json      Datos de la proyección (181 semanas, 3 galpones)
+└── index.html      Página completa: HTML + CSS + JS en un solo archivo autocontenido
 ```
 
-Sin dependencias externas. Solo HTML, CSS y JavaScript vanilla. Las únicas fuentes externas son Google Fonts (Crimson Pro, Inter, IBM Plex Mono) cargadas vía CDN.
+Un solo archivo, sin build ni dependencias que instalar. Las fuentes externas son Google Fonts (Crimson Pro, Inter, IBM Plex Mono), Chart.js y SheetJS (xlsx), todas cargadas vía CDN.
+
+## Escenarios
+
+Cada escenario (N° de galpones 1–7, sistema productivo, fechas de ingreso, horizonte de proyección) se guarda en `localStorage` del navegador (clave `avivet_galpones_v1`) y puede crearse, editarse, recalcularse o eliminarse de forma independiente desde el selector superior. No hay backend: todo vive en el navegador de quien lo usa.
+
+Pestañas disponibles por escenario: Resumen, Cronograma (Gantt), Producción semanal, Infraestructura (eficiencia y brechas), Anual, Curva genética de referencia, Detalle semanal y Configuración rápida.
 
 ## Despliegue en avivet.cl (GitHub Pages)
 
@@ -21,7 +24,7 @@ Sin dependencias externas. Solo HTML, CSS y JavaScript vanilla. Las únicas fuen
 Si avivet.cl está hospedado desde un repo tipo `alazoe.github.io` o `avivet`:
 
 1. En el repo de GitHub, crear la carpeta `proyeccion-galpones/`
-2. Subir los 4 archivos (index.html, estilos.css, app.js, datos.json)
+2. Subir `index.html`
 3. Hacer commit y push
 4. Acceder en: `https://avivet.cl/avivet/proyeccion-galpones/`
 
@@ -32,7 +35,7 @@ Si avivet.cl está hospedado desde un repo tipo `alazoe.github.io` o `avivet`:
 cd proyeccion-galpones
 git init
 git add .
-git commit -m "Proyección 3 galpones Hy-Line Brown"
+git commit -m "Proyección galpones Hy-Line Brown"
 git branch -M main
 git remote add origin git@github.com:Alazoe/proyeccion-galpones.git
 git push -u origin main
@@ -43,7 +46,7 @@ Luego en el repo: `Settings → Pages → Source: main / root`. URL final:
 
 ## Pruebas locales
 
-Como `app.js` usa `fetch()` para cargar `datos.json`, no se puede abrir `index.html` directamente con doble clic (CORS bloquea `file://`). Levantar un servidor local:
+Al ser un archivo autocontenido (sin `fetch()` a datos externos), `index.html` puede abrirse directamente con doble clic. También puede servirse con un servidor local si se prefiere:
 
 ```bash
 cd proyeccion-galpones
@@ -51,41 +54,17 @@ python3 -m http.server 8000
 # Abrir http://localhost:8000
 ```
 
-## Actualizar la proyección
+## Actualizar el modelo
 
-Para regenerar los datos con parámetros distintos (línea genética, fechas de ingreso de pollitas, mortalidad, número de aves), reemplazar `datos.json` manteniendo la misma estructura.
-
-Estructura del JSON:
-
-```json
-{
-  "metadata": { ... },
-  "galpones": [
-    { "id": "G1", "nombre": "...", "fecha_nacimiento": "2025-07-17", ... }
-  ],
-  "curva_hyline_brown": [
-    { "semana": 19, "postura_pct": 5.0, "peso_huevo_g": 45.0 }
-  ],
-  "proyeccion_semanal": [
-    {
-      "semana_cal": 1,
-      "fecha_lunes": "2025-07-14",
-      "anio": 2025,
-      "mes": 7,
-      "G1": { "sem_vida": 1, "estado": "crianza", "aves": 1996, "pct_postura": 0, "peso_huevo_g": 0, "huevos_dia": 0, "huevos_semana": 0 },
-      "G2": { ... },
-      "G3": { ... },
-      "total": { "aves_en_postura": 0, "huevos_dia": 0, "huevos_semana": 0 }
-    }
-  ]
-}
-```
+- **Curva genética:** editar la constante `CURVA_HYLINE_BROWN` en el `<script>` de `index.html` (objeto `{ semana: {pct, peso} }`).
+- **Sistemas productivos:** editar la constante `SISTEMAS` (mortalidad de crianza/postura y factor sobre la curva oficial por sistema).
+- **Ciclo del lote:** constantes `CICLO`/`CRIANZA`/`POSTURA` (semanas totales, crianza y postura).
 
 ## Personalización
 
-- **Colores:** editar variables CSS al inicio de `estilos.css` (`--g1`, `--g2`, `--g3`, `--color-primario`, etc.)
-- **Fuentes:** cambiar el `<link>` de Google Fonts en `index.html` y las variables `--fuente-titulo`, `--fuente-cuerpo`, `--fuente-mono`
-- **Secciones:** agregar/quitar `<section class="bloque">` en `index.html` y la lógica correspondiente en `app.js`
+- **Colores:** variables CSS al inicio de `index.html` (`--color-primario`, `--color-acento`, etc.) y la paleta `PALETA` en JS (colores por galpón, hasta 7).
+- **Fuentes:** cambiar el `<link>` de Google Fonts y las variables `--fuente-titulo`, `--fuente-cuerpo`, `--fuente-mono`.
+- **Pestañas:** agregar/quitar entradas en `RENDER_TAB` y el botón/panel correspondiente en `construirSkeletonContenido()`.
 
 ## Licencia
 
