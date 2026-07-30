@@ -1144,6 +1144,252 @@ const CAT_INFO = {
   otro:      { label:'Otro',       cls:'cat-otro' },
 };
 
+/* ── Desglose de gastos fijos mensuales ── */
+const CAT_FIJOS = [
+  { k:'manoObra',     label:'Mano de obra',        color:'#1b4332', hint:'Sueldos, leyes sociales, turnos' },
+  { k:'electricidad', label:'Electricidad',        color:'#f0a500', hint:'Luz de galpones y bodega' },
+  { k:'agua',         label:'Agua',                color:'#4a90a4', hint:'Consumo y/o APR' },
+  { k:'gas',          label:'Gas',                 color:'#e65100', hint:'Calefacción de crianza' },
+  { k:'combustible',  label:'Combustible',         color:'#795548', hint:'Vehículos y generador' },
+  { k:'viruta',       label:'Viruta / cama',       color:'#a1887f', hint:'Recambio periódico' },
+  { k:'sanidad',      label:'Sanidad',             color:'#c62828', hint:'Vacunas, medicamentos, desinfección' },
+  { k:'mantencion',   label:'Mantención',          color:'#5e35b1', hint:'Equipos, galpón, reparaciones' },
+  { k:'arriendo',     label:'Arriendo',            color:'#00695c', hint:'Terreno o instalaciones' },
+  { k:'admin',        label:'Administración',      color:'#546e7a', hint:'Contador, permisos, oficina' },
+  { k:'otros',        label:'Otros',               color:'#9e9e9e', hint:'No clasificado en las categorías anteriores' },
+];
+
+// Devuelve el desglose normalizado. Si el lote no tiene desglose cargado,
+// todo el gasto fijo mensual se reporta como "sin desglosar".
+function getDetalleFijos(lote) {
+  const d = lote.gastosFijosDetalle || {};
+  const suma = CAT_FIJOS.reduce((a,c) => a + (+d[c.k] || 0), 0);
+  if (suma <= 0) return { detallado:false, suma:+lote.gastosMes || 0, items:[] };
+  return {
+    detallado: true,
+    suma,
+    items: CAT_FIJOS.map(c => ({ ...c, monto:+d[c.k] || 0 })).filter(i => i.monto > 0),
+  };
+}
+
+function sumaDetalleFijos(det) {
+  return CAT_FIJOS.reduce((a,c) => a + (+det?.[c.k] || 0), 0);
+}
+
+/* Bloque de inputs para desglosar el gasto fijo mensual.
+   pfx = prefijo de los IDs ('cfg' para postura, 'ccfg' para crianza). */
+function bloqueDesgloseFijos(lote, pfx) {
+  const d    = lote.gastosFijosDetalle || {};
+  const suma = sumaDetalleFijos(d);
+  const mes  = +lote.gastosMes || 0;
+  const dif  = mes - suma;
+  const abierto = suma > 0;
+  return `
+    <div style="grid-column:1/-1;border:1px solid var(--linea);border-radius:4px;background:var(--fondo);margin:2px 0">
+      <div onclick="toggleDesglose('${pfx}')" style="display:flex;align-items:center;justify-content:space-between;padding:11px 16px;cursor:pointer;user-select:none">
+        <span style="font-size:11px;font-weight:600;color:var(--prim);text-transform:uppercase;letter-spacing:.06em">
+          Desglose del gasto fijo por tipo
+          <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--tenue);margin-left:6px">— opcional, alimenta el tab Costos</span>
+        </span>
+        <span id="${pfx}-desg-tog" style="font-size:11px;color:var(--suave)">${abierto ? '▲ Plegar' : '▼ Desglosar'}</span>
+      </div>
+      <div id="${pfx}-desg-body" style="display:${abierto ? 'block' : 'none'};padding:0 16px 14px">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px">
+          ${CAT_FIJOS.map(c => `
+            <div class="cfg-field">
+              <span style="display:flex;align-items:center;gap:6px">
+                <i style="width:9px;height:9px;border-radius:2px;background:${c.color};display:inline-block;flex-shrink:0"></i>${c.label}
+              </span>
+              <input type="number" id="${pfx}-fj-${c.k}" value="${+d[c.k] || ''}" min="0" placeholder="0"
+                     oninput="recalcDesglose('${pfx}')">
+              <small style="font-size:10px;color:var(--tenue)">${c.hint}</small>
+            </div>`).join('')}
+        </div>
+        <div id="${pfx}-desg-resumen" style="margin-top:12px;padding:10px 14px;background:var(--papel);border:1px solid var(--linea);border-radius:3px;font-size:12px;display:flex;flex-wrap:wrap;gap:18px;align-items:center">
+          ${resumenDesgloseHTML(suma, mes, dif)}
+        </div>
+        <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
+          <button type="button" class="btn btn-linea btn-sm" onclick="aplicarSumaDesglose('${pfx}')">Usar la suma como gasto fijo/mes</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+/* Sección "Estructura de costos" lista para insertar en un PDF (ventana de impresión). */
+function seccionCostosPDF(lote, p) {
+  const E = estructuraCostos(lote, p);
+  if (!E.total) return '';
+  const esCr     = E.esCrianza;
+  const unidad   = esCr ? 'ave' : 'huevo';
+  const ingresos = p.reduce((a,d) => a + d.ingreso, 0);
+  const pctIng   = m => ingresos > 0 ? (m / ingresos * 100) : 0;
+  const F2 = v => v >= 100 ? '$' + Math.round(v).toLocaleString('es-CL') : '$' + v.toFixed(1);
+  const totVar = E.items.filter(i => i.tipo === 'variable').reduce((a,i) => a + i.monto, 0);
+  const totFij = E.items.filter(i => i.tipo === 'fijo').reduce((a,i) => a + i.monto, 0);
+  const totInv = E.items.filter(i => i.tipo === 'inversion').reduce((a,i) => a + i.monto, 0);
+
+  const grupos = {};
+  E.items.forEach(i => {
+    if (!grupos[i.grupo]) grupos[i.grupo] = { grupo:i.grupo, monto:0, items:[] };
+    grupos[i.grupo].monto += i.monto;
+    grupos[i.grupo].items.push(i);
+  });
+
+  const filas = Object.values(grupos).sort((a,b) => b.monto - a.monto).map(g => {
+    const cab = `<tr style="background:#eef2ee">
+      <td style="text-align:left;font-weight:700">${g.grupo}</td><td></td>
+      <td class="fm"><strong>$${g.monto.toLocaleString('es-CL')}</strong></td>
+      <td class="fm"><strong>${(g.monto/E.total*100).toFixed(1)}%</strong></td>
+      <td class="fm"><strong>${F2(E.base>0?g.monto/E.base:0)}</strong></td>
+      <td class="fm"><strong>${pctIng(g.monto).toFixed(1)}%</strong></td></tr>`;
+    if (g.items.length <= 1) return cab;
+    return cab + g.items.map(i => `<tr>
+      <td style="text-align:left;padding-left:18px">${i.label}</td>
+      <td style="font-size:7pt;color:#888;text-transform:uppercase">${i.tipo}</td>
+      <td class="fm">$${i.monto.toLocaleString('es-CL')}</td>
+      <td class="fm">${i.pct.toFixed(1)}%</td>
+      <td class="fm">${F2(i.porUnid)}</td>
+      <td class="fm">${pctIng(i.monto).toFixed(1)}%</td></tr>`).join('');
+  }).join('');
+
+  return `
+<h2>Estructura de costos</h2>
+<div style="font-size:8pt;color:#888;margin-bottom:6px">
+  Costo total del ciclo desagregado por tipo. La columna $/${unidad} reparte cada partida entre
+  ${E.base.toLocaleString('es-CL')} ${esCr ? 'aves vendidas' : 'huevos vendibles'}.
+  ${E.detallado ? '' : 'El gasto fijo no está desglosado por categoría en este lote.'}
+</div>
+<div class="kpis" style="grid-template-columns:repeat(4,1fr)">
+  <div class="kpi"><div class="kn">$${E.total.toLocaleString('es-CL')}</div><div class="kl">Costo total ciclo</div><div class="ks">${pctIng(E.total).toFixed(1)}% del ingreso</div></div>
+  <div class="kpi"><div class="kn">$${totVar.toLocaleString('es-CL')}</div><div class="kl">Costos variables</div><div class="ks">${(totVar/E.total*100).toFixed(1)}% del costo</div></div>
+  <div class="kpi"><div class="kn">$${totFij.toLocaleString('es-CL')}</div><div class="kl">Costos fijos</div><div class="ks">${(totFij/E.total*100).toFixed(1)}% del costo</div></div>
+  <div class="kpi"><div class="kn">$${totInv.toLocaleString('es-CL')}</div><div class="kl">Inversión / únicos</div><div class="ks">${(totInv/E.total*100).toFixed(1)}% del costo</div></div>
+</div>
+<table>
+  <thead><tr><th style="text-align:left">Partida</th><th>Tipo</th><th>Total ciclo</th><th>% costo</th><th>$/${unidad}</th><th>% ingreso</th></tr></thead>
+  <tbody>${filas}</tbody>
+  <tfoot><tr style="background:#1b4332;color:#fff">
+    <td style="text-align:left;font-weight:700">COSTO TOTAL</td><td></td>
+    <td class="fm"><strong>$${E.total.toLocaleString('es-CL')}</strong></td>
+    <td class="fm"><strong>100%</strong></td>
+    <td class="fm"><strong>${F2(E.base>0?E.total/E.base:0)}</strong></td>
+    <td class="fm"><strong>${pctIng(E.total).toFixed(1)}%</strong></td>
+  </tr></tfoot>
+</table>`;
+}
+
+function resumenDesgloseHTML(suma, mes, dif) {
+  const ok = Math.abs(dif) < 1;
+  return `
+    <span style="font-family:var(--fm)">Suma del desglose: <strong style="color:var(--prim)">$${Math.round(suma).toLocaleString('es-CL')}</strong></span>
+    <span style="font-family:var(--fm)">Gasto fijo/mes declarado: <strong>$${Math.round(mes).toLocaleString('es-CL')}</strong></span>
+    ${suma === 0
+      ? `<span style="color:var(--tenue)">Sin desglosar — el tab Costos mostrará el gasto fijo como una sola línea.</span>`
+      : ok
+        ? `<span style="color:var(--ok);font-weight:600">✓ Cuadra</span>`
+        : `<span style="color:${dif > 0 ? '#e65100' : 'var(--mal)'};font-weight:600">
+             ${dif > 0 ? `Faltan $${Math.round(dif).toLocaleString('es-CL')} por clasificar` : `El desglose excede en $${Math.round(-dif).toLocaleString('es-CL')}`}
+           </span>`}`;
+}
+
+function toggleDesglose(pfx) {
+  const b = document.getElementById(`${pfx}-desg-body`);
+  const t = document.getElementById(`${pfx}-desg-tog`);
+  if (!b) return;
+  const vis = b.style.display !== 'none';
+  b.style.display = vis ? 'none' : 'block';
+  if (t) t.textContent = vis ? '▼ Desglosar' : '▲ Plegar';
+}
+
+function leerDesglose(pfx) {
+  const d = {};
+  CAT_FIJOS.forEach(c => {
+    const v = +(document.getElementById(`${pfx}-fj-${c.k}`)?.value) || 0;
+    if (v > 0) d[c.k] = v;
+  });
+  return d;
+}
+
+function recalcDesglose(pfx) {
+  const suma = sumaDetalleFijos(leerDesglose(pfx));
+  const mesEl = document.getElementById(pfx === 'cfg' ? 'cfg-gastos' : 'ccfg-gastosMes');
+  const mes = +(mesEl?.value) || 0;
+  const box = document.getElementById(`${pfx}-desg-resumen`);
+  if (box) box.innerHTML = resumenDesgloseHTML(suma, mes, mes - suma);
+}
+
+function aplicarSumaDesglose(pfx) {
+  const suma  = sumaDetalleFijos(leerDesglose(pfx));
+  const mesEl = document.getElementById(pfx === 'cfg' ? 'cfg-gastos' : 'ccfg-gastosMes');
+  if (!mesEl || suma <= 0) return;
+  mesEl.value = Math.round(suma);
+  fmtNum(mesEl);
+  recalcDesglose(pfx);
+  toast('Gasto fijo/mes igualado a la suma del desglose — recuerda guardar');
+}
+
+/* Estructura completa de costos del ciclo, desagregada por tipo.
+   Devuelve { items[], total, base } donde base = unidades para $/unidad
+   (huevos vendibles en postura, aves vendidas en crianza). */
+function estructuraCostos(lote, p) {
+  const esCrianza = lote.tipo === 'crianza';
+  const T = k => p.reduce((a,d) => a + (+d[k] || 0), 0);
+
+  const totAlim  = T('costoAlim');
+  const totFijos = T('gastoDia');
+  const totDesp  = esCrianza ? 0 : T('costoDespacho');
+  const totBand  = esCrianza ? 0 : T('envBandeja');
+  const totCaja  = esCrianza ? 0 : T('envCaja');
+
+  // Gastos especiales agrupados por categoría
+  const espXCat = {};
+  (lote.gastosEspeciales || []).forEach(g => {
+    const c = g.categoria || 'otro';
+    espXCat[c] = (espXCat[c] || 0) + (+g.monto || 0);
+  });
+
+  const items = [];
+  const add = (grupo, label, monto, color, tipo) => {
+    if (monto > 0) items.push({ grupo, label, monto:Math.round(monto), color, tipo });
+  };
+
+  add('Alimento', 'Alimento', totAlim, '#b71c1c', 'variable');
+
+  // Gastos fijos: desglosados si el lote tiene detalle cargado
+  const det = getDetalleFijos(lote);
+  if (det.detallado && det.suma > 0) {
+    // Prorratear el gasto fijo real del ciclo según la proporción de cada categoría
+    det.items.forEach(i => add('Gastos fijos', i.label, totFijos * (i.monto / det.suma), i.color, 'fijo'));
+  } else {
+    add('Gastos fijos', 'Sin desglosar', totFijos, '#f0a500', 'fijo');
+  }
+
+  if (!esCrianza) {
+    add('Despacho', 'Despacho', totDesp, '#e65100', 'fijo');
+    add('Envase', 'Bandeja + etiqueta', totBand, '#795548', 'variable');
+    add('Envase', 'Caja de cartón',     totCaja, '#a1887f', 'variable');
+  }
+
+  Object.entries(espXCat).forEach(([c, monto]) => {
+    const info = CAT_INFO[c] || CAT_INFO.otro;
+    const colorEsp = { pollas:'#5e35b1', inversion:'#283593', vacuna:'#0277bd', viruta:'#6d4c41', otro:'#616161' };
+    add('Gastos especiales', info.label, monto, colorEsp[c] || '#616161', 'inversion');
+  });
+
+  const total = items.reduce((a,i) => a + i.monto, 0);
+  const base  = esCrianza
+    ? Math.round(p[p.length-1]?.aves || 0)
+    : T('huevosVendibles');
+
+  items.forEach(i => {
+    i.pct      = total > 0 ? i.monto / total * 100 : 0;
+    i.porUnid  = base  > 0 ? i.monto / base : 0;
+  });
+  items.sort((a,b) => b.monto - a.monto);
+
+  return { items, total, base, esCrianza, detallado: det.detallado };
+}
+
 /* ════════════════════════════════════════════════════════════
    UTILIDADES
    ════════════════════════════════════════════════════════════ */
@@ -1547,6 +1793,7 @@ function renderDashboard(lote) {
     <div class="tabs">
       <button class="tab activo" data-tab="t-graficos"  onclick="setTab(event,'t-graficos')">Gráficos</button>
       <button class="tab" data-tab="t-tabla"    onclick="setTab(event,'t-tabla')">Proyección</button>
+      <button class="tab" data-tab="t-costos"   onclick="setTab(event,'t-costos')">Costos</button>
       <button class="tab" data-tab="t-sensib"   onclick="setTab(event,'t-sensib')">Sensibilidad</button>
       <button class="tab" data-tab="t-curvas"   onclick="setTab(event,'t-curvas')">Curvas ref.</button>
       <button class="tab" data-tab="t-precios" onclick="setTab(event,'t-precios')">Precios mes</button>
@@ -1558,10 +1805,14 @@ function renderDashboard(lote) {
     <div id="t-graficos" class="tab-panel activo">
       <div class="graficos-grid full">
         <div class="grafico-wrap">
-          <div class="grafico-titulo">Ingreso y costo semanal ($)</div>
+          <div class="grafico-titulo">Ingreso vs costo semanal desagregado ($)</div>
           <div class="leyenda">
-            <span class="leyenda-item"><span class="cuad" style="background:#1b4332;opacity:.7"></span>Ingreso proyectado</span>
-            <span class="leyenda-item"><span class="cuad" style="background:rgba(183,28,28,.4)"></span>Costo total (alim+fijos+esp)</span>
+            <span class="leyenda-item"><span class="cuad" style="background:rgba(27,67,50,.75)"></span>Ingreso</span>
+            <span class="leyenda-item"><span class="cuad" style="background:rgba(183,28,28,.72)"></span>Alimento</span>
+            <span class="leyenda-item"><span class="cuad" style="background:rgba(240,165,0,.72)"></span>Gastos fijos</span>
+            <span class="leyenda-item"><span class="cuad" style="background:rgba(230,81,0,.65)"></span>Despacho</span>
+            <span class="leyenda-item"><span class="cuad" style="background:rgba(121,85,72,.7)"></span>Envase</span>
+            <span class="leyenda-item"><span class="cuad" style="background:rgba(94,53,177,.6)"></span>G. especiales</span>
           </div>
           <div class="grafico-canvas"><canvas id="cFin"></canvas></div>
         </div>
@@ -1592,6 +1843,11 @@ function renderDashboard(lote) {
     <!-- TABLA PROYECCIÓN -->
     <div id="t-tabla" class="tab-panel" style="display:none">
       <div id="tabla-proy-panel"></div>
+    </div>
+
+    <!-- ESTRUCTURA DE COSTOS -->
+    <div id="t-costos" class="tab-panel" style="display:none">
+      <div id="costos-panel"></div>
     </div>
 
     <!-- SENSIBILIDAD -->
@@ -1627,6 +1883,7 @@ function renderDashboard(lote) {
           <div class="cfg-field"><span>Factor mortalidad (1.0 = normal)</span><input type="number" id="cfg-factMort" value="${lote.factorMortalidad??1.0}" min="0.5" max="5.0" step="0.1"><small style="font-size:10px;color:var(--tenue)">1.5 = 50% más muertes · 2.0 = doble</small></div>
           <div class="cfg-field"><span>Precio huevo base ($/ud.)</span><input type="number" id="cfg-precio" value="${lote.precioHuevo}" oninput="fmtNum(this)"><small class="fmt-hint"></small></div>
           <div class="cfg-field"><span>Gastos fijos / mes ($)</span><input type="number" id="cfg-gastos" value="${lote.gastosMes}" oninput="fmtNum(this)"><small class="fmt-hint">${(+lote.gastosMes).toLocaleString('es-CL')}</small></div>
+          ${bloqueDesgloseFijos(lote, 'cfg')}
           <hr class="cfg-sep">
           <div class="cfg-sec">Empaque y merma</div>
           <div class="cfg-field"><span>% Huevo no vendible</span><input type="number" id="cfg-pctNV" value="${lote.pctNoVendible??2}" min="0" max="30" step="0.1"></div>
@@ -1704,6 +1961,7 @@ function renderDashboard(lote) {
 
   renderGraficos(lote);
   renderTablaProyeccion(lote);
+  renderEstructuraCostos(lote, 'costos-panel', 'cDona');
   renderSensibilidad(lote);
   renderPreciosMes(lote);
   renderGastosEspeciales(lote);
@@ -1880,6 +2138,7 @@ function renderDashboardCrianza(lote) {
     <div class="tabs">
       <button class="tab activo" data-tab="tc-graficos" onclick="setTabCrianza(event,'tc-graficos')">Gráficos</button>
       <button class="tab" data-tab="tc-tabla"   onclick="setTabCrianza(event,'tc-tabla')">Proyección</button>
+      <button class="tab" data-tab="tc-costos"  onclick="setTabCrianza(event,'tc-costos')">Costos</button>
       <button class="tab" data-tab="tc-sensib"  onclick="setTabCrianza(event,'tc-sensib')">Sensibilidad</button>
       <button class="tab" data-tab="tc-precios" onclick="setTabCrianza(event,'tc-precios')">Precio sem.</button>
       <button class="tab" data-tab="tc-gastos"  onclick="setTabCrianza(event,'tc-gastos')">Gastos especiales</button>
@@ -1915,6 +2174,7 @@ function renderDashboardCrianza(lote) {
     </div>
 
     <div id="tc-tabla"   class="tab-panel" style="display:none"><div id="tc-tabla-panel"></div></div>
+    <div id="tc-costos"  class="tab-panel" style="display:none"><div id="tc-costos-panel"></div></div>
     <div id="tc-sensib"  class="tab-panel" style="display:none"><div id="tc-sensib-panel"></div></div>
     <div id="tc-precios" class="tab-panel" style="display:none"><div id="tc-precios-panel"></div></div>
     <div id="tc-gastos"  class="tab-panel" style="display:none"><div id="gastos-panel"></div></div>
@@ -1926,6 +2186,7 @@ function renderDashboardCrianza(lote) {
 
   renderGraficosCrianza(lote);
   renderTablaCrianza(lote);
+  renderEstructuraCostos(lote, 'tc-costos-panel', 'ccDona');
   renderSensibilidadCrianza(lote);
   renderPreciosSemana(lote);
   renderGastosEspeciales(lote);
@@ -1942,6 +2203,7 @@ function setTabCrianza(e, id) {
   const l = getLote(loteId);
   if (id === 'tc-graficos') renderGraficosCrianza(l);
   if (id === 'tc-tabla')    renderTablaCrianza(l);
+  if (id === 'tc-costos')   renderEstructuraCostos(l, 'tc-costos-panel', 'ccDona');
   if (id === 'tc-sensib')   renderSensibilidadCrianza(l);
   if (id === 'tc-precios')  renderPreciosSemana(l);
   if (id === 'tc-gastos')   renderGastosEspeciales(l);
@@ -2183,6 +2445,7 @@ function renderConfigCrianza(lote) {
         <div class="cfg-field"><span>Margen por ave ($/ave sobre costo)</span><input type="number" id="ccfg-margenAve" value="${lote.margenAve??1000}" min="0" oninput="fmtNum(this)"><small class="fmt-hint">${(+(lote.margenAve??1000)).toLocaleString('es-CL')} · precio = costo/ave + margen</small></div>
         <div class="cfg-field"><span>Factor mortalidad (1.0 = normal)</span><input type="number" id="ccfg-factMort" value="${lote.factorMortalidad??1.0}" min="0.5" max="5.0" step="0.1"></div>
         <div class="cfg-field"><span>Gastos fijos / mes ($)</span><input type="number" id="ccfg-gastosMes" value="${lote.gastosMes}" oninput="fmtNum(this)"><small class="fmt-hint">${(+lote.gastosMes).toLocaleString('es-CL')}</small></div>
+        ${bloqueDesgloseFijos(lote, 'ccfg')}
         <hr class="cfg-sep">
         <div class="cfg-sec">Costo alimento por periodo ($/kg)</div>
         ${[1,2,3,4,5].map(d=>`<div class="cfg-field"><span>Dieta ${d} — $/kg</span><input type="number" id="ccfg-d${d}" value="${lote.costoDieta?.[d]||''}"></div>`).join('')}
@@ -2207,6 +2470,7 @@ function aplicarConfigCrianza() {
   lote.margenAve = +(document.getElementById('ccfg-margenAve')?.value ?? 1000);
   lote.factorMortalidad = +(document.getElementById('ccfg-factMort')?.value ?? 1.0);
   lote.gastosMes        = +(document.getElementById('ccfg-gastosMes')?.value ?? 0);
+  lote.gastosFijosDetalle = leerDesglose('ccfg');
   [1,2,3,4,5].forEach(d => {
     lote.costoDieta[d]     = +(document.getElementById(`ccfg-d${d}`)?.value) || lote.costoDieta[d] || 520;
     lote.consumoGrDieta[d] = +(document.getElementById(`ccfg-gr${d}`)?.value) || 0;
@@ -2574,6 +2838,8 @@ ${renderFlujoCrianza(lote).replace(/class="bloque"/,'style="margin-bottom:18px"'
 <div><div style="font-size:8pt;color:#888;margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em">Costo/ave acumulado vs precio de venta</div><img class="ch" src="${img2}"></div>
 <div><div style="font-size:8pt;color:#888;margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em">Resultado si vende esta semana</div><img class="ch" src="${img3}"></div>
 
+${seccionCostosPDF(lote, proy)}
+
 <h2>Proyección semanal</h2>
 <div style="font-size:8pt;color:#888;margin-bottom:6px">
   Precio de venta = costo/ave acumulado + margen (${MN(margenBase)}/ave), salvo semanas con precio personalizado.
@@ -2610,6 +2876,7 @@ function setTab(e, id) {
   panel.style.display = 'block';
   if (id === 't-graficos') renderGraficos(getLote(loteId));
   if (id === 't-tabla')    renderTablaProyeccion(getLote(loteId));
+  if (id === 't-costos')   renderEstructuraCostos(getLote(loteId), 'costos-panel', 'cDona');
   if (id === 't-sensib')   renderSensibilidad(getLote(loteId));
   if (id === 't-curvas')   renderCurvasRef(getLote(loteId));
   if (id === 't-precios')  renderPreciosMes(getLote(loteId));
@@ -2903,10 +3170,12 @@ function semData(lote) {
     const s = d.sem;
     const avesIni = i === 0 ? nIni : proy[i-1].aves;
     if (!m[s]) m[s] = { s, fecha: d.fecha, avesIni, aves: 0,
-      ingP: 0, costoP: 0, gastoEspP: 0, envaseP: 0, envBandeja: 0, envCaja: 0, bandejas: 0, cajas: 0, despachoP: 0, acumP: 0, postP: 0,
+      ingP: 0, costoP: 0, alimP: 0, fijosP: 0, gastoEspP: 0, envaseP: 0, envBandeja: 0, envCaja: 0, bandejas: 0, cajas: 0, despachoP: 0, acumP: 0, postP: 0,
       huevos: 0, huevosVendibles: 0, consumo: 0, resP: 0 };
     m[s].ingP            += d.ingreso;
-    m[s].costoP          += d.costoAlim + d.gastoDia + (d.costoDespacho || 0);
+    m[s].costoP          += d.costoAlim + d.gastoDia + (d.costoDespacho || 0) + (d.costoEnvase || 0);
+    m[s].alimP           += d.costoAlim;
+    m[s].fijosP          += d.gastoDia;
     m[s].gastoEspP       += d.gastoEsp;
     m[s].envaseP         += d.costoEnvase;
     m[s].envBandeja      += d.envBandeja || 0;
@@ -2937,13 +3206,18 @@ function renderGraficos(lote) {
   if (cFin) charts.fin = new Chart(cFin, {
     type:'bar',
     data:{ labels:lbs, datasets:[
-      { label:'Costo total (alim+fijos+esp)', data:sems.map(s=>s.costoP+s.gastoEspP), backgroundColor:'rgba(183,28,28,.38)', stack:'p' },
-      { label:'Ingreso proyectado',           data:sems.map(s=>s.ingP),               backgroundColor:'rgba(27,67,50,.65)',  stack:'p' },
+      { label:'Alimento',      data:sems.map(s=>s.alimP),     backgroundColor:'rgba(183,28,28,.72)',  stack:'c' },
+      { label:'Gastos fijos',  data:sems.map(s=>s.fijosP),    backgroundColor:'rgba(240,165,0,.72)',  stack:'c' },
+      { label:'Despacho',      data:sems.map(s=>s.despachoP), backgroundColor:'rgba(230,81,0,.65)',   stack:'c' },
+      { label:'Envase',        data:sems.map(s=>s.envaseP),   backgroundColor:'rgba(121,85,72,.7)',   stack:'c' },
+      { label:'Gastos especiales', data:sems.map(s=>s.gastoEspP), backgroundColor:'rgba(94,53,177,.6)', stack:'c' },
+      { label:'Ingreso proyectado', data:sems.map(s=>s.ingP), backgroundColor:'rgba(27,67,50,.75)',   stack:'i' },
     ]},
     options:{ responsive:true, maintainAspectRatio:false,
-      plugins:{ legend:{ labels:{ font:{size:11} } } },
+      plugins:{ legend:{ labels:{ font:{size:11} } },
+        tooltip:{ callbacks:{ label:c=>` ${c.dataset.label}: $${Math.round(c.raw).toLocaleString('es-CL')}` } } },
       scales:{ x:{ stacked:true, ticks:tFont, grid:{color:gColor} },
-               y:{ ticks:{...tFont, callback:v=>'$'+Math.round(v/1000)+'k'}, grid:{color:gColor} } } }
+               y:{ stacked:true, ticks:{...tFont, callback:v=>'$'+Math.round(v/1000)+'k'}, grid:{color:gColor} } } }
   });
 
   dc('pos');
@@ -3224,6 +3498,124 @@ function renderSensibilidad(lote) {
 function recalcSensib() {
   const lote = getLote(loteId);
   if (lote) renderSensibilidad(lote);
+}
+
+/* ════════════════════════════════════════════════════════════
+   ESTRUCTURA DE COSTOS — desagregación por tipo
+   ════════════════════════════════════════════════════════════ */
+function renderEstructuraCostos(lote, panelId, canvasId) {
+  const panel = document.getElementById(panelId);
+  if (!panel || !proy) return;
+
+  const E        = estructuraCostos(lote, proy);
+  const esCr     = E.esCrianza;
+  const unidad   = esCr ? 'ave' : 'huevo';
+  const ingresos = proy.reduce((a,d) => a + d.ingreso, 0);
+  const semTot   = esCr ? (+(lote.semanasCrianza ?? 8)) : (lote.semanasCiclo || 100);
+  const meses    = semTot * 7 / 30;
+
+  // Agrupar por grupo para los subtotales
+  const grupos = {};
+  E.items.forEach(i => {
+    if (!grupos[i.grupo]) grupos[i.grupo] = { grupo:i.grupo, monto:0, items:[] };
+    grupos[i.grupo].monto += i.monto;
+    grupos[i.grupo].items.push(i);
+  });
+  const gruposArr = Object.values(grupos).sort((a,b) => b.monto - a.monto);
+
+  const totVar = E.items.filter(i => i.tipo === 'variable').reduce((a,i) => a + i.monto, 0);
+  const totFij = E.items.filter(i => i.tipo === 'fijo').reduce((a,i) => a + i.monto, 0);
+  const totInv = E.items.filter(i => i.tipo === 'inversion').reduce((a,i) => a + i.monto, 0);
+
+  const pctIng = m => ingresos > 0 ? (m / ingresos * 100) : 0;
+  const F2 = v => v >= 100 ? MN(v) : '$' + v.toFixed(1);
+
+  const filaGrupo = g => {
+    const varias = g.items.length > 1;
+    const cab = `<tr style="background:#f4f6f4">
+      <td colspan="2" style="padding:9px 12px;font-weight:700;color:var(--prim);font-size:12.5px;border-top:2px solid var(--linea)">${g.grupo}</td>
+      <td style="padding:9px 12px;text-align:right;font-family:var(--fm);font-weight:700;font-size:12.5px;border-top:2px solid var(--linea)">${MN(g.monto)}</td>
+      <td style="padding:9px 12px;text-align:right;font-family:var(--fm);font-weight:700;font-size:12.5px;border-top:2px solid var(--linea)">${(g.monto/E.total*100).toFixed(1)}%</td>
+      <td style="padding:9px 12px;text-align:right;font-family:var(--fm);font-weight:700;font-size:12.5px;border-top:2px solid var(--linea)">${F2(E.base>0?g.monto/E.base:0)}</td>
+      <td style="padding:9px 12px;text-align:right;font-family:var(--fm);font-weight:700;font-size:12.5px;border-top:2px solid var(--linea);color:var(--suave)">${pctIng(g.monto).toFixed(1)}%</td>
+    </tr>`;
+    if (!varias) return cab;
+    return cab + g.items.map(i => `<tr>
+      <td style="padding:6px 12px 6px 26px;border-bottom:1px solid var(--linea)">
+        <i style="width:9px;height:9px;border-radius:2px;background:${i.color};display:inline-block;margin-right:7px"></i>${i.label}
+      </td>
+      <td style="padding:6px 12px;border-bottom:1px solid var(--linea);font-size:10px;color:var(--tenue);text-transform:uppercase;letter-spacing:.04em">${i.tipo}</td>
+      <td style="padding:6px 12px;text-align:right;font-family:var(--fm);font-size:12px;border-bottom:1px solid var(--linea)">${MN(i.monto)}</td>
+      <td style="padding:6px 12px;text-align:right;font-family:var(--fm);font-size:12px;border-bottom:1px solid var(--linea)">${i.pct.toFixed(1)}%</td>
+      <td style="padding:6px 12px;text-align:right;font-family:var(--fm);font-size:12px;border-bottom:1px solid var(--linea)">${F2(i.porUnid)}</td>
+      <td style="padding:6px 12px;text-align:right;font-family:var(--fm);font-size:12px;border-bottom:1px solid var(--linea);color:var(--suave)">${pctIng(i.monto).toFixed(1)}%</td>
+    </tr>`).join('');
+  };
+
+  const tarjeta = (lbl, monto, color, sub) => `
+    <div style="flex:1;min-width:150px;background:var(--fondo);border:1px solid var(--linea);border-left:4px solid ${color};padding:13px 16px;border-radius:3px">
+      <div style="font-family:var(--ft);font-size:20px;font-weight:700;color:var(--prim);line-height:1">${MN(monto)}</div>
+      <div style="font-size:10px;color:var(--tenue);text-transform:uppercase;letter-spacing:.06em;margin-top:4px">${lbl}</div>
+      <div style="font-size:11px;color:var(--suave);margin-top:2px">${sub}</div>
+    </div>`;
+
+  const avisoDesglose = E.detallado ? '' : `
+    <div style="background:#fff8e1;border-left:4px solid var(--acento);padding:11px 16px;margin-bottom:18px;font-size:12.5px;color:var(--suave)">
+      El gasto fijo aparece como una sola línea. Para verlo abierto por tipo (mano de obra, luz, agua, gas…),
+      completa el <strong>Desglose del gasto fijo por tipo</strong> en el tab Configuración.
+    </div>`;
+
+  panel.innerHTML = `
+    <p style="font-size:13px;color:var(--suave);margin-bottom:18px">
+      Estructura completa del costo del ciclo (${semTot} semanas ≈ ${meses.toFixed(1)} meses).
+      La columna <strong>$/${unidad}</strong> reparte cada costo entre ${NUM(E.base)} ${esCr ? 'aves vendidas' : 'huevos vendibles'};
+      <strong>% ingreso</strong> muestra cuánto de cada peso vendido se consume en esa partida.
+    </p>
+    ${avisoDesglose}
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:22px">
+      ${tarjeta('Costo total ciclo', E.total, '#b71c1c', `${pctIng(E.total).toFixed(1)}% del ingreso`)}
+      ${tarjeta('Costos variables', totVar, '#e65100', `${(totVar/E.total*100).toFixed(1)}% · escalan con producción`)}
+      ${tarjeta('Costos fijos', totFij, '#f0a500', `${(totFij/E.total*100).toFixed(1)}% · independientes del volumen`)}
+      ${totInv > 0 ? tarjeta('Inversión / únicos', totInv, '#5e35b1', `${(totInv/E.total*100).toFixed(1)}% · gastos especiales`) : ''}
+    </div>
+    <div style="display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:26px;align-items:start">
+      <div>
+        <div class="grafico-titulo" style="margin-bottom:8px">Participación en el costo total</div>
+        <div style="position:relative;height:300px"><canvas id="${canvasId}"></canvas></div>
+      </div>
+      <div class="tabla-scroll">
+        <table style="width:100%;border-collapse:collapse;font-size:12.5px">
+          <thead><tr>
+            <th style="text-align:left;padding:9px 12px;background:var(--prim);color:#fff;font-size:11px;text-transform:uppercase;letter-spacing:.05em">Partida</th>
+            <th style="text-align:left;padding:9px 12px;background:var(--prim);color:#fff;font-size:11px;text-transform:uppercase;letter-spacing:.05em">Tipo</th>
+            <th style="text-align:right;padding:9px 12px;background:var(--prim);color:#fff;font-size:11px;text-transform:uppercase;letter-spacing:.05em">Total ciclo</th>
+            <th style="text-align:right;padding:9px 12px;background:var(--prim);color:#fff;font-size:11px;text-transform:uppercase;letter-spacing:.05em">% costo</th>
+            <th style="text-align:right;padding:9px 12px;background:var(--prim);color:#fff;font-size:11px;text-transform:uppercase;letter-spacing:.05em">$/${unidad}</th>
+            <th style="text-align:right;padding:9px 12px;background:var(--prim);color:#fff;font-size:11px;text-transform:uppercase;letter-spacing:.05em">% ingreso</th>
+          </tr></thead>
+          <tbody>${gruposArr.map(filaGrupo).join('')}</tbody>
+          <tfoot><tr style="background:var(--prim);color:#fff;font-weight:700">
+            <td colspan="2" style="padding:10px 12px">COSTO TOTAL</td>
+            <td style="padding:10px 12px;text-align:right;font-family:var(--fm)">${MN(E.total)}</td>
+            <td style="padding:10px 12px;text-align:right;font-family:var(--fm)">100%</td>
+            <td style="padding:10px 12px;text-align:right;font-family:var(--fm)">${F2(E.base>0?E.total/E.base:0)}</td>
+            <td style="padding:10px 12px;text-align:right;font-family:var(--fm)">${pctIng(E.total).toFixed(1)}%</td>
+          </tr></tfoot>
+        </table>
+      </div>
+    </div>`;
+
+  // Dona por partida individual
+  dc(canvasId);
+  const cv = document.getElementById(canvasId);
+  if (cv) charts[canvasId] = new Chart(cv, {
+    type:'doughnut',
+    data:{ labels:E.items.map(i => i.label),
+           datasets:[{ data:E.items.map(i => i.monto), backgroundColor:E.items.map(i => i.color), borderColor:'#fff', borderWidth:2 }] },
+    options:{ responsive:true, maintainAspectRatio:false, cutout:'52%',
+      plugins:{ legend:{ position:'bottom', labels:{ font:{size:10}, boxWidth:11, padding:8 } },
+        tooltip:{ callbacks:{ label:c => ` ${c.label}: $${Math.round(c.raw).toLocaleString('es-CL')} (${(c.raw/E.total*100).toFixed(1)}%)` } } } }
+  });
 }
 
 /* ════════════════════════════════════════════════════════════
@@ -3532,6 +3924,7 @@ function guardarLote(e) {
       preciosPorSemana: modoEditar ? (getLote(modoEditar)?.preciosPorSemana || {}) : {},
       factorMortalidad: +(f.factorMortalidadCrianza?.value ?? 1.0),
       gastosMes:        +f.gastosMes.value,
+      gastosFijosDetalle: modoEditar ? (getLote(modoEditar)?.gastosFijosDetalle || {}) : {},
       costoDieta,
       consumoGrDieta:   Object.fromEntries([1,2,3,4,5,6,7].map(d => [d, +(f[`gr${d}`]?.value) || 0])),
       gastosEspeciales,
@@ -3551,6 +3944,7 @@ function guardarLote(e) {
       precioHuevo:        +f.precioHuevo.value,
       preciosHuevoPorMes: modoEditar ? (getLote(modoEditar)?.preciosHuevoPorMes || {}) : {},
       gastosMes:          +f.gastosMes.value,
+      gastosFijosDetalle: modoEditar ? (getLote(modoEditar)?.gastosFijosDetalle || {}) : {},
       pctNoVendible:      +(f.pctNoVendible?.value    ?? 2),
       costoBandeja:       +(f.costoBandeja?.value     ?? 20),
       costoCaja:          +(f.costoCaja?.value         ?? 150),
@@ -3592,6 +3986,7 @@ function aplicarConfig() {
   lote.tasaImpuesto = _imp > 0 ? _imp / 100 : 0;
   [1,2,3,4,5,6,7].forEach(d => lote.costoDieta[d] = +document.getElementById(`cfg-d${d}`).value || 520);
   lote.consumoGrDieta = Object.fromEntries([1,2,3,4,5,6,7].map(d => [d, +(document.getElementById(`cfg-gr${d}`)?.value) || 0]));
+  lote.gastosFijosDetalle = leerDesglose('cfg');
   saveLote(lote);
   proy = proyectar(lote);
   renderDashboard(lote);
@@ -4076,9 +4471,58 @@ function exportarExcel() {
     ['', ''],
     ['→ Para modificar postura/mortalidad/consumo, edita la hoja "Parametros"',''],
     ['→ "Curvas Referencia" se recalcula automáticamente con esas celdas',''],
+    ['→ Ver hoja "Estructura Costos" para el desglose por tipo',''],
     ['Generado', HOY_STR],
   ];
+  const _detFij = getDetalleFijos(lote);
+  if (_detFij.detallado) {
+    resData.push(['', ''], ['DESGLOSE DEL GASTO FIJO MENSUAL', '']);
+    _detFij.items.forEach(i => resData.push([`  ${i.label} ($/mes)`, i.monto]));
+    resData.push(['  Suma del desglose ($/mes)', _detFij.suma]);
+  }
   XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(resData), 'Resumen');
+
+  // ══ ESTRUCTURA DE COSTOS ══
+  const EC = estructuraCostos(lote, proy);
+  const ingTotEC = proy.reduce((a,d)=>a+d.ingreso,0);
+  const ecRows = [
+    ['ESTRUCTURA DE COSTOS DEL CICLO'],
+    [],
+    ['Grupo','Partida','Tipo','Total ciclo ($)','% del costo','$/huevo vendible','% del ingreso'],
+  ];
+  EC.items.forEach(i => ecRows.push([
+    i.grupo, i.label, i.tipo, i.monto,
+    EC.total > 0 ? i.monto / EC.total : 0,
+    EC.base  > 0 ? i.monto / EC.base  : 0,
+    ingTotEC > 0 ? i.monto / ingTotEC : 0,
+  ]));
+  ecRows.push([]);
+  ecRows.push(['', 'COSTO TOTAL', '', EC.total, 1,
+    EC.base > 0 ? EC.total / EC.base : 0,
+    ingTotEC > 0 ? EC.total / ingTotEC : 0]);
+  const sumTipo = t => EC.items.filter(i=>i.tipo===t).reduce((a,i)=>a+i.monto,0);
+  ecRows.push([]);
+  ecRows.push(['Resumen por naturaleza del costo']);
+  [['Variables','variable'],['Fijos','fijo'],['Inversión / únicos','inversion']].forEach(([lbl,t]) => {
+    const m = sumTipo(t);
+    ecRows.push(['', lbl, '', m, EC.total>0 ? m/EC.total : 0, EC.base>0 ? m/EC.base : 0, ingTotEC>0 ? m/ingTotEC : 0]);
+  });
+  ecRows.push([]);
+  ecRows.push(['Base de reparto', EC.base, 'huevos vendibles']);
+  ecRows.push(['Ingreso total del ciclo', ingTotEC]);
+  if (!EC.detallado) ecRows.push(['Nota','El gasto fijo no está desglosado por categoría en este lote.']);
+  const wsEC = XLSX.utils.aoa_to_sheet(ecRows);
+  wsEC['!cols'] = [{wch:20},{wch:24},{wch:12},{wch:16},{wch:13},{wch:17},{wch:15}];
+  // Formato: montos con miles, porcentajes como %
+  for (let r = 3; r < ecRows.length; r++) {
+    const fila = ecRows[r];
+    if (!fila || fila.length < 4) continue;
+    const cD = XLSX.utils.encode_cell({r, c:3}); if (wsEC[cD]) wsEC[cD].z = '#,##0';
+    const cE = XLSX.utils.encode_cell({r, c:4}); if (wsEC[cE]) wsEC[cE].z = '0.0%';
+    const cF = XLSX.utils.encode_cell({r, c:5}); if (wsEC[cF]) wsEC[cF].z = '#,##0.00';
+    const cG = XLSX.utils.encode_cell({r, c:6}); if (wsEC[cG]) wsEC[cG].z = '0.0%';
+  }
+  XLSX.utils.book_append_sheet(wb, wsEC, 'Estructura Costos');
 
   // ══ GASTOS ESPECIALES ══
   const geRows = [['Categoría','Descripción','Semana','Monto ($)']];
@@ -4417,6 +4861,8 @@ ${imgFin  ? `<div><div style="font-size:8pt;color:#888;margin-bottom:4px;text-tr
 ${imgPos  ? `<div><div style="font-size:8pt;color:#888;margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em">% Postura proyectada</div><img class="ch" src="${imgPos}"></div>` : ''}
 ${imgAcum ? `<div><div style="font-size:8pt;color:#888;margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em">Resultado neto acumulado</div><img class="ch" src="${imgAcum}"></div>` : ''}
 ${imgCascada ? `<div><div style="font-size:8pt;color:#888;margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em">Cascada de costos por huevo (promedio ciclo)</div><img class="ch" src="${imgCascada}"></div>` : ''}
+
+${seccionCostosPDF(lote, proy)}
 
 <h2>Curvas de referencia — ${gen}</h2>
 <div style="font-size:8pt;color:#888;margin-bottom:6px">
