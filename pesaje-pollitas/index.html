@@ -604,7 +604,8 @@ async function inicializarApp() {
   sel.innerHTML = '<option value="">— seleccionar —</option>';
   for (let i = 1; i <= 80; i++) {
     const o = document.createElement('option');
-    o.value = i; o.textContent = `Semana ${i}`;
+    const d1 = (i-1)*7+1, d2 = i*7;
+    o.value = i; o.textContent = `Semana ${i}  (días ${d1}–${d2})`;
     sel.appendChild(o);
   }
   await cargarLotes();
@@ -1635,7 +1636,8 @@ function editarPesaje(semana) {
 
   let opsSemana = '';
   for (let i = 1; i <= 80; i++) {
-    opsSemana += `<option value="${i}" ${i===semana?'selected':''}>${i===semana?'★ ':''}Semana ${i}</option>`;
+    const d1=`${(i-1)*7+1}`, d2=`${i*7}`;
+    opsSemana += `<option value="${i}" ${i===semana?'selected':''}>${i===semana?'★ ':''}Semana ${i}  (días ${d1}–${d2})</option>`;
   }
 
   const pesosTexto = r.pesosRaw?.length
