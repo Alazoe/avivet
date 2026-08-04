@@ -1089,6 +1089,7 @@ function renderResumen(registros, curvaRef) {
         </table>
       </div>
     </div>
+    ${renderCrecimiento(registros, curvaRef)}
     <div class="card">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
         <h3 style="margin:0">Peso promedio vs curva genética</h3>
@@ -1115,7 +1116,92 @@ function renderResumen(registros, curvaRef) {
   renderGrafico(registros, curvaRef);
   renderGraficoPeso(registros, curvaRef);
   const primero = registros.find(r => r.pesosRaw?.length > 0);
-  if (primero) mostrarHistograma(primero.semana);
+  if (primero) mostrarHistograma(primero.id);
+}
+
+function renderCrecimiento(registros, curvaRef) {
+  const sorted = [...registros].sort((a,b) => a.semana - b.semana);
+  if (sorted.length < 2) return '';
+
+  // Estado relativo a la curva por semana (para detectar patrón compensatorio)
+  const statusCurva = {};
+  sorted.forEach(r => {
+    const ref = curvaRef[r.semana];
+    if (ref) statusCurva[r.semana] = (r.promedio - ref.prom) / ref.prom; // fracción: negativo = bajo curva
+  });
+
+  const alertas = [];
+  let rows = '';
+
+  for (let i = 1; i < sorted.length; i++) {
+    const prev   = sorted[i-1];
+    const curr   = sorted[i];
+    const nSems  = curr.semana - prev.semana; // semanas entre mediciones
+    const refP   = curvaRef[prev.semana];
+    const refC   = curvaRef[curr.semana];
+
+    // Ganancia absoluta (g) y por semana
+    const ganTotal = Math.round((curr.promedio - prev.promedio) * 1000);
+    const ganSem   = Math.round(ganTotal / nSems);
+    const ganIdeal = (refP && refC) ? Math.round((refC.prom - refP.prom) * 1000) : null;
+    const ganIdealSem = ganIdeal !== null ? Math.round(ganIdeal / nSems) : null;
+
+    // % crecimiento total sobre el período
+    const crecReal  = prev.promedio > 0 ? (curr.promedio - prev.promedio) / prev.promedio * 100 : null;
+    const crecIdeal = (refP && refC && refP.prom > 0) ? (refC.prom - refP.prom) / refP.prom * 100 : null;
+    const diffPP    = (crecReal !== null && crecIdeal !== null) ? crecReal - crecIdeal : null; // puntos porcentuales sobre/bajo ideal
+
+    // Detección compensatorio: estuvo bajo curva la semana anterior Y ahora crece >25% más rápido de lo ideal
+    const prevBajo      = statusCurva[prev.semana] !== undefined && statusCurva[prev.semana] < -0.02; // >2% bajo curva
+    const crecExcesivo  = diffPP !== null && crecIdeal !== null && crecReal > crecIdeal * 1.25 && diffPP > 2;
+    const isCompensatorio = prevBajo && crecExcesivo;
+    // Crecimiento lento: más de 2pp bajo el ideal
+    const isLento = diffPP !== null && diffPP < -2 && ganTotal >= 0;
+    const sinGanancia = ganTotal <= 0;
+
+    let badge, badgeColor;
+    if (sinGanancia)       { badge = '📉 Sin ganancia';  badgeColor = '#c62828'; }
+    else if (isCompensatorio){ badge = '🔴 Compensatorio'; badgeColor = '#c62828'; }
+    else if (isLento)      { badge = '⚠️ Lento';         badgeColor = '#e65100'; }
+    else                   { badge = '✅ Normal';         badgeColor = '#2e7d32'; }
+
+    if (isCompensatorio) {
+      alertas.push(`S${prev.semana}→S${curr.semana}: el lote estaba ${Math.abs(statusCurva[prev.semana]*100).toFixed(1)}% bajo la curva y creció ${diffPP.toFixed(1)} pp por encima del ritmo esperado.`);
+    }
+
+    const salto = nSems > 1 ? `<span style="font-size:.7rem;color:#999"> (${nSems} sem)</span>` : '';
+    const ganSemTxt   = nSems > 1 ? `${ganSem > 0?'+':''}${ganSem} g/sem` : '';
+    const ganIdealTxt = ganIdealSem !== null && nSems > 1 ? `${ganIdealSem > 0?'+':''}${ganIdealSem} g/sem` : (ganIdeal !== null ? `${ganIdeal > 0?'+':''}${ganIdeal} g` : '—');
+
+    rows += `<tr>
+      <td style="font-weight:600;white-space:nowrap">S${prev.semana}→S${curr.semana}${salto}</td>
+      <td style="font-weight:600">${ganTotal > 0?'+':''}${ganTotal} g${nSems>1?`<br><span style="font-size:.72rem;color:#555">${ganSemTxt}</span>`:''}</td>
+      <td style="color:#888">${ganIdeal !== null?(ganIdeal>0?'+':'')+ganIdeal+' g':'—'}${nSems>1&&ganIdealTxt?`<br><span style="font-size:.72rem">${ganIdealTxt}</span>`:''}</td>
+      <td style="font-weight:600">${crecReal !== null?(crecReal>=0?'+':'')+crecReal.toFixed(1)+'%':'—'}</td>
+      <td style="color:#888">${crecIdeal !== null?'+'+crecIdeal.toFixed(1)+'%':'—'}</td>
+      <td style="color:${badgeColor};font-weight:600;white-space:nowrap">${badge}</td>
+    </tr>`;
+  }
+
+  const alertasHtml = alertas.length ? `
+    <div style="background:#fff3e0;border-left:4px solid #f57c00;border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:.82rem;color:#4e342e">
+      <strong>⚠️ Patrón compensatorio detectado</strong><br>
+      ${alertas.map(a => `• ${a}`).join('<br>')}
+      <span style="display:block;margin-top:6px;opacity:.85">El crecimiento compensatorio puede provocar sobrepeso, madurez sexual anticipada y menor persistencia en postura. Revisa programa de alimentación y restricción.</span>
+    </div>` : '';
+
+  return `<div class="card">
+    <h3>📈 Crecimiento semanal</h3>
+    <p style="font-size:.75rem;color:#888;margin-bottom:10px">Ganancia e incremento % semana a semana · comparado con ritmo ideal de la curva genética</p>
+    ${alertasHtml}
+    <div style="overflow-x:auto">
+      <table class="tabla-resumen">
+        <thead><tr><th>Período</th><th>Ganancia real</th><th>Ganancia ideal</th><th>Crec. real</th><th>Crec. ideal</th><th>Estado</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+    <p style="font-size:.72rem;color:#aaa;margin-top:8px">🔴 Compensatorio = lote estuvo &gt;2% bajo curva y crece &gt;25% más rápido de lo esperado · ⚠️ Lento = &gt;2 pp bajo ritmo ideal</p>
+  </div>`;
 }
 
 function renderGraficoPeso(registros, curvaRef) {
