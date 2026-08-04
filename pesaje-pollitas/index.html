@@ -212,6 +212,7 @@ label { font-size:.85rem; color:#666; font-weight:500; }
         <option value="">— seleccionar —</option>
       </select>
     </label>
+    <div id="info-edad" style="display:none;font-size:.82rem;color:#555;margin-top:4px;padding:5px 10px;background:#f0f7f0;border-radius:8px;border-left:3px solid var(--verde)"></div>
     <label style="margin-top:10px">Fecha de pesaje
       <input type="date" id="fecha-pesaje">
     </label>
@@ -645,10 +646,17 @@ function poblarSelectLotes() {
 function onLoteChange() {
   const id   = document.getElementById('sel-lote').value;
   const lote = lotes.find(l => l.id === id);
+  const infoEl = document.getElementById('info-edad');
   if (lote?.fechaNac) {
-    const sem = Math.floor((new Date() - new Date(lote.fechaNac)) / (7*24*3600*1000));
-    const s   = document.getElementById('sel-semana');
-    for (let o of s.options) if (o.value == sem) { s.value = sem; break; }
+    const msPerDay = 24*3600*1000;
+    const diasVida = Math.floor((new Date() - new Date(lote.fechaNac)) / msPerDay) + 1;
+    const semActual = Math.ceil(diasVida / 7);
+    const s = document.getElementById('sel-semana');
+    for (let o of s.options) if (o.value == semActual) { s.value = semActual; break; }
+    infoEl.style.display = 'block';
+    infoEl.textContent   = `📅 Las aves tienen ${diasVida} días de vida hoy (semana ${semActual})`;
+  } else {
+    infoEl.style.display = 'none';
   }
 }
 
@@ -1061,12 +1069,12 @@ function renderResumen(registros, curvaRef) {
     const color   = parseFloat(unif) >= unifMin ? 'sem-verde' : parseFloat(unif) >= unifMin-10 ? 'sem-amarillo' : 'sem-rojo';
     const hasPesos= r.pesosRaw?.length > 0;
     return `<tr class="hist-row${hasPesos?' hist-row-click':''}" data-sem="${r.semana}"
-        ${hasPesos ? `onclick="mostrarHistograma(${r.semana})"` : ''}>
+        ${hasPesos ? `onclick="mostrarHistograma('${r.id}')"` : ''}>
       <td>${r.semana}</td><td>${r.promedio.toFixed(3)}</td><td>${ref ? ref.prom.toFixed(3) : '—'}</td>
       <td>${diff !== '—' ? (parseFloat(diff)>=0?'+':'')+diff+'%' : '—'}</td>
       <td><span class="semaforo ${color}"></span>${unif}%</td>
       <td>${cv}%</td><td>${r.nAves}</td>
-      <td style="white-space:nowrap">${hasPesos ? `<button onclick="event.stopPropagation();mostrarHistograma(${r.semana})" style="background:var(--verde);color:#fff;border:none;border-radius:6px;padding:3px 6px;font-size:.75rem;cursor:pointer;margin-right:3px">📊</button>` : ''}<button onclick="event.stopPropagation();editarPesaje(${r.semana})" style="background:#f3e5f5;color:#6a1b9a;border:1px solid #ce93d8;border-radius:6px;padding:3px 6px;font-size:.75rem;cursor:pointer">✏️</button></td>
+      <td style="white-space:nowrap">${hasPesos ? `<button onclick="event.stopPropagation();mostrarHistograma('${r.id}')" style="background:var(--verde);color:#fff;border:none;border-radius:6px;padding:3px 6px;font-size:.75rem;cursor:pointer;margin-right:3px">📊</button>` : ''}<button onclick="event.stopPropagation();editarPesaje('${r.id}')" style="background:#f3e5f5;color:#6a1b9a;border:1px solid #ce93d8;border-radius:6px;padding:3px 6px;font-size:.75rem;cursor:pointer">✏️</button></td>
     </tr>`;
   }).join('');
 
@@ -1220,15 +1228,16 @@ function renderGrafico(registros, curvaRef) {
 
 // ══ EXPORTAR PDF ═════════════════════════════════════════════
 function exportarPDFSemanal() {
-  const semana = window._histSemanaActual;
-  if (!semana) { toast('Selecciona una semana del historial primero'); return; }
+  const id = window._histSemanaActual;
+  if (!id) { toast('Selecciona una semana del historial primero'); return; }
   const registros = window._histRegistros || [];
   const curvaRef  = window._histCurva || {};
   const loteId    = document.getElementById('sel-lote-hist').value;
   const loteObj   = lotes.find(l => l.id === loteId);
-  const r = registros.find(x => x.semana === semana);
+  const r = registros.find(x => x.id === id);
   if (!r) return;
 
+  const semana   = r.semana;
   const ref      = curvaRef[semana];
   const cvNum    = r.cv * 100;
   const unifNum  = r.uniformidad * 100;
@@ -1442,12 +1451,13 @@ ${ref ? `<div class="ref">📈 Curva esperada semana ${semana}: <b>${ref.prom.to
 }
 
 // ══ HISTOGRAMA ════════════════════════════════════════════════
-function mostrarHistograma(semana) {
+function mostrarHistograma(id) {
   const registros = window._histRegistros || [];
   const curvaRef  = window._histCurva     || {};
-  const r = registros.find(x => x.semana === semana);
+  const r = registros.find(x => x.id === id);
   if (!r?.pesosRaw?.length) return;
-  window._histSemanaActual = semana;
+  const semana = r.semana;
+  window._histSemanaActual = id;
   document.getElementById('hist-card').style.display = 'block';
   document.getElementById('hist-titulo').textContent = `Distribución Semana ${semana} · ${r.pesosRaw.length} aves`;
   document.getElementById('hist-container').innerHTML = renderHistogramaSVG(r.pesosRaw, curvaRef[semana]);
@@ -1624,15 +1634,15 @@ function calcularStats(pesos) {
 let _editPesajeId   = null;
 let _editSemanaOrig = null;
 
-function editarPesaje(semana) {
+function editarPesaje(id) {
   const registros = window._histRegistros || [];
   const loteId    = document.getElementById('sel-lote-hist').value;
   const loteObj   = lotes.find(l => l.id === loteId);
-  const r         = registros.find(x => x.semana === semana);
+  const r         = registros.find(x => x.id === id);
   if (!r) return;
 
   _editPesajeId   = r.id;
-  _editSemanaOrig = semana;
+  _editSemanaOrig = r.semana;
 
   let opsSemana = '';
   for (let i = 1; i <= 80; i++) {
