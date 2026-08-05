@@ -1320,7 +1320,7 @@ function exportarPDFSemanal() {
   const curvaRef  = window._histCurva || {};
   const loteId    = document.getElementById('sel-lote-hist').value;
   const loteObj   = lotes.find(l => l.id === loteId);
-  const r = registros.find(x => x.id === id);
+  const r = registros.find(x => String(x.id) === String(id));
   if (!r) return;
 
   const semana   = r.semana;
@@ -1540,7 +1540,7 @@ ${ref ? `<div class="ref">📈 Curva esperada semana ${semana}: <b>${ref.prom.to
 function mostrarHistograma(id) {
   const registros = window._histRegistros || [];
   const curvaRef  = window._histCurva     || {};
-  const r = registros.find(x => x.id === id);
+  const r = registros.find(x => String(x.id) === String(id));
   if (!r?.pesosRaw?.length) return;
   const semana = r.semana;
   window._histSemanaActual = id;
@@ -1724,7 +1724,7 @@ function editarPesaje(id) {
   const registros = window._histRegistros || [];
   const loteId    = document.getElementById('sel-lote-hist').value;
   const loteObj   = lotes.find(l => l.id === loteId);
-  const r         = registros.find(x => x.id === id);
+  const r         = registros.find(x => String(x.id) === String(id));
   if (!r) return;
 
   _editPesajeId   = r.id;
@@ -1733,7 +1733,7 @@ function editarPesaje(id) {
   let opsSemana = '';
   for (let i = 1; i <= 80; i++) {
     const d1=`${(i-1)*7+1}`, d2=`${i*7}`;
-    opsSemana += `<option value="${i}" ${i===semana?'selected':''}>${i===semana?'★ ':''}Semana ${i}  (días ${d1}–${d2})</option>`;
+    opsSemana += `<option value="${i}" ${i===r.semana?'selected':''}>${i===r.semana?'★ ':''}Semana ${i}  (días ${d1}–${d2})</option>`;
   }
 
   const pesosTexto = r.pesosRaw?.length
