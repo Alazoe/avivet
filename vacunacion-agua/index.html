@@ -1,0 +1,1836 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vacunación en Agua de Bebida — AviVet</title>
+<meta name="description" content="Cómo vacunar aves por agua de bebida: calculadora de volumen y dosis, calidad del agua, espacio de bebedero, cronograma del día y control de calidad. MV Andrés Lazo Escobar — AviVet.">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root{
+  --verde:#2e7d32; --verde-d:#1b5e20; --verde-l:#e8f5e9;
+  --azul:#1565c0; --azul-l:#e3f2fd;
+  --rojo:#c62828; --rojo-l:#ffebee;
+  --ambar:#ef6c00; --ambar-l:#fff3e0;
+  --gris:#555; --gris2:#777; --linea:#e0e0e0;
+}
+body{ font-family:'Segoe UI', Arial, sans-serif; background:#f0f4f0; color:#222; line-height:1.55; }
+
+/* ---------- Header ---------- */
+.header{background:var(--verde); color:#fff; padding:26px 20px 20px; text-align:center;}
+.header .logo{display:inline-flex; align-items:center; justify-content:center; width:54px; height:54px;
+  border-radius:50%; background:rgba(255,255,255,.15); font-size:22px; font-weight:900; letter-spacing:-1px; margin-bottom:10px;}
+.header h1{font-size:23px; font-weight:900; letter-spacing:-.4px;}
+.header p{font-size:10.5pt; opacity:.88; margin-top:4px;}
+.header .subtitle{font-size:9pt; opacity:.7; margin-top:5px;}
+.back{display:inline-block; margin-top:12px; font-size:9pt; color:#fff; text-decoration:none; opacity:.8; border-bottom:1px solid rgba(255,255,255,.4);}
+.back:hover{opacity:1;}
+
+/* ---------- Tabs ---------- */
+.tabs{position:sticky; top:0; z-index:100; background:#fff; border-bottom:1px solid var(--linea); box-shadow:0 1px 6px rgba(0,0,0,.06);}
+.tabs-inner{max-width:960px; margin:0 auto; display:flex; overflow-x:auto; scrollbar-width:none;}
+.tabs-inner::-webkit-scrollbar{display:none;}
+.tab{flex:0 0 auto; padding:13px 15px; font-size:9.5pt; font-weight:700; color:var(--gris); background:none;
+  border:none; border-bottom:3px solid transparent; cursor:pointer; white-space:nowrap; font-family:inherit; transition:color .15s;}
+.tab:hover{color:var(--verde);}
+.tab.active{color:var(--verde); border-bottom-color:var(--verde);}
+
+/* ---------- Layout ---------- */
+.container{max-width:960px; margin:24px auto; padding:0 16px 60px;}
+.panel{display:none; animation:fade .25s ease;}
+.panel.active{display:block;}
+@keyframes fade{from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none}}
+
+.card{background:#fff; border-radius:9px; box-shadow:0 1px 6px rgba(0,0,0,.09); padding:20px 22px; margin-bottom:18px;}
+.card h2{font-size:13.5pt; color:var(--verde); font-weight:800; margin-bottom:4px; letter-spacing:-.2px;}
+.card h3{font-size:11pt; font-weight:750; margin:18px 0 8px;}
+.card > .lead{font-size:9.5pt; color:var(--gris2); margin-bottom:16px;}
+.card p{font-size:10pt; color:#333; margin-bottom:9px;}
+.card ul, .card ol{margin:0 0 10px 20px; font-size:10pt; color:#333;}
+.card li{margin-bottom:6px;}
+
+/* ---------- Formulario ---------- */
+.grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+@media(max-width:620px){ .grid{grid-template-columns:1fr;} }
+.field label{display:block; font-size:8.5pt; font-weight:700; color:var(--gris); text-transform:uppercase; letter-spacing:.5px; margin-bottom:5px;}
+.field input, .field select{width:100%; padding:9px 11px; font-size:10.5pt; font-family:inherit; border:1px solid #c8d4c8; border-radius:6px; background:#fff; color:#222;}
+.field input:focus, .field select:focus{outline:none; border-color:var(--verde); box-shadow:0 0 0 2px rgba(46,125,50,.15);}
+.field .hint{font-size:8pt; color:var(--gris2); margin-top:4px; line-height:1.4;}
+.radio-row{display:flex; gap:8px; flex-wrap:wrap;}
+.radio-row label{flex:1; min-width:150px; display:flex; align-items:flex-start; gap:7px; padding:9px 11px;
+  border:1px solid #c8d4c8; border-radius:6px; cursor:pointer; font-size:9.5pt; font-weight:600;
+  text-transform:none; letter-spacing:0; color:#222; background:#fff; transition:.15s;}
+.radio-row label:hover{border-color:var(--verde);}
+.radio-row input{margin-top:2px; accent-color:var(--verde); width:auto;}
+.radio-row label.sel{border-color:var(--verde); background:var(--verde-l);}
+.radio-row .rl-sub{display:block; font-weight:400; font-size:8pt; color:var(--gris2); margin-top:2px;}
+
+.btn{display:inline-flex; align-items:center; gap:7px; padding:11px 24px; background:var(--verde); color:#fff;
+  border:none; border-radius:7px; font-size:11pt; font-weight:800; font-family:inherit; cursor:pointer; transition:background .15s;}
+.btn:hover{background:var(--verde-d);}
+.btn.sec{background:#fff; color:var(--verde); border:1.5px solid var(--verde);}
+.btn.sec:hover{background:var(--verde-l);}
+.btn-row{display:flex; gap:10px; flex-wrap:wrap; margin-top:18px;}
+
+/* ---------- Resultados ---------- */
+.res-hero{background:linear-gradient(135deg, var(--verde) 0%, var(--verde-d) 100%); color:#fff; border-radius:9px; padding:22px 24px; margin-bottom:16px;}
+.res-hero .rh-label{font-size:8.5pt; text-transform:uppercase; letter-spacing:1.2px; opacity:.85;}
+.res-hero .rh-value{font-size:34px; font-weight:900; letter-spacing:-1px; line-height:1.1; margin:4px 0;}
+.res-hero .rh-value small{font-size:16px; font-weight:700; opacity:.9;}
+.res-hero .rh-sub{font-size:9.5pt; opacity:.9;}
+.res-hero .rh-rango{display:inline-block; margin-top:10px; padding:4px 11px; border-radius:20px; background:rgba(255,255,255,.18); font-size:9pt; font-weight:600;}
+
+.res-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px; margin-bottom:16px;}
+.res-item{background:#fff; border-radius:8px; border-left:4px solid var(--verde); padding:13px 15px; box-shadow:0 1px 5px rgba(0,0,0,.08);}
+.res-item .ri-label{font-size:8pt; text-transform:uppercase; letter-spacing:.7px; color:var(--gris2); font-weight:700;}
+.res-item .ri-value{font-size:19px; font-weight:800; color:var(--verde); margin:3px 0; letter-spacing:-.4px;}
+.res-item .ri-note{font-size:8.5pt; color:var(--gris); line-height:1.4;}
+.res-item.azul{border-left-color:var(--azul);} .res-item.azul .ri-value{color:var(--azul);}
+.res-item.ambar{border-left-color:var(--ambar);} .res-item.ambar .ri-value{color:var(--ambar);}
+
+/* ---------- Avisos ---------- */
+.alert{border-radius:8px; padding:13px 16px; font-size:9.5pt; margin-bottom:12px; line-height:1.5;}
+.alert b{display:block; margin-bottom:3px; font-size:10pt;}
+.alert.rojo{background:var(--rojo-l); border-left:4px solid var(--rojo); color:#5d1a1a;}
+.alert.ambar{background:var(--ambar-l); border-left:4px solid var(--ambar); color:#6b3200;}
+.alert.azul{background:var(--azul-l); border-left:4px solid var(--azul); color:#0d3c6e;}
+.alert.verde{background:var(--verde-l); border-left:4px solid var(--verde); color:#1b3d1d;}
+
+/* ---------- Tablas ---------- */
+.tabla-wrap{overflow-x:auto; margin:10px 0 14px;}
+table{width:100%; border-collapse:collapse; font-size:9.5pt; min-width:440px;}
+th{background:var(--verde-l); color:var(--verde-d); font-weight:800; text-align:left; padding:9px 11px; font-size:8.5pt; text-transform:uppercase; letter-spacing:.4px; border-bottom:2px solid #c5e1c5;}
+td{padding:9px 11px; border-bottom:1px solid var(--linea); vertical-align:top;}
+tr:last-child td{border-bottom:none;}
+tbody tr:nth-child(even){background:#fafcfa;}
+td.hora{font-weight:800; color:var(--verde); white-space:nowrap; font-variant-numeric:tabular-nums;}
+td.num{text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap;}
+tr.destacada{background:var(--verde-l) !important;}
+tr.destacada td{font-weight:700; color:var(--verde-d);}
+.src{font-size:8pt; color:var(--gris2); display:block; font-weight:400; margin-top:2px;}
+
+/* ---------- Ilustraciones ---------- */
+.ilus{background:#f4f8f4; border:1px solid #dce8dc; border-radius:8px; padding:14px 10px 10px; text-align:center; margin:6px 0 4px;}
+.ilus svg{width:100%; height:auto; max-width:300px; display:block; margin:0 auto;}
+.ilus-cap{font-size:8.5pt; color:var(--gris2); margin-top:8px; line-height:1.4; font-style:italic;}
+.ilus-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; margin:14px 0;}
+
+/* ---------- Timeline / pasos ---------- */
+.fase{margin-bottom:26px;}
+.fase-head{display:flex; align-items:center; gap:10px; margin-bottom:12px;}
+.fase-num{flex:0 0 auto; width:30px; height:30px; border-radius:50%; background:var(--verde); color:#fff;
+  display:flex; align-items:center; justify-content:center; font-weight:900; font-size:13px;}
+.fase-title{font-size:12pt; font-weight:800; color:var(--verde-d);}
+.fase-sub{font-size:8.5pt; color:var(--gris2); text-transform:uppercase; letter-spacing:.6px;}
+.pasos{list-style:none; margin:0 0 0 14px; border-left:2px solid #d5e8d5; padding-left:20px;}
+.pasos li{position:relative; margin-bottom:14px; font-size:10pt;}
+.pasos li::before{content:""; position:absolute; left:-27px; top:6px; width:11px; height:11px; border-radius:50%; background:#fff; border:2.5px solid var(--verde);}
+.pasos li b{color:var(--verde-d);}
+.pasos li .porque{display:block; font-size:8.5pt; color:var(--gris2); margin-top:3px; font-style:italic;}
+
+/* ---------- Checklist ---------- */
+.chk-item{display:flex; gap:11px; align-items:flex-start; padding:12px 0; border-bottom:1px solid var(--linea);}
+.chk-item:last-child{border-bottom:none;}
+.chk-item input{width:19px; height:19px; margin-top:2px; accent-color:var(--verde); cursor:pointer; flex:0 0 auto;}
+.chk-txt{flex:1; font-size:10pt;}
+.chk-txt .chk-t{font-weight:700;}
+.chk-txt .chk-d{font-size:8.5pt; color:var(--gris2); margin-top:2px; line-height:1.45;}
+.badge-crit{display:inline-block; background:var(--rojo); color:#fff; font-size:7pt; font-weight:800; padding:2px 6px;
+  border-radius:3px; text-transform:uppercase; letter-spacing:.5px; margin-left:6px; vertical-align:middle;}
+.score-box{border-radius:9px; padding:20px 22px; margin-bottom:16px; text-align:center; background:#eceff1; border:2px solid #cfd8dc;}
+.score-box .sb-num{font-size:42px; font-weight:900; letter-spacing:-1.5px; line-height:1;}
+.score-box .sb-lbl{font-size:9pt; text-transform:uppercase; letter-spacing:1px; font-weight:800; margin-top:6px;}
+.score-box .sb-msg{font-size:9.5pt; margin-top:8px; line-height:1.5;}
+.score-box.ok{background:var(--verde-l); border-color:#a5d6a7;} .score-box.ok .sb-num, .score-box.ok .sb-lbl{color:var(--verde-d);}
+.score-box.med{background:var(--ambar-l); border-color:#ffcc80;} .score-box.med .sb-num, .score-box.med .sb-lbl{color:var(--ambar);}
+.score-box.mal{background:var(--rojo-l); border-color:#ef9a9a;} .score-box.mal .sb-num, .score-box.mal .sb-lbl{color:var(--rojo);}
+
+/* ---------- Escala de tinción ---------- */
+.escala{display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin:14px 0;}
+@media(max-width:560px){ .escala{grid-template-columns:repeat(2,1fr);} }
+.esc-item{text-align:center; border:1px solid var(--linea); border-radius:8px; padding:12px 8px; background:#fafafa;}
+.esc-sw{height:30px; border-radius:5px; margin-bottom:8px; border:1px solid rgba(0,0,0,.12);}
+.esc-t{font-weight:800; font-size:12pt; color:var(--verde-d);}
+.esc-d{font-size:8pt; color:var(--gris2); margin-top:3px; line-height:1.35;}
+
+/* ---------- Errores ---------- */
+.err{display:flex; gap:13px; padding:14px 0; border-bottom:1px solid var(--linea); align-items:flex-start;}
+.err:last-child{border-bottom:none;}
+.err-ico{flex:0 0 auto; font-size:20px; line-height:1.2;}
+.err-body .err-t{font-weight:750; font-size:10.5pt; color:var(--rojo); margin-bottom:3px;}
+.err-body .err-d{font-size:9.5pt; color:#333; margin-bottom:5px;}
+.err-body .err-f{font-size:9pt; color:var(--verde-d); background:var(--verde-l); padding:6px 10px; border-radius:5px; display:inline-block;}
+
+/* ---------- Fuentes ---------- */
+.fuentes{font-size:8.5pt; color:var(--gris2); line-height:1.7;}
+.fuentes a{color:var(--verde); text-decoration:none;}
+.fuentes a:hover{text-decoration:underline;}
+.fte{border-left:3px solid var(--verde-l); padding-left:14px; margin-bottom:16px;}
+.fte b{color:#333; font-size:9.5pt;}
+
+.footer{text-align:center; font-size:8.5pt; color:var(--gris2); padding:20px 16px 0; line-height:1.7;}
+.footer a{color:var(--verde); text-decoration:none; font-weight:600;}
+
+/* ---------- Impresión ---------- */
+@media print{
+  body{background:#fff;}
+  .tabs, .btn-row, .back, .no-print{display:none !important;}
+  .panel{display:block !important; page-break-before:always;}
+  .panel:first-of-type{page-break-before:avoid;}
+  .card{box-shadow:none; border:1px solid #ccc; page-break-inside:avoid;}
+  .header{background:#fff !important; color:#222 !important; border-bottom:2px solid var(--verde);}
+  .header .logo{background:var(--verde) !important; color:#fff !important;}
+  .res-hero{background:#fff !important; color:#222 !important; border:2px solid var(--verde);}
+  .res-hero .rh-value{color:var(--verde) !important;}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== Símbolos SVG reutilizables ===== -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="gallina" viewBox="0 0 44 46">
+    <g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M6 20 Q1 13 3 11 Q6 13 8 17"/>
+      <ellipse cx="19" cy="26" rx="13.5" ry="9.5"/>
+      <path d="M28 19 Q30 14 31 11"/>
+      <circle cx="32" cy="12" r="5.6"/>
+      <path d="M29 6.6 Q30 4 31.4 6.2 Q32.6 3.4 34 6 Q35.4 4 36 6.8"/>
+      <path d="M37.4 11 L41.6 12.6 L37.4 14.4"/>
+      <path d="M33 17.4 Q34.6 19.6 32.6 20.4"/>
+      <path d="M15 35 L14 43 M13 43 L10 43.6 M13 43 L16 43.6"/>
+      <path d="M24 35 L25 43 M24 43 L21 43.6 M24 43 L27 43.6"/>
+      <path d="M14 24 Q19 21 24 24"/>
+    </g>
+    <circle cx="33.6" cy="11" r="1.1" fill="currentColor"/>
+  </symbol>
+</svg>
+
+<div class="header">
+  <div class="logo">AV</div>
+  <h1>Vacunación en Agua de Bebida</h1>
+  <p>Cómo hacerla bien: cálculo, calidad del agua, protocolo y control</p>
+  <p class="subtitle">MV Andrés Lazo Escobar · AviVet · Los Ríos / La Araucanía / Los Lagos</p>
+  <a class="back" href="../">← Volver a herramientas AviVet</a>
+</div>
+
+<div class="tabs">
+  <div class="tabs-inner">
+    <button class="tab active" data-panel="calc">🧮 Calculadora</button>
+    <button class="tab" data-panel="agua">💧 Calidad del agua</button>
+    <button class="tab" data-panel="espacio">📏 Espacio de bebedero</button>
+    <button class="tab" data-panel="crono">🕐 Cronograma</button>
+    <button class="tab" data-panel="proto">📋 Protocolo</button>
+    <button class="tab" data-panel="monit">🔵 Monitoreo</button>
+    <button class="tab" data-panel="errores">⚠️ Errores frecuentes</button>
+    <button class="tab" data-panel="fuentes">📚 Fuentes</button>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- ================= CALCULADORA ================= -->
+<div class="panel active" id="p-calc">
+
+  <div class="card">
+    <h2>Datos del lote</h2>
+    <p class="lead">Calcula el volumen de agua de vacunación contrastando todas las referencias técnicas disponibles para tu tipo de ave.</p>
+
+    <div class="grid">
+      <div class="field">
+        <label for="aves">Número de aves</label>
+        <input type="number" id="aves" min="1" step="1" value="5000" placeholder="Ej: 5000">
+        <div class="hint">Aves realmente presentes hoy en el galpón.</div>
+      </div>
+      <div class="field">
+        <label for="edad">Edad (semanas)</label>
+        <input type="number" id="edad" min="0" max="100" step="1" value="6" placeholder="Ej: 6">
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="field">
+        <label for="tipo">Tipo de ave</label>
+        <select id="tipo">
+          <option value="polla" selected>Polla de reemplazo / ponedora</option>
+          <option value="reproductora">Reproductora broiler</option>
+          <option value="broiler">Broiler de engorda</option>
+        </select>
+        <div class="hint">Cambia la tabla de referencia que se aplica.</div>
+      </div>
+      <div class="field">
+        <label for="linea">Línea genética</label>
+        <select id="linea">
+          <option value="Hy-Line Brown" selected>Hy-Line Brown</option>
+          <option value="Hy-Line W-80">Hy-Line W-80</option>
+          <option value="">Otra / no aplica</option>
+        </select>
+        <div class="hint">Aporta el consumo diario estándar de la línea, como contraste.</div>
+      </div>
+    </div>
+
+    <h3>¿Cómo determinamos el volumen?</h3>
+    <div class="radio-row" id="metodo">
+      <label class="sel">
+        <input type="radio" name="met" value="medido" checked>
+        <span>Lo medí <span class="rl-sub">Recomendado. Consumo real en 2 h, el día antes.</span></span>
+      </label>
+      <label>
+        <input type="radio" name="met" value="tabla">
+        <span>Estimar por tablas <span class="rl-sub">Compara todas las referencias disponibles.</span></span>
+      </label>
+    </div>
+
+    <div class="grid" id="box-medido" style="margin-top:14px;">
+      <div class="field">
+        <label for="medido">Litros consumidos en esa ventana</label>
+        <input type="number" id="medido" min="0" step="0.5" value="" placeholder="Ej: 200">
+        <div class="hint">Medilo el día antes, a la misma hora que vas a vacunar: registrá el consumo de 2 h empezando 45 min después de alimentar. Con medidor de agua o midiendo el nivel del estanque.</div>
+      </div>
+    </div>
+
+    <h3>Condiciones y equipamiento</h3>
+    <div class="grid">
+      <div class="field">
+        <label for="clima">Temperatura del galpón</label>
+        <select id="clima">
+          <option value="normal" selected>Normal (18–25 °C)</option>
+          <option value="calor">Calor (&gt; 28 °C)</option>
+        </select>
+        <div class="hint">Las tablas de referencia están calculadas a 21 °C.</div>
+      </div>
+      <div class="field">
+        <label for="bebedero">Sistema de bebida</label>
+        <select id="bebedero">
+          <option value="nipple" selected>Línea de nipple</option>
+          <option value="campana">Campana / bell</option>
+          <option value="copa">Copa</option>
+          <option value="manual">Bebederos manuales</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="field" id="f-metros">
+        <label for="metros">Metros totales de línea</label>
+        <input type="number" id="metros" min="0" step="1" value="240" placeholder="Ej: 240">
+        <div class="hint">Sumá todas las líneas del galpón (ej: 4 líneas × 60 m = 240 m).</div>
+      </div>
+      <div class="field">
+        <label for="dosisfrasco">Dosis por frasco</label>
+        <select id="dosisfrasco">
+          <option value="1000">1.000 dosis</option>
+          <option value="2500">2.500 dosis</option>
+          <option value="5000" selected>5.000 dosis</option>
+          <option value="10000">10.000 dosis</option>
+        </select>
+        <div class="hint">Un frasco de 5.000 dosis alcanza para hasta 5.000 aves.</div>
+      </div>
+    </div>
+
+    <h3>Estabilizador</h3>
+    <div class="radio-row" id="estab">
+      <label class="sel">
+        <input type="radio" name="est" value="polvo" checked>
+        <span>Leche descremada en polvo <span class="rl-sub">2 g por litro</span></span>
+      </label>
+      <label>
+        <input type="radio" name="est" value="liquida">
+        <span>Leche líquida descremada <span class="rl-sub">2 L por cada 100 L</span></span>
+      </label>
+      <label>
+        <input type="radio" name="est" value="comercial">
+        <span>Producto comercial <span class="rl-sub">Tabletas neutralizantes, con o sin colorante</span></span>
+      </label>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn" id="btn-calc">Calcular</button>
+      <button class="btn sec" id="btn-reset">Limpiar</button>
+    </div>
+  </div>
+
+  <div id="resultados"></div>
+</div>
+
+<!-- ================= CALIDAD DEL AGUA ================= -->
+<div class="panel" id="p-agua">
+  <div class="card">
+    <h2>El agua es el diluyente de la vacuna</h2>
+    <p class="lead">La vacuna viva no es un químico: es un organismo vivo que tiene que llegar vivo a la mucosa del ave. Todo lo que hay en el agua del predio juega en contra.</p>
+
+    <div class="tabla-wrap">
+      <table>
+        <thead><tr><th>Parámetro</th><th>Objetivo</th><th>Por qué</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><b>Cloro libre</b></td>
+            <td><b>0 ppm</b></td>
+            <td>Bactericida desde 0,1–0,2 ppm y virucida desde 0,3–0,5 ppm. <b>1 ppm ya inactiva la vacuna.</b> Si lo olés o lo sentís en el gusto, el nivel es altísimo.</td>
+          </tr>
+          <tr>
+            <td><b>pH</b></td>
+            <td><b>6,0 – 7,5</b></td>
+            <td>Fuera de ese rango cae la eficacia del virus vacunal.</td>
+          </tr>
+          <tr>
+            <td><b>Temperatura del agua</b></td>
+            <td><b>15 – 20 °C</b></td>
+            <td>El calor mata la vacuna. Si hace calor se puede enfriar con hielo en el estanque.</td>
+          </tr>
+          <tr>
+            <td><b>Metales pesados / hierro</b></td>
+            <td>Ausentes</td>
+            <td>Inactivan el virus. Nunca usar utensilios metálicos: solo baldes y recipientes plásticos.</td>
+          </tr>
+          <tr>
+            <td><b>Materia orgánica</b></td>
+            <td>Ausente</td>
+            <td>Cama, alimento y fecas en los bebederos absorben la vacuna y cambian el pH del agua.</td>
+          </tr>
+          <tr>
+            <td><b>Sanitizantes y acidificantes</b></td>
+            <td>Suspendidos 24 h antes y después</td>
+            <td>Peróxido de hidrógeno, compuestos de amonio, ácidos orgánicos como el cítrico: todos inactivan la vacuna.</td>
+          </tr>
+          <tr>
+            <td><b>Sistema de oxigenación</b></td>
+            <td>Apagado <b>48 h antes</b></td>
+            <td>El agua oxigenada tiene efecto antimicrobiano fuerte.</td>
+          </tr>
+          <tr>
+            <td><b>Filtros</b></td>
+            <td>Removidos o bypasseados</td>
+            <td>La suciedad acumulada concentra desinfectantes y minerales justo en la superficie por donde pasa la vacuna.</td>
+          </tr>
+          <tr>
+            <td><b>Biofilm y sarro en líneas</b></td>
+            <td>Ausentes</td>
+            <td>El sedimento se une al virus o lo destruye. Se limpia como rutina entre lotes, no el día antes.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="alert rojo">
+      <b>La regla del olfato</b>
+      Si el agua huele o sabe a cloro, el nivel es definitivamente muy alto. No sirve para vacunar sin neutralizar.
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Cómo conseguir agua sin cloro</h2>
+    <ol>
+      <li><b>Neutralizar con leche descremada o producto comercial</b> — es lo habitual y lo más práctico.</li>
+      <li><b>Dejar evaporar</b> — agua clorada limpia en un recipiente abierto durante 2–3 días.</li>
+      <li><b>Agua de pozo limpia sin clorar.</b></li>
+      <li><b>Agua embotellada sin cloro</b> — si la calidad del agua del predio es mala y el volumen lo permite.</li>
+    </ol>
+
+    <h3>Leche descremada: cómo se usa</h3>
+    <div class="tabla-wrap">
+      <table>
+        <thead><tr><th>Forma</th><th>Dosis</th><th>Nota</th></tr></thead>
+        <tbody>
+          <tr><td>En polvo</td><td><b>2 g por litro</b> de agua</td><td>Rango citado hasta 5 g/L en aguas de mala calidad.</td></tr>
+          <tr><td>Líquida descremada</td><td><b>2 L por cada 100 L</b> de agua</td><td>Otras guías citan 500 mL por cada 10 L.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="alert verde">
+      <b>El truco para los grumos</b>
+      La leche en polvo forma grumos difíciles de disolver que pueden tapar las líneas. Echá <b>agua tibia a unos 60 °C sobre el polvo</b> y batí bien con un batidor. Recién esa leche reconstituida se agrega al agua de bebida.
+    </div>
+
+    <div class="alert azul">
+      <b>Dejá actuar 15 a 20 minutos</b>
+      Una vez agregada la leche al agua, hay que esperar antes de reconstituir y administrar la vacuna. Las proteínas de la leche necesitan ese tiempo para unirse al cloro y a los iones metálicos.
+    </div>
+
+    <p style="font-size:9pt;color:var(--gris2);">Las mismas proteínas que protegen la vacuna son las que la ayudan a sobrevivir en el bebedero durante la ventana de consumo. Por eso el estabilizador no es opcional.</p>
+  </div>
+
+  <div class="card">
+    <h2>Utensilios</h2>
+    <p>Solo utensilios <b>limpios y exclusivos</b> para vacunación. Es un ahorro falso usar el mismo balde o la misma jarra medidora con la que se preparan pediluvios, herbicidas o desinfectantes: los residuos matan el virus vacunal en concentraciones bajísimas.</p>
+    <ul>
+      <li>Balde y recipientes <b>plásticos</b>, nunca metálicos</li>
+      <li>Paleta o varilla plástica para revolver</li>
+      <li>Jarra medidora exclusiva</li>
+      <li>Guantes desechables durante todo el procedimiento</li>
+      <li>Lavado posterior <b>solo con agua limpia</b>, sin detergente ni desinfectante</li>
+      <li>Guardado en bolsa plástica sellada, en área limpia del predio</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ================= ESPACIO DE BEBEDERO ================= -->
+<div class="panel" id="p-espacio">
+  <div class="card">
+    <h2>¿Alcanza el espacio de bebedero?</h2>
+    <p class="lead">Si las aves no pueden beber todas más o menos al mismo tiempo, las dominantes toman doble dosis y las sumisas ninguna. Es la causa clásica de un lote disparejo.</p>
+
+    <div class="grid">
+      <div class="field">
+        <label for="e-aves">Número de aves</label>
+        <input type="number" id="e-aves" min="1" step="1" value="5000">
+      </div>
+      <div class="field">
+        <label for="e-tipo">Tipo de bebedero</label>
+        <select id="e-tipo">
+          <option value="nipple" selected>Nipple</option>
+          <option value="copa">Copa</option>
+          <option value="campana">Campana / bell</option>
+          <option value="canal">Canal / trough</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="field">
+        <label for="e-cant">Cantidad disponible</label>
+        <input type="number" id="e-cant" min="0" step="1" value="600">
+        <div class="hint" id="e-hint">Número de nipples en el galpón.</div>
+      </div>
+      <div class="field">
+        <label for="e-ave">Tipo de ave</label>
+        <select id="e-ave">
+          <option value="postura" selected>Ponedora / polla de reemplazo</option>
+          <option value="reproductora">Reproductora broiler</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn" id="btn-esp">Verificar</button>
+    </div>
+
+    <div id="esp-out" style="margin-top:18px;"></div>
+  </div>
+
+  <div class="card">
+    <h2>Estándares de referencia</h2>
+    <div class="tabla-wrap">
+      <table>
+        <thead><tr><th>Bebedero</th><th>Ponedoras</th><th>Reproductora broiler</th></tr></thead>
+        <tbody>
+          <tr><td><b>Nipple</b></td><td>1 cada <b>8</b> aves</td><td>—</td></tr>
+          <tr><td><b>Copa</b></td><td>1 cada <b>12</b> aves</td><td>—</td></tr>
+          <tr><td><b>Campana / bell</b></td><td>1 cada <b>50</b> aves</td><td>1 cada <b>100</b> aves</td></tr>
+          <tr><td><b>Canal</b></td><td><b>2,5 cm</b> por ave</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:9pt;color:var(--gris2);">Referencias del datafile de Intervet Poultry Division para el período de vacunación.</p>
+
+    <div class="alert ambar">
+      <b>La otra regla que hay que cumplir</b>
+      Independiente del conteo de bebederos, el criterio de campo es que <b>dos tercios de las aves puedan beber al mismo tiempo</b>. Si no se cumple, hay que agregar bebederos provisorios solo para el día de la vacunación.
+    </div>
+
+    <h3>Si no alcanza</h3>
+    <ul>
+      <li><b>Bandejas plásticas adicionales</b> instaladas solo para el período de vacunación, en el caso de campanas.</li>
+      <li><b>Bajar todos los bebederos disponibles</b>, incluidos los que normalmente están fuera de servicio.</li>
+      <li>Si el sistema es de campanas y no se puede usar el estanque de cabecera, hay que tener <b>gente suficiente para llevar el agua vacunada a cada bebedero lo más rápido posible</b>, para que las aves no peleen y derramen la vacuna.</li>
+    </ul>
+
+    <div class="alert azul">
+      <b>Ventaja del nipple</b>
+      Los nipples generan menos desperdicio de agua y menos competencia social por el sitio de bebida cuando, terminado el retiro de agua, las aves se abalanzan a tomar.
+    </div>
+  </div>
+</div>
+
+<!-- ================= CRONOGRAMA ================= -->
+<div class="panel" id="p-crono">
+  <div class="card">
+    <h2>Cronograma del día de vacunación</h2>
+    <p class="lead">Elegí el escenario y la hora, y te armamos el horario completo del galpón.</p>
+
+    <div class="grid">
+      <div class="field">
+        <label for="c-esc">Escenario</label>
+        <select id="c-esc">
+          <option value="piso" selected>Piso — retiro de agua en la mañana</option>
+          <option value="jaula">Jaula — cebado nocturno, antes de las luces</option>
+          <option value="calor">Clima cálido — sin retiro de agua, dos tandas</option>
+        </select>
+        <div class="hint" id="c-hint">Lo habitual en pollas y reproductoras en piso.</div>
+      </div>
+      <div class="field">
+        <label for="hora-ini">Hora de referencia</label>
+        <input type="time" id="hora-ini" value="08:00">
+        <div class="hint" id="c-hint2">Hora en que empezás a alimentar.</div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn" id="btn-crono">Generar cronograma</button>
+      <button class="btn sec no-print" onclick="window.print()">🖨️ Imprimir</button>
+    </div>
+
+    <div id="crono-out"></div>
+  </div>
+
+  <div class="card">
+    <h2>Por qué temprano en la mañana</h2>
+    <p>Es el momento de <b>máxima actividad y máximo consumo de agua</b> de las aves. Vacunar a media tarde con un lote apático es garantía de consumo lento y disparejo.</p>
+
+    <h3>Retiro de agua: cuánto</h3>
+    <div class="tabla-wrap">
+      <table>
+        <thead><tr><th>Situación</th><th>Retiro</th><th>Fuente</th></tr></thead>
+        <tbody>
+          <tr><td>Broilers (óptimo con prueba de colorante)</td><td><b>1 – 1½ h</b></td><td>Intervet</td></tr>
+          <tr><td>Guía general</td><td>1 – 2 h</td><td>Pacificvet</td></tr>
+          <tr><td>Reproductoras / pollas</td><td>60 min</td><td>Aviagen</td></tr>
+          <tr><td>Broilers</td><td>4 – 6 h</td><td>Zoetis</td></tr>
+          <tr><td>Guía general</td><td>2 – 3 h</td><td>Elanco</td></tr>
+          <tr><td>Ponedoras en jaula</td><td>Toda la noche</td><td>Zoetis · Intervet</td></tr>
+          <tr><td><b>Clima cálido</b></td><td><b>No se retira</b></td><td>Pacificvet</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="alert rojo">
+      <b>Sed excesiva = vacunación despareja</b>
+      Si las aves quedan demasiado sedientas <b>pelean por el agua y derraman la vacuna</b>. El retiro largo no es "más seguro": tiene su propio riesgo. Con calor, directamente no se hace.
+    </div>
+
+    <div class="alert azul">
+      <b>La alternativa sin retiro</b>
+      En aves con programa de luz —pollas de reemplazo o reproductoras— la vacuna se puede dar <b>con la primera agua de la mañana</b>. Eso elimina la necesidad del período de retiro.
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Si vacunás varios galpones el mismo día</h2>
+    <p>Preparate un cronograma <b>separado para cada galpón</b> y vacuná solo cuando sea realmente posible respetar los tiempos de cada uno. Es preferible vacunar dos galpones bien en dos días que cuatro galpones mal en uno.</p>
+    <div class="alert ambar">
+      <b>Regla práctica</b>
+      Una persona sola no puede sostener dos ventanas de vacunación de 2 horas superpuestas. Si no tenés gente, separá los galpones por al menos 3 horas o por días distintos.
+    </div>
+  </div>
+</div>
+
+<!-- ================= PROTOCOLO ================= -->
+<div class="panel" id="p-proto">
+
+  <div class="card">
+    <h2>Las dos cosas que deciden si funciona</h2>
+    <p class="lead">Todo el resto del protocolo existe para asegurar estas dos.</p>
+    <div class="alert verde">
+      <b>1. Que la vacuna llegue viva a la mucosa del ave</b>
+      Es un virus vivo que necesita replicarse dentro del ave para generar inmunidad. El cloro la mata. Los desinfectantes la matan. El sol, el calor y los metales la matan. El biofilm de las líneas la mata.
+    </div>
+    <div class="alert verde">
+      <b>2. Que cada ave reciba al menos una dosis completa</b>
+      La difusión de ave a ave <b>no</b> sirve para completar la vacunación: genera protección despareja y además "calienta" el virus vacunal por pasajes sucesivos, con reacción post-vacunal.
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Los cinco momentos críticos</h2>
+    <div class="ilus-grid">
+      <div>
+        <div class="ilus" style="color:var(--verde-d)">
+          <svg viewBox="0 0 260 150" role="img" aria-label="Líneas de agua levantadas fuera del alcance de las aves">
+            <g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+              <line x1="18" y1="30" x2="242" y2="30"/>
+              <line x1="18" y1="38" x2="242" y2="38"/>
+              <path d="M60 38 v10 M120 38 v10 M180 38 v10"/>
+              <path d="M56 48 h8 l-4 6 z" fill="currentColor" stroke="none"/>
+              <path d="M116 48 h8 l-4 6 z" fill="currentColor" stroke="none"/>
+              <path d="M176 48 h8 l-4 6 z" fill="currentColor" stroke="none"/>
+              <path d="M40 22 v-10 M130 22 v-10 M220 22 v-10" stroke-width="3"/>
+              <path d="M35 16 l5 -6 l5 6 M125 16 l5 -6 l5 6 M215 16 l5 -6 l5 6" stroke-width="3"/>
+            </g>
+            <g style="color:var(--verde)">
+              <use href="#gallina" x="40" y="90" width="50" height="52"/>
+              <use href="#gallina" x="105" y="90" width="50" height="52"/>
+              <use href="#gallina" x="170" y="90" width="50" height="52"/>
+            </g>
+          </svg>
+        </div>
+        <div class="ilus-cap"><b>1.</b> Las líneas se levantan fuera del alcance de las aves antes de vacunar.</div>
+      </div>
+
+      <div>
+        <div class="ilus" style="color:var(--verde-d)">
+          <svg viewBox="0 0 260 150" role="img" aria-label="Purgar la línea hasta que salga agua con colorante">
+            <g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+              <line x1="14" y1="34" x2="196" y2="34"/>
+              <line x1="14" y1="42" x2="196" y2="42"/>
+              <path d="M196 34 q14 0 14 14 v14"/>
+              <path d="M196 42 q6 0 6 6 v14"/>
+              <path d="M22 30 v-12 M18 22 l4 -6 l4 6" stroke-width="3"/>
+            </g>
+            <g stroke="#1565c0" stroke-width="3.4" stroke-linecap="round" fill="none">
+              <line x1="204" y1="66" x2="204" y2="78"/>
+              <line x1="199" y1="82" x2="199" y2="90"/>
+              <line x1="209" y1="82" x2="209" y2="90"/>
+            </g>
+            <g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round">
+              <path d="M180 98 h48 l-6 34 h-36 z"/>
+            </g>
+            <path d="M184 106 h40 l-1 6 h-38 z" fill="#1565c0" opacity=".55" stroke="none"/>
+            <g style="color:var(--verde)">
+              <use href="#gallina" x="60" y="88" width="48" height="50"/>
+              <use href="#gallina" x="112" y="88" width="48" height="50"/>
+            </g>
+          </svg>
+        </div>
+        <div class="ilus-cap"><b>2.</b> Se abre la válvula de descarga de la cabecera y se purga cada línea hasta que sale agua teñida por el extremo.</div>
+      </div>
+
+      <div>
+        <div class="ilus" style="color:var(--verde-d)">
+          <svg viewBox="0 0 260 150" role="img" aria-label="Bajar las líneas a la altura de las aves">
+            <g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+              <line x1="18" y1="66" x2="242" y2="66"/>
+              <line x1="18" y1="74" x2="242" y2="74"/>
+              <path d="M60 74 v8 M120 74 v8 M180 74 v8"/>
+              <path d="M56 82 h8 l-4 6 z" fill="currentColor" stroke="none"/>
+              <path d="M116 82 h8 l-4 6 z" fill="currentColor" stroke="none"/>
+              <path d="M176 82 h8 l-4 6 z" fill="currentColor" stroke="none"/>
+              <path d="M40 58 v10 M130 58 v10 M220 58 v10" stroke-width="3"/>
+              <path d="M35 64 l5 6 l5 -6 M125 64 l5 6 l5 -6 M215 64 l5 6 l5 -6" stroke-width="3"/>
+            </g>
+            <g stroke="#1565c0" stroke-width="2.6" stroke-linecap="round">
+              <line x1="60" y1="90" x2="60" y2="96"/>
+              <line x1="120" y1="90" x2="120" y2="96"/>
+              <line x1="180" y1="90" x2="180" y2="96"/>
+            </g>
+            <g style="color:var(--verde)">
+              <use href="#gallina" x="40" y="90" width="50" height="52"/>
+              <use href="#gallina" x="100" y="90" width="50" height="52"/>
+              <use href="#gallina" x="160" y="90" width="50" height="52"/>
+            </g>
+          </svg>
+        </div>
+        <div class="ilus-cap"><b>3.</b> Recién con la línea cargada de vacuna se baja a la altura del ave.</div>
+      </div>
+
+      <div>
+        <div class="ilus" style="color:var(--verde-d)">
+          <svg viewBox="0 0 260 150" role="img" aria-label="Caminar el lote durante la vacunación">
+            <g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="128" cy="24" r="8"/>
+              <path d="M128 32 v30"/>
+              <path d="M128 40 l-16 12 M128 40 l16 12"/>
+              <path d="M128 62 l-11 26 M128 62 l11 26"/>
+            </g>
+            <g fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="6 5" stroke-linecap="round">
+              <path d="M40 128 q40 -22 88 -22 q48 0 88 22"/>
+            </g>
+            <path d="M214 122 l10 6 l-10 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+            <g style="color:var(--verde)">
+              <use href="#gallina" x="26" y="63" width="42" height="45"/>
+              <use href="#gallina" x="66" y="77" width="42" height="45"/>
+              <use href="#gallina" x="164" y="77" width="42" height="45"/>
+              <use href="#gallina" x="204" y="63" width="42" height="45"/>
+            </g>
+          </svg>
+        </div>
+        <div class="ilus-cap"><b>4.</b> Se camina el lote a los 10 min y cada 15–30 min hasta que se consuma.</div>
+      </div>
+
+      <div>
+        <div class="ilus" style="color:var(--verde-d)">
+          <svg viewBox="0 0 260 150" role="img" aria-label="Revisar la lengua teñida de azul">
+            <g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+              <!-- cresta -->
+              <path d="M74 50 q4 -17 13 -7 q4 -19 14 -7 q6 -17 14 -4 q7 -12 11 2"/>
+              <!-- cabeza y cuello -->
+              <path d="M70 66 q0 -22 22 -26 q30 -6 44 14"/>
+              <path d="M70 66 q-2 30 16 42 q10 6 22 6"/>
+              <path d="M108 114 q4 14 -4 22"/>
+              <!-- pico superior abierto -->
+              <path d="M136 54 l58 12 l-52 12 z"/>
+              <!-- pico inferior abierto -->
+              <path d="M140 88 l52 14 l-56 2 z"/>
+              <!-- barbilla -->
+              <path d="M126 104 q10 12 0 18 q-8 -6 -6 -16"/>
+            </g>
+            <!-- lengua teñida -->
+            <path d="M146 76 q24 0 38 9 q-20 7 -38 1 z" fill="#1565c0" stroke="#0d3c6e" stroke-width="1.8" stroke-linejoin="round"/>
+            <circle cx="112" cy="58" r="4.6" fill="currentColor"/>
+          </svg>
+        </div>
+        <div class="ilus-cap"><b>5.</b> Se revisa la lengua apenas termina el consumo. Objetivo: 90% o más teñidas.</div>
+      </div>
+
+      <div>
+        <div class="ilus" style="color:var(--verde-d)">
+          <svg viewBox="0 0 260 150" role="img" aria-label="Preparación de la solución madre estabilizada">
+            <g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round">
+              <path d="M40 46 h74 l-9 74 h-56 z"/>
+              <line x1="38" y1="46" x2="116" y2="46"/>
+              <path d="M114 58 q22 -4 22 14"/>
+            </g>
+            <path d="M45 70 h64 l-6 46 h-52 z" fill="#1565c0" opacity=".35" stroke="none"/>
+            <g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round">
+              <path d="M162 30 h34 v14 l-6 6 v58 h-22 v-58 l-6 -6 z"/>
+              <line x1="162" y1="52" x2="196" y2="52"/>
+            </g>
+            <path d="M170 58 h18 v46 h-18 z" fill="#1565c0" opacity=".35" stroke="none"/>
+            <g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M124 82 h26 M144 76 l8 6 l-8 6"/>
+            </g>
+            <text x="128" y="132" font-size="13" font-weight="800" fill="currentColor">20 min</text>
+          </svg>
+        </div>
+        <div class="ilus-cap"><b>0.</b> La solución madre estabilizada se prepara y se deja actuar antes de abrir la vacuna.</div>
+      </div>
+    </div>
+    <p style="font-size:8pt;color:var(--gris2);margin-top:4px;">Ilustraciones propias de AviVet, elaboradas para esta guía.</p>
+  </div>
+
+  <div class="card">
+    <h2>Los dos sistemas de administración</h2>
+    <div class="tabla-wrap">
+      <table>
+        <thead><tr><th>Sistema</th><th>Cómo funciona</th><th>Qué cuidar</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><b>Medicador<br>(dosificador o proporcionador)</b></td>
+            <td>Se prepara una <b>solución madre concentrada</b> en un bidón chico y el equipo la va inyectando en la línea principal en una proporción fija.</td>
+            <td>Que la proporción esté bien calibrada y que el tubo de succión quede sumergido todo el tiempo. Al terminar, llenar el reservorio con agua limpia y dejar que se vacíe antes de volver al modo normal.</td>
+          </tr>
+          <tr>
+            <td><b>Bomba y barril<br>(estanque)</b></td>
+            <td>Se llena el barril con <b>todo el volumen ya diluido</b> y se conecta directo a la línea.</td>
+            <td>Que el volumen del barril sea el correcto y que no quede agua vacunada atrapada bajo el nivel de la salida.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="alert azul">
+      <b>Bombas sumergibles</b>
+      Se pueden conectar tanto a campanas como a líneas de nipple y <b>empujan el agua vacunada rápido</b> por todo el galpón, lo que mejora mucho la uniformidad de la distribución.
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="fase">
+      <div class="fase-head">
+        <div class="fase-num">1</div>
+        <div><div class="fase-title">Días antes</div><div class="fase-sub">Preparación del agua y del sistema</div></div>
+      </div>
+      <ul class="pasos">
+        <li><b>Apagá el sistema de oxigenación 48 horas antes.</b>
+          <span class="porque">El agua oxigenada tiene efecto antimicrobiano fuerte.</span></li>
+        <li><b>Suspendé todo medicamento, sanitizante, acidificante y sistema de tratamiento de agua 24 horas antes</b> (y mantenelo suspendido 24 horas después).
+          <span class="porque">Cloro, peróxido de hidrógeno, amonios cuaternarios y ácidos orgánicos inactivan la vacuna viva.</span></li>
+        <li><b>Conseguí agua sin cloro</b> y verificá pH (6,0–7,5) y temperatura (15–20 °C).</li>
+        <li><b>Limpiá el biofilm y el sarro de las líneas</b>, y lavá campanas y copas. Idealmente esto es rutina entre lotes.</li>
+        <li><b>Verificá el espacio de bebedero</b> — 1 nipple cada 8 aves, 1 copa cada 12, 1 campana cada 50 en ponedoras. Si no alcanza, conseguí bandejas adicionales.</li>
+        <li><b>Medí el consumo de agua</b> el día anterior, a la misma hora en que vas a vacunar. Con medidor o midiendo el nivel del estanque de cabecera.
+          <span class="porque">Es la base del cálculo. Si tenés dudas, hacé una vacunación de prueba solo con colorante uno o dos días antes: te muestra el volumen real y te deja detectar fallas del sistema antes de gastar la vacuna.</span></li>
+        <li><b>Revisá la vacuna:</b> refrigerador exclusivo a 2–8 °C con termómetro de máxima y mínima en el centro, revisado a diario. Dosis calculadas al millar hacia arriba.</li>
+      </ul>
+    </div>
+
+    <div class="fase">
+      <div class="fase-head">
+        <div class="fase-num">2</div>
+        <div><div class="fase-title">La mañana de la vacunación</div><div class="fase-sub">Antes de abrir el frasco</div></div>
+      </div>
+      <ul class="pasos">
+        <li><b>Remové o bypasseá los filtros del sistema de agua.</b>
+          <span class="porque">La suciedad del filtro concentra desinfectantes y minerales justo donde pasa la vacuna.</span></li>
+        <li><b>Fregá los bebederos si tienen cama o suciedad</b>, con agua, sin sanitizante ni desinfectante.
+          <span class="porque">La cama en las campanas actúa como peso y mantiene la válvula cerrada: el agua vacunada no baja. Y la suciedad absorbe la vacuna y la deja pegada al bebedero.</span></li>
+        <li><b>Alimentá y dejá beber normalmente</b> los primeros 45 minutos.</li>
+        <li><b>Purgá y drená las líneas</b> con agua fresca sin cloro.</li>
+        <li><b>Cortá el agua y dejá que terminen el remanente</b> (unos 20 minutos). Después subí las líneas o campanas fuera del alcance.</li>
+        <li><b>Retirá el agua según el escenario</b> — ver la pestaña Cronograma. <span style="color:var(--rojo);font-weight:700;">Con calor no se priva de agua.</span>
+          <span class="porque">La sed asegura consumo rápido y parejo, pero la sed excesiva hace que peleen y derramen la vacuna.</span></li>
+        <li><b>Mesa limpia y guantes:</b> papel de cocina desechable o diario limpio sobre superficie limpia.</li>
+        <li><b>Traslado de la vacuna</b> en caja fría o cooler a 4–8 °C. Nunca al sol. No rompas el sello del frasco hasta el momento de reconstituir.</li>
+      </ul>
+    </div>
+
+    <div class="fase">
+      <div class="fase-head">
+        <div class="fase-num">3</div>
+        <div><div class="fase-title">Preparación de la vacuna</div><div class="fase-sub">Este es el momento crítico</div></div>
+      </div>
+      <ul class="pasos">
+        <li><b>Prepará primero la solución madre estabilizada</b> en 5–10 L, en balde plástico limpio: agua sin cloro + leche descremada (2 g/L en polvo, o 2 L por 100 L si es líquida) o producto comercial.
+          <span class="porque">Si es leche en polvo, disolvela primero con agua tibia a 60 °C y batidor, para que no queden grumos que tapen las líneas.</span></li>
+        <li><b>Mezclá la solución madre en el volumen total y esperá 15 a 20 minutos</b> antes de agregar la vacuna.
+          <span class="porque">Las proteínas de la leche necesitan ese tiempo para unirse al cloro y a los iones metálicos. Si agregás la vacuna antes, la matás.</span></li>
+        <li><b>Abrí el frasco bajo el agua estabilizada:</b> sacá la tapa metálica, sumergí el frasco en 1–2 L de la solución y recién ahí retirá el tapón de goma.</li>
+        <li><b>Verificá que la pastilla se disolvió completamente.</b> Tapá y agitá suave. Enjuagá frasco y tapón en la misma solución para no perder dosis.</li>
+        <li><b>Agregá la solución al volumen total</b> y mezclá con paleta plástica, o dejá el tubo de succión del dosificador sumergido.</li>
+        <li><b>Nunca menos de una dosis completa por ave.</b> Y agregá vacuna extra para compensar el espacio muerto del sistema, que puede retener hasta el 10% del agua vacunada.</li>
+        <li><b>Usá la vacuna inmediatamente después de reconstituida</b>, lejos del sol.</li>
+      </ul>
+    </div>
+
+    <div class="fase">
+      <div class="fase-head">
+        <div class="fase-num">4</div>
+        <div><div class="fase-title">Administración</div><div class="fase-sub">La ventana de 1½ a 2 horas</div></div>
+      </div>
+      <ul class="pasos">
+        <li><b>Cargá las líneas antes de dar acceso a las aves.</b> Personal en cada extremo de la línea: abrí el extremo para que drene, abrí la válvula de descarga de la cabecera y dejá correr <b>hasta que salga agua teñida</b>. Cerrá la válvula, tapá el extremo y seguí con la línea siguiente.
+          <span class="porque">En ensayos con tabletas de colorante, los galpones que cargaron las líneas promediaron 98% de lenguas teñidas; los que no las cargaron, 61%.</span></li>
+        <li><b>Bajá las líneas empezando por las interiores y avanzando hacia afuera.</b></li>
+        <li><b>Distribuí el agua vacunada en forma pareja</b> entre todos los bebederos, al mismo tiempo.</li>
+        <li><b>Caminá el lote a los 10 minutos y después cada 15 a 30 minutos</b> hasta que se consuma toda la vacuna.</li>
+        <li><b>Controlá la velocidad de consumo.</b> Al principio toman muy rápido. El objetivo es 1½ a 2 horas.
+          <span class="porque">Menos de 1½ h: no todas alcanzaron a beber. Más de 2 h: el título de la vacuna reconstituida empieza a caer. La bronquitis infecciosa decae más rápido que Gumboro.</span></li>
+        <li><b>Con calor: la mitad de la vacuna en la primera hora y la otra mitad en la segunda.</b></li>
+        <li><b>Recién cuando no queda agua vacunada, abrí el agua de red.</b> Si usás medicador, llená el reservorio con agua limpia y dejá que se vacíe antes de volver al modo normal.</li>
+      </ul>
+    </div>
+
+    <div class="fase">
+      <div class="fase-head">
+        <div class="fase-num">5</div>
+        <div><div class="fase-title">Después</div><div class="fase-sub">Control, registro y limpieza</div></div>
+      </div>
+      <ul class="pasos">
+        <li><b>Control de lenguas apenas termina el consumo</b> — el colorante se va en 1–2 horas.</li>
+        <li><b>Registrá en la ficha del lote y del galpón:</b> fecha, hora, vacuna, serie, vencimiento, volumen de agua, tiempo de consumo, % de lenguas teñidas, responsable.</li>
+        <li><b>Durante 24 horas: solo agua sin cloro, sin medicación y sin sanitizantes.</b></li>
+        <li><b>Enjuagá las líneas</b> hasta que salgan limpias.</li>
+        <li><b>Lavá el equipo con agua limpia, sin detergentes ni desinfectantes.</b> Guardalo en bolsa plástica sellada en área limpia.</li>
+        <li><b>Recién después, reponé los filtros y sanitizá el sistema de agua.</b></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MONITOREO ================= -->
+<div class="panel" id="p-monit">
+
+  <div class="card">
+    <h2>El control de las lenguas azules</h2>
+    <p class="lead">Es la forma más simple y directa de saber si la vacunación funcionó, y se hace el mismo día.</p>
+    <p>Un colorante azul soluble en agua tiñe temporalmente la lengua y el buche de las aves que consumieron la solución. Se compra en tabletas o viene incorporado en algunos productos neutralizantes. El color dura una o dos horas.</p>
+
+    <h3>Cómo hacerlo</h3>
+    <ol>
+      <li>Apenas termina el consumo, tomá <b>50 aves de cada esquina del galpón</b> —o 100 aves de al menos 3 puntos distintos— evitando elegir siempre las más mansas.</li>
+      <li>Abrí el pico y mirá <b>la lengua y el buche</b>.</li>
+      <li>Contá cuántas tienen tinción evidente.</li>
+    </ol>
+
+    <div class="alert verde">
+      <b>Objetivo: 90% o más de lenguas y buches teñidos</b>
+      Ese es el umbral que indica que la técnica de vacunación fue correcta.
+    </div>
+    <div class="alert rojo">
+      <b>Menos del 90%: la vacunación quedó incompleta</b>
+      Avisá al veterinario responsable antes de dar el lote por vacunado. Revisá carga de líneas, espacio de bebedero y volumen de agua.
+    </div>
+
+    <h3>La intensidad también importa</h3>
+    <p>La intensidad de la tinción depende de cuánta solución bebió el ave, y se relaciona con la protección que va a tener. En desafíos con virus de Newcastle, <b>las aves con lengua intensamente teñida quedaron mejor protegidas que las de tinción leve</b>.</p>
+
+    <div class="escala">
+      <div class="esc-item"><div class="esc-sw" style="background:#e8eef5"></div><div class="esc-t">–</div><div class="esc-d">Sin tinción. El ave no bebió solución vacunal.</div></div>
+      <div class="esc-item"><div class="esc-sw" style="background:#b8cfe8"></div><div class="esc-t">+</div><div class="esc-d">Tinción leve. Consumo bajo, protección más débil.</div></div>
+      <div class="esc-item"><div class="esc-sw" style="background:#6b9fd4"></div><div class="esc-t">++ / +++</div><div class="esc-d">Tinción media. Consumo adecuado.</div></div>
+      <div class="esc-item"><div class="esc-sw" style="background:#1f5fa8"></div><div class="esc-t">++++</div><div class="esc-d">Tinción intensa. Mejor protección observada.</div></div>
+    </div>
+
+    <h3>Cuánto colorante usar</h3>
+    <div class="tabla-wrap">
+      <table>
+        <thead><tr><th>Para qué</th><th>Dosis de tableta</th></tr></thead>
+        <tbody>
+          <tr><td>Solo verificar que el agua vacunada <b>llegó a todos los bebederos</b></td><td><b>1 tableta cada 200 L</b></td></tr>
+          <tr><td>Estimar la <b>tasa de consumo del lote</b> por tinción de lenguas</td><td><b>1 tableta cada 20–30 L</b></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:9pt;color:var(--gris2);">Dosis referidas a tabletas Hi-Light. Seguí siempre la indicación del fabricante del colorante que uses.</p>
+
+    <div class="alert azul">
+      <b>Usalo también sin vacuna</b>
+      Una "vacunación de prueba" solo con colorante, uno o dos días antes, te muestra el volumen real que consume el lote y te deja detectar fallas de distribución <b>antes</b> de gastar la vacuna.
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>El dato que más convence</h2>
+    <div class="res-grid">
+      <div class="res-item">
+        <div class="ri-label">Galpones que cargaron las líneas</div>
+        <div class="ri-value">98%</div>
+        <div class="ri-note">Promedio de tinción de lenguas.</div>
+      </div>
+      <div class="res-item ambar">
+        <div class="ri-label">Galpones que NO cargaron las líneas</div>
+        <div class="ri-value">61%</div>
+        <div class="ri-note">Promedio de tinción de lenguas.</div>
+      </div>
+    </div>
+    <p>Es el mismo galpón, la misma vacuna y el mismo personal. La única diferencia es haber purgado las líneas hasta ver salir agua teñida antes de dar acceso a las aves. <b>Casi 4 de cada 10 aves quedan sin vacunar por saltarse ese paso.</b></p>
+    <p style="font-size:9pt;color:var(--gris2);">Ensayos con tabletas de colorante reportados por Intervet Poultry Division.</p>
+  </div>
+
+  <div class="card">
+    <h2>Pauta de verificación</h2>
+    <p class="lead">Marcá lo que se cumplió. Los ítems marcados como CRÍTICO invalidan la vacunación si fallan.</p>
+    <div id="checklist"></div>
+    <div class="btn-row">
+      <button class="btn" id="btn-score">Evaluar</button>
+      <button class="btn sec" id="btn-chk-reset">Limpiar</button>
+      <button class="btn sec no-print" onclick="window.print()">🖨️ Imprimir</button>
+    </div>
+    <div id="score-out" style="margin-top:18px;"></div>
+  </div>
+
+  <div class="card">
+    <h2>Control serológico: la confirmación real</h2>
+    <p class="lead">La lengua azul dice que el ave bebió. La serología dice si el ave respondió.</p>
+    <p>Que las aves parezcan bien vacunadas no significa que estén protegidas. La protección se evalúa buscando anticuerpos por <b>ELISA</b>, sobre <b>20 aves tomadas al azar</b> del galpón.</p>
+
+    <div class="tabla-wrap">
+      <table>
+        <thead><tr><th>Qué se mide</th><th>Cuándo</th><th>Qué esperar</th></tr></thead>
+        <tbody>
+          <tr><td><b>Título de anticuerpos</b></td><td>3 semanas post vacunación</td><td>Título alto, comparado con la línea base del propio predio</td></tr>
+          <tr><td><b>Coeficiente de variación (CV)</b></td><td>Mismo muestreo</td><td><b>Menor a 50%</b> — mide qué tan pareja fue la vacunación</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="alert azul">
+      <b>Por qué importa el CV más que el título</b>
+      Un CV alto significa que unas aves respondieron muy bien y otras nada: es la firma típica de una vacunación en agua mal distribuida. Un lote disparejo se enferma igual que uno no vacunado.
+    </div>
+
+    <h3>Qué modifica la respuesta</h3>
+    <ul>
+      <li><b>Vía de administración</b> — el agua de bebida genera más anticuerpos que el spray</li>
+      <li><b>Dosis efectivamente recibida</b></li>
+      <li><b>Tipo y "temperatura" de la vacuna</b> — a mayor virulencia de la cepa, más inmunogénica</li>
+      <li><b>Edad, línea genética, nutrición e inmunosupresión del lote</b></li>
+    </ul>
+
+    <p style="margin-top:10px;">Conviene construir una <b>línea base propia del predio</b>: el promedio de títulos de los últimos 12 meses con el mismo programa. Si el resultado se aparta de lo esperado por el fabricante, hay que investigar y corregir.</p>
+  </div>
+
+  <div class="card">
+    <h2>Plan de monitoreo epidemiológico complementario</h2>
+    <p class="lead">Referencia de laboratorio para lotes de pollas de reemplazo.</p>
+    <div class="tabla-wrap">
+      <table>
+        <thead><tr><th>Agente</th><th>Técnica</th><th>Muestra</th></tr></thead>
+        <tbody>
+          <tr><td>Bronquitis infecciosa</td><td>RT-PCR + ELISA IBV</td><td>Órganos · suero de 20 aves</td></tr>
+          <tr><td>Coriza</td><td>Microbiología + PCR</td><td>Senos infraorbitarios</td></tr>
+          <tr><td><i>Mycoplasma synoviae</i></td><td>PCR + ELISA MS</td><td>Tórulas traqueales (pool de 5) · sangre de 20 aves a las 15 y 26 sem</td></tr>
+          <tr><td>Laringotraqueítis (vacuna vectorizada)</td><td>ELISA ILT</td><td>13 semanas post vacunación</td></tr>
+          <tr><td>Newcastle · IBV · <i>S. Enteritidis</i></td><td>ELISA</td><td>18 semanas</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:9pt;color:var(--gris2);">Plan de referencia CEVA para programas de pollas de reemplazo. Ajustar con el veterinario del plantel.</p>
+  </div>
+</div>
+
+<!-- ================= ERRORES ================= -->
+<div class="panel" id="p-errores">
+  <div class="card">
+    <h2>Los errores que arruinan una vacunación</h2>
+    <p class="lead">Casi todas las fallas de campo se explican por alguno de estos.</p>
+
+    <div class="err"><div class="err-ico">🚰</div><div class="err-body">
+      <div class="err-t">No cargar las líneas antes de dar acceso</div>
+      <div class="err-d">Es el error más caro y el más invisible: el galpón "se ve" vacunado. Las aves del fondo beben el agua limpia que quedó en la cañería. Cargar las líneas sube la tinción de 61% a 98%.</div>
+      <div class="err-f">✔ Purgar cada línea hasta que salga agua teñida por el extremo, antes de bajarla.</div>
+    </div></div>
+
+    <div class="err"><div class="err-ico">🚱</div><div class="err-body">
+      <div class="err-t">Usar agua con cloro</div>
+      <div class="err-d">Bactericida desde 0,1–0,2 ppm, virucida desde 0,3–0,5 ppm; 1 ppm ya inactiva. La concentración es muy inestable y puede subir sin que nadie lo note.</div>
+      <div class="err-f">✔ Agua sin clorar + estabilizador + 15–20 min de espera antes de agregar la vacuna.</div>
+    </div></div>
+
+    <div class="err"><div class="err-ico">💊</div><div class="err-body">
+      <div class="err-t">Dejar el sanitizante o el antibiótico corriendo</div>
+      <div class="err-d">El dosificador queda con producto, o el sistema de tratamiento de agua sigue encendido, o nadie avisó que el lote estaba en tratamiento.</div>
+      <div class="err-f">✔ Suspender 24 h antes y después. Oxigenación 48 h antes. Avisar a todo el turno.</div>
+    </div></div>
+
+    <div class="err"><div class="err-ico">🧽</div><div class="err-body">
+      <div class="err-t">Dejar los filtros puestos</div>
+      <div class="err-d">La suciedad del filtro concentra desinfectantes y minerales exactamente en la superficie por donde tiene que pasar la vacuna.</div>
+      <div class="err-f">✔ Remover o bypassear todos los filtros antes de vacunar.</div>
+    </div></div>
+
+    <div class="err"><div class="err-ico">📉</div><div class="err-body">
+      <div class="err-t">Calcular menos dosis que aves</div>
+      <div class="err-d">La difusión de ave a ave no completa la vacunación: genera protección despareja y "calienta" el virus vacunal por pasajes sucesivos, con reacción post-vacunal.</div>
+      <div class="err-f">✔ Redondear al millar hacia arriba sobre las aves presentes, y sumar extra por el espacio muerto del sistema (hasta 10%).</div>
+    </div></div>
+
+    <div class="err"><div class="err-ico">🐔</div><div class="err-body">
+      <div class="err-t">Espacio de bebedero insuficiente</div>
+      <div class="err-d">Las dominantes beben doble y las sumisas no llegan. Es la causa clásica de CV alto en la serología.</div>
+      <div class="err-f">✔ 1 nipple/8 aves, 1 copa/12, 1 campana/50 en ponedoras. Bandejas extra si hace falta.</div>
+    </div></div>
+
+    <div class="err"><div class="err-ico">⏱️</div><div class="err-body">
+      <div class="err-t">Que se consuma en 40 minutos, o que sobre a las 3 horas</div>
+      <div class="err-d">Antes de 1½ h no todas alcanzaron a beber. Pasadas las 2 h el título de la vacuna reconstituida cae — la bronquitis más rápido que Gumboro.</div>
+      <div class="err-f">✔ Calcular sobre el consumo medido de 2 h y controlar la velocidad durante el proceso.</div>
+    </div></div>
+
+    <div class="err"><div class="err-ico">💦</div><div class="err-body">
+      <div class="err-t">Dejar las aves demasiado sedientas</div>
+      <div class="err-d">Pelean por el agua, la derraman y el consumo queda disparejo. El retiro largo no es "más seguro": tiene su propio riesgo.</div>
+      <div class="err-f">✔ Retiro de 1–1½ h en broilers. Con calor, no se retira. En aves con programa de luz, dar la vacuna con la primera agua de la mañana.</div>
+    </div></div>
+
+    <div class="err"><div class="err-ico">🪣</div><div class="err-body">
+      <div class="err-t">Cama y suciedad en los bebederos de campana</div>
+      <div class="err-d">La cama actúa como peso y mantiene la válvula cerrada: el agua vacunada no baja. Y la mezcla de cama con fecas cambia el pH y absorbe la vacuna dejándola pegada al bebedero.</div>
+      <div class="err-f">✔ Fregar los bebederos la mañana de la vacunación, solo con agua.</div>
+    </div></div>
+
+    <div class="err"><div class="err-ico">🏭</div><div class="err-body">
+      <div class="err-t">Sobreconsumo en la entrada de la línea, en jaulas</div>
+      <div class="err-d">Las aves de la cabecera se toman casi todo y las del fondo de la batería no reciben nada. En un ensayo con colorante, la solución no llegó siquiera al final de la batería antes de que se acabara el estanque.</div>
+      <div class="err-f">✔ Cerrar el agua durante la noche, dejar que vacíen las líneas y cebarlas con agua vacunada antes de que enciendan las luces.</div>
+    </div></div>
+
+    <div class="err"><div class="err-ico">🕳️</div><div class="err-body">
+      <div class="err-t">Olvidar el espacio muerto del sistema</div>
+      <div class="err-d">Hasta el 10% del agua vacunada puede quedar atrapada en el manifold, bajo el nivel de salida del estanque o en zonas muertas, sin llegar nunca a las aves.</div>
+      <div class="err-f">✔ Agregar vacuna extra para compensarlo y drenar completamente antes de cargar.</div>
+    </div></div>
+
+    <div class="err"><div class="err-ico">🌡️</div><div class="err-body">
+      <div class="err-t">Romper la cadena de frío</div>
+      <div class="err-d">Frasco en la camioneta al sol, o refrigerador compartido con alimentos y sin termómetro.</div>
+      <div class="err-f">✔ 2–8 °C en refrigerador exclusivo con termómetro min/máx en el centro, revisado a diario. 4–8 °C en cooler durante el traslado. Agua a 15–20 °C.</div>
+    </div></div>
+
+    <div class="err"><div class="err-ico">🪛</div><div class="err-body">
+      <div class="err-t">Usar utensilios metálicos o compartidos</div>
+      <div class="err-d">Los metales pesados inactivan el virus. Y el balde que se usó para el pediluvio o el herbicida deja residuos que matan la vacuna en concentraciones bajísimas.</div>
+      <div class="err-f">✔ Solo utensilios plásticos, limpios y exclusivos para vacunación.</div>
+    </div></div>
+
+    <div class="err"><div class="err-ico">🚿</div><div class="err-body">
+      <div class="err-t">Abrir el agua de red antes de que termine</div>
+      <div class="err-d">Diluye la vacuna que queda y el último grupo de aves recibe una dosis parcial.</div>
+      <div class="err-f">✔ Abrir la red solo cuando los bebederos quedaron vacíos de agua vacunada.</div>
+    </div></div>
+
+    <div class="err"><div class="err-ico">🐣</div><div class="err-body">
+      <div class="err-t">Vacunar aves muy jóvenes sin cuidados extra</div>
+      <div class="err-d">Antes de las 3 semanas de vida el consumo de agua es irregular, y el margen de error de esta vía es mucho más chico.</div>
+      <div class="err-f">✔ En aves menores de 3 semanas, extremar el control de volumen y de distribución, o evaluar otra vía con el veterinario.</div>
+    </div></div>
+
+    <div class="err"><div class="err-ico">📝</div><div class="err-body">
+      <div class="err-t">No dejar registro</div>
+      <div class="err-d">Sin registro no se puede investigar un brote ni comparar contra la línea base del predio.</div>
+      <div class="err-f">✔ Vacuna, serie, vencimiento, volumen, tiempo de consumo, % de lenguas teñidas y responsable, en la ficha del lote.</div>
+    </div></div>
+  </div>
+</div>
+
+<!-- ================= FUENTES ================= -->
+<div class="panel" id="p-fuentes">
+  <div class="card">
+    <h2>Fuentes</h2>
+    <p class="lead">Este módulo consolida las recomendaciones de siete documentos técnicos de referencia.</p>
+    <div class="fuentes">
+
+      <div class="fte">
+        <b>Intervet Poultry Division / MSD Animal Health.</b> <i>Datafile: Drinking Water Vaccination.</i> Dr T Cserep. Nobilis® Vaccination Series.<br>
+        <a href="https://www.enfermedad-gumboro.com/wp-content/uploads/sites/159/2022/05/watervaccination.pdf" target="_blank" rel="noopener">Ver documento →</a><br>
+        Aporta: <b>tablas de volumen de vacunación para pollas de postura y reproductoras a 21 °C</b>, regla de litros según días de edad, espacio de bebedero por tipo, leche descremada y su preparación, filtros, espacio muerto, dato de 98% vs 61% de tinción, dosis de colorante, escala de intensidad, problemas de jaulas, retiro de agua óptimo.
+      </div>
+
+      <div class="fte">
+        <b>Aviagen (2008).</b> <i>Drinking Water Vaccination.</i> Aviagen Brief, Africa Fernandez.<br>
+        <a href="https://aviagen.com/assets/Tech_Center/Broiler_Breeder_Tech_Articles/English/AviagenBrief_DrinkingWaterVaccination_Sept08.pdf" target="_blank" rel="noopener">Ver documento →</a><br>
+        Aporta: consumo de agua por edad en reproductoras, cronograma horario del galpón, purga de líneas de nipple (1 L cada 3 m), evaluación por lenguas azules y por serología (título y CV).
+      </div>
+
+      <div class="fte">
+        <b>Zoetis (2025).</b> <i>Protocol for Drinking-Water Vaccination of Layer Chickens</i> y <i>… of Broiler Chickens.</i><br>
+        <a href="https://www.zoetisus.com/content/_assets/docs/Poultry/Vaccine-Administration/Protocol-for-Live-Vaccination-via-Drinking-Water.pdf" target="_blank" rel="noopener">Ponedoras →</a> ·
+        <a href="https://www.zoetisus.com/content/_assets/docs/Poultry/Vaccine-Administration/Protocol-for-Live-Vaccination-via-Drinking-Water-Broiler.pdf" target="_blank" rel="noopener">Broilers →</a><br>
+        Aporta: medicador vs bomba y barril, protocolo de carga de líneas con personal en ambos extremos, bajar líneas de interior hacia afuera, caminar el lote a los 10 min y cada 15–30 min, cebado nocturno en ponedoras, revisar 50 aves por galpón, cierre del proceso con el reservorio.
+      </div>
+
+      <div class="fte">
+        <b>Pacificvet Limited.</b> <i>Drinking Water Administration of Vaccine.</i> PAC0019AV1.<br>
+        <a href="https://www.pacificvet.co.nz/wp-content/uploads/2019/01/PAC0019A-Drinking-water-administration-of-vaccine_2.pdf" target="_blank" rel="noopener">Ver documento →</a><br>
+        Aporta: volumen de referencia por edad, leche líquida descremada, manejo en clima cálido con dos tandas, declorado por evaporación, retiro de agua.
+      </div>
+
+      <div class="fte">
+        <b>Elanco.</b> <i>Best Practices for Water Vaccination.</i><br>
+        <a href="https://farmanimal.elanco.com/us/poultry/article/best-practices-water-vaccination" target="_blank" rel="noopener">Ver artículo →</a><br>
+        Aporta: retiro de agua de 2–3 h, jaulas después del período oscuro, eliminación de peróxido de hidrógeno y ácidos orgánicos, termómetro min/máx al centro del refrigerador con control diario, enjuague de líneas posterior.
+      </div>
+
+      <div class="fte">
+        <b>Ceva Santé Animale.</b> <i>Monitoring vaccination quality — Drinking water</i> y documentación técnica de CEVAMUNE®.<br>
+        Aporta: umbral de 90% de lenguas teñidas, trazador azul para verificar uniformidad y velocidad de llegada, umbrales de cloro (0,1–0,2 ppm bactericida / 0,3–0,5 ppm virucida), neutralización con rebalance de pH. El plan de monitoreo epidemiológico corresponde a la propuesta Ceva para pollas de reemplazo.
+      </div>
+
+      <div class="fte">
+        <b>SR Publication.</b> <i>Drinking Water Vaccination in Chicken.</i><br>
+        <a href="https://www.srpublication.com/drinking-water-vaccination-in-chicken/" target="_blank" rel="noopener">Ver artículo →</a><br>
+        Aporta: rango de pH 6,0–7,5, inactivación desde 1 ppm de cloro, temperatura del agua ~15 °C, leche descremada 2–5 g/L, referencia de 40–45 L por cada 1.000 broilers.
+      </div>
+
+      <div class="fte">
+        <b>Hy-Line International.</b> Estándares de rendimiento Hy-Line Brown (jaula) y W-80 (Chile, jaula), enero 2024.<br>
+        <a href="../curvas-geneticas/" >Ver módulo Curvas Genéticas →</a><br>
+        Aporta: consumo de agua diario en mL/ave/día por semana de vida, usado como contraste de las tablas de vacunación. Los datos se toman del propio módulo de curvas genéticas de AviVet.
+      </div>
+
+      <p style="border-top:1px solid var(--linea); padding-top:12px; color:#888;">
+        Nota: el PDF <i>MONITORING vaccination quality — DRINKING WATER</i> alojado en el sitio danés de Ceva no permite acceso automatizado (error 403). El contenido correspondiente se tomó de la documentación pública de CEVAMUNE® y del plan de monitoreo Ceva disponible.
+      </p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Alcance de esta guía</h2>
+    <p>Es material de apoyo para el productor. <b>No reemplaza el programa de vacunación indicado por el médico veterinario responsable del plantel</b>, ni las instrucciones del inserto de cada vacuna, que siempre tienen prioridad.</p>
+    <div class="alert ambar">
+      <b>Seguí siempre el inserto del producto</b>
+      Cada vacuna tiene su propia indicación de dosis, edad, vía y volumen. Cuando el inserto diga algo distinto a esta guía, manda el inserto.
+    </div>
+    <p style="font-size:9pt;color:var(--gris2);margin-top:12px;">Las ilustraciones de esta guía son originales de AviVet. Las marcas y documentos citados pertenecen a sus respectivos titulares y se enlazan a la fuente original.</p>
+  </div>
+</div>
+
+<div class="footer">
+  <b>MV Andrés Lazo Escobar</b> — Medicina Aviar, Sur de Chile<br>
+  WhatsApp: <a href="https://wa.me/56958956340">+56 9 5895 6340</a> ·
+  Email: <a href="mailto:andreslazomv@outlook.com">andreslazomv@outlook.com</a> ·
+  <a href="https://avivet.cl">avivet.cl</a>
+</div>
+
+</div>
+
+<script>
+/* =========================================================
+   Navegación
+   ========================================================= */
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById('p'+'-'+t.dataset.panel).classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+});
+
+function bindRadios(id, cb){
+  const cont=document.getElementById(id);
+  cont.querySelectorAll('input').forEach(r=>{
+    r.addEventListener('change',()=>{
+      cont.querySelectorAll('label').forEach(l=>l.classList.remove('sel'));
+      r.closest('label').classList.add('sel');
+      if(cb) cb();
+    });
+  });
+}
+bindRadios('metodo', toggleMetodo);
+bindRadios('estab');
+
+function metodoSel(){ return document.querySelector('input[name="met"]:checked').value; }
+function estabSel(){ return document.querySelector('input[name="est"]:checked').value; }
+function toggleMetodo(){ document.getElementById('box-medido').style.display = metodoSel()==='medido' ? 'grid' : 'none'; }
+toggleMetodo();
+
+document.getElementById('bebedero').addEventListener('change',e=>{
+  document.getElementById('f-metros').style.display = e.target.value==='nipple' ? 'block' : 'none';
+});
+
+/* =========================================================
+   REFERENCIAS DE VOLUMEN DE VACUNACIÓN
+   Todas expresadas en litros por cada 1.000 aves.
+   ========================================================= */
+
+// Intervet/MSD — pollas de postura a 21 °C (litros por 1.000 aves)
+const MSD_POLLAS = [[3,18],[4,27],[5,36],[6,41],[8,45],[10,50],[12,54],[14,63]];
+
+// Intervet/MSD y Aviagen — reproductoras broiler a 21 °C (litros por 1.000 aves)
+// MSD: 2-3→25, 4-6→30, 7-10→45, 10-15→60   |   Aviagen: 2-3→25, 4-6→30, 7-10→50, 11-15→60
+const REPRO = [
+  {min:2,  max:3,  msd:25, avi:25, rango:'2 a 3 semanas'},
+  {min:4,  max:6,  msd:30, avi:30, rango:'4 a 6 semanas'},
+  {min:7,  max:10, msd:45, avi:50, rango:'7 a 10 semanas'},
+  {min:11, max:15, msd:60, avi:60, rango:'11 a 15 semanas'}
+];
+
+// Pacificvet — volumen consumido en 2-3 h (litros por 1.000 aves)
+function refPacificvet(sem){
+  return sem < 8 ? {min:10, max:20, rango:'menos de 8 semanas'}
+                 : {min:20, max:40, rango:'8 semanas o más'};
+}
+
+// Consumo diario estándar por línea genética — mL/ave/día  ≡  L/1.000 aves/día
+// Origen: módulo Curvas Genéticas de AviVet (Hy-Line, ene 2024)
+const LINEAS_AGUA = {
+  'Hy-Line Brown': {
+    crianzaSem: 17,
+    fuente: 'Hy-Line Brown, tabla de rendimiento (jaula), ene 2024',
+    d: [[1,18,28],[2,25,42],[3,30,50],[4,37,60],[5,43,73],[6,52,89],[7,62,98],[8,71,112],[9,78,122],
+        [10,84,129],[11,90,137],[12,93,144],[13,96,148],[14,99,154],[15,102,158],[16,105,164],[17,108,170],
+        [18,114,182],[19,132,194],[20,140,204],[21,147,212],[22,153,220],[23,158,228],[24,164,234],
+        [25,167,236],[26,168,238],[30,168,240],[40,167,238],[60,167,238],[100,167,238]]
+  },
+  'Hy-Line W-80': {
+    crianzaSem: 17,
+    fuente: 'Hy-Line W-80, estándares Chile (jaula), ene 2024',
+    d: [[1,18,28],[2,23,38],[3,32,50],[4,41,62],[5,47,70],[6,53,78],[7,59,86],[8,63,92],[9,66,100],
+        [10,72,106],[11,77,112],[12,81,118],[13,86,124],[14,90,130],[15,95,136],[16,101,144],[17,105,150],
+        [18,108,156],[19,114,166],[20,119,178],[21,128,186],[22,131,192],[23,132,196],[24,135,200],
+        [25,140,204],[26,141,206],[30,147,214],[40,155,220],[60,155,220],[100,155,220]]
+  }
+};
+
+/* Interpolación lineal sobre una tabla [[x,y],...] o [[x,yMin,yMax],...] */
+function interp(tabla, x, col){
+  if(x <= tabla[0][0]) return tabla[0][col];
+  const ult = tabla[tabla.length-1];
+  if(x >= ult[0]) return ult[col];
+  for(let i=0; i<tabla.length-1; i++){
+    const a=tabla[i], b=tabla[i+1];
+    if(x >= a[0] && x <= b[0]){
+      const t = (x - a[0]) / (b[0] - a[0]);
+      return a[col] + t * (b[col] - a[col]);
+    }
+  }
+  return ult[col];
+}
+
+const fmt  = (n,d=1) => n.toLocaleString('es-CL',{minimumFractionDigits:d, maximumFractionDigits:d});
+const fmt0 = n => Math.round(n).toLocaleString('es-CL');
+
+/* =========================================================
+   Cálculo principal
+   ========================================================= */
+document.getElementById('btn-calc').addEventListener('click', calcular);
+
+function calcular(){
+  const aves   = parseFloat(document.getElementById('aves').value);
+  const edad   = parseFloat(document.getElementById('edad').value);
+  const tipo   = document.getElementById('tipo').value;
+  const lineaN = document.getElementById('linea').value;
+  const clima  = document.getElementById('clima').value;
+  const beb    = document.getElementById('bebedero').value;
+  const metros = parseFloat(document.getElementById('metros').value) || 0;
+  const dxf    = parseFloat(document.getElementById('dosisfrasco').value);
+  const met    = metodoSel();
+  const est    = estabSel();
+  const out    = document.getElementById('resultados');
+
+  if(!aves || aves <= 0 || isNaN(edad) || edad < 0){
+    out.innerHTML = '<div class="alert rojo"><b>Faltan datos</b>Ingresá el número de aves y la edad en semanas.</div>';
+    return;
+  }
+
+  const miles = aves / 1000;
+  const dias  = Math.round(edad * 7);
+
+  /* ----- Reunir todas las referencias aplicables (L/1000 aves) ----- */
+  const refs = [];
+
+  if(tipo === 'polla'){
+    if(edad >= 3 && edad <= 14){
+      refs.push({n:'Intervet — pollas de postura a 21 °C', v:interp(MSD_POLLAS, edad, 1), pref:true,
+                 nota:'Tabla específica para pollas de reemplazo. Interpolada para '+edad+' semanas.'});
+    } else if(edad < 3){
+      refs.push({n:'Intervet — pollas de postura a 21 °C', v:MSD_POLLAS[0][1], pref:true,
+                 nota:'La tabla parte a las 3 semanas. Antes de esa edad el consumo es irregular y hay que extremar el control.'});
+    }
+  }
+  if(tipo === 'reproductora'){
+    const r = REPRO.find(x => edad >= x.min && edad <= x.max);
+    if(r){
+      refs.push({n:'Intervet — reproductoras a 21 °C', v:r.msd, pref:true, nota:'Tramo '+r.rango+'.'});
+      if(r.avi !== r.msd) refs.push({n:'Aviagen — reproductoras a 18–20 °C', v:r.avi, nota:'Tramo '+r.rango+'.'});
+    }
+  }
+  if(tipo === 'broiler'){
+    refs.push({n:'Regla de los días de edad', v:dias, pref:true,
+               nota:'1.000 dosis en tantos litros como días de edad ('+dias+' días). Es el <b>mínimo</b>: se puede duplicar si el clima lo justifica.'});
+    refs.push({n:'Zoetis — bomba y barril', v:30,
+               nota:'200 galones por cada 25.000 aves, citado como punto de partida para lotes de 10–14 días.'});
+    refs.push({n:'SR Publication — broilers', v:42.5, nota:'Referencia de 40–45 L por cada 1.000 broilers.'});
+  }
+
+  const pv = refPacificvet(edad);
+  refs.push({n:'Pacificvet — consumo en 2–3 h', v:(pv.min+pv.max)/2, min:pv.min, max:pv.max,
+             nota:'Rango '+pv.min+'–'+pv.max+' L por 1.000 aves para '+pv.rango+'.'});
+
+  let lin = null;
+  if(lineaN && LINEAS_AGUA[lineaN]){
+    lin = LINEAS_AGUA[lineaN];
+    const dMin = interp(lin.d, edad, 1), dMax = interp(lin.d, edad, 2);
+    // Pasadas las 14 semanas ninguna tabla de vacunación cubre la edad:
+    // el estándar de la línea pasa a ser la mejor referencia disponible.
+    const mandaLinea = (tipo === 'polla' && edad > 14);
+    refs.push({n:lineaN+' — 50–60% del consumo diario', v:(dMin+dMax)/2*0.55, min:dMin*0.50, max:dMax*0.60,
+               pref: mandaLinea,
+               nota:'Consumo diario estándar '+fmt0(dMin)+'–'+fmt0(dMax)+' mL/ave/día. Se dosifica el 50–60% de ese volumen'
+                    + (mandaLinea ? ', criterio Aviagen. Las tablas de vacunación no llegan a esta edad, así que el estándar de la línea es la mejor referencia disponible.' : '.'),
+               diario:[dMin,dMax]});
+  }
+
+  if(refs.length === 0){
+    refs.push({n:'Pacificvet', v:(pv.min+pv.max)/2, nota:'Única referencia aplicable a esta edad.'});
+  }
+
+  /* ----- Volumen final ----- */
+  let volBase, volMin, volMax, origen, notaOrigen, esMedido = false;
+
+  if(met === 'medido'){
+    const medido = parseFloat(document.getElementById('medido').value);
+    if(!medido || medido <= 0){
+      out.innerHTML = '<div class="alert rojo"><b>Falta el consumo medido</b>Ingresá los litros que consumió el galpón en la ventana de 2 h, o cambiá al método de estimación por tablas.</div>';
+      return;
+    }
+    esMedido = true;
+    volBase = volMin = volMax = medido;
+    origen = 'Consumo medido en el galpón';
+    notaOrigen = 'Sobre ' + fmt(medido) + ' L medidos en la ventana de 2 h. Es el método más preciso: las tablas de abajo son solo contraste.';
+  } else {
+    const pref = refs.find(r => r.pref) || refs[0];
+    const vals = refs.map(r => r.v);
+    volBase = pref.v * miles;
+    volMin  = Math.min.apply(null, vals) * miles;
+    volMax  = Math.max.apply(null, vals) * miles;
+    origen  = pref.n;
+    notaOrigen = pref.nota;
+  }
+
+  // Ajuste por temperatura: las tablas están a 21 °C
+  const factorCalor = (!esMedido && clima === 'calor') ? 1.5 : 1;
+  const volFinal = volBase * factorCalor;
+  const vMinF = volMin * factorCalor, vMaxF = volMax * factorCalor;
+
+  /* ----- Dosis ----- */
+  const dosisNec  = Math.ceil(aves / 1000) * 1000;
+  const frascos   = Math.ceil(dosisNec / dxf);
+  const dosisComp = frascos * dxf;
+
+  /* ----- Estabilizador ----- */
+  let estabTxt, estabVal, estabNota;
+  if(est === 'polvo'){
+    const g = volFinal * 2;
+    estabVal  = g >= 1000 ? fmt(g/1000,2) + ' kg' : fmt0(g) + ' g';
+    estabTxt  = 'Leche descremada en polvo';
+    estabNota = '2 g por litro. Disolvela primero con agua tibia a 60 °C y batidor, para que no queden grumos.';
+  } else if(est === 'liquida'){
+    const l = volFinal * 0.02;
+    estabVal  = l >= 1 ? fmt(l,1) + ' L' : fmt0(l*1000) + ' mL';
+    estabTxt  = 'Leche líquida descremada';
+    estabNota = '2 litros por cada 100 litros de agua de vacunación.';
+  } else {
+    estabVal  = 'Según etiqueta';
+    estabTxt  = 'Producto comercial';
+    estabNota = 'Seguí la dosificación del fabricante. Muchos incluyen colorante azul para el control de lenguas.';
+  }
+
+  const madre  = Math.min(10, Math.max(5, Math.round(volFinal * 0.10)));
+  const purga  = beb === 'nipple' ? metros / 3 : 0;
+  const muerto = volFinal * 0.10;
+  const tabsLlegada = Math.max(1, Math.ceil(volFinal / 200));
+  const tabsConsumo = Math.max(1, Math.ceil(volFinal / 25));
+
+  /* ================= Render ================= */
+  let html = '';
+
+  html += '<div class="res-hero">'
+        + '<div class="rh-label">Agua de vacunación a preparar</div>'
+        + '<div class="rh-value">' + fmt0(volFinal) + ' <small>litros</small></div>'
+        + '<div class="rh-sub">' + origen + (factorCalor > 1 ? ' · ajustado ×1,5 por calor' : '') + '</div>';
+  if(Math.round(vMinF) !== Math.round(vMaxF)){
+    html += '<div class="rh-rango">Referencias entre ' + fmt0(vMinF) + ' y ' + fmt0(vMaxF) + ' L</div>';
+  }
+  html += '</div>';
+
+  html += '<div class="res-grid">';
+  html += '<div class="res-item"><div class="ri-label">Dosis necesarias</div><div class="ri-value">' + fmt0(dosisNec) + '</div>'
+        + '<div class="ri-note">Para ' + fmt0(aves) + ' aves, al millar hacia arriba. Nunca menos de una dosis completa por ave.</div></div>';
+  html += '<div class="res-item"><div class="ri-label">Frascos a usar</div><div class="ri-value">' + frascos + '</div>'
+        + '<div class="ri-note">' + frascos + ' × ' + fmt0(dxf) + ' = ' + fmt0(dosisComp) + ' dosis disponibles.</div></div>';
+  html += '<div class="res-item azul"><div class="ri-label">' + estabTxt + '</div><div class="ri-value">' + estabVal + '</div>'
+        + '<div class="ri-note">' + estabNota + '</div></div>';
+  html += '<div class="res-item azul"><div class="ri-label">Solución madre</div><div class="ri-value">' + madre + ' <span style="font-size:13px">L</span></div>'
+        + '<div class="ri-note">Prepará el estabilizador acá, mezclalo en el total y <b>esperá 15–20 minutos</b> antes de agregar la vacuna.</div></div>';
+  if(purga > 0){
+    html += '<div class="res-item ambar"><div class="ri-label">Purga de líneas</div><div class="ri-value">' + fmt0(purga) + ' <span style="font-size:13px">L</span></div>'
+          + '<div class="ri-note">1 L cada 3 m sobre ' + fmt0(metros) + ' m. Purgá hasta ver salir agua teñida por el extremo.</div></div>';
+  }
+  html += '<div class="res-item ambar"><div class="ri-label">Espacio muerto del sistema</div><div class="ri-value">~' + fmt0(muerto) + ' <span style="font-size:13px">L</span></div>'
+        + '<div class="ri-note">Hasta un 10% puede quedar atrapado y no llegar nunca a las aves. Agregá vacuna extra para compensarlo.</div></div>';
+  html += '<div class="res-item azul"><div class="ri-label">Tabletas de colorante</div><div class="ri-value">' + tabsLlegada + ' – ' + tabsConsumo + '</div>'
+        + '<div class="ri-note">' + tabsLlegada + ' tableta(s) si solo querés verificar que el agua llegó a todos los bebederos (1 cada 200 L); ' + tabsConsumo + ' si querés estimar el consumo por tinción (1 cada 20–30 L).</div></div>';
+  html += '<div class="res-item ambar"><div class="ri-label">Ventana de consumo</div><div class="ri-value">1½ – 2 h</div>'
+        + '<div class="ri-note">Menos de 1½ h: no todas bebieron. Más de 2 h: el título de la vacuna empieza a caer.</div></div>';
+  html += '</div>';
+
+  /* ----- Tabla comparativa ----- */
+  html += '<div class="card"><h2>De dónde sale el número</h2>'
+        + '<p class="lead">Todas las referencias aplicables a un lote de ' + fmt0(aves) + ' aves de ' + edad + ' semanas'
+        + (tipo==='polla'?' (polla de reemplazo / ponedora)':tipo==='reproductora'?' (reproductora broiler)':' (broiler)') + '.</p>'
+        + '<div class="tabla-wrap"><table><thead><tr><th>Referencia</th><th>L / 1.000 aves</th><th>Total del lote</th></tr></thead><tbody>';
+
+  refs.forEach(r=>{
+    const destac = (!esMedido && r.pref) ? ' class="destacada"' : '';
+    const rangoTxt = (r.min!=null && r.max!=null)
+      ? fmt0(r.min) + '–' + fmt0(r.max)
+      : fmt0(r.v);
+    const totalTxt = (r.min!=null && r.max!=null)
+      ? fmt0(r.min*miles) + '–' + fmt0(r.max*miles) + ' L'
+      : fmt0(r.v*miles) + ' L';
+    html += '<tr'+destac+'><td>' + r.n + (destac?' ← usada':'') + '<span class="src">' + r.nota + '</span></td>'
+          + '<td class="num">' + rangoTxt + '</td><td class="num">' + totalTxt + '</td></tr>';
+  });
+
+  if(esMedido){
+    html += '<tr class="destacada"><td>Consumo medido en el galpón ← usada<span class="src">Es el dato más confiable: refleja tu lote, tu galpón y tu clima.</span></td>'
+          + '<td class="num">' + fmt0(volBase/miles) + '</td><td class="num">' + fmt0(volBase) + ' L</td></tr>';
+  }
+  html += '</tbody></table></div>';
+
+  if(!esMedido){
+    html += '<div class="alert ambar"><b>Las referencias no siempre coinciden</b>'
+          + 'Cada guía mide en condiciones distintas, por eso conviene mirar el rango completo y no un solo número. '
+          + 'La fila destacada es la más específica para tu tipo de ave y edad. '
+          + '<b>Medir el consumo real de tu galpón resuelve la duda por completo</b>: registrá 2 horas de consumo el día antes, a la misma hora en que vas a vacunar.</div>';
+  } else {
+    html += '<div class="alert verde"><b>Estás usando el mejor dato posible</b>' + notaOrigen + '</div>';
+  }
+
+  if(lin){
+    const dMin = interp(lin.d, edad, 1), dMax = interp(lin.d, edad, 2);
+    const pctDia = volFinal / (((dMin+dMax)/2) * miles) * 100;
+    html += '<h3>Contraste con el estándar de la línea</h3>'
+          + '<p>A las <b>' + edad + ' semanas</b>, el estándar ' + lineaN + ' consume <b>' + fmt0(dMin) + '–' + fmt0(dMax) + ' mL por ave al día</b>'
+          + ' (' + fmt0(dMin*miles) + '–' + fmt0(dMax*miles) + ' L al día para todo el lote).</p>'
+          + '<p>El volumen calculado de <b>' + fmt0(volFinal) + ' L</b> equivale a cerca del <b>' + fmt0(pctDia,0) + '%</b> del consumo diario del lote.</p>';
+    if(pctDia > 75){
+      html += '<div class="alert rojo"><b>Ese porcentaje es alto</b>Difícilmente el lote consuma más de dos tercios de su ración diaria de agua en 2 horas. Revisá el volumen antes de preparar la vacuna, o medí el consumo real.</div>';
+    } else if(pctDia < 15){
+      html += '<div class="alert ambar"><b>Ese porcentaje es bajo</b>Con un volumen tan chico corrés el riesgo de que se acabe antes de 1½ h y parte del lote quede sin beber. Verificá el dato.</div>';
+    } else {
+      html += '<div class="alert verde"><b>Proporción razonable</b>Está en el rango esperable para una ventana de 1½–2 h.</div>';
+    }
+    html += '<p style="font-size:8.5pt;color:var(--gris2);">Fuente: ' + lin.fuente + ', vía el módulo Curvas Genéticas de AviVet.</p>';
+  }
+  html += '</div>';
+
+  /* ----- Avisos ----- */
+  if(clima === 'calor'){
+    html += '<div class="alert rojo"><b>Manejo por calor (&gt; 28 °C)</b>'
+          + 'No retires el agua a las aves. Preparate <b>dos tandas de ' + fmt0(volFinal/2) + ' L</b>: la primera en la primera hora y la segunda en la segunda. '
+          + 'Enfriá el agua a 15–20 °C, con hielo si hace falta.'
+          + (esMedido ? '' : ' El volumen de tabla se ajustó ×1,5 porque las tablas están calculadas a 21 °C.') + '</div>';
+  }
+
+  if(beb === 'campana'){
+    html += '<div class="alert ambar"><b>Bebederos de campana</b>'
+          + 'Fregalos la mañana de la vacunación, solo con agua. <b>La cama que cae adentro actúa como peso y mantiene la válvula cerrada</b>, así que el agua vacunada no baja. '
+          + 'Si no podés usar el estanque de cabecera, necesitás gente suficiente para llevar el agua a cada bebedero lo más rápido posible.</div>';
+  }
+  if(beb === 'manual'){
+    html += '<div class="alert ambar"><b>Bebederos manuales</b>'
+          + 'Distribuí el agua vacunada en todos los bebederos <b>al mismo tiempo</b>, no de a uno. Si tardás, las aves de los primeros bebederos toman doble dosis y las de los últimos casi nada.</div>';
+  }
+  if(edad < 3){
+    html += '<div class="alert rojo"><b>Aves menores de 3 semanas</b>'
+          + 'A esta edad el consumo de agua es irregular y el margen de error de esta vía es mucho más chico. Extremá el control de volumen y de distribución, o evaluá otra vía con el veterinario del plantel.</div>';
+  }
+
+  /* ----- Resumen ----- */
+  html += '<div class="card"><h2>Resumen para llevar al galpón</h2>'
+        + '<div class="tabla-wrap"><table><tbody>'
+        + '<tr><td>Aves</td><td class="num"><b>' + fmt0(aves) + '</b></td></tr>'
+        + '<tr><td>Edad</td><td class="num"><b>' + edad + ' semanas (' + dias + ' días)</b></td></tr>'
+        + '<tr><td>Agua de vacunación a preparar</td><td class="num"><b>' + fmt0(volFinal) + ' L</b></td></tr>'
+        + '<tr><td>Dosis necesarias</td><td class="num"><b>' + fmt0(dosisNec) + '</b></td></tr>'
+        + '<tr><td>Frascos</td><td class="num"><b>' + frascos + ' × ' + fmt0(dxf) + '</b></td></tr>'
+        + '<tr><td>' + estabTxt + '</td><td class="num"><b>' + estabVal + '</b></td></tr>'
+        + '<tr><td>Solución madre (esperar 15–20 min)</td><td class="num"><b>' + madre + ' L</b></td></tr>'
+        + (purga > 0 ? '<tr><td>Purga de líneas</td><td class="num"><b>' + fmt0(purga) + ' L</b></td></tr>' : '')
+        + '<tr><td>Temperatura del agua</td><td class="num"><b>15 – 20 °C</b></td></tr>'
+        + '<tr><td>pH del agua</td><td class="num"><b>6,0 – 7,5</b></td></tr>'
+        + '<tr><td>Cloro libre</td><td class="num"><b>0 ppm</b></td></tr>'
+        + '<tr><td>Tiempo de consumo objetivo</td><td class="num"><b>1½ – 2 h</b></td></tr>'
+        + '<tr><td>Lenguas teñidas objetivo</td><td class="num"><b>≥ 90%</b></td></tr>'
+        + '</tbody></table></div>'
+        + '<div class="btn-row no-print"><button class="btn sec" onclick="window.print()">🖨️ Imprimir esta hoja</button></div>'
+        + '</div>';
+
+  out.innerHTML = html;
+  out.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+document.getElementById('btn-reset').addEventListener('click',()=>{
+  ['aves','edad','medido'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('resultados').innerHTML = '';
+});
+
+/* =========================================================
+   Espacio de bebedero
+   ========================================================= */
+const ESP = {
+  nipple:   {postura:8,  reproductora:null, lbl:'nipples',   unidad:'aves por nipple'},
+  copa:     {postura:12, reproductora:null, lbl:'copas',     unidad:'aves por copa'},
+  campana:  {postura:50, reproductora:100,  lbl:'campanas',  unidad:'aves por campana'},
+  canal:    {postura:2.5,reproductora:null, lbl:'metros de canal', unidad:'cm por ave', canal:true}
+};
+
+function hintEspacio(){
+  const t = document.getElementById('e-tipo').value;
+  document.getElementById('e-hint').textContent = ESP[t].canal
+    ? 'Metros lineales totales de canal disponibles.'
+    : 'Número de ' + ESP[t].lbl + ' en el galpón.';
+}
+document.getElementById('e-tipo').addEventListener('change', hintEspacio);
+hintEspacio();
+
+document.getElementById('btn-esp').addEventListener('click',()=>{
+  const aves = parseFloat(document.getElementById('e-aves').value);
+  const tipo = document.getElementById('e-tipo').value;
+  const cant = parseFloat(document.getElementById('e-cant').value);
+  const ave  = document.getElementById('e-ave').value;
+  const out  = document.getElementById('esp-out');
+
+  if(!aves || aves<=0 || isNaN(cant) || cant<0){
+    out.innerHTML = '<div class="alert rojo"><b>Faltan datos</b>Ingresá el número de aves y la cantidad disponible.</div>';
+    return;
+  }
+
+  const cfg = ESP[tipo];
+  const std = cfg[ave] != null ? cfg[ave] : cfg.postura;
+  const usaFallback = cfg[ave] == null;
+
+  let necesario, actual, unidadTxt, cumple;
+  if(cfg.canal){
+    necesario = aves * 2.5 / 100;                 // cm/ave → metros
+    actual    = cant;
+    unidadTxt = 'metros de canal';
+    cumple    = actual >= necesario;
+  } else {
+    necesario = Math.ceil(aves / std);
+    actual    = cant;
+    unidadTxt = cfg.lbl;
+    cumple    = actual >= necesario;
+  }
+
+  const avesPor = cfg.canal ? (aves / Math.max(actual,0.001) * 100) : (aves / Math.max(actual,0.001));
+  const falta   = Math.max(0, necesario - actual);
+
+  let html = '<div class="score-box ' + (cumple ? 'ok' : 'mal') + '">'
+    + '<div class="sb-num">' + (cfg.canal ? fmt(actual,1) : fmt0(actual)) + '</div>'
+    + '<div class="sb-lbl">' + unidadTxt + ' disponibles</div>'
+    + '<div class="sb-msg">';
+
+  if(cumple){
+    html += '<b>Alcanza.</b><br>El estándar pide ' + (cfg.canal ? fmt(necesario,1)+' m' : fmt0(necesario)+' '+unidadTxt)
+          + ' para ' + fmt0(aves) + ' aves. Tenés ' + (cfg.canal ? fmt(actual,1)+' m' : fmt0(actual)) + '.';
+  } else {
+    html += '<b>No alcanza.</b><br>El estándar pide ' + (cfg.canal ? fmt(necesario,1)+' m' : fmt0(necesario)+' '+unidadTxt)
+          + ' para ' + fmt0(aves) + ' aves. <b>Faltan ' + (cfg.canal ? fmt(falta,1)+' m' : fmt0(falta)+' '+unidadTxt) + '.</b>';
+  }
+  html += '</div></div>';
+
+  html += '<div class="res-grid">'
+    + '<div class="res-item"><div class="ri-label">Situación actual</div>'
+    + '<div class="ri-value">' + (cfg.canal ? fmt(avesPor,1)+' cm' : fmt0(avesPor)) + '</div>'
+    + '<div class="ri-note">' + (cfg.canal ? 'por ave' : 'aves por ' + tipo) + '</div></div>'
+    + '<div class="res-item ' + (cumple?'':'ambar') + '"><div class="ri-label">Estándar</div>'
+    + '<div class="ri-value">' + (cfg.canal ? '2,5 cm' : fmt0(std)) + '</div>'
+    + '<div class="ri-note">' + cfg.unidad + '</div></div>'
+    + '</div>';
+
+  if(usaFallback && ave === 'reproductora'){
+    html += '<div class="alert azul"><b>Sin estándar específico</b>No hay una referencia distinta para reproductoras con este tipo de bebedero, así que se aplicó el de ponedoras.</div>';
+  }
+
+  if(!cumple){
+    html += '<div class="alert rojo"><b>Qué hacer antes de vacunar</b>'
+          + 'Instalá bebederos provisorios solo para el día de la vacunación —bandejas plásticas si son campanas—, '
+          + 'y bajá todos los bebederos disponibles, incluidos los que normalmente están fuera de servicio. '
+          + 'Con este espacio, las aves dominantes van a tomar doble dosis y las sumisas ninguna.</div>';
+  }
+
+  html += '<div class="alert ambar"><b>Además del conteo</b>'
+        + 'Verificá en terreno que <b>dos tercios de las aves puedan beber al mismo tiempo</b>. Es el criterio de campo que manda.</div>';
+
+  out.innerHTML = html;
+});
+
+/* =========================================================
+   Cronograma
+   ========================================================= */
+function addMin(hhmm, min){
+  const [h,m] = hhmm.split(':').map(Number);
+  const t = new Date(2000,0,1,h,m + min);
+  return String(t.getHours()).padStart(2,'0') + ':' + String(t.getMinutes()).padStart(2,'0');
+}
+
+const escHints = {
+  piso:  ['Lo habitual en pollas y reproductoras en piso.', 'Hora en que empezás a alimentar.'],
+  jaula: ['Las líneas se ceban de noche y las aves reciben la vacuna con la primera luz.', 'Hora en que se encienden las luces.'],
+  calor: ['No se priva de agua y la vacuna se divide en dos tandas de una hora.', 'Hora en que empezás a alimentar.']
+};
+document.getElementById('c-esc').addEventListener('change', e=>{
+  const h = escHints[e.target.value];
+  document.getElementById('c-hint').textContent = h[0];
+  document.getElementById('c-hint2').textContent = h[1];
+});
+
+document.getElementById('btn-crono').addEventListener('click', generarCrono);
+
+function generarCrono(){
+  const ini = document.getElementById('hora-ini').value;
+  const esc = document.getElementById('c-esc').value;
+  const out = document.getElementById('crono-out');
+  if(!ini){ out.innerHTML = '<div class="alert rojo"><b>Falta la hora</b>Elegí la hora de referencia.</div>'; return; }
+
+  let filas, nota;
+
+  if(esc === 'piso'){
+    filas = [
+      [ini + ' – ' + addMin(ini,45), 'Alimentar y dar agua normalmente. Remover o bypassear los filtros. Fregar los bebederos sucios, solo con agua.'],
+      [addMin(ini,45), 'Cortar el agua. Dejar que las aves terminen el remanente de los bebederos (~20 min).'],
+      [addMin(ini,65), 'Subir las líneas o campanas fuera del alcance de las aves.'],
+      [addMin(ini,65), '<b>Preparar la solución madre estabilizada</b> (5–10 L) y mezclarla en el volumen total. <b>Esperar 15–20 minutos.</b>'],
+      [addMin(ini,65) + ' – ' + addMin(ini,125), 'Período de retiro de agua (60 min). Reconstituir la vacuna en el agua ya estabilizada, sobre mesa limpia y con guantes.'],
+      [addMin(ini,130), '<b>Cargar las líneas:</b> personal en cada extremo, abrir el extremo y la válvula de descarga, dejar correr hasta que salga agua teñida. Cerrar, tapar y seguir con la línea siguiente.'],
+      [addMin(ini,140), 'Bajar las líneas a la altura de las aves, empezando por las interiores hacia afuera.'],
+      [addMin(ini,150), 'Caminar el lote (primera pasada, a los 10 min de dar acceso).'],
+      [addMin(ini,140) + ' – ' + addMin(ini,260), '<b>Ventana de vacunación (2 h).</b> Caminar el lote cada 15–30 min. Verificar flujo en todas las líneas y controlar la velocidad de consumo.'],
+      [addMin(ini,260), 'Abrir el agua de red <b>solo si ya no queda agua vacunada</b>. Enjuagar líneas. Llenar el reservorio del dosificador con agua limpia y dejarlo vaciar.'],
+      [addMin(ini,265), '<b>Control de lenguas:</b> 50 aves de cada esquina del galpón. Objetivo ≥ 90%.'],
+      [addMin(ini,285), 'Registrar en la ficha del lote. Reponer filtros solo después de las 24 h sin sanitizantes.']
+    ];
+    nota = '<div class="alert azul"><b>Cronograma de piso</b>El agua se retira 60 minutos y toda la vacuna se administra en una ventana de 2 horas. Recordá suspender medicación y sanitizantes 24 h antes y después, y la oxigenación 48 h antes.</div>';
+  }
+  else if(esc === 'jaula'){
+    filas = [
+      [addMin(ini,-720), 'Noche anterior: <b>cortar el agua</b> y dejar que las aves consuman todo el remanente de las líneas.'],
+      [addMin(ini,-90), '<b>Preparar la solución madre estabilizada</b> (5–10 L) y mezclarla en el volumen total. <b>Esperar 15–20 minutos.</b>'],
+      [addMin(ini,-70), 'Reconstituir la vacuna sobre mesa limpia y con guantes. Verificar que el estanque tenga volumen suficiente para toda la ventana.'],
+      [addMin(ini,-60) + ' – ' + addMin(ini,-10), '<b>Cargar las líneas durante las horas de oscuridad, antes de encender las luces.</b> Personal en cada extremo: drenar hasta que salga agua teñida, cerrar y seguir con la siguiente batería.'],
+      [ini, '<b>Encender las luces.</b> Empieza la ventana de vacunación.'],
+      [addMin(ini,10), 'Caminar los pasillos (primera pasada).'],
+      [ini + ' – ' + addMin(ini,120), '<b>Ventana de vacunación (2 h).</b> Recorrer los pasillos cada 15–30 min, verificando que la solución llegue al final de cada batería.'],
+      [addMin(ini,120), 'Abrir el agua de red solo si ya no queda agua vacunada. Enjuagar líneas y limpiar el dosificador.'],
+      [addMin(ini,125), '<b>Control de lenguas:</b> 50 aves de cada esquina, incluyendo el <b>final de las baterías</b>. Objetivo ≥ 90%.'],
+      [addMin(ini,145), 'Registrar en la ficha del lote.']
+    ];
+    nota = '<div class="alert ambar"><b>Por qué el cebado nocturno</b>En jaulas el problema clásico es el <b>sobreconsumo en la entrada de la línea</b>: las aves de la cabecera se toman casi todo y las del fondo no reciben nada. '
+         + 'Cerrando el agua de noche, dejando que vacíen las líneas y cebándolas antes de las luces, todas las aves arrancan al mismo tiempo y con la misma solución disponible.</div>';
+  }
+  else {
+    filas = [
+      [ini + ' – ' + addMin(ini,45), 'Alimentar y dar agua normalmente. <b>Con calor no se retira el agua a las aves.</b> Remover filtros y fregar bebederos.'],
+      [addMin(ini,45), '<b>Preparar la solución madre estabilizada</b> y mezclarla en el volumen total. <b>Esperar 15–20 minutos.</b> Enfriar el agua a 15–20 °C, con hielo si hace falta.'],
+      [addMin(ini,65), 'Reconstituir la vacuna. Preparar <b>solo la primera mitad</b> del volumen.'],
+      [addMin(ini,70), '<b>Cargar las líneas</b> hasta que salga agua teñida por el extremo. Bajar las líneas.'],
+      [addMin(ini,70) + ' – ' + addMin(ini,130), '<b>Primera mitad de la vacuna (1ª hora).</b> Caminar el lote a los 10 min y después cada 15–30 min.'],
+      [addMin(ini,130) + ' – ' + addMin(ini,190), '<b>Segunda mitad de la vacuna (2ª hora).</b> Mezclar y administrar recién ahora, no antes.'],
+      [addMin(ini,190), 'Abrir el agua de red solo si ya no queda agua vacunada. Enjuagar líneas y limpiar el dosificador.'],
+      [addMin(ini,195), '<b>Control de lenguas:</b> 50 aves de cada esquina. Objetivo ≥ 90%.'],
+      [addMin(ini,215), 'Registrar en la ficha del lote.']
+    ];
+    nota = '<div class="alert rojo"><b>Cronograma para clima cálido</b>No se priva de agua —la deshidratación es un riesgo real y las aves muy sedientas pelean y derraman la vacuna— y el volumen se divide en dos mitades, una por hora. El agua debe estar a 15–20 °C.</div>';
+  }
+
+  let html = '<div class="tabla-wrap" style="margin-top:18px;"><table>'
+           + '<thead><tr><th style="width:135px;">Hora</th><th>Actividad</th></tr></thead><tbody>';
+  filas.forEach(f => { html += '<tr><td class="hora">' + f[0] + '</td><td>' + f[1] + '</td></tr>'; });
+  html += '</tbody></table></div>' + nota;
+
+  out.innerHTML = html;
+}
+
+/* =========================================================
+   Pauta de verificación
+   ========================================================= */
+const CHECKS = [
+  {c:true,  t:'Líneas cargadas hasta ver agua teñida', d:'Se purgó cada línea con personal en ambos extremos antes de dar acceso a las aves. Cargar las líneas sube la tinción de 61% a 98%.'},
+  {c:true,  t:'Agua sin cloro o cloro neutralizado', d:'Agua declorada, de pozo sin clorar o embotellada, con estabilizador actuando 15–20 min antes de agregar la vacuna. 1 ppm de cloro ya inactiva.'},
+  {c:true,  t:'Sin medicación ni sanitizantes en el agua', d:'Suspendidos 24 h antes y después. Sistema de tratamiento apagado. Oxigenación apagada 48 h antes. Filtros removidos o bypasseados.'},
+  {c:true,  t:'Al menos una dosis completa por ave', d:'Dosis calculadas sobre las aves presentes, al millar hacia arriba, con extra por el espacio muerto del sistema.'},
+  {c:true,  t:'Todo el volumen se consumió entre 1½ y 2 horas', d:'No menos de 1½ h ni más de 2 h.'},
+  {c:true,  t:'Cadena de frío mantenida', d:'Refrigerador exclusivo 2–8 °C con termómetro min/máx al centro revisado a diario; traslado en cooler a 4–8 °C; agua a 15–20 °C.'},
+  {c:true,  t:'90% o más de lenguas y buches teñidos', d:'Sobre 50 aves de cada esquina del galpón, o 100 aves de al menos 3 puntos.'},
+  {c:false, t:'pH del agua entre 6,0 y 7,5', d:'Fuera de ese rango cae la eficacia del virus vacunal.'},
+  {c:false, t:'Líneas y bebederos limpios', d:'Sin biofilm ni sarro en las líneas. Campanas y copas fregadas la mañana de la vacunación, solo con agua.'},
+  {c:false, t:'Estabilizador usado correctamente', d:'Leche descremada en polvo 2 g/L (disuelta con agua a 60 °C), leche líquida 2 L/100 L, o producto comercial según etiqueta.'},
+  {c:false, t:'Espacio de bebedero suficiente', d:'1 nipple cada 8 aves, 1 copa cada 12, 1 campana cada 50 en ponedoras. Dos tercios del lote pudo beber al mismo tiempo.'},
+  {c:false, t:'Utensilios plásticos, limpios y exclusivos', d:'Sin metales. Ningún balde ni jarra compartida con pediluvios, herbicidas o desinfectantes.'},
+  {c:false, t:'Vacuna reconstituida y usada de inmediato', d:'Frasco abierto sumergido en la solución, pastilla completamente disuelta, frasco y tapón enjuagados, mesa limpia y guantes puestos.'},
+  {c:false, t:'Se caminó el lote a los 10 min y cada 15–30 min', d:'Verificando flujo en todos los bebederos y consumo uniforme.'},
+  {c:false, t:'Agua de red abierta solo al terminar', d:'No se diluyó la vacuna con agua de red antes de que los bebederos quedaran vacíos.'},
+  {c:false, t:'Equipo lavado solo con agua', d:'Sin detergentes ni desinfectantes. Guardado en bolsa plástica sellada en área limpia.'},
+  {c:false, t:'Vacunación registrada en la ficha del lote', d:'Vacuna, serie, vencimiento, volumen, tiempo de consumo, % de lenguas teñidas y responsable.'}
+];
+
+const cl = document.getElementById('checklist');
+cl.innerHTML = CHECKS.map((c,i) =>
+  '<div class="chk-item">'
+  + '<input type="checkbox" id="c'+i+'" data-crit="'+c.c+'">'
+  + '<label class="chk-txt" for="c'+i+'">'
+  +   '<div class="chk-t">' + c.t + (c.c ? '<span class="badge-crit">Crítico</span>' : '') + '</div>'
+  +   '<div class="chk-d">' + c.d + '</div>'
+  + '</label></div>'
+).join('');
+
+document.getElementById('btn-score').addEventListener('click',()=>{
+  const boxes = [...cl.querySelectorAll('input')];
+  const total = boxes.length;
+  const ok    = boxes.filter(b => b.checked).length;
+  const pct   = Math.round(ok / total * 100);
+  const critFallan = boxes.filter(b => b.dataset.crit === 'true' && !b.checked).length;
+
+  let cls, lbl, msg;
+  if(critFallan > 0){
+    cls = 'mal'; lbl = 'Vacunación comprometida';
+    msg = 'Falla ' + critFallan + ' punto' + (critFallan>1?'s':'') + ' crítico' + (critFallan>1?'s':'')
+        + '. No des el lote por vacunado: consultá al veterinario responsable sobre la necesidad de revacunar y dejá el hallazgo por escrito en la ficha del lote.';
+  } else if(pct >= 90){
+    cls = 'ok'; lbl = 'Vacunación correcta';
+    msg = 'Todos los puntos críticos se cumplieron. Confirmá la protección con serología a las 3 semanas: título alto y CV bajo 50%.';
+  } else {
+    cls = 'med'; lbl = 'Mejorable';
+    msg = 'Los puntos críticos se cumplieron, pero hay ' + (total-ok) + ' punto' + ((total-ok)>1?'s':'')
+        + ' sin marcar. Corregilos antes de la próxima vacunación: son los que suben el CV de la serología.';
+  }
+
+  document.getElementById('score-out').innerHTML =
+      '<div class="score-box ' + cls + '">'
+    + '<div class="sb-num">' + pct + '%</div>'
+    + '<div class="sb-lbl">' + lbl + '</div>'
+    + '<div class="sb-msg"><b>' + ok + ' de ' + total + ' puntos cumplidos.</b><br>' + msg + '</div>'
+    + '</div>';
+});
+
+document.getElementById('btn-chk-reset').addEventListener('click',()=>{
+  cl.querySelectorAll('input').forEach(b => b.checked = false);
+  document.getElementById('score-out').innerHTML = '';
+});
+</script>
+</body>
+</html>

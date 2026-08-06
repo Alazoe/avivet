@@ -8,6 +8,7 @@
 
 | Herramienta | Link | Descripción |
 |-------------|------|-------------|
+| **Vacunación en Agua de Bebida** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/vacunacion-agua/) | Volumen y dosis, calidad del agua, espacio de bebedero, cronograma del día y control de calidad |
 | **Calculadoras de Dosis** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/calculadoras-dosis/) | Cálculo de dosis de antibióticos en agua de bebida |
 | **Auditoría SAG Bioseguridad** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/auditoria-sag/) | Pauta de verificación Res. 7695/2024 |
 | **Inventario de Huevos** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/inventario-huevos/) | Control de stock y ventas |
@@ -81,6 +82,78 @@ Herramienta para planificar y optimizar rutas de retiro de huevos frescos y desp
 | Camión Grande | 10 toneladas |
 | Camión Mediano | 6 toneladas |
 | Chevrolet Partner | ~1 tonelada |
+
+---
+
+## 💧 Vacunación en Agua de Bebida
+
+### ➡️ [https://alazoe.github.io/avivet/vacunacion-agua/](https://alazoe.github.io/avivet/vacunacion-agua/)
+
+Módulo de recomendaciones para que el productor realice correctamente la vacunación masiva por agua de bebida, con cálculo automático y control de calidad.
+
+### ¿Qué incluye?
+
+8 secciones:
+
+- ✅ **Calculadora** — volumen de agua de vacunación, dosis y frascos, estabilizador, solución madre, purga de líneas, espacio muerto del sistema y tabletas de colorante
+- ✅ **Calidad del agua** — cloro, pH, temperatura, metales, filtros, biofilm, uso correcto de la leche descremada
+- ✅ **Espacio de bebedero** — verificador contra los estándares por tipo de bebedero
+- ✅ **Cronograma** — tres escenarios: piso, jaula con cebado nocturno y clima cálido
+- ✅ **Protocolo paso a paso** en 5 fases con ilustraciones propias, y comparación medicador vs bomba y barril
+- ✅ **Monitoreo** — lenguas azules, escala de intensidad, dosis de colorante y seguimiento serológico
+- ✅ **Errores frecuentes** — 15 fallas de campo con su corrección
+- ✅ **Fuentes** — con qué aporta cada documento
+
+Imprimible como hoja de trabajo para llevar al galpón.
+
+### Cómo calcula el volumen
+
+La calculadora **no usa un solo número**: reúne todas las referencias aplicables al tipo de ave y edad, muestra la tabla comparativa completa y destaca la más específica. Además contrasta el resultado contra el consumo diario estándar de la línea genética y avisa si la proporción no es plausible.
+
+| Tipo de ave | Referencia preferida | Valores (L / 1.000 aves) |
+|---|---|---|
+| **Polla de reemplazo, 3–14 sem** | Intervet, pollas de postura a 21 °C | 18 (3 sem) · 27 (4) · 36 (5) · 41 (6) · 45 (8) · 50 (10) · 54 (12) · 63 (14), interpolado |
+| **Ponedora > 14 sem** | Estándar de la línea genética | 50–60% del consumo diario Hy-Line |
+| **Reproductora broiler** | Intervet / Aviagen a 21 °C | 25 (2–3 sem) · 30 (4–6) · 45–50 (7–10) · 60 (11–15) |
+| **Broiler** | Regla de los días de edad | 1.000 dosis en tantos litros como días de edad (mínimo, duplicable) |
+| *Contraste, todas las edades* | Pacificvet | 10–20 (<8 sem) · 20–40 (≥8 sem) |
+| *Contraste, broilers* | Zoetis · SR Publication | 30 (200 gal/25.000 aves) · 40–45 |
+
+Consumo diario por línea genética (mL/ave/día) tomado del módulo [curvas-geneticas](curvas-geneticas/): **Hy-Line Brown** y **Hy-Line W-80**, estándares enero 2024. Las tablas de vacunación están calculadas a 21 °C; con calor la calculadora ajusta ×1,5.
+
+### Otras bases de cálculo
+
+| Parámetro | Valor | Fuente |
+|---|---|---|
+| Ventana de consumo | 1½ – 2 h (el título cae pasadas las 2 h; IB más rápido que Gumboro) | Intervet · Aviagen · Zoetis |
+| Cloro libre | 0 ppm — **1 ppm ya inactiva**; bactericida 0,1–0,2 ppm, virucida 0,3–0,5 ppm | Intervet · Ceva |
+| pH del agua | 6,0 – 7,5 | SR Publication · Intervet |
+| Temperatura del agua | 15 – 20 °C | Intervet |
+| Leche descremada | 2 g/L en polvo (disolver con agua a 60 °C) · 2 L por 100 L líquida · reposar **15–20 min** | Intervet |
+| Espacio de bebedero | 1 nipple/8 aves · 1 copa/12 · 1 campana/50 (ponedoras) o /100 (reproductoras) · 2,5 cm de canal/ave | Intervet |
+| Purga de líneas de nipple | 1 L cada 3 m, hasta ver agua teñida | Aviagen |
+| Espacio muerto del sistema | Hasta 10% del agua vacunada — agregar vacuna extra | Intervet |
+| Oxigenación / sanitizantes / filtros | Oxigenación off 48 h antes · sanitizantes 24 h antes y después · filtros removidos | Intervet · Elanco |
+| Retiro de agua | 1–1½ h broilers (óptimo) · 60 min reproductoras · toda la noche en jaula · **ninguno con calor** | Intervet · Aviagen · Zoetis · Pacificvet |
+| Caminar el lote | A los 10 min y cada 15–30 min hasta consumo total | Zoetis |
+| Colorante | 1 tableta/200 L para verificar llegada · 1 cada 20–30 L para estimar consumo | Intervet |
+| Lenguas teñidas | ≥ 90%, sobre 50 aves de cada esquina del galpón | Intervet · Aviagen · Ceva |
+| Cargar líneas vs no cargar | **98% vs 61%** de tinción | Intervet |
+| Cadena de frío | Almacenamiento 2–8 °C · traslado 4–8 °C · termómetro min/máx al centro, control diario | Aviagen · Elanco |
+| Serología | ELISA a las 3 semanas, 20 aves al azar, **CV < 50%** | Aviagen |
+
+### Fuentes
+
+- **Intervet Poultry Division / MSD** — [Datafile: Drinking Water Vaccination](https://www.enfermedad-gumboro.com/wp-content/uploads/sites/159/2022/05/watervaccination.pdf), Dr T Cserep, Nobilis® Vaccination Series
+- **Aviagen (2008)** — [Drinking Water Vaccination](https://aviagen.com/assets/Tech_Center/Broiler_Breeder_Tech_Articles/English/AviagenBrief_DrinkingWaterVaccination_Sept08.pdf), Aviagen Brief
+- **Zoetis (2025)** — [Protocol… Layer Chickens](https://www.zoetisus.com/content/_assets/docs/Poultry/Vaccine-Administration/Protocol-for-Live-Vaccination-via-Drinking-Water.pdf) · [… Broiler Chickens](https://www.zoetisus.com/content/_assets/docs/Poultry/Vaccine-Administration/Protocol-for-Live-Vaccination-via-Drinking-Water-Broiler.pdf)
+- **Pacificvet** — [Drinking Water Administration of Vaccine](https://www.pacificvet.co.nz/wp-content/uploads/2019/01/PAC0019A-Drinking-water-administration-of-vaccine_2.pdf), PAC0019AV1
+- **Elanco** — [Best Practices for Water Vaccination](https://farmanimal.elanco.com/us/poultry/article/best-practices-water-vaccination)
+- **SR Publication** — [Drinking Water Vaccination in Chicken](https://www.srpublication.com/drinking-water-vaccination-in-chicken/)
+- **Ceva** — *Monitoring vaccination quality — Drinking water* y documentación técnica de CEVAMUNE®
+- **Hy-Line International** — estándares Brown (jaula) y W-80 (Chile), enero 2024, vía [curvas-geneticas](curvas-geneticas/)
+
+> Notas: el PDF de monitoreo de Ceva alojado en su sitio danés bloquea el acceso automatizado (HTTP 403); ese contenido se tomó de la documentación pública de CEVAMUNE® y del plan de monitoreo Ceva disponible. Las ilustraciones del módulo son SVG originales de AviVet, no reproducciones de las de Zoetis.
 
 ---
 
