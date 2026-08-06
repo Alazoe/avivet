@@ -8,6 +8,7 @@
 
 | Herramienta | Link | Descripción |
 |-------------|------|-------------|
+| **Vacunación por Spray** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/vacunacion-spray/) | Calibración del pulverizador, tamaño de gota, papel hidrosensible y control de calidad |
 | **Vacunación en Agua de Bebida** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/vacunacion-agua/) | Volumen y dosis, calidad del agua, espacio de bebedero, cronograma del día y control de calidad |
 | **Calculadoras de Dosis** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/calculadoras-dosis/) | Cálculo de dosis de antibióticos en agua de bebida |
 | **Auditoría SAG Bioseguridad** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/auditoria-sag/) | Pauta de verificación Res. 7695/2024 |
@@ -82,6 +83,69 @@ Herramienta para planificar y optimizar rutas de retiro de huevos frescos y desp
 | Camión Grande | 10 toneladas |
 | Camión Mediano | 6 toneladas |
 | Chevrolet Partner | ~1 tonelada |
+
+---
+
+## 💨 Vacunación por Spray
+
+### ➡️ [https://alazoe.github.io/avivet/vacunacion-spray/](https://alazoe.github.io/avivet/vacunacion-spray/)
+
+Módulo hermano del de agua de bebida, para la aplicación masiva de vacunas vivas por aspersión.
+
+### ¿Qué incluye?
+
+9 secciones:
+
+- ✅ **Calibración** — método de 6 pasos de Aviagen: caudal del equipo, alcance, rutas necesarias, volumen por pasada y volumen total
+- ✅ **Tamaño de gota** — la decisión técnica central, con diagrama de dónde se deposita la vacuna
+- ✅ **Protocolo** en 4 fases, con ilustraciones propias
+- ✅ **Papel hidrosensible** — cómo validar el patrón de gotas antes de gastar vacuna
+- ✅ **Ambiente del galpón** — luz, ventilación, cortinas y los 10 minutos de reposo
+- ✅ **Equipo y limpieza** — rutina antes, después y mantenimiento mensual
+- ✅ **Control de calidad** — RT-PCR a 5–7 días, ELISA a 3 semanas, pauta con puntaje
+- ✅ **12 errores frecuentes** con su corrección
+- ✅ **Fuentes** con el aporte de cada documento
+
+### Cálculo de calibración
+
+No existe un volumen de tabla para spray: depende del equipo, del galpón y del ritmo al caminar. La calculadora implementa el método de Aviagen y reproduce exactamente su ejemplo publicado (16 L).
+
+| Paso | Cálculo |
+|---|---|
+| 1 · Caudal del equipo | Tiempo de prueba (s) ÷ volumen de prueba (L) = **s/L** |
+| 2 · Recorrido | Cronometrar el largo del galpón a paso normal |
+| 3 · Ancho cubierto | Alcance del spray × 2 (un lado y el otro) |
+| 4 · Rutas necesarias | Ancho del galpón ÷ ancho cubierto, redondeado hacia arriba |
+| 5 · Volumen por pasada | Tiempo de recorrido (s) ÷ caudal (s/L) |
+| 6 · **Volumen total** | Volumen por pasada × rutas × pasadas |
+
+### Parámetros clave
+
+| Parámetro | Valor | Fuente |
+|---|---|---|
+| Gota fina | **< 70 µm** → pulmones y sacos aéreos · reacción post-vacunal | Aviagen |
+| Gota gruesa | **> 100 µm** → tracto respiratorio alto · más segura y uniforme | Aviagen |
+| Gota para coccidia | **200–250 µm** — no daña los ooquistes | HIPRA |
+| Agua | Destilada, **< 20 °C** | Aviagen |
+| Estabilizador | Con colorante, agregado al agua **antes** de mezclar la vacuna | Aviagen |
+| Altura de lanza | **1 m**, paralela al suelo · distancia máxima a las aves 1 m | Aviagen · Zoetis |
+| Pasadas | **2 completas** | Aviagen |
+| Ventilación | Apagada durante y **10 min después** | Aviagen |
+| Vida útil de la mezcla | **1 hora** desde reconstituida | Zoetis |
+| Cadena de frío | 2–8 °C almacenamiento y transporte, sin contacto con ice packs | Aviagen |
+| Papel hidrosensible | Reevaluar **cada 3 meses** y ante cambio de personal | Zoetis |
+| Limpieza mensual | Remojo en **vinagre al 20%** para sarro y biofilm | Zoetis |
+| Validación | **RT-PCR 5–7 días** · **ELISA 3 semanas** | Aviagen |
+| Spray en incubadora | 7–40 mL/100 aves · 25–28 mL por caja de 80–100 pollitos | HIPRA |
+
+### Fuentes
+
+- **Aviagen (2026)** — [Best Practice on the Farm: Spray Vaccination](https://aviagen.com/assets/Tech_Center/Broiler_Breeder_Tech_Articles/English/AVIA-BestPractice-Spray-Vaccination-EN.pdf)
+- **Zoetis (2025)** — [Field Spray Vaccination of Layer Pullets Guide](https://www.zoetisus.com/content/_assets/docs/Poultry/Vaccine-Administration/Guide-For-Field-Spray-Vaccination.pdf)
+- **The Poultry Site (2026)** — [Spray vaccination in poultry](https://www.thepoultrysite.com/articles/spray-vaccination-in-poultry-best-practice-for-uniform-flock-protection), por Aviagen
+- **HIPRA** — [Spray vaccines for poultry](https://www.hipra.com/en/animal-health/knowledge/8-spray-vaccines-poultry) y documentación de Hipraspray®
+
+> El sitio de HIPRA bloquea el acceso automatizado (HTTP 403); sus datos se tomaron de documentación pública sobre Hipraspray®. Las ilustraciones son SVG originales de AviVet.
 
 ---
 

@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vacunación por Spray — AviVet</title>
+<meta name="description" content="Cómo vacunar aves por spray: calibración del pulverizador, tamaño de gota, protocolo de aplicación, papel hidrosensible y control de calidad. MV Andrés Lazo Escobar — AviVet.">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root{
+  --verde:#2e7d32; --verde-d:#1b5e20; --verde-l:#e8f5e9;
+  --azul:#1565c0; --azul-l:#e3f2fd;
+  --rojo:#c62828; --rojo-l:#ffebee;
+  --ambar:#ef6c00; --ambar-l:#fff3e0;
+  --gris:#555; --gris2:#777; --linea:#e0e0e0;
+}
+body{ font-family:'Segoe UI', Arial, sans-serif; background:#f0f4f0; color:#222; line-height:1.55; }
+
+.header{background:var(--verde); color:#fff; padding:26px 20px 20px; text-align:center;}
+.header .logo{display:inline-flex; align-items:center; justify-content:center; width:54px; height:54px;
+  border-radius:50%; background:rgba(255,255,255,.15); font-size:22px; font-weight:900; letter-spacing:-1px; margin-bottom:10px;}
+.header h1{font-size:23px; font-weight:900; letter-spacing:-.4px;}
+.header p{font-size:10.5pt; opacity:.88; margin-top:4px;}
+.header .subtitle{font-size:9pt; opacity:.7; margin-top:5px;}
+.back{display:inline-block; margin-top:12px; font-size:9pt; color:#fff; text-decoration:none; opacity:.8; border-bottom:1px solid rgba(255,255,255,.4);}
+.back:hover{opacity:1;}
+
+.tabs{position:sticky; top:0; z-index:100; background:#fff; border-bottom:1px solid var(--linea); box-shadow:0 1px 6px rgba(0,0,0,.06);}
+.tabs-inner{max-width:960px; margin:0 auto; display:flex; overflow-x:auto; scrollbar-width:none;}
+.tabs-inner::-webkit-scrollbar{display:none;}
+.tab{flex:0 0 auto; padding:13px 15px; font-size:9.5pt; font-weight:700; color:var(--gris); background:none;
+  border:none; border-bottom:3px solid transparent; cursor:pointer; white-space:nowrap; font-family:inherit; transition:color .15s;}
+.tab:hover{color:var(--verde);}
+.tab.active{color:var(--verde); border-bottom-color:var(--verde);}
+
+.container{max-width:960px; margin:24px auto; padding:0 16px 60px;}
+.panel{display:none; animation:fade .25s ease;}
+.panel.active{display:block;}
+@keyframes fade{from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none}}
+
+.card{background:#fff; border-radius:9px; box-shadow:0 1px 6px rgba(0,0,0,.09); padding:20px 22px; margin-bottom:18px;}
+.card h2{font-size:13.5pt; color:var(--verde); font-weight:800; margin-bottom:4px; letter-spacing:-.2px;}
+.card h3{font-size:11pt; font-weight:750; margin:18px 0 8px;}
+.card > .lead{font-size:9.5pt; color:var(--gris2); margin-bottom:16px;}
+.card p{font-size:10pt; color:#333; margin-bottom:9px;}
+.card ul, .card ol{margin:0 0 10px 20px; font-size:10pt; color:#333;}
+.card li{margin-bottom:6px;}
+
+.grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+@media(max-width:620px){ .grid{grid-template-columns:1fr;} }
+.field label{display:block; font-size:8.5pt; font-weight:700; color:var(--gris); text-transform:uppercase; letter-spacing:.5px; margin-bottom:5px;}
+.field input, .field select{width:100%; padding:9px 11px; font-size:10.5pt; font-family:inherit; border:1px solid #c8d4c8; border-radius:6px; background:#fff; color:#222;}
+.field input:focus, .field select:focus{outline:none; border-color:var(--verde); box-shadow:0 0 0 2px rgba(46,125,50,.15);}
+.field .hint{font-size:8pt; color:var(--gris2); margin-top:4px; line-height:1.4;}
+
+.btn{display:inline-flex; align-items:center; gap:7px; padding:11px 24px; background:var(--verde); color:#fff;
+  border:none; border-radius:7px; font-size:11pt; font-weight:800; font-family:inherit; cursor:pointer; transition:background .15s;}
+.btn:hover{background:var(--verde-d);}
+.btn.sec{background:#fff; color:var(--verde); border:1.5px solid var(--verde);}
+.btn.sec:hover{background:var(--verde-l);}
+.btn-row{display:flex; gap:10px; flex-wrap:wrap; margin-top:18px;}
+
+.res-hero{background:linear-gradient(135deg, var(--verde) 0%, var(--verde-d) 100%); color:#fff; border-radius:9px; padding:22px 24px; margin-bottom:16px;}
+.res-hero .rh-label{font-size:8.5pt; text-transform:uppercase; letter-spacing:1.2px; opacity:.85;}
+.res-hero .rh-value{font-size:34px; font-weight:900; letter-spacing:-1px; line-height:1.1; margin:4px 0;}
+.res-hero .rh-value small{font-size:16px; font-weight:700; opacity:.9;}
+.res-hero .rh-sub{font-size:9.5pt; opacity:.9;}
+.res-hero .rh-rango{display:inline-block; margin-top:10px; padding:4px 11px; border-radius:20px; background:rgba(255,255,255,.18); font-size:9pt; font-weight:600;}
+
+.res-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px; margin-bottom:16px;}
+.res-item{background:#fff; border-radius:8px; border-left:4px solid var(--verde); padding:13px 15px; box-shadow:0 1px 5px rgba(0,0,0,.08);}
+.res-item .ri-label{font-size:8pt; text-transform:uppercase; letter-spacing:.7px; color:var(--gris2); font-weight:700;}
+.res-item .ri-value{font-size:19px; font-weight:800; color:var(--verde); margin:3px 0; letter-spacing:-.4px;}
+.res-item .ri-note{font-size:8.5pt; color:var(--gris); line-height:1.4;}
+.res-item.azul{border-left-color:var(--azul);} .res-item.azul .ri-value{color:var(--azul);}
+.res-item.ambar{border-left-color:var(--ambar);} .res-item.ambar .ri-value{color:var(--ambar);}
+
+.alert{border-radius:8px; padding:13px 16px; font-size:9.5pt; margin-bottom:12px; line-height:1.5;}
+.alert b{display:block; margin-bottom:3px; font-size:10pt;}
+.alert.rojo{background:var(--rojo-l); border-left:4px solid var(--rojo); color:#5d1a1a;}
+.alert.ambar{background:var(--ambar-l); border-left:4px solid var(--ambar); color:#6b3200;}
+.alert.azul{background:var(--azul-l); border-left:4px solid var(--azul); color:#0d3c6e;}
+.alert.verde{background:var(--verde-l); border-left:4px solid var(--verde); color:#1b3d1d;}
+
+.tabla-wrap{overflow-x:auto; margin:10px 0 14px;}
+table{width:100%; border-collapse:collapse; font-size:9.5pt; min-width:440px;}
+th{background:var(--verde-l); color:var(--verde-d); font-weight:800; text-align:left; padding:9px 11px; font-size:8.5pt; text-transform:uppercase; letter-spacing:.4px; border-bottom:2px solid #c5e1c5;}
+td{padding:9px 11px; border-bottom:1px solid var(--linea); vertical-align:top;}
+tr:last-child td{border-bottom:none;}
+tbody tr:nth-child(even){background:#fafcfa;}
+td.num{text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap;}
+td.paso{font-weight:800; color:var(--verde); white-space:nowrap;}
+.src{font-size:8pt; color:var(--gris2); display:block; font-weight:400; margin-top:2px;}
+
+.ilus{background:#f4f8f4; border:1px solid #dce8dc; border-radius:8px; padding:14px 10px 10px; text-align:center; margin:6px 0 4px;}
+.ilus svg{width:100%; height:auto; max-width:330px; display:block; margin:0 auto;}
+.ilus-cap{font-size:8.5pt; color:var(--gris2); margin-top:8px; line-height:1.4; font-style:italic;}
+.ilus-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:14px; margin:14px 0;}
+
+.fase{margin-bottom:26px;}
+.fase-head{display:flex; align-items:center; gap:10px; margin-bottom:12px;}
+.fase-num{flex:0 0 auto; width:30px; height:30px; border-radius:50%; background:var(--verde); color:#fff;
+  display:flex; align-items:center; justify-content:center; font-weight:900; font-size:13px;}
+.fase-title{font-size:12pt; font-weight:800; color:var(--verde-d);}
+.fase-sub{font-size:8.5pt; color:var(--gris2); text-transform:uppercase; letter-spacing:.6px;}
+.pasos{list-style:none; margin:0 0 0 14px; border-left:2px solid #d5e8d5; padding-left:20px;}
+.pasos li{position:relative; margin-bottom:14px; font-size:10pt;}
+.pasos li::before{content:""; position:absolute; left:-27px; top:6px; width:11px; height:11px; border-radius:50%; background:#fff; border:2.5px solid var(--verde);}
+.pasos li b{color:var(--verde-d);}
+.pasos li .porque{display:block; font-size:8.5pt; color:var(--gris2); margin-top:3px; font-style:italic;}
+
+.chk-item{display:flex; gap:11px; align-items:flex-start; padding:12px 0; border-bottom:1px solid var(--linea);}
+.chk-item:last-child{border-bottom:none;}
+.chk-item input{width:19px; height:19px; margin-top:2px; accent-color:var(--verde); cursor:pointer; flex:0 0 auto;}
+.chk-txt{flex:1; font-size:10pt;}
+.chk-txt .chk-t{font-weight:700;}
+.chk-txt .chk-d{font-size:8.5pt; color:var(--gris2); margin-top:2px; line-height:1.45;}
+.badge-crit{display:inline-block; background:var(--rojo); color:#fff; font-size:7pt; font-weight:800; padding:2px 6px;
+  border-radius:3px; text-transform:uppercase; letter-spacing:.5px; margin-left:6px; vertical-align:middle;}
+.score-box{border-radius:9px; padding:20px 22px; margin-bottom:16px; text-align:center; background:#eceff1; border:2px solid #cfd8dc;}
+.score-box .sb-num{font-size:42px; font-weight:900; letter-spacing:-1.5px; line-height:1;}
+.score-box .sb-lbl{font-size:9pt; text-transform:uppercase; letter-spacing:1px; font-weight:800; margin-top:6px;}
+.score-box .sb-msg{font-size:9.5pt; margin-top:8px; line-height:1.5;}
+.score-box.ok{background:var(--verde-l); border-color:#a5d6a7;} .score-box.ok .sb-num, .score-box.ok .sb-lbl{color:var(--verde-d);}
+.score-box.med{background:var(--ambar-l); border-color:#ffcc80;} .score-box.med .sb-num, .score-box.med .sb-lbl{color:var(--ambar);}
+.score-box.mal{background:var(--rojo-l); border-color:#ef9a9a;} .score-box.mal .sb-num, .score-box.mal .sb-lbl{color:var(--rojo);}
+
+.err{display:flex; gap:13px; padding:14px 0; border-bottom:1px solid var(--linea); align-items:flex-start;}
+.err:last-child{border-bottom:none;}
+.err-ico{flex:0 0 auto; font-size:20px; line-height:1.2;}
+.err-body .err-t{font-weight:750; font-size:10.5pt; color:var(--rojo); margin-bottom:3px;}
+.err-body .err-d{font-size:9.5pt; color:#333; margin-bottom:5px;}
+.err-body .err-f{font-size:9pt; color:var(--verde-d); background:var(--verde-l); padding:6px 10px; border-radius:5px; display:inline-block;}
+
+.fuentes{font-size:8.5pt; color:var(--gris2); line-height:1.7;}
+.fuentes a{color:var(--verde); text-decoration:none;}
+.fuentes a:hover{text-decoration:underline;}
+.fte{border-left:3px solid var(--verde-l); padding-left:14px; margin-bottom:16px;}
+.fte b{color:#333; font-size:9.5pt;}
+
+.footer{text-align:center; font-size:8.5pt; color:var(--gris2); padding:20px 16px 0; line-height:1.7;}
+.footer a{color:var(--verde); text-decoration:none; font-weight:600;}
+
+.rel{display:flex; align-items:center; gap:12px; background:var(--azul-l); border-left:4px solid var(--azul);
+  border-radius:8px; padding:14px 16px; text-decoration:none; color:inherit; margin-bottom:18px;}
+.rel:hover{background:#d6e9f8;}
+.rel .rel-ico{font-size:24px;}
+.rel .rel-t{font-weight:800; font-size:10.5pt; color:#0d3c6e;}
+.rel .rel-d{font-size:9pt; color:var(--gris);}
+
+@media print{
+  body{background:#fff;}
+  .tabs, .btn-row, .back, .no-print{display:none !important;}
+  .panel{display:block !important; page-break-before:always;}
+  .panel:first-of-type{page-break-before:avoid;}
+  .card{box-shadow:none; border:1px solid #ccc; page-break-inside:avoid;}
+  .header{background:#fff !important; color:#222 !important; border-bottom:2px solid var(--verde);}
+  .header .logo{background:var(--verde) !important; color:#fff !important;}
+  .res-hero{background:#fff !important; color:#222 !important; border:2px solid var(--verde);}
+  .res-hero .rh-value{color:var(--verde) !important;}
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="gallina" viewBox="0 0 44 46">
+    <g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M6 20 Q1 13 3 11 Q6 13 8 17"/>
+      <ellipse cx="19" cy="26" rx="13.5" ry="9.5"/>
+      <path d="M28 19 Q30 14 31 11"/>
+      <circle cx="32" cy="12" r="5.6"/>
+      <path d="M29 6.6 Q30 4 31.4 6.2 Q32.6 3.4 34 6 Q35.4 4 36 6.8"/>
+      <path d="M37.4 11 L41.6 12.6 L37.4 14.4"/>
+      <path d="M33 17.4 Q34.6 19.6 32.6 20.4"/>
+      <path d="M15 35 L14 43 M13 43 L10 43.6 M13 43 L16 43.6"/>
+      <path d="M24 35 L25 43 M24 43 L21 43.6 M24 43 L27 43.6"/>
+      <path d="M14 24 Q19 21 24 24"/>
+    </g>
+    <circle cx="33.6" cy="11" r="1.1" fill="currentColor"/>
+  </symbol>
+</svg>
+
+<div class="header">
+  <div class="logo">AV</div>
+  <h1>Vacunación por Spray</h1>
+  <p>Calibración, tamaño de gota, aplicación y validación</p>
+  <p class="subtitle">MV Andrés Lazo Escobar · AviVet · Los Ríos / La Araucanía / Los Lagos</p>
+  <a class="back" href="../">← Volver a herramientas AviVet</a>
+</div>
+
+<div class="tabs">
+  <div class="tabs-inner">
+    <button class="tab active" data-panel="calc">🧮 Calibración</button>
+    <button class="tab" data-panel="gota">💧 Tamaño de gota</button>
+    <button class="tab" data-panel="proto">📋 Protocolo</button>
+    <button class="tab" data-panel="papel">📄 Papel hidrosensible</button>
+    <button class="tab" data-panel="ambiente">🌡️ Ambiente del galpón</button>
+    <button class="tab" data-panel="equipo">🧼 Equipo y limpieza</button>
+    <button class="tab" data-panel="monit">✅ Control de calidad</button>
+    <button class="tab" data-panel="errores">⚠️ Errores frecuentes</button>
+    <button class="tab" data-panel="fuentes">📚 Fuentes</button>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- ================= CALIBRACIÓN ================= -->
+<div class="panel active" id="p-calc">
+
+  <a class="rel" href="../vacunacion-agua/">
+    <div class="rel-ico">💧</div>
+    <div>
+      <div class="rel-t">¿Buscabas vacunación en agua de bebida?</div>
+      <div class="rel-d">Ese es el módulo hermano: volumen, calidad del agua y control de lenguas azules.</div>
+    </div>
+  </a>
+
+  <div class="card">
+    <h2>Calibración del pulverizador</h2>
+    <p class="lead">No existe un volumen "de tabla" para spray: depende de tu equipo, tu galpón y tu ritmo al caminar. Por eso se calibra. Este es el método de 6 pasos de Aviagen.</p>
+
+    <div class="alert azul">
+      <b>Hacelo con agua destilada, sin vacuna</b>
+      Toda la calibración es una prueba en seco. Recién cuando los números cierran se prepara la vacuna de verdad.
+    </div>
+
+    <h3>Paso 1 · Caudal del pulverizador</h3>
+    <div class="grid">
+      <div class="field">
+        <label for="vol-prueba">Volumen de prueba (litros)</label>
+        <input type="number" id="vol-prueba" min="0.1" step="0.1" value="2">
+        <div class="hint">Cargá un volumen conocido en el tanque, por ejemplo 2 L.</div>
+      </div>
+      <div class="field">
+        <label for="t-prueba">Tiempo en vaciarlo (segundos)</label>
+        <input type="number" id="t-prueba" min="1" step="1" value="120">
+        <div class="hint">Cronometrá cuánto tarda en pulverizarlo por completo.</div>
+      </div>
+    </div>
+
+    <h3>Paso 2 · Recorrido del galpón</h3>
+    <div class="grid">
+      <div class="field">
+        <label for="t-recorrido">Tiempo del recorrido (segundos)</label>
+        <input type="number" id="t-recorrido" min="1" step="1" value="240">
+        <div class="hint">Caminá el largo del galpón —o la sección ocupada— a paso normal y cronometralo.</div>
+      </div>
+      <div class="field">
+        <label for="alcance">Alcance del spray por lado (metros)</label>
+        <input type="number" id="alcance" min="0.5" step="0.5" value="3">
+        <div class="hint">Que un ayudante mida hasta dónde llega el spray de forma consistente hacia cada lado.</div>
+      </div>
+    </div>
+
+    <h3>Paso 3 · Galpón y aves</h3>
+    <div class="grid">
+      <div class="field">
+        <label for="ancho">Ancho del galpón (metros)</label>
+        <input type="number" id="ancho" min="1" step="0.5" value="12">
+      </div>
+      <div class="field">
+        <label for="pasadas">Pasadas completas</label>
+        <select id="pasadas">
+          <option value="2" selected>2 pasadas (recomendado)</option>
+          <option value="1">1 pasada</option>
+          <option value="3">3 pasadas</option>
+        </select>
+        <div class="hint">Se recomiendan dos pasadas completas para cobertura uniforme.</div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="field">
+        <label for="aves">Número de aves</label>
+        <input type="number" id="aves" min="1" step="1" value="20000">
+      </div>
+      <div class="field">
+        <label for="dosisfrasco">Dosis por frasco</label>
+        <select id="dosisfrasco">
+          <option value="1000">1.000 dosis</option>
+          <option value="2500">2.500 dosis</option>
+          <option value="5000">5.000 dosis</option>
+          <option value="10000" selected>10.000 dosis</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn" id="btn-calc">Calcular</button>
+      <button class="btn sec" id="btn-reset">Limpiar</button>
+    </div>
+  </div>
+
+  <div id="resultados"></div>
+
+  <div class="card">
+    <h2>Spray en incubadora, sobre cajas de pollitos</h2>
+    <p class="lead">Es otro escenario: volúmenes muy chicos y equipos de cabina.</p>
+    <div class="tabla-wrap">
+      <table>
+        <thead><tr><th>Situación</th><th>Volumen</th></tr></thead>
+        <tbody>
+          <tr><td>Rango general según vacuna y equipo</td><td class="num"><b>7 – 40 mL por cada 100 aves</b></td></tr>
+          <tr><td>Vacuna de coccidia, por caja de 80–100 pollitos</td><td class="num"><b>25 – 28 mL por caja</b></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="alert ambar">
+      <b>La coccidia necesita gota mucho más gruesa</b>
+      Los equipos de spray para vacuna de coccidia trabajan con gotas de <b>200–250 µm</b>, un tamaño elegido para <b>no dañar los ooquistes</b> y para que el pollito los ingiera al acicalarse. No es el mismo ajuste que para una vacuna respiratoria.
+    </div>
+  </div>
+</div>
+
+<!-- ================= TAMAÑO DE GOTA ================= -->
+<div class="panel" id="p-gota">
+  <div class="card">
+    <h2>La decisión técnica más importante</h2>
+    <p class="lead">El tamaño de gota determina <b>dónde</b> se deposita la vacuna en el ave. Todo lo demás es secundario.</p>
+
+    <div class="ilus" style="color:var(--verde-d)">
+      <svg viewBox="0 0 460 210" role="img" aria-label="Dónde se deposita la vacuna según el tamaño de gota">
+        <!-- cabeza y tracto -->
+        <g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M96 66 q4 -16 12 -6 q4 -17 13 -6 q6 -15 13 -3"/>
+          <circle cx="120" cy="84" r="26"/>
+          <path d="M146 76 l30 6 l-28 8"/>
+          <path d="M120 110 q-4 22 4 38 l0 16"/>
+          <circle cx="128" cy="80" r="3.6" fill="currentColor" stroke="none"/>
+        </g>
+        <!-- pulmones y sacos aéreos -->
+        <g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round">
+          <path d="M124 164 q-26 2 -30 22 q-2 18 16 18 q16 0 16 -20 z"/>
+          <path d="M124 164 q26 2 30 22 q2 18 -16 18 q-16 0 -16 -20 z"/>
+          <path d="M104 178 q10 4 12 14 M144 178 q-10 4 -12 14" stroke-width="1.5" opacity=".6"/>
+        </g>
+        <!-- gota gruesa -->
+        <g>
+          <circle cx="256" cy="60" r="13" fill="#2e7d32" opacity=".8"/>
+          <circle cx="286" cy="52" r="10" fill="#2e7d32" opacity=".65"/>
+          <circle cx="282" cy="76" r="8" fill="#2e7d32" opacity=".5"/>
+          <path d="M240 62 L150 78" stroke="#2e7d32" stroke-width="2.4" stroke-dasharray="6 4"/>
+          <path d="M158 74 l-10 4 l9 5" fill="none" stroke="#2e7d32" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+          <text x="306" y="50" font-size="15" font-weight="800" fill="#2e7d32">&gt; 100 µm</text>
+          <text x="306" y="68" font-size="12" fill="#1b5e20">Gota gruesa</text>
+          <text x="306" y="85" font-size="11" fill="#555">Ojos, narinas y plumas</text>
+          <text x="306" y="100" font-size="11" fill="#555">Tracto respiratorio alto</text>
+          <text x="306" y="115" font-size="11" font-weight="700" fill="#2e7d32">Más segura y uniforme</text>
+        </g>
+        <!-- gota fina -->
+        <g>
+          <circle cx="252" cy="160" r="4" fill="#c62828" opacity=".85"/>
+          <circle cx="268" cy="152" r="3" fill="#c62828" opacity=".7"/>
+          <circle cx="266" cy="170" r="3.4" fill="#c62828" opacity=".7"/>
+          <circle cx="282" cy="162" r="2.6" fill="#c62828" opacity=".6"/>
+          <path d="M240 162 L152 190" stroke="#c62828" stroke-width="2.4" stroke-dasharray="6 4"/>
+          <path d="M160 186 l-10 5 l10 4" fill="none" stroke="#c62828" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+          <text x="306" y="150" font-size="15" font-weight="800" fill="#c62828">&lt; 70 µm</text>
+          <text x="306" y="168" font-size="12" fill="#7a1c1c">Gota fina</text>
+          <text x="306" y="185" font-size="11" fill="#555">Pulmones y sacos aéreos</text>
+          <text x="306" y="200" font-size="11" font-weight="700" fill="#c62828">Reacción post-vacunal</text>
+        </g>
+      </svg>
+      <div class="ilus-cap">La gota gruesa se queda arriba; la fina baja al pulmón y provoca reacción.</div>
+    </div>
+
+    <div class="tabla-wrap">
+      <table>
+        <thead><tr><th>Tamaño</th><th>Dónde llega</th><th>Consecuencia</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><b>Fina<br>&lt; 70 µm</b></td>
+            <td>Se inhala profundo: <b>pulmones y sacos aéreos</b></td>
+            <td style="color:var(--rojo)">Reacciones post-vacunales fuertes. Mayor riesgo de complicación respiratoria.</td>
+          </tr>
+          <tr>
+            <td><b>Gruesa<br>&gt; 100 µm</b></td>
+            <td><b>Tracto respiratorio alto</b>: ojos, narinas y plumas</td>
+            <td style="color:var(--verde-d)">Vacunación más segura y uniforme. Mejor preserva la viabilidad de la vacuna.</td>
+          </tr>
+          <tr>
+            <td><b>Muy gruesa<br>200–250 µm</b></td>
+            <td>Plumas y superficies, para ingestión posterior</td>
+            <td>Usada en <b>vacuna de coccidia</b>: no daña los ooquistes.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="alert verde">
+      <b>El efecto del acicalado</b>
+      Las gotas grandes se depositan en las plumas y el ave las <b>ingiere después al acicalarse</b>. Eso aumenta la captación total de vacuna, y es una razón más para preferir la gota gruesa en campo.
+    </div>
+
+    <div class="alert rojo">
+      <b>Por qué no conviene "afinar" el spray</b>
+      Es tentador pensar que una niebla más fina cubre mejor. Cubre más aire, no más aves: la gota fina se evapora antes de llegar, y la que llega entra demasiado profundo. Un lote con reacción respiratoria post-vacunal suele ser un problema de gota, no de vacuna.
+    </div>
+
+    <h3>Qué vacunas se aplican por spray</h3>
+    <ul>
+      <li><b>Newcastle (NDV)</b> y <b>Bronquitis infecciosa (IBV)</b> — las más habituales, porque replican en el tracto respiratorio</li>
+      <li><b>Gumboro (IBD)</b> y <b>Reovirus</b> — normalmente de agua de bebida, pero también aplicables por spray</li>
+      <li><b>Coccidia</b> — con equipo y tamaño de gota específicos</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ================= PROTOCOLO ================= -->
+<div class="panel" id="p-proto">
+  <div class="card">
+    <h2>Los tres factores que deciden el resultado</h2>
+    <p class="lead">Todo el protocolo existe para controlar estos tres.</p>
+    <div class="res-grid">
+      <div class="res-item"><div class="ri-label">1</div><div class="ri-value">Tamaño de gota</div>
+        <div class="ri-note">Gruesa, sobre 100 µm, para depositar en el tracto alto.</div></div>
+      <div class="res-item azul"><div class="ri-label">2</div><div class="ri-value">Calibración</div>
+        <div class="ri-note">Caudal, rutas y volumen medidos en tu galpón, con tu equipo.</div></div>
+      <div class="res-item ambar"><div class="ri-label">3</div><div class="ri-value">Ambiente</div>
+        <div class="ri-note">Luz baja, ventilación detenida y 10 minutos de reposo.</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Momentos clave</h2>
+    <div class="ilus-grid">
+      <div>
+        <div class="ilus" style="color:var(--verde-d)">
+          <svg viewBox="0 0 300 170" role="img" aria-label="Altura y posición de la lanza del pulverizador">
+            <g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="70" cy="34" r="11"/>
+              <path d="M70 45 v40"/>
+              <path d="M70 54 l-16 10 M70 54 l20 6"/>
+              <path d="M70 85 l-12 32 M70 85 l12 32"/>
+              <path d="M90 60 h64"/>
+            </g>
+            <g stroke="#1565c0" stroke-width="2" stroke-linecap="round" opacity=".85">
+              <path d="M156 60 l40 -10 M156 60 l42 2 M156 60 l40 14 M156 62 l34 24"/>
+            </g>
+            <g fill="#1565c0" opacity=".6">
+              <circle cx="206" cy="48" r="3.4"/><circle cx="222" cy="58" r="3"/><circle cx="204" cy="72" r="3.2"/>
+              <circle cx="228" cy="76" r="2.6"/><circle cx="196" cy="86" r="3"/><circle cx="216" cy="92" r="2.8"/>
+            </g>
+            <g fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="5 4">
+              <line x1="30" y1="60" x2="60" y2="60"/>
+              <line x1="30" y1="140" x2="60" y2="140"/>
+              <line x1="45" y1="60" x2="45" y2="140"/>
+            </g>
+            <text x="6" y="104" font-size="13" font-weight="800" fill="currentColor">1 m</text>
+            <line x1="10" y1="140" x2="290" y2="140" stroke="currentColor" stroke-width="2.6"/>
+            <g style="color:var(--verde)">
+              <use href="#gallina" x="196" y="98" width="40" height="42"/>
+              <use href="#gallina" x="240" y="98" width="40" height="42"/>
+            </g>
+          </svg>
+        </div>
+        <div class="ilus-cap"><b>1.</b> Lanza paralela al suelo, a 1 m de altura, dirigida hacia un costado del galpón.</div>
+      </div>
+
+      <div>
+        <div class="ilus" style="color:var(--verde-d)">
+          <svg viewBox="0 0 300 170" role="img" aria-label="Dos pasadas de vacunación en el galpón">
+            <rect x="24" y="24" width="252" height="122" rx="4" fill="none" stroke="currentColor" stroke-width="2.6"/>
+            <line x1="24" y1="85" x2="276" y2="85" stroke="currentColor" stroke-width="1.4" stroke-dasharray="4 4" opacity=".5"/>
+            <path d="M252 54 H48" fill="none" stroke="#2e7d32" stroke-width="3" stroke-linecap="round"/>
+            <path d="M58 47 l-11 7 l11 7" fill="none" stroke="#2e7d32" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M48 116 H252" fill="none" stroke="#1565c0" stroke-width="3" stroke-linecap="round"/>
+            <path d="M242 109 l11 7 l-11 7" fill="none" stroke="#1565c0" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="252" cy="54" r="5" fill="#2e7d32"/>
+            <text x="150" y="42" font-size="11" font-weight="700" fill="#2e7d32" text-anchor="middle">1ª pasada</text>
+            <text x="150" y="136" font-size="11" font-weight="700" fill="#1565c0" text-anchor="middle">2ª pasada</text>
+            <g fill="none" stroke="currentColor" stroke-width="1.8" stroke-dasharray="4 3" opacity=".6">
+              <line x1="12" y1="24" x2="12" y2="146"/>
+            </g>
+            <text x="4" y="90" font-size="10" font-weight="700" fill="currentColor" transform="rotate(-90 8 90)" text-anchor="middle">ancho</text>
+          </svg>
+        </div>
+        <div class="ilus-cap"><b>2.</b> Dos pasadas completas, cubriendo todo el ancho con el alcance del equipo.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="fase">
+      <div class="fase-head"><div class="fase-num">1</div>
+        <div><div class="fase-title">Antes</div><div class="fase-sub">Preparación y calibración</div></div></div>
+      <ul class="pasos">
+        <li><b>El programa lo define el veterinario</b> según edad del lote, tipo de producción, vacunas disponibles y desafío sanitario local.</li>
+        <li><b>Usá un pulverizador exclusivo para vacunas.</b> Nunca uno que haya tenido químicos o desinfectantes.
+          <span class="porque">Los residuos matan la vacuna viva en concentraciones bajísimas.</span></li>
+        <li><b>Preferí equipos a batería diseñados para vacunación</b> por sobre los manuales: dan caudal constante, tamaño de gota adecuado y cobertura pareja.</li>
+        <li><b>Calibrá el equipo</b> — ver la pestaña Calibración. Determiná caudal, alcance, número de rutas y volumen total.</li>
+        <li><b>Validá el patrón de gotas con papel hidrosensible</b> antes de usar vacuna. Ver la pestaña correspondiente.</li>
+        <li><b>Vacuna en refrigerador exclusivo a 2–8 °C</b>, con termómetro de máxima y mínima.</li>
+        <li><b>Calculá las dosis al millar más cercano</b>, asegurando al menos una dosis completa por ave.</li>
+        <li><b>Traslado en cooler a 2–8 °C con ice packs</b>, sin que los frascos toquen directamente el hielo.</li>
+      </ul>
+    </div>
+
+    <div class="fase">
+      <div class="fase-head"><div class="fase-num">2</div>
+        <div><div class="fase-title">Preparación de la vacuna</div><div class="fase-sub">Un galpón a la vez</div></div></div>
+      <ul class="pasos">
+        <li><b>Superficie limpia y seca, desinfectada con alcohol al 70%</b>, dejándola secar completamente al aire antes de trabajar.</li>
+        <li><b>Preparé la vacuna para un solo galpón por vez</b>, para no confundirse y no perder eficacia.</li>
+        <li><b>Equipo de protección personal:</b> guantes desechables, mascarilla o respirador y antiparras.
+          <span class="porque">Vas a estar dentro de una nube de vacuna viva durante todo el recorrido.</span></li>
+        <li><b>Agua destilada fría, bajo 20 °C.</b> Si no hay destilada, el agua debe estar libre de patógenos, exceso de minerales y residuos de desinfectante.</li>
+        <li><b>Agregá siempre estabilizador con colorante al agua, antes de mezclar la vacuna</b> — incluso usando agua destilada.
+          <span class="porque">El estabilizador mantiene viva la vacuna y el colorante te deja verificar visualmente que la cobertura fue pareja.</span></li>
+        <li><b>Preparé una porción chica</b> de agua con estabilizador y colorante en un recipiente limpio, y volcá el resto de la solución al tanque del pulverizador.</li>
+        <li><b>Reconstituí con jeringa desechable:</b> inyectá la solución estabilizador-colorante dentro del frasco, atravesando el tapón previamente limpio. Agitá suave hasta disolver por completo la pastilla.</li>
+        <li><b>Volcá la vacuna disuelta al tanque y enjuagá cada frasco dos veces</b> con agua estabilizada, agregando los enjuagues al tanque.
+          <span class="porque">Es la forma de no dejar dosis en el frasco.</span></li>
+        <li><b>Cerrá bien la tapa e inclíná o invertí el tanque varias veces</b> para homogeneizar. No agites violentamente.</li>
+        <li><b>Usá la vacuna dentro de la hora siguiente a la mezcla.</b></li>
+      </ul>
+    </div>
+
+    <div class="fase">
+      <div class="fase-head"><div class="fase-num">3</div>
+        <div><div class="fase-title">Aplicación</div><div class="fase-sub">El recorrido</div></div></div>
+      <ul class="pasos">
+        <li><b>Preparé el ambiente:</b> luces bajas, ventilación y calefacción apagadas. En galpones abiertos, cortinas cerradas y ventiladores apagados. Ver la pestaña Ambiente.</li>
+        <li><b>Aplicá en la parte fresca del día, idealmente temprano en la mañana</b>, sobre todo en verano o clima cálido.</li>
+        <li><b>Equipo a máxima potencia y caudal</b>, para optimizar el alcance y la uniformidad del tamaño de gota.</li>
+        <li><b>Lanza paralela al suelo, a 1 metro de altura</b>, dirigida hacia un costado del galpón.</li>
+        <li><b>En galpones de piso</b>, algunas guías recomiendan además angular la lanza cerca de 45° hacia las aves, moviéndola hacia la pared y de vuelta. La distancia de la boquilla a las aves <b>no debe superar 1 metro</b>.</li>
+        <li><b>Caminá a paso firme y constante</b>, con movimiento de barrido de lado a lado. Mantené el ritmo especialmente al llegar a los extremos del galpón.</li>
+        <li><b>Dos pasadas completas.</b>
+          <span class="porque">Una sola pasada deja franjas sin cubrir, por muy bien calibrado que esté el equipo.</span></li>
+        <li><b>Observá el movimiento de las aves durante todo el proceso</b> para evitar amontonamientos y distribución despareja.</li>
+      </ul>
+    </div>
+
+    <div class="fase">
+      <div class="fase-head"><div class="fase-num">4</div>
+        <div><div class="fase-title">Después</div><div class="fase-sub">Reposo, registro y limpieza</div></div></div>
+      <ul class="pasos">
+        <li><b>Esperá un mínimo de 10 minutos</b> antes de restaurar ventilación, calefacción y cortinas.
+          <span class="porque">Es el tiempo que necesita la nube para depositarse. Si prendés los ventiladores antes, te llevás la vacuna al extractor.</span></li>
+        <li><b>Registrá:</b> tipo y nombre de la vacuna, laboratorio, número de lote, vencimiento, volumen de agua usado, fecha y observaciones.</li>
+        <li><b>Limpiá el pulverizador</b> — ver la pestaña Equipo y limpieza.</li>
+        <li><b>Devolvé todos los galpones a su configuración normal</b> antes de retirarte del predio.</li>
+        <li><b>Validá la respuesta</b> con serología o PCR. Ver la pestaña Control de calidad.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ================= PAPEL HIDROSENSIBLE ================= -->
+<div class="panel" id="p-papel">
+  <div class="card">
+    <h2>Papel hidrosensible: ver lo que no se ve</h2>
+    <p class="lead">Es la forma objetiva de saber si tu spray está llegando como debe. El papel cambia de color donde lo toca una gota, y te deja leer el patrón real a la altura del ave.</p>
+
+    <div class="ilus-grid">
+      <div>
+        <div class="ilus">
+          <svg viewBox="0 0 200 150" role="img" aria-label="Patrón correcto de gotas en papel hidrosensible">
+            <rect x="16" y="16" width="168" height="118" rx="3" fill="#fdfcf2" stroke="#2e7d32" stroke-width="3"/>
+            <g fill="#1565c0" opacity=".82">
+              <circle cx="38" cy="36" r="3.2"/><circle cx="66" cy="30" r="2.8"/><circle cx="96" cy="38" r="3"/>
+              <circle cx="126" cy="32" r="2.6"/><circle cx="156" cy="40" r="3.1"/>
+              <circle cx="30" cy="62" r="2.7"/><circle cx="58" cy="58" r="3.3"/><circle cx="88" cy="64" r="2.9"/>
+              <circle cx="118" cy="60" r="3"/><circle cx="150" cy="66" r="2.8"/>
+              <circle cx="42" cy="88" r="3"/><circle cx="72" cy="92" r="2.7"/><circle cx="102" cy="86" r="3.2"/>
+              <circle cx="132" cy="90" r="2.9"/><circle cx="162" cy="94" r="2.6"/>
+              <circle cx="34" cy="114" r="2.8"/><circle cx="64" cy="118" r="3.1"/><circle cx="94" cy="112" r="2.7"/>
+              <circle cx="124" cy="116" r="3"/><circle cx="154" cy="112" r="2.9"/>
+            </g>
+            <text x="100" y="10" font-size="11" font-weight="800" fill="#2e7d32" text-anchor="middle">CORRECTO</text>
+          </svg>
+        </div>
+        <div class="ilus-cap">Puntos <b>pequeños y parejos</b>, repartidos en toda la superficie.</div>
+      </div>
+
+      <div>
+        <div class="ilus">
+          <svg viewBox="0 0 200 150" role="img" aria-label="Patrón deficiente de gotas en papel hidrosensible">
+            <rect x="16" y="16" width="168" height="118" rx="3" fill="#fdfcf2" stroke="#c62828" stroke-width="3"/>
+            <g fill="#1565c0" opacity=".82">
+              <circle cx="46" cy="44" r="11"/><circle cx="72" cy="34" r="8"/><circle cx="60" cy="62" r="9.5"/>
+              <circle cx="38" cy="76" r="7"/><circle cx="82" cy="56" r="6"/><circle cx="52" cy="94" r="8.5"/>
+              <circle cx="150" cy="118" r="3"/><circle cx="166" cy="106" r="2.4"/>
+            </g>
+            <text x="100" y="10" font-size="11" font-weight="800" fill="#c62828" text-anchor="middle">DEFICIENTE</text>
+          </svg>
+        </div>
+        <div class="ilus-cap">Gotas <b>grandes y amontonadas</b> en un sector, y zonas sin nada.</div>
+      </div>
+    </div>
+
+    <h3>Cómo hacer la prueba</h3>
+    <ol>
+      <li><b>Galpones de piso:</b> pegá las hojas sobre cajas de cartón puestas <b>a la altura de las aves</b>. Ubicá cajas cerca de la pared lateral y junto a la línea de comederos.</li>
+      <li><b>Jaulas y aviarios:</b> fijá el papel dentro de la jaula con pinzas de ropa plásticas, en el <b>punto más lejano donde el ave puede pararse</b>.</li>
+      <li><b>Cargá el pulverizador solo con agua destilada</b>, sin vacuna.</li>
+      <li><b>Hacé una vacunación simulada</b>, con o sin aves en el galpón. En sistemas de varios pisos, probá <b>todos los niveles</b>.</li>
+      <li><b>Recogé las hojas y evaluá</b> la distribución y el tamaño de las gotas.</li>
+    </ol>
+
+    <div class="alert azul">
+      <b>Si el patrón no es satisfactorio</b>
+      Ajustá <b>una variable a la vez</b> y repetí la prueba hasta lograr la distribución deseada:
+      <ul style="margin:8px 0 0 18px;">
+        <li>Apertura y posición de la boquilla — debe pulverizar en <b>patrón vertical</b></li>
+        <li>Velocidad de caminata de quien aplica</li>
+        <li>Presión de salida del equipo</li>
+        <li>Distancia del pulverizador a las aves</li>
+      </ul>
+    </div>
+
+    <div class="alert verde">
+      <b>Cada cuánto repetirlo</b>
+      Reevaluá el procedimiento de spray <b>cada tres meses</b> y <b>cada vez que cambie la persona que aplica</b>. Es el control que evita que la técnica se degrade sin que nadie lo note.
+    </div>
+
+    <h3>Qué influye en la uniformidad</h3>
+    <ul>
+      <li>Densidad de aves</li>
+      <li>Movimiento de la persona que aplica</li>
+      <li>Posición de la boquilla</li>
+      <li>Volumen de líquido</li>
+      <li>Tamaño de partícula y su distribución</li>
+      <li>Presión de salida del pulverizador</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ================= AMBIENTE ================= -->
+<div class="panel" id="p-ambiente">
+  <div class="card">
+    <h2>El ambiente decide dónde termina la vacuna</h2>
+    <p class="lead">Podés tener el equipo perfecto y la gota perfecta: si el galpón está ventilando, la vacuna se va por el extractor.</p>
+
+    <div class="tabla-wrap">
+      <table>
+        <thead><tr><th>Tipo de galpón</th><th>Antes y durante</th><th>Después</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><b>Ambiente controlado</b></td>
+            <td>Bajar las luces para reducir el desplazamiento de las aves.<br>Apagar ventilación y calefacción.</td>
+            <td>Mantener apagado <b>mínimo 10 minutos</b> después de terminar de pulverizar.</td>
+          </tr>
+          <tr>
+            <td><b>Galpón abierto</b></td>
+            <td>Cerrar todas las cortinas laterales.<br>Apagar los ventiladores.</td>
+            <td>Cortinas cerradas <b>10 minutos</b> más, para minimizar el movimiento de aire.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="alert rojo">
+      <b>Los 10 minutos no son negociables</b>
+      Es el tiempo que necesita la nube de gotas para depositarse sobre las aves. Encender los ventiladores antes es, literalmente, extraer la vacuna del galpón.
+    </div>
+
+    <h3>Luz</h3>
+    <p>Bajar la intensidad lumínica <b>desalienta el movimiento de las aves</b>, que se quedan más quietas y reciben una dosis más pareja. Un lote alborotado corriendo de un extremo a otro se vacuna mal, y además se estresa.</p>
+
+    <h3>Hora del día</h3>
+    <p>Vacuná en la parte más fresca del día, <b>preferentemente temprano en la mañana</b>. Evitá las horas de más calor, especialmente en verano: al estrés térmico se le suma el del procedimiento.</p>
+
+    <h3>Bienestar del lote</h3>
+    <ul>
+      <li>Mantené un ritmo lento y constante, sobre todo al acercarte a los extremos del galpón</li>
+      <li>Observá el movimiento de las aves durante todo el recorrido</li>
+      <li>Evitá que se amontonen contra las paredes</li>
+      <li>Devolvé luces y ventiladores a su configuración normal después de los 10 minutos</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ================= EQUIPO ================= -->
+<div class="panel" id="p-equipo">
+  <div class="card">
+    <h2>El pulverizador</h2>
+    <p class="lead">Es el instrumento que define la calidad de la vacunación. Merece el mismo cuidado que la vacuna.</p>
+
+    <div class="alert rojo">
+      <b>Exclusivo para vacunas</b>
+      Nunca uses un pulverizador que haya tenido desinfectantes, herbicidas o cualquier químico. Los residuos matan la vacuna viva en concentraciones mínimas, y no se eliminan con un enjuague.
+    </div>
+
+    <p><b>A batería antes que manual.</b> Los equipos a batería diseñados para vacunación avícola dan caudal constante, tamaño de gota adecuado y cobertura uniforme. Un pulverizador manual depende del ritmo de bombeo de la persona, que cambia con el cansancio a lo largo del galpón.</p>
+
+    <h3>Antes de cada uso</h3>
+    <ol>
+      <li>Verificá que las baterías estén completamente cargadas</li>
+      <li>Cargá agua limpia en el tanque</li>
+      <li>Bombeá y descargá una parte por la línea y la boquilla, a un desagüe</li>
+      <li>Agitá el contenido restante para enjuagar el tanque y descartalo</li>
+    </ol>
+
+    <h3>Después de cada uso</h3>
+    <ol>
+      <li><b>Enjuagá el tanque con agua destilada</b> y pulverizá todo el contenido para limpiar el sistema completo</li>
+      <li><b>Cargá alcohol, pulverizalo a través del sistema</b> y vaciá por completo</li>
+      <li><b>Repetí el enjuague con agua destilada</b> para eliminar los restos de alcohol</li>
+      <li><b>Limpiá el exterior</b> con cepillo y detergente suave, o con toallitas desinfectantes, para retirar residuos de vacuna</li>
+      <li><b>Dejá secar completamente al aire</b> antes de cerrarlo. Guardalo boca abajo si se puede, para que drene</li>
+      <li><b>Cargá la batería</b>, revisá o reemplazá piezas dañadas y guardá en lugar limpio, seco y seguro</li>
+    </ol>
+
+    <div class="alert azul">
+      <b>Variante con detergente</b>
+      Otra rutina válida: solución de detergente líquido suave a razón de <b>media onza por galón</b> (unos 15 mL por cada 3,8 L) de agua destilada. Se descarga la mitad por la línea, se deja <b>remojar 5 minutos</b> el resto, se agita y se descarta. Después, enjuague completo con agua destilada.
+    </div>
+
+    <h3>Mantenimiento mensual</h3>
+    <ul>
+      <li><b>Desarmá y revisá</b> boquilla, manguera y sellos</li>
+      <li><b>Remojá el tanque en solución de vinagre al 20%</b> para ajustar el pH y remover el sarro y el biofilm acumulado</li>
+    </ul>
+
+    <div class="alert ambar">
+      <b>Dónde guardarlo</b>
+      Fuera del interior del galpón si es posible, o bien cubierto. El ambiente del galpón deteriora el equipo y lo contamina.
+    </div>
+  </div>
+</div>
+
+<!-- ================= CONTROL DE CALIDAD ================= -->
+<div class="panel" id="p-monit">
+  <div class="card">
+    <h2>Cómo se confirma que funcionó</h2>
+    <p class="lead">A diferencia del agua de bebida, en spray no hay lengua azul que contar. La validación es de laboratorio.</p>
+
+    <div class="tabla-wrap">
+      <table>
+        <thead><tr><th>Método</th><th>Cuándo</th><th>Qué confirma</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><b>Molecular</b><br>RT-PCR o qRT-PCR</td>
+            <td><b>5 – 7 días</b> post vacunación</td>
+            <td>Que la vacuna efectivamente <b>llegó y replicó</b> en el ave. Aplicable a vacunas de bronquitis (IBV).</td>
+          </tr>
+          <tr>
+            <td><b>Serológico</b><br>ELISA</td>
+            <td><b>3 semanas o más</b> post vacunación</td>
+            <td>Que el ave <b>respondió inmunológicamente</b>. Se evalúa contra NDV, IBV, IBD y reovirus.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="alert azul">
+      <b>El PCR temprano es la ventaja del spray</b>
+      A los 5–7 días ya podés saber si la vacuna llegó, mucho antes de que la serología muestre nada. Si el PCR sale negativo, tenés tiempo de corregir la técnica y revacunar antes de que el lote quede desprotegido.
+    </div>
+
+    <p>Igual que en agua de bebida, conviene mirar <b>la uniformidad de la respuesta y no solo el promedio</b>: un coeficiente de variación alto en el ELISA delata una aplicación despareja, aunque el título promedio se vea aceptable.</p>
+
+    <h3>El colorante como control inmediato</h3>
+    <p>El estabilizador con colorante permite <b>verificar visualmente la uniformidad de la cobertura</b> durante y justo después de la aplicación: mirá el plumaje de las aves en distintos puntos del galpón —entrada, centro y fondo, y ambos costados— y comprobá que estén parejamente marcadas.</p>
+  </div>
+
+  <div class="card">
+    <h2>Pauta de verificación</h2>
+    <p class="lead">Marcá lo que se cumplió. Los ítems CRÍTICOS invalidan la vacunación si fallan.</p>
+    <div id="checklist"></div>
+    <div class="btn-row">
+      <button class="btn" id="btn-score">Evaluar</button>
+      <button class="btn sec" id="btn-chk-reset">Limpiar</button>
+      <button class="btn sec no-print" onclick="window.print()">🖨️ Imprimir</button>
+    </div>
+    <div id="score-out" style="margin-top:18px;"></div>
+  </div>
+</div>
+
+<!-- ================= ERRORES ================= -->
+<div class="panel" id="p-errores">
+  <div class="card">
+    <h2>Los errores que arruinan un spray</h2>
+    <p class="lead">Casi todas las fallas de campo se explican por alguno de estos.</p>
+
+    <div class="err"><div class="err-ico">🌬️</div><div class="err-body">
+      <div class="err-t">Dejar la ventilación encendida</div>
+      <div class="err-d">Es el error más caro. La nube de gotas se va por el extractor antes de depositarse sobre las aves.</div>
+      <div class="err-f">✔ Ventilación y calefacción apagadas, o cortinas cerradas, durante la aplicación y <b>10 minutos después</b>.</div>
+    </div></div>
+
+    <div class="err"><div class="err-ico">💨</div><div class="err-body">
+      <div class="err-t">Usar gota demasiado fina</div>
+      <div class="err-d">Por debajo de 70 µm la vacuna baja a pulmones y sacos aéreos, provocando reacción post-vacunal. Además la gota fina se evapora antes de llegar al ave.</div>
+      <div class="err-f">✔ Gota gruesa, sobre 100 µm. Validar el patrón con papel hidrosensible.</div>
+    </div></div>
+
+    <div class="err"><div class="err-ico">🧪</div><div class="err-body">
+      <div class="err-t">Pulverizador que se usó con químicos</div>
+      <div class="err-d">Residuos de desinfectante o herbicida matan la vacuna viva, y no se van con un enjuague.</div>
+      <div class="err-f">✔ Equipo exclusivo para vacunación, rotulado y guardado aparte.</div>
+    </div></div>
+
+    <div class="err"><div class="err-ico">🚫</div><div class="err-body">
+      <div class="err-t">No calibrar y "calcular a ojo"</div>
+      <div class="err-d">No existe un volumen de tabla para spray: depende del equipo, del ancho del galpón y del ritmo al caminar. Sin calibrar, o sobra vacuna o queda medio galpón sin cubrir.</div>
+      <div class="err-f">✔ Calibrar con agua destilada: caudal, alcance, rutas y volumen total.</div>
+    </div></div>
+
+    <div class="err"><div class="err-ico">1️⃣</div><div class="err-body">
+      <div class="err-t">Hacer una sola pasada</div>
+      <div class="err-d">Deja franjas sin cubrir por muy bien calibrado que esté el equipo.</div>
+      <div class="err-f">✔ Dos pasadas completas del galpón.</div>
+    </div></div>
+
+    <div class="err"><div class="err-ico">💡</div><div class="err-body">
+      <div class="err-t">Vacunar con luz plena</div>
+      <div class="err-d">Las aves se desplazan, se amontonan y la dosis queda despareja. Además se estresan.</div>
+      <div class="err-f">✔ Bajar la intensidad lumínica antes de entrar a pulverizar.</div>
+    </div></div>
+
+    <div class="err"><div class="err-ico">🕐</div><div class="err-body">
+      <div class="err-t">Demorar más de una hora en usar la mezcla</div>
+      <div class="err-d">La vacuna reconstituida pierde título. Preparar para varios galpones "para ahorrar tiempo" termina desperdiciando dosis.</div>
+      <div class="err-f">✔ Preparar un galpón a la vez y usar la mezcla dentro de la hora.</div>
+    </div></div>
+
+    <div class="err"><div class="err-ico">🌡️</div><div class="err-body">
+      <div class="err-t">Agua tibia o con cloro</div>
+      <div class="err-d">El calor degrada la potencia y el cloro inactiva la vacuna.</div>
+      <div class="err-f">✔ Agua destilada bajo 20 °C. Si no hay, agua sin patógenos, sin exceso de minerales y sin residuos de desinfectante.</div>
+    </div></div>
+
+    <div class="err"><div class="err-ico">🎨</div><div class="err-body">
+      <div class="err-t">No usar estabilizador con colorante</div>
+      <div class="err-d">Sin estabilizador la vacuna pierde viabilidad; sin colorante no hay forma de ver si la cobertura fue pareja.</div>
+      <div class="err-f">✔ Siempre estabilizador con colorante, agregado al agua <b>antes</b> de mezclar la vacuna.</div>
+    </div></div>
+
+    <div class="err"><div class="err-ico">🏃</div><div class="err-body">
+      <div class="err-t">Caminar rápido o desparejo</div>
+      <div class="err-d">Es muy común acelerar al final del galpón por cansancio. Esa zona queda subdosificada y es donde después arranca el brote.</div>
+      <div class="err-f">✔ Ritmo lento y constante de punta a punta. Es lo que se calibró en la prueba en seco.</div>
+    </div></div>
+
+    <div class="err"><div class="err-ico">🥽</div><div class="err-body">
+      <div class="err-t">Aplicar sin protección personal</div>
+      <div class="err-d">Quien vacuna camina dentro de una nube de vacuna viva durante todo el recorrido, dos veces.</div>
+      <div class="err-f">✔ Guantes desechables, mascarilla o respirador y antiparras.</div>
+    </div></div>
+
+    <div class="err"><div class="err-ico">🧼</div><div class="err-body">
+      <div class="err-t">No limpiar el equipo después</div>
+      <div class="err-d">Los restos de vacuna y el biofilm tapan la boquilla y alteran el tamaño de gota de la próxima vacunación.</div>
+      <div class="err-f">✔ Enjuague, alcohol, enjuague final y secado al aire. Mensual: desarmar y remojar en vinagre al 20%.</div>
+    </div></div>
+
+    <div class="err"><div class="err-ico">📝</div><div class="err-body">
+      <div class="err-t">No registrar ni validar</div>
+      <div class="err-d">Sin registro no se puede investigar un brote, y sin PCR ni serología nunca se sabe si la técnica funcionó.</div>
+      <div class="err-f">✔ Registrar vacuna, lote, vencimiento, volumen y fecha. Validar con PCR a los 5–7 días o ELISA a las 3 semanas.</div>
+    </div></div>
+  </div>
+</div>
+
+<!-- ================= FUENTES ================= -->
+<div class="panel" id="p-fuentes">
+  <div class="card">
+    <h2>Fuentes</h2>
+    <p class="lead">Este módulo consolida las recomendaciones de cuatro documentos técnicos de referencia.</p>
+    <div class="fuentes">
+
+      <div class="fte">
+        <b>Aviagen (2026).</b> <i>Best Practice on the Farm: Spray Vaccination.</i><br>
+        <a href="https://aviagen.com/assets/Tech_Center/Broiler_Breeder_Tech_Articles/English/AVIA-BestPractice-Spray-Vaccination-EN.pdf" target="_blank" rel="noopener">Ver documento →</a><br>
+        Aporta: <b>método de calibración en 6 pasos</b>, umbrales de tamaño de gota (&lt;70 µm y &gt;100 µm), agua destilada bajo 20 °C, estabilizador con colorante, preparación con jeringa y doble enjuague del frasco, altura de lanza de 1 m, dos pasadas, manejo de luz y ventilación con los 10 minutos de reposo, limpieza del equipo y validación por ELISA y RT-PCR.
+      </div>
+
+      <div class="fte">
+        <b>Zoetis (2025).</b> <i>Field Spray Vaccination of Layer Pullets Guide.</i><br>
+        <a href="https://www.zoetisus.com/content/_assets/docs/Poultry/Vaccine-Administration/Guide-For-Field-Spray-Vaccination.pdf" target="_blank" rel="noopener">Ver documento →</a><br>
+        Aporta: <b>prueba con papel hidrosensible</b> y cómo interpretarla, factores que afectan la uniformidad, ajuste de boquilla en patrón vertical, reevaluación trimestral y ante cambio de personal, equipo a máxima potencia, ángulo de 45° y distancia máxima a las aves, uso de la mezcla dentro de la hora, y la rutina completa de limpieza del pulverizador incluyendo el mantenimiento mensual con vinagre al 20%.
+      </div>
+
+      <div class="fte">
+        <b>The Poultry Site (2026).</b> <i>Spray vaccination in poultry: Best practice for uniform flock protection.</i> Por Aviagen.<br>
+        <a href="https://www.thepoultrysite.com/articles/spray-vaccination-in-poultry-best-practice-for-uniform-flock-protection" target="_blank" rel="noopener">Ver artículo →</a><br>
+        Aporta: síntesis del documento de Aviagen y confirmación de los puntos clave.
+      </div>
+
+      <div class="fte">
+        <b>HIPRA.</b> <i>Spray vaccines for poultry</i> y documentación técnica de Hipraspray®.<br>
+        <a href="https://www.hipra.com/en/animal-health/knowledge/8-spray-vaccines-poultry" target="_blank" rel="noopener">Ver artículo →</a><br>
+        Aporta: gota de <b>200–250 µm</b> para vacuna de coccidia, elegida para no dañar los ooquistes; volúmenes de spray en incubadora (25–28 mL por caja de 80–100 pollitos; rango general de 7–40 mL por cada 100 aves).
+      </div>
+
+      <p style="border-top:1px solid var(--linea); padding-top:12px; color:#888;">
+        Nota: el sitio de HIPRA bloquea el acceso automatizado (error 403). Los datos citados se tomaron de documentación pública sobre Hipraspray® y de artículos técnicos que reproducen esa información.
+      </p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Alcance de esta guía</h2>
+    <p>Es material de apoyo para el productor. <b>No reemplaza el programa de vacunación indicado por el médico veterinario responsable del plantel</b>, ni las instrucciones del inserto de cada vacuna, que siempre tienen prioridad.</p>
+    <div class="alert ambar">
+      <b>Seguí siempre el inserto y el manual del equipo</b>
+      Cada vacuna tiene su indicación de dosis, edad y vía; cada pulverizador tiene su recomendación de volumen de agua. Cuando el fabricante diga algo distinto a esta guía, manda el fabricante.
+    </div>
+    <p style="font-size:9pt;color:var(--gris2);margin-top:12px;">Las ilustraciones de esta guía son originales de AviVet. Las marcas y documentos citados pertenecen a sus respectivos titulares y se enlazan a la fuente original.</p>
+  </div>
+</div>
+
+<div class="footer">
+  <b>MV Andrés Lazo Escobar</b> — Medicina Aviar, Sur de Chile<br>
+  WhatsApp: <a href="https://wa.me/56958956340">+56 9 5895 6340</a> ·
+  Email: <a href="mailto:andreslazomv@outlook.com">andreslazomv@outlook.com</a> ·
+  <a href="https://avivet.cl">avivet.cl</a>
+</div>
+
+</div>
+
+<script>
+/* ---------- Navegación ---------- */
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById('p'+'-'+t.dataset.panel).classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+});
+
+const fmt  = (n,d=1) => n.toLocaleString('es-CL',{minimumFractionDigits:d, maximumFractionDigits:d});
+const fmt0 = n => Math.round(n).toLocaleString('es-CL');
+
+/* =========================================================
+   Calibración — método de 6 pasos (Aviagen)
+   ========================================================= */
+document.getElementById('btn-calc').addEventListener('click', calcular);
+
+function calcular(){
+  const volP  = parseFloat(document.getElementById('vol-prueba').value);
+  const tP    = parseFloat(document.getElementById('t-prueba').value);
+  const tR    = parseFloat(document.getElementById('t-recorrido').value);
+  const alc   = parseFloat(document.getElementById('alcance').value);
+  const ancho = parseFloat(document.getElementById('ancho').value);
+  const pas   = parseFloat(document.getElementById('pasadas').value);
+  const aves  = parseFloat(document.getElementById('aves').value);
+  const dxf   = parseFloat(document.getElementById('dosisfrasco').value);
+  const out   = document.getElementById('resultados');
+
+  if(!volP || !tP || !tR || !alc || !ancho || !aves || volP<=0 || tP<=0 || tR<=0 || alc<=0 || ancho<=0 || aves<=0){
+    out.innerHTML = '<div class="alert rojo"><b>Faltan datos</b>Completá todos los campos con valores mayores a cero.</div>';
+    return;
+  }
+
+  // Paso 1: caudal en segundos por litro
+  const caudal = tP / volP;
+  // Paso 3: ancho cubierto por pasada (alcance a cada lado)
+  const anchoCubierto = alc * 2;
+  // Paso 4: rutas necesarias para cubrir el ancho del galpón
+  const rutas = Math.ceil(ancho / anchoCubierto);
+  // Paso 5: volumen por pasada
+  const volPasada = tR / caudal;
+  // Paso 6: volumen total
+  const volTotal = volPasada * rutas * pas;
+
+  // Dosis
+  const dosisNec  = Math.ceil(aves / 1000) * 1000;
+  const frascos   = Math.ceil(dosisNec / dxf);
+  const dosisComp = frascos * dxf;
+
+  // Contraste: mL por cada 100 aves
+  const mlPor100 = volTotal * 1000 / aves * 100;
+  const tiempoTotal = tR * rutas * pas;
+
+  let html = '';
+
+  html += '<div class="res-hero">'
+        + '<div class="rh-label">Volumen total a preparar</div>'
+        + '<div class="rh-value">' + fmt(volTotal,1) + ' <small>litros</small></div>'
+        + '<div class="rh-sub">' + fmt(volPasada,1) + ' L por pasada × ' + rutas + ' ruta' + (rutas>1?'s':'') + ' × ' + pas + ' pasada' + (pas>1?'s':'') + '</div>'
+        + '<div class="rh-rango">Tiempo estimado de aplicación: ' + fmt0(tiempoTotal/60) + ' min</div>'
+        + '</div>';
+
+  html += '<div class="res-grid">';
+  html += '<div class="res-item"><div class="ri-label">Paso 1 · Caudal del equipo</div><div class="ri-value">' + fmt(caudal,1) + ' <span style="font-size:13px">s/L</span></div>'
+        + '<div class="ri-note">' + fmt(tP,0) + ' s ÷ ' + fmt(volP,1) + ' L. Es la velocidad real de tu pulverizador.</div></div>';
+  html += '<div class="res-item azul"><div class="ri-label">Paso 3 · Ancho cubierto</div><div class="ri-value">' + fmt(anchoCubierto,1) + ' <span style="font-size:13px">m</span></div>'
+        + '<div class="ri-note">' + fmt(alc,1) + ' m a cada lado del recorrido.</div></div>';
+  html += '<div class="res-item azul"><div class="ri-label">Paso 4 · Rutas necesarias</div><div class="ri-value">' + rutas + '</div>'
+        + '<div class="ri-note">Para cubrir ' + fmt(ancho,1) + ' m de ancho. Podés hacerlas con ' + rutas + ' pulverizador' + (rutas>1?'es en paralelo':'') + ', o con uno solo recorriendo ' + rutas + ' vez' + (rutas>1?'ces':'') + '.</div></div>';
+  html += '<div class="res-item"><div class="ri-label">Paso 5 · Volumen por pasada</div><div class="ri-value">' + fmt(volPasada,1) + ' <span style="font-size:13px">L</span></div>'
+        + '<div class="ri-note">' + fmt(tR,0) + ' s de recorrido ÷ ' + fmt(caudal,1) + ' s/L.</div></div>';
+  html += '<div class="res-item"><div class="ri-label">Dosis necesarias</div><div class="ri-value">' + fmt0(dosisNec) + '</div>'
+        + '<div class="ri-note">Para ' + fmt0(aves) + ' aves, al millar hacia arriba. Al menos una dosis completa por ave.</div></div>';
+  html += '<div class="res-item"><div class="ri-label">Frascos a usar</div><div class="ri-value">' + frascos + '</div>'
+        + '<div class="ri-note">' + frascos + ' × ' + fmt0(dxf) + ' = ' + fmt0(dosisComp) + ' dosis disponibles.</div></div>';
+  html += '<div class="res-item ambar"><div class="ri-label">Concentración resultante</div><div class="ri-value">' + fmt(mlPor100,0) + ' <span style="font-size:13px">mL/100 aves</span></div>'
+        + '<div class="ri-note">Dato de contexto: en spray de galpón el volumen lo define la calibración, no una tabla.</div></div>';
+  html += '<div class="res-item ambar"><div class="ri-label">Tamaño de gota objetivo</div><div class="ri-value">&gt; 100 µm</div>'
+        + '<div class="ri-note">Gota gruesa. Validá el patrón con papel hidrosensible antes de usar vacuna.</div></div>';
+  html += '</div>';
+
+  // Avisos
+  if(rutas > 1){
+    html += '<div class="alert azul"><b>Necesitás ' + rutas + ' rutas</b>'
+          + 'El galpón mide ' + fmt(ancho,1) + ' m y tu equipo cubre ' + fmt(anchoCubierto,1) + ' m por recorrido. '
+          + 'Podés resolverlo con <b>' + rutas + ' personas caminando en paralelo</b>, cada una a ' + fmt(alc,1) + ' m de su pared, '
+          + 'o con <b>una sola persona haciendo ' + rutas + ' recorridos</b>. En ambos casos, ' + pas + ' pasada' + (pas>1?'s':'') + ' completa' + (pas>1?'s':'') + '.</div>';
+  }
+
+  if(tiempoTotal > 1800){
+    html += '<div class="alert rojo"><b>La aplicación tomaría ' + fmt0(tiempoTotal/60) + ' minutos</b>'
+          + 'La vacuna reconstituida debe usarse <b>dentro de la hora</b>. Con este tiempo el margen es muy ajustado: '
+          + 'sumá personal para hacer rutas en paralelo, o dividí el galpón y preparé la vacuna por secciones.</div>';
+  }
+
+  if(pas < 2){
+    html += '<div class="alert ambar"><b>Estás calculando una sola pasada</b>'
+          + 'Se recomiendan <b>dos pasadas completas</b> para lograr cobertura uniforme. Con una sola quedan franjas sin cubrir.</div>';
+  }
+
+  html += '<div class="alert verde"><b>Antes de cargar la vacuna</b>'
+        + 'Repetí este recorrido con <b>agua destilada y papel hidrosensible</b> a la altura de las aves, y confirmá que el patrón de gotas sea parejo. '
+        + 'Recién ahí preparé la vacuna — y usala dentro de la hora.</div>';
+
+  // Resumen imprimible
+  html += '<div class="card"><h2>Resumen para llevar al galpón</h2>'
+        + '<div class="tabla-wrap"><table><tbody>'
+        + '<tr><td>Aves</td><td class="num"><b>' + fmt0(aves) + '</b></td></tr>'
+        + '<tr><td>Galpón</td><td class="num"><b>' + fmt(ancho,1) + ' m de ancho</b></td></tr>'
+        + '<tr><td>Caudal del equipo</td><td class="num"><b>' + fmt(caudal,1) + ' s/L</b></td></tr>'
+        + '<tr><td>Rutas × pasadas</td><td class="num"><b>' + rutas + ' × ' + pas + '</b></td></tr>'
+        + '<tr><td>Volumen por pasada</td><td class="num"><b>' + fmt(volPasada,1) + ' L</b></td></tr>'
+        + '<tr><td><b>Volumen total a preparar</b></td><td class="num"><b>' + fmt(volTotal,1) + ' L</b></td></tr>'
+        + '<tr><td>Dosis · frascos</td><td class="num"><b>' + fmt0(dosisNec) + ' · ' + frascos + ' × ' + fmt0(dxf) + '</b></td></tr>'
+        + '<tr><td>Temperatura del agua</td><td class="num"><b>&lt; 20 °C, destilada</b></td></tr>'
+        + '<tr><td>Estabilizador con colorante</td><td class="num"><b>Sí, antes de la vacuna</b></td></tr>'
+        + '<tr><td>Tamaño de gota</td><td class="num"><b>&gt; 100 µm</b></td></tr>'
+        + '<tr><td>Altura de lanza</td><td class="num"><b>1 m, paralela al suelo</b></td></tr>'
+        + '<tr><td>Ventilación apagada</td><td class="num"><b>durante + 10 min después</b></td></tr>'
+        + '<tr><td>Usar la mezcla antes de</td><td class="num"><b>1 hora</b></td></tr>'
+        + '</tbody></table></div>'
+        + '<div class="btn-row no-print"><button class="btn sec" onclick="window.print()">🖨️ Imprimir esta hoja</button></div>'
+        + '</div>';
+
+  out.innerHTML = html;
+  out.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+document.getElementById('btn-reset').addEventListener('click',()=>{
+  ['vol-prueba','t-prueba','t-recorrido','alcance','ancho','aves'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('resultados').innerHTML='';
+});
+
+/* =========================================================
+   Pauta de verificación
+   ========================================================= */
+const CHECKS = [
+  {c:true,  t:'Ventilación apagada durante y 10 min después', d:'O cortinas cerradas en galpón abierto. Es lo que permite que la nube se deposite sobre las aves.'},
+  {c:true,  t:'Equipo exclusivo para vacunas', d:'Nunca usado con desinfectantes, herbicidas ni ningún químico.'},
+  {c:true,  t:'Tamaño de gota grueso, sobre 100 µm', d:'Validado con papel hidrosensible. La gota fina baja al pulmón y provoca reacción post-vacunal.'},
+  {c:true,  t:'Equipo calibrado para este galpón', d:'Caudal, alcance, rutas y volumen total medidos con agua destilada antes de vacunar.'},
+  {c:true,  t:'Al menos una dosis completa por ave', d:'Dosis calculadas al millar hacia arriba sobre las aves presentes.'},
+  {c:true,  t:'Mezcla usada dentro de la hora', d:'La vacuna reconstituida pierde título. Se prepara un galpón a la vez.'},
+  {c:true,  t:'Cadena de frío mantenida', d:'Refrigerador exclusivo 2–8 °C con termómetro min/máx; traslado en cooler con ice packs sin contacto directo.'},
+  {c:false, t:'Agua destilada bajo 20 °C', d:'Si no hay destilada, agua libre de patógenos, exceso de minerales y residuos de desinfectante.'},
+  {c:false, t:'Estabilizador con colorante agregado antes de la vacuna', d:'Mantiene la viabilidad y permite verificar visualmente la uniformidad de cobertura.'},
+  {c:false, t:'Dos pasadas completas', d:'Una sola pasada deja franjas sin cubrir.'},
+  {c:false, t:'Lanza a 1 m, paralela al suelo', d:'Dirigida hacia un costado, con movimiento de barrido de lado a lado.'},
+  {c:false, t:'Luces bajas durante la aplicación', d:'Reduce el desplazamiento de las aves y mejora la uniformidad de la dosis.'},
+  {c:false, t:'Aplicado en la parte fresca del día', d:'Idealmente temprano en la mañana, especialmente en verano.'},
+  {c:false, t:'Ritmo de caminata lento y constante', d:'Sin acelerar al llegar a los extremos del galpón.'},
+  {c:false, t:'EPP puesto durante todo el procedimiento', d:'Guantes desechables, mascarilla o respirador y antiparras.'},
+  {c:false, t:'Superficie de trabajo desinfectada con alcohol 70%', d:'Seca al aire antes de preparar. Frascos enjuagados dos veces al volcar.'},
+  {c:false, t:'Equipo limpiado después del uso', d:'Enjuague con destilada, alcohol, enjuague final y secado al aire. Batería cargada.'},
+  {c:false, t:'Vacunación registrada', d:'Vacuna, laboratorio, lote, vencimiento, volumen de agua, fecha y observaciones.'},
+  {c:false, t:'Validación de laboratorio programada', d:'RT-PCR a los 5–7 días o ELISA a las 3 semanas.'}
+];
+
+const cl = document.getElementById('checklist');
+cl.innerHTML = CHECKS.map((c,i) =>
+  '<div class="chk-item">'
+  + '<input type="checkbox" id="c'+i+'" data-crit="'+c.c+'">'
+  + '<label class="chk-txt" for="c'+i+'">'
+  +   '<div class="chk-t">' + c.t + (c.c ? '<span class="badge-crit">Crítico</span>' : '') + '</div>'
+  +   '<div class="chk-d">' + c.d + '</div>'
+  + '</label></div>'
+).join('');
+
+document.getElementById('btn-score').addEventListener('click',()=>{
+  const boxes = [...cl.querySelectorAll('input')];
+  const total = boxes.length;
+  const ok    = boxes.filter(b => b.checked).length;
+  const pct   = Math.round(ok / total * 100);
+  const critFallan = boxes.filter(b => b.dataset.crit === 'true' && !b.checked).length;
+
+  let cls, lbl, msg;
+  if(critFallan > 0){
+    cls='mal'; lbl='Vacunación comprometida';
+    msg = 'Falla ' + critFallan + ' punto' + (critFallan>1?'s':'') + ' crítico' + (critFallan>1?'s':'')
+        + '. No des el lote por vacunado: consultá al veterinario responsable y dejá el hallazgo por escrito en la ficha del lote.';
+  } else if(pct >= 90){
+    cls='ok'; lbl='Vacunación correcta';
+    msg = 'Todos los puntos críticos se cumplieron. Confirmá con RT-PCR a los 5–7 días o ELISA a las 3 semanas.';
+  } else {
+    cls='med'; lbl='Mejorable';
+    msg = 'Los puntos críticos se cumplieron, pero hay ' + (total-ok) + ' punto' + ((total-ok)>1?'s':'')
+        + ' sin marcar. Corregilos antes de la próxima vacunación.';
+  }
+
+  document.getElementById('score-out').innerHTML =
+      '<div class="score-box ' + cls + '">'
+    + '<div class="sb-num">' + pct + '%</div>'
+    + '<div class="sb-lbl">' + lbl + '</div>'
+    + '<div class="sb-msg"><b>' + ok + ' de ' + total + ' puntos cumplidos.</b><br>' + msg + '</div>'
+    + '</div>';
+});
+
+document.getElementById('btn-chk-reset').addEventListener('click',()=>{
+  cl.querySelectorAll('input').forEach(b => b.checked = false);
+  document.getElementById('score-out').innerHTML = '';
+});
+</script>
+</body>
+</html>
