@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cuéntenme de sus aves — AviVet · Máfil</title>
+<style>
+  :root{
+    --verde:#2e7d4f; --verde-claro:#a8d5b9; --verde-osc:#1b5e34;
+    --crema:#fdfaf3; --texto:#1f2a24; --gris:#e6e9e6; --acento:#e98a15;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;height:100%;}
+  body{
+    font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--crema); color:var(--texto);
+    display:flex; flex-direction:column; min-height:100vh;
+  }
+  header{
+    background:var(--verde); color:#fff; padding:18px 28px;
+    display:flex; align-items:baseline; gap:16px; flex-wrap:wrap;
+  }
+  header h1{font-size:1.9rem; margin:0; font-weight:800;}
+  header .sub{opacity:.9; font-size:1rem;}
+  header .total{margin-left:auto; font-size:1rem; background:var(--verde-osc);
+    padding:6px 14px; border-radius:30px;}
+
+  /* Pestañas de preguntas */
+  nav{display:flex; gap:8px; padding:14px 28px 0; flex-wrap:wrap; background:var(--crema);}
+  nav button{
+    border:none; background:var(--gris); color:var(--texto);
+    padding:10px 16px; border-radius:10px 10px 0 0; font-size:1rem;
+    cursor:pointer; font-weight:600; opacity:.7;
+  }
+  nav button.activa{background:#fff; opacity:1; box-shadow:0 -2px 6px rgba(0,0,0,.06);}
+
+  main{flex:1; padding:24px 28px; overflow:auto;}
+  .pregunta{display:none;}
+  .pregunta.activa{display:block;}
+  .pregunta h2{font-size:2.3rem; margin:.2em 0 .6em; color:var(--verde-osc);}
+
+  /* Resumen consolidado */
+  .resumen h2{font-size:2.3rem; margin:.2em 0 .4em; color:var(--verde-osc);}
+  .res-bloque{max-width:1100px; margin-bottom:22px; padding-bottom:14px; border-bottom:1px dashed var(--gris);}
+  .res-bloque h3{font-size:1.35rem; margin:.2em 0 .1em;}
+  .res-bloque .gana{font-size:1.05rem; color:var(--acento); font-weight:700; margin-bottom:10px;}
+  .res-fila{display:grid; grid-template-columns:280px 1fr 110px; align-items:center; gap:14px; margin:6px 0;}
+  .res-fila .et{font-size:1.05rem; font-weight:600;}
+  .res-fila .barra-cont{height:26px;}
+  .res-fila .num{font-size:1.05rem; font-weight:700; text-align:right; color:var(--verde-osc);}
+  .res-vacio{color:#999; font-style:italic;}
+
+  .opciones{display:flex; flex-direction:column; gap:14px; max-width:1100px;}
+  .opcion{
+    display:grid; grid-template-columns:280px 1fr 70px; align-items:center; gap:16px;
+  }
+  .opcion button.tap{
+    font-size:1.25rem; font-weight:700; padding:18px 14px; cursor:pointer;
+    border:3px solid var(--verde); background:#fff; color:var(--verde-osc);
+    border-radius:14px; text-align:left; transition:transform .05s, background .1s;
+  }
+  .opcion button.tap:hover{background:var(--verde-claro);}
+  .opcion button.tap:active{transform:scale(.97);}
+  .barra-cont{background:var(--gris); border-radius:10px; height:42px; overflow:hidden;}
+  .barra{background:var(--verde); height:100%; width:0; border-radius:10px;
+    transition:width .25s ease;}
+  .opcion .conteo{font-size:1.8rem; font-weight:800; text-align:right; color:var(--verde-osc);}
+
+  .menos{margin-left:8px; border:2px solid #bbb; background:#fff; color:#666;
+    border-radius:8px; width:34px; height:34px; font-size:1.2rem; cursor:pointer; vertical-align:middle;}
+
+  footer{padding:14px 28px; display:flex; gap:12px; flex-wrap:wrap; align-items:center;
+    border-top:1px solid var(--gris); background:var(--crema);}
+  footer button{padding:10px 18px; border-radius:10px; border:none; cursor:pointer;
+    font-size:.95rem; font-weight:600;}
+  .btn-reset{background:#fbe3e3; color:#a13;}
+  .btn-resetall{background:#eee; color:#555;}
+  .btn-print{background:var(--acento); color:#fff;}
+  footer .hint{font-size:.85rem; color:#777; margin-left:auto;}
+
+  /* Hoja manual imprimible (papel) */
+  .manual{display:none;}
+  @media print{
+    header,nav,footer,.pregunta{display:none !important;}
+    .manual{display:block; padding:0;}
+    .manual h2{font-size:1.3rem; margin:18px 0 4px;}
+    .manual table{width:100%; border-collapse:collapse; margin-bottom:10px;}
+    .manual td,.manual th{border:1px solid #999; padding:8px; font-size:1rem; text-align:left;}
+    .manual .tally{width:55%;}
+    body{background:#fff;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🐔 Cuéntenme de sus aves</h1>
+  <span class="sub">AviVet · Charla Máfil</span>
+  <span class="total">Respuestas marcadas: <b id="totalGlobal">0</b></span>
+</header>
+
+<nav id="tabs"></nav>
+
+<main id="main"></main>
+
+<footer>
+  <button class="btn-reset" onclick="resetActual()">↺ Reiniciar esta pregunta</button>
+  <button class="btn-resetall" onclick="resetTodo()">⟲ Reiniciar TODO</button>
+  <button class="btn-print" onclick="window.print()">🖨️ Imprimir hoja manual (papel)</button>
+  <span class="hint">Clic en la opción = +1 &nbsp;·&nbsp; botón “−” = corregir &nbsp;·&nbsp; se guarda solo en este equipo</span>
+</footer>
+
+<!-- Hoja manual imprimible: respaldo en papel si falla todo lo electrónico -->
+<div class="manual" id="manual"></div>
+
+<script>
+// ====== Definición de la encuesta (edita libremente) ======
+const PREGUNTAS = [
+  { t:"¿Cuántas aves tienen?",
+    o:["Menos de 10","Entre 10 y 50","Entre 50 y 200","Más de 200"] },
+  { t:"¿Qué tipo de aves?",
+    o:["Criollas","Ponedoras comerciales","Mixto (criollas + comerciales)","Otras (patos, gansos, pavos, codornices)"] },
+  { t:"¿Qué sistema de manejo usan?",
+    o:["Gallinero cerrado","Patio / pastoreo (campo abierto)","Mixto (gallinero + patio)"] },
+  { t:"¿Para qué producen?",
+    o:["Autoconsumo","Venta local","Ambos"] },
+  { t:"¿Qué problema les molesta MÁS?",
+    o:["Baja postura / pocos huevos","Picaje o canibalismo","Parásitos (piojillo, ácaros)","Enfermedades (respiratorias u otras)","Mortalidad / depredadores","Cáscara o calidad del huevo"] },
+];
+
+const CLAVE = "encuesta-mafil-v1";
+let datos = cargar();
+
+function cargar(){
+  try{
+    const g = JSON.parse(localStorage.getItem(CLAVE));
+    if(g && g.length===PREGUNTAS.length) return g;
+  }catch(e){}
+  return PREGUNTAS.map(p=>p.o.map(()=>0));
+}
+function guardar(){ localStorage.setItem(CLAVE, JSON.stringify(datos)); }
+
+let activa = 0;
+
+function render(){
+  // Pestañas
+  const tabs = document.getElementById("tabs");
+  tabs.innerHTML = "";
+  PREGUNTAS.forEach((p,i)=>{
+    const b=document.createElement("button");
+    b.textContent = (i+1);
+    b.className = i===activa ? "activa":"";
+    b.title = p.t;
+    b.onclick=()=>{activa=i; render();};
+    tabs.appendChild(b);
+  });
+  // Pestaña de resumen (índice = PREGUNTAS.length)
+  const bR=document.createElement("button");
+  bR.textContent = "Σ Resumen";
+  bR.className = activa===PREGUNTAS.length ? "activa":"";
+  bR.onclick=()=>{activa=PREGUNTAS.length; render();};
+  tabs.appendChild(bR);
+
+  const main = document.getElementById("main");
+  main.innerHTML = "";
+
+  // Vista resumen
+  if(activa===PREGUNTAS.length){
+    renderResumen(main);
+    const tg0 = datos.reduce((s,arr)=>s+arr.reduce((a,b)=>a+b,0),0);
+    document.getElementById("totalGlobal").textContent = tg0;
+    renderManual();
+    return;
+  }
+
+  // Pregunta activa
+  const p = PREGUNTAS[activa];
+  const total = datos[activa].reduce((a,b)=>a+b,0) || 0;
+  const div = document.createElement("div");
+  div.className = "pregunta activa";
+  div.innerHTML = `<h2>${activa+1}. ${p.t}</h2>`;
+  const cont = document.createElement("div");
+  cont.className = "opciones";
+  p.o.forEach((op,j)=>{
+    const n = datos[activa][j];
+    const pct = total ? Math.round(n/total*100) : 0;
+    const row = document.createElement("div");
+    row.className = "opcion";
+    row.innerHTML = `
+      <button class="tap">${op}</button>
+      <div class="barra-cont"><div class="barra" style="width:${pct}%"></div></div>
+      <div class="conteo">${n}<button class="menos" title="restar">−</button></div>`;
+    row.querySelector(".tap").onclick=()=>{datos[activa][j]++; guardar(); render();};
+    row.querySelector(".menos").onclick=(e)=>{e.stopPropagation(); if(datos[activa][j]>0){datos[activa][j]--; guardar(); render();}};
+    cont.appendChild(row);
+  });
+  div.appendChild(cont);
+  main.appendChild(div);
+  // Total global
+  const tg = datos.reduce((s,arr)=>s+arr.reduce((a,b)=>a+b,0),0);
+  document.getElementById("totalGlobal").textContent = tg;
+  renderManual();
+}
+
+function renderResumen(main){
+  const div = document.createElement("div");
+  div.className = "resumen";
+  const tg = datos.reduce((s,arr)=>s+arr.reduce((a,b)=>a+b,0),0);
+  div.innerHTML = `<h2>Σ Resumen del grupo</h2>`;
+  PREGUNTAS.forEach((p,i)=>{
+    const arr = datos[i];
+    const total = arr.reduce((a,b)=>a+b,0);
+    const maxN = Math.max(...arr);
+    let ganaTxt = total ? "" : `<span class="res-vacio">sin respuestas aún</span>`;
+    if(total){
+      const idx = arr.map((n,j)=>({n,j})).filter(x=>x.n===maxN).map(x=>x.j);
+      const nombres = idx.map(j=>p.o[j]).join(" / ");
+      ganaTxt = `▶ Más frecuente: <b>${nombres}</b> (${maxN}/${total}, ${Math.round(maxN/total*100)}%)`;
+    }
+    let filas = p.o.map((op,j)=>{
+      const n = arr[j];
+      const pct = total ? Math.round(n/total*100) : 0;
+      const destaca = total && n===maxN && n>0;
+      return `<div class="res-fila">
+        <div class="et">${op}</div>
+        <div class="barra-cont"><div class="barra" style="width:${pct}%;${destaca?'background:var(--acento);':''}"></div></div>
+        <div class="num">${n} (${pct}%)</div>
+      </div>`;
+    }).join("");
+    div.innerHTML += `<div class="res-bloque">
+      <h3>${i+1}. ${p.t}</h3>
+      <div class="gana">${ganaTxt}</div>
+      ${filas}
+    </div>`;
+  });
+  div.innerHTML += `<p style="font-size:1.2rem;"><b>Total de respuestas marcadas:</b> ${tg}</p>`;
+  main.appendChild(div);
+}
+
+function renderManual(){
+  const m = document.getElementById("manual");
+  m.innerHTML = "<h1>Cuéntenme de sus aves — hoja manual (AviVet · Máfil)</h1>";
+  PREGUNTAS.forEach(p=>{
+    let rows = p.o.map(op=>`<tr><td>${op}</td><td class="tally"></td></tr>`).join("");
+    m.innerHTML += `<h2>${p.t}</h2><table><tr><th>Opción</th><th class="tally">Conteo (palotes)</th></tr>${rows}</table>`;
+  });
+}
+
+function resetActual(){
+  if(activa===PREGUNTAS.length){ alert("Estás en el Resumen. Abre una pregunta para reiniciarla."); return; }
+  if(confirm("¿Reiniciar los conteos de esta pregunta?")){
+    datos[activa] = PREGUNTAS[activa].o.map(()=>0); guardar(); render();
+  }
+}
+function resetTodo(){
+  if(confirm("¿Borrar TODOS los conteos de todas las preguntas?")){
+    datos = PREGUNTAS.map(p=>p.o.map(()=>0)); guardar(); render();
+  }
+}
+
+render();
+</script>
+</body>
+</html>

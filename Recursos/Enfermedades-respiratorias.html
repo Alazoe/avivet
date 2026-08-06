@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Enfermedades Respiratorias en Aves de Postura · AviVet</title>
+<meta name="description" content="Guía técnica de AviVet: principales enfermedades respiratorias en gallinas de postura. Anatomía, diagnóstico, prevención y vacunación. Por Dr. Andrés Lazo Escobar, médico veterinario aviar.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --g1: #0d2b1e; --g2: #1b4332; --g3: #2d6a4f; --g4: #52b788; --g5: #d8f3dc; --g6: #f0faf3;
+  --gold: #c9a84c; --gold2: #e8c96e; --gold-bg: #fef9ef;
+  --ink: #111; --ink2: #3a3a3a; --ink3: #666; --rule: #d4e6da; --bg: #fafaf8;
+  --serif: 'Playfair Display', Georgia, serif;
+  --sans: 'DM Sans', sans-serif;
+  --mono: 'DM Mono', monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);font-size:16px;line-height:1.75;color:var(--ink2);background:var(--bg);overflow-x:hidden}
+
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:64px;background:rgba(13,43,30,0.97);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.07)}
+.nav-logo img{height:38px;width:auto}
+.nav-links{display:flex;gap:24px;list-style:none}
+.nav-links a{color:#a8d5b5;text-decoration:none;font-size:13px;font-weight:500;letter-spacing:.04em;transition:color .2s}
+.nav-links a:hover{color:var(--gold2)}
+.nav-cta{background:var(--gold);color:var(--g1)!important;padding:8px 18px;border-radius:20px;font-weight:600!important;font-size:13px;text-decoration:none;transition:background .2s;white-space:nowrap}
+.nav-cta:hover{background:var(--gold2)!important}
+
+/* HERO */
+.hero{min-height:100vh;display:grid;grid-template-rows:1fr auto;background:var(--g1);position:relative;overflow:hidden;padding-top:64px}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 70% 40%,rgba(45,106,79,.35) 0%,transparent 70%),radial-gradient(ellipse 50% 40% at 10% 80%,rgba(201,168,76,.10) 0%,transparent 60%);pointer-events:none}
+.hero-inner{display:flex;flex-direction:column;justify-content:center;padding:80px 64px 40px;max-width:900px;position:relative;z-index:2}
+.hero-tag{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;color:var(--gold);letter-spacing:.14em;text-transform:uppercase;margin-bottom:28px;opacity:0;animation:fadeUp .8s .2s ease forwards}
+.hero-tag::before{content:'';display:block;width:28px;height:1px;background:var(--gold)}
+.hero-h1{font-family:var(--serif);font-size:clamp(36px,6vw,68px);line-height:1.08;color:#fff;font-weight:400;margin-bottom:8px;opacity:0;animation:fadeUp .9s .35s ease forwards}
+.hero-h1 em{font-style:italic;color:#b7e4c7}
+.hero-h1 strong{display:block;color:var(--gold2);font-weight:700}
+.hero-sub{font-size:17px;color:#7abf93;margin-top:24px;max-width:520px;font-weight:300;line-height:1.65;opacity:0;animation:fadeUp .9s .5s ease forwards}
+.hero-author{display:flex;align-items:center;gap:16px;margin-top:48px;padding-top:28px;border-top:1px solid rgba(255,255,255,.1);opacity:0;animation:fadeUp .9s .65s ease forwards}
+.hero-author-name{font-size:14px;font-weight:600;color:#e0f0e6;line-height:1.3}
+.hero-author-role{font-size:12px;color:#7abf93;font-weight:300}
+.hero-dot{width:8px;height:8px;background:var(--gold);border-radius:50%;animation:pulse 2s infinite;flex-shrink:0}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.hero-scroll{padding:24px 64px 32px;position:relative;z-index:2;opacity:0;animation:fadeUp .9s .8s ease forwards}
+.hero-scroll a{display:inline-flex;align-items:center;gap:10px;color:#5a9e72;font-size:12px;font-family:var(--mono);text-decoration:none;letter-spacing:.06em;text-transform:uppercase;transition:color .2s}
+.hero-scroll a:hover{color:var(--gold)}
+.scroll-arrow{display:inline-block;animation:bounce 2s infinite}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+/* INTRO BAND */
+.intro-band{background:var(--g2);padding:80px 64px;position:relative;overflow:hidden}
+.intro-band::before{content:'';position:absolute;top:-60px;right:-60px;width:320px;height:320px;border-radius:50%;background:rgba(82,183,136,.08)}
+.intro-band-inner{max-width:1140px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+.intro-band h2{font-family:var(--serif);font-size:clamp(24px,3vw,38px);color:#fff;font-weight:400;line-height:1.25;margin-bottom:20px}
+.intro-band h2 em{color:var(--gold2)}
+.intro-band p{color:#8dc8a3;font-size:16px;line-height:1.75;margin-bottom:16px}
+.intro-alert{background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.3);border-radius:8px;padding:16px 20px;margin-top:24px}
+.intro-alert p{color:var(--gold2)!important;font-size:14px!important;margin:0;font-style:italic}
+.intro-checklist{list-style:none}
+.intro-checklist li{display:flex;align-items:flex-start;gap:14px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.07);color:#a8d5b5;font-size:15px;line-height:1.5}
+.intro-checklist li:last-child{border-bottom:none}
+.ic-mark{width:22px;height:22px;border-radius:50%;background:rgba(82,183,136,.2);border:1px solid rgba(82,183,136,.4);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;color:var(--g4);margin-top:1px}
+.ic-body strong{color:#d4ead9}
+
+/* LAYOUT */
+.page-layout{display:grid;grid-template-columns:210px 1fr;gap:0;max-width:1100px;margin:0 auto;padding:80px 32px;align-items:start}
+.toc-sticky{position:sticky;top:88px;padding-right:36px}
+.toc-label{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--g3);margin-bottom:16px;font-weight:500}
+.toc-list{list-style:none;border-left:2px solid var(--rule)}
+.toc-list li a{display:block;padding:7px 0 7px 16px;font-size:13px;color:var(--ink3);text-decoration:none;line-height:1.4;transition:color .2s,border-color .2s;border-left:2px solid transparent;margin-left:-2px}
+.toc-list li a:hover,.toc-list li a.active{color:var(--g2);border-left-color:var(--g3)}
+.toc-list .toc-n{font-family:var(--mono);font-size:10px;color:var(--gold);display:block;margin-bottom:1px}
+
+/* SECTIONS */
+.section{margin-bottom:96px;scroll-margin-top:88px;opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
+.section.visible{opacity:1;transform:translateY(0)}
+.sec-head{display:flex;align-items:flex-start;gap:20px;margin-bottom:32px;padding-bottom:24px;border-bottom:1px solid var(--rule)}
+.sec-num{font-family:var(--mono);font-size:11px;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
+.sec-icon{width:52px;height:52px;border-radius:14px;background:var(--g2);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;box-shadow:0 4px 16px rgba(27,67,50,.25)}
+.sec-title h2{font-family:var(--serif);font-size:clamp(22px,2.5vw,30px);color:var(--g1);font-weight:700;line-height:1.2}
+.lead{font-family:var(--serif);font-size:18px;line-height:1.65;color:var(--g2);font-style:italic;border-left:3px solid var(--g4);padding:12px 20px;margin-bottom:28px;background:var(--g6);border-radius:0 8px 8px 0}
+p{margin-bottom:18px;line-height:1.8;color:var(--ink2)}
+p strong{color:var(--ink)}
+p:last-child{margin-bottom:0}
+
+/* LISTS */
+.elist{list-style:none;margin:24px 0;border:1px solid var(--rule);border-radius:10px;overflow:hidden}
+.elist li{display:grid;grid-template-columns:48px 1fr;border-bottom:1px solid var(--rule)}
+.elist li:last-child{border-bottom:none}
+.elist-num{background:var(--g2);color:var(--gold);font-family:var(--mono);font-size:13px;font-weight:500;display:flex;align-items:center;justify-content:center;padding:14px 0}
+.elist-text{padding:14px 18px;font-size:15px;line-height:1.6;background:#fff;transition:background .2s}
+.elist li:hover .elist-text{background:var(--g6)}
+.elist-text strong{color:var(--g2)}
+.blist{list-style:none;margin:16px 0}
+.blist li{display:flex;gap:12px;padding:10px 0;font-size:15px;border-bottom:1px dashed var(--rule);line-height:1.6}
+.blist li:last-child{border-bottom:none}
+.blist li::before{content:'→';color:var(--g4);font-family:var(--mono);font-size:13px;flex-shrink:0;margin-top:2px}
+
+/* TIP */
+.tip{position:relative;background:var(--gold-bg);border:1px solid #e8d4a0;border-radius:10px;padding:24px 28px 24px 32px;margin:32px 0;overflow:hidden}
+.tip::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:linear-gradient(to bottom,var(--gold),var(--gold2))}
+.tip-label{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;font-weight:600}
+.tip p{font-style:italic;font-size:15px;color:#5a4720;margin-bottom:0;line-height:1.7}
+
+/* ALERT */
+.alert{position:relative;background:#fff5f5;border:1px solid #f5c0c0;border-radius:10px;padding:24px 28px 24px 32px;margin:32px 0;overflow:hidden}
+.alert::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:linear-gradient(to bottom,#e05252,#f08080)}
+.alert-label{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#c0392b;margin-bottom:8px;font-weight:600}
+.alert p{font-size:15px;color:#7a1c1c;margin-bottom:0;line-height:1.7}
+
+/* KPIs */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:14px;margin:28px 0}
+.kpi{background:#fff;border:1px solid var(--rule);border-radius:10px;padding:20px 16px;text-align:center;transition:transform .2s,box-shadow .2s;position:relative;overflow:hidden}
+.kpi::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(to right,var(--g3),var(--g4))}
+.kpi:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(27,67,50,.12)}
+.kpi-val{font-family:var(--serif);font-size:32px;font-weight:700;color:var(--g2);line-height:1;margin-bottom:8px}
+.kpi-desc{font-size:12px;color:var(--ink3);line-height:1.4}
+
+/* DISEASE CARDS */
+.disease-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin:28px 0}
+.disease-card{background:#fff;border:1px solid var(--rule);border-radius:12px;padding:20px;transition:transform .2s,box-shadow .2s;position:relative;overflow:hidden}
+.disease-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.disease-card.viral::before{background:linear-gradient(to right,#e05252,#f08080)}
+.disease-card.bacterial::before{background:linear-gradient(to right,#3b82f6,#93c5fd)}
+.disease-card.parasit::before{background:linear-gradient(to right,var(--g3),var(--g4))}
+.disease-card.env::before{background:linear-gradient(to right,var(--gold),var(--gold2))}
+.disease-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(27,67,50,.12)}
+.dc-type{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px;font-weight:600}
+.viral .dc-type{color:#c0392b}
+.bacterial .dc-type{color:#2563eb}
+.parasit .dc-type{color:var(--g3)}
+.env .dc-type{color:var(--gold)}
+.dc-name{font-family:var(--serif);font-size:17px;font-weight:700;color:var(--g1);margin-bottom:6px;line-height:1.2}
+.dc-abbr{font-family:var(--mono);font-size:11px;color:var(--ink3);margin-bottom:12px}
+.dc-signs{list-style:none;margin:0}
+.dc-signs li{font-size:13px;color:var(--ink2);padding:4px 0;display:flex;gap:8px;border-bottom:1px dashed var(--rule);line-height:1.5}
+.dc-signs li:last-child{border-bottom:none}
+.dc-signs li::before{content:'·';color:var(--g4);font-weight:700;flex-shrink:0}
+
+h3{font-family:var(--sans);font-size:13px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--g2);margin:32px 0 14px;display:flex;align-items:center;gap:10px}
+h3::after{content:'';flex:1;height:1px;background:var(--rule)}
+.div{border:none;height:1px;background:var(--rule);margin:64px 0}
+
+/* ANATOMY DIAGRAM */
+.anatomy-box{background:var(--g1);border-radius:12px;padding:28px;margin:28px 0;display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
+.anatomy-col h4{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;font-weight:600}
+.anatomy-item{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.07)}
+.anatomy-item:last-child{border-bottom:none}
+.ai-num{font-family:var(--mono);font-size:11px;color:var(--gold2);flex-shrink:0;width:18px}
+.ai-text{font-size:14px;color:#a8d5b5;line-height:1.5}
+.ai-text strong{color:#d8f3dc;display:block;font-size:13px}
+
+/* CTA */
+.cta-section{background:var(--g1);position:relative;overflow:hidden;padding:100px 64px;text-align:center}
+.cta-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 60% at 50% 0%,rgba(201,168,76,.12) 0%,transparent 60%),radial-gradient(ellipse 40% 40% at 80% 100%,rgba(45,106,79,.25) 0%,transparent 60%)}
+.cta-inner{position:relative;z-index:1;max-width:620px;margin:0 auto}
+.cta-eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:20px}
+.cta-inner h2{font-family:var(--serif);font-size:clamp(26px,4vw,44px);color:#fff;font-weight:400;line-height:1.2;margin-bottom:16px}
+.cta-inner h2 em{font-style:italic;color:var(--gold2)}
+.cta-inner p{color:#7abf93;font-size:16px;margin-bottom:40px;font-weight:300}
+.cta-btns{display:flex;justify-content:center;flex-wrap:wrap;gap:14px;margin-bottom:40px}
+.btn-gold{display:inline-flex;align-items:center;gap:8px;background:var(--gold);color:var(--g1);font-weight:600;font-size:14px;padding:14px 28px;border-radius:40px;text-decoration:none;transition:background .2s,transform .2s;letter-spacing:.01em}
+.btn-gold:hover{background:var(--gold2);transform:translateY(-2px)}
+.btn-ghost{display:inline-flex;align-items:center;gap:8px;background:transparent;color:#a8d5b5;font-size:14px;padding:14px 28px;border-radius:40px;text-decoration:none;border:1px solid rgba(255,255,255,.18);transition:border-color .2s,color .2s}
+.btn-ghost:hover{border-color:var(--g4);color:#fff}
+.cta-row{display:flex;justify-content:center;align-items:center;gap:24px;flex-wrap:wrap;padding-top:28px;border-top:1px solid rgba(255,255,255,.08)}
+.cta-row a{font-family:var(--mono);font-size:12px;color:#5a9e72;text-decoration:none;transition:color .2s}
+.cta-row a:hover{color:var(--gold2)}
+.cta-sep{color:#1b4332}
+
+/* FOOTER */
+.footer{background:#080f0b;padding:28px 48px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.footer img{height:30px;opacity:.7;filter:brightness(1.5)}
+.footer-text{font-size:12px;color:#3d6650;text-align:right;line-height:1.6}
+.footer-text a{color:var(--g4);text-decoration:none}
+
+/* PROGRESS */
+.pbar{position:fixed;top:64px;left:0;height:2px;background:linear-gradient(to right,var(--g4),var(--gold));z-index:101;width:0%;transition:width .1s linear}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .page-layout{grid-template-columns:1fr;padding:48px 24px}
+  .toc-sticky{display:none}
+  .hero-inner{padding:60px 28px 32px}
+  .hero-scroll{padding:16px 28px 24px}
+  .intro-band{padding:56px 28px}
+  .intro-band-inner{grid-template-columns:1fr;gap:40px}
+  .cta-section{padding:72px 28px}
+  .footer{padding:24px 28px}
+  .nav-links{display:none}
+  .anatomy-box{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+  .hero-h1{font-size:30px}
+  .kpis{grid-template-columns:repeat(2,1fr)}
+  .cta-btns{flex-direction:column;align-items:stretch;text-align:center}
+  .disease-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="pbar" id="pbar"></div>
+
+<!-- NAV -->
+<nav class="nav">
+  <a class="nav-logo" href="https://avivet.cl">
+    <img src="../assets/img/Bioseguridad/avivet_invertido.png" alt="AviVet" onerror="this.style.display='none';this.nextSibling.style.display='block'">
+    <span style="display:none;color:#a8d5b5;font-weight:700;font-size:18px;font-family:'Playfair Display',serif;">AviVet</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#anatomia">Anatomía</a></li>
+    <li><a href="#via-alta">Vía Alta</a></li>
+    <li><a href="#factores">Factores de Riesgo</a></li>
+    <li><a href="#traquea">Tráquea</a></li>
+    <li><a href="#via-baja">Vía Baja</a></li>
+    <li><a href="#influenza">Influenza</a></li>
+    <li><a href="#enfermedades">Enfermedades</a></li>
+    <li><a href="#prevencion">Prevención</a></li>
+    <li><a class="nav-cta" href="https://wa.me/56958956340">Contactar →</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="hero-bg"></div>
+  <div class="hero-inner">
+    <div class="hero-tag">Guía técnica · AviVet · Salud respiratoria</div>
+    <h1 class="hero-h1">
+      <em>Enfermedades respiratorias</em>
+      <strong>en aves de postura</strong>
+    </h1>
+    <p class="hero-sub">Guía de referencia clínica para identificar, prevenir y controlar las principales enfermedades del tracto respiratorio en planteles de gallinas de postura comercial.</p>
+    <div class="hero-author">
+      <div class="hero-dot"></div>
+      <div>
+        <div class="hero-author-name">Dr. Andrés Lazo Escobar MV</div>
+        <div class="hero-author-role">Médico Veterinario · Especialista en Medicina Aviar · Sur de Chile</div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <a href="#intro">Leer guía <span class="scroll-arrow">↓</span></a>
+  </div>
+</section>
+
+<!-- INTRO BAND -->
+<section class="intro-band" id="intro">
+  <div class="intro-band-inner">
+    <div>
+      <h2>El <em>sistema respiratorio</em> aviar es único — y más vulnerable de lo que parece</h2>
+      <p>Las aves poseen un sistema respiratorio altamente eficiente que incluye sacos aéreos y huesos neumáticos, lo que facilita el intercambio de gases pero también permite que las infecciones se propaguen rápidamente por todo el organismo.</p>
+      <p>Las enfermedades respiratorias son una de las principales causas de pérdidas productivas en planteles de postura: reducen la producción de huevos, aumentan la mortalidad y abren la puerta a infecciones secundarias por <em>E. coli</em>.</p>
+      <div class="intro-alert">
+        <p>Incluso unos pocos animales con estornudos, tos o secreción nasal pueden indicar un problema mayor en todo el plantel. No subestime los signos tempranos.</p>
+      </div>
+    </div>
+    <div>
+      <ul class="intro-checklist">
+        <li>
+          <div class="ic-mark">①</div>
+          <div class="ic-body"><strong>Anatomía singular:</strong> sacos aéreos, pulmones adheridos a la columna y huesos neumáticos conectados al sistema respiratorio.</div>
+        </li>
+        <li>
+          <div class="ic-mark">②</div>
+          <div class="ic-body"><strong>Vía alta y vía baja:</strong> los patógenos pueden afectar desde las narinas hasta los sacos aéreos abdominales.</div>
+        </li>
+        <li>
+          <div class="ic-mark">③</div>
+          <div class="ic-body"><strong>Causas múltiples:</strong> virus y bacterias, frecuentemente en coinfección, junto a factores ambientales que abren la puerta.</div>
+        </li>
+        <li>
+          <div class="ic-mark">④</div>
+          <div class="ic-body"><strong>Impacto productivo:</strong> caída de postura, mala calidad de cáscara, conversión alimenticia elevada y aumento de mortalidad.</div>
+        </li>
+        <li>
+          <div class="ic-mark">⑤</div>
+          <div class="ic-body"><strong>La prevención es clave:</strong> vacunación oportuna, bioseguridad estricta y control ambiental son las mejores herramientas.</div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- MAIN LAYOUT -->
+<div class="page-layout">
+
+  <!-- TOC -->
+  <nav class="toc-sticky">
+    <div class="toc-label">Contenido</div>
+    <ul class="toc-list">
+      <li><a href="#anatomia"><span class="toc-n">01</span>Sistema respiratorio</a></li>
+      <li><a href="#via-alta"><span class="toc-n">02</span>Tracto respiratorio superior</a></li>
+      <li><a href="#factores"><span class="toc-n">03</span>Amoníaco y Vitamina A</a></li>
+      <li><a href="#traquea"><span class="toc-n">04</span>Enfermedades de la tráquea</a></li>
+      <li><a href="#via-baja"><span class="toc-n">05</span>Tracto respiratorio inferior</a></li>
+      <li><a href="#influenza"><span class="toc-n">06</span>Influenza Aviar</a></li>
+      <li><a href="#enfermedades"><span class="toc-n">07</span>Enfermedades frecuentes</a></li>
+      <li><a href="#prevencion"><span class="toc-n">08</span>Prevención integral</a></li>
+    </ul>
+  </nav>
+
+  <!-- CONTENT -->
+  <main>
+
+    <!-- SECTION 1: ANATOMÍA -->
+    <section class="section" id="anatomia">
+      <div class="sec-head">
+        <div class="sec-icon">🫁</div>
+        <div class="sec-title">
+          <div class="sec-num">01 · Fundamentos</div>
+          <h2>El sistema respiratorio aviar</h2>
+        </div>
+      </div>
+
+      <p class="lead">Las aves tienen un sistema respiratorio fundamentalmente distinto al de los mamíferos, lo que las hace muy eficientes para oxigenarse, pero también más susceptibles a que las infecciones se propaguen de forma sistémica.</p>
+
+      <p>A diferencia de los mamíferos, las aves carecen de diafragma. Esto significa que no existe una barrera física entre el aparato respiratorio y los órganos digestivos y reproductivos. Una infección respiratoria grave puede derivar rápidamente en septicemia, peritonitis por yema de huevo o aerosaculitis generalizada.</p>
+
+      <div class="anatomy-box">
+        <div class="anatomy-col">
+          <h4>Vía respiratoria alta</h4>
+          <div class="anatomy-item">
+            <span class="ai-num">①</span>
+            <div class="ai-text"><strong>Narinas y pasaje nasal</strong>Puerta de entrada de patógenos; se conectan con los senos paranasales</div>
+          </div>
+          <div class="anatomy-item">
+            <span class="ai-num">②</span>
+            <div class="ai-text"><strong>Senos paranasales</strong>Ubicados alrededor de los ojos y el pico; primera zona de infección visible (cara hinchada)</div>
+          </div>
+          <div class="anatomy-item">
+            <span class="ai-num">③</span>
+            <div class="ai-text"><strong>Laringe, tráquea y sirinx</strong>La sirinx está en la bifurcación traqueal; ILT produce tapones purulentos aquí</div>
+          </div>
+          <div class="anatomy-item">
+            <span class="ai-num">④</span>
+            <div class="ai-text"><strong>Bronquios</strong>Conducen el aire hacia los pulmones y los sacos aéreos</div>
+          </div>
+        </div>
+        <div class="anatomy-col">
+          <h4>Vía respiratoria baja</h4>
+          <div class="anatomy-item">
+            <span class="ai-num">⑤</span>
+            <div class="ai-text"><strong>Pulmones</strong>Adheridos a la columna y costillas; no colapsan como en mamíferos</div>
+          </div>
+          <div class="anatomy-item">
+            <span class="ai-num">⑥</span>
+            <div class="ai-text"><strong>Sacos aéreos cervicales y claviculares</strong>Se inflaman en aerosaculitis; visibles en necropsia como membranas opacas</div>
+          </div>
+          <div class="anatomy-item">
+            <span class="ai-num">⑦</span>
+            <div class="ai-text"><strong>Sacos aéreos abdominales y torácicos</strong>Conectados al aparato reproductivo; aerosaculitis aquí puede causar peritonitis</div>
+          </div>
+          <div class="anatomy-item">
+            <span class="ai-num">⑧</span>
+            <div class="ai-text"><strong>Huesos neumáticos</strong>Conectados al sistema respiratorio; infecciones graves pueden llegar al hueso</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tip">
+        <div class="tip-label">Punto clave</div>
+        <p>Debido a la ausencia de diafragma, una bronquitis infecciosa o una infección por <em>E. coli</em> secundaria puede progresar a aerosaculitis, peritonitis por yema o septicemia en cuestión de días. La intervención temprana es siempre más efectiva.</p>
+      </div>
+    </section>
+
+    <!-- SECTION 2: TRACTO SUPERIOR -->
+    <section class="section" id="via-alta">
+      <div class="sec-head">
+        <div class="sec-icon">👃</div>
+        <div class="sec-title">
+          <div class="sec-num">02 · Clínica</div>
+          <h2>Tracto respiratorio superior</h2>
+        </div>
+      </div>
+
+      <p class="lead">Los primeros signos de enfermedad respiratoria aparecen en las narinas, ojos y senos paranasales. Reconocerlos a tiempo permite una intervención más efectiva.</p>
+
+      <h3>Signos de la vía alta</h3>
+      <ul class="blist">
+        <li><strong>Rinitis:</strong> secreción nasal serosa a mucopurulenta, estornudos frecuentes</li>
+        <li><strong>Conjuntivitis:</strong> secreción ocular, lagrimeo, ojos semicerrados</li>
+        <li><strong>Sinusitis:</strong> cara hinchada, especialmente bajo los ojos (exudado en senos infraorbitarios)</li>
+        <li><strong>Cresta y barbillas cianóticas:</strong> coloración azul-morada por hipoxia; signo de gravedad</li>
+        <li><strong>Cresta o barbillas edematosas:</strong> inflamación que acompaña a enfermedades del tracto superior</li>
+      </ul>
+
+      <h3>Principales patógenos de la vía alta</h3>
+      <div class="disease-grid">
+        <div class="disease-card viral">
+          <div class="dc-type">Viral</div>
+          <div class="dc-name">Bronquitis Infecciosa</div>
+          <div class="dc-abbr">IBV — Gammacoronavirus</div>
+          <ul class="dc-signs">
+            <li>Rinitis, estornudos, secreción ocular</li>
+            <li>Afecta el oviducto: cáscara pálida, rugosa o deformada</li>
+            <li>Tropismo digestivo: muestrear tráquea + cecal</li>
+            <li>Portadores que eliminan el virus por semanas a meses</li>
+          </ul>
+        </div>
+        <div class="disease-card viral">
+          <div class="dc-type">Viral</div>
+          <div class="dc-name">Laringotraqueítis Infecciosa</div>
+          <div class="dc-abbr">ILTV — Herpesvirus</div>
+          <ul class="dc-signs">
+            <li>Traqueítis severa con tapones hemorrágicos</li>
+            <li>Respiración con boca abierta (jadeo)</li>
+            <li>Graznido patognomónico y estertores</li>
+            <li>Mortalidad moderada a alta</li>
+          </ul>
+        </div>
+        <div class="disease-card viral">
+          <div class="dc-type">Viral</div>
+          <div class="dc-name">Metaneumovirus Aviar</div>
+          <div class="dc-abbr">aMPV — Síndrome de Cabeza Hinchada (SHS)</div>
+          <ul class="dc-signs">
+            <li>Senos infraorbitarios y cabeza edematosos</li>
+            <li>Conjuntivitis, espuma ocular, descarga nasal</li>
+            <li>Caída de postura hasta 70% en ponedoras</li>
+            <li>Mortalidad alta cuando hay infección bacteriana secundaria</li>
+          </ul>
+        </div>
+        <div class="disease-card viral">
+          <div class="dc-type">Viral · Declaración obligatoria SAG</div>
+          <div class="dc-name">Newcastle</div>
+          <div class="dc-abbr">NDV — APMV-1 · Neumoencefalitis aviar</div>
+          <ul class="dc-signs">
+            <li>Forma respiratoria: estertores, tos, jadeo</li>
+            <li>Forma nerviosa: torticolis, parálisis, tremores</li>
+            <li>Caída de postura y huevos deformes</li>
+            <li>Mortalidad variable según la cepa (0–100%)</li>
+          </ul>
+        </div>
+        <div class="disease-card bacterial">
+          <div class="dc-type">Bacteriana</div>
+          <div class="dc-name">Mycoplasma gallisepticum</div>
+          <div class="dc-abbr">MG — Mycoplasma</div>
+          <ul class="dc-signs">
+            <li>Enfermedad crónica, signos leves</li>
+            <li>Estertores traqueales, descarga nasal</li>
+            <li>Se agrava con estrés o inmunosupresión</li>
+            <li>Caída de postura y pérdida de peso</li>
+          </ul>
+        </div>
+        <div class="disease-card bacterial">
+          <div class="dc-type">Bacteriana</div>
+          <div class="dc-name">Coriza Infecciosa</div>
+          <div class="dc-abbr">IC — Avibacterium paragallinarum</div>
+          <ul class="dc-signs">
+            <li>Inicio agudo, alta morbilidad del plantel</li>
+            <li>Cara hinchada, conjuntivitis, a veces diarrea</li>
+            <li>Portadores de por vida tras recuperación</li>
+            <li>Infecciones secundarias por E. coli frecuentes</li>
+          </ul>
+        </div>
+        <div class="disease-card bacterial">
+          <div class="dc-type">Bacteriana</div>
+          <div class="dc-name">Cólera Aviar</div>
+          <div class="dc-abbr">FC — Pasteurella multocida</div>
+          <ul class="dc-signs">
+            <li>Forma crónica: senos hinchados, estertores</li>
+            <li>Forma aguda: septicemia fulminante</li>
+            <li>Cresta cianótica antes de la muerte</li>
+            <li>Riesgo alto en sistemas al aire libre</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: AMONIACO Y VITAMINA A -->
+    <section class="section" id="factores">
+      <div class="sec-head">
+        <div class="sec-icon">💨</div>
+        <div class="sec-title">
+          <div class="sec-num">03 · Factores de riesgo</div>
+          <h2>Amoníaco, cilios y Vitamina A</h2>
+        </div>
+      </div>
+
+      <p class="lead">El ambiente del galpón es tan importante como el agente infeccioso. Un tracto respiratorio dañado por amoníaco o deficiencia vitamínica es una puerta abierta para cualquier patógeno.</p>
+
+      <h3>El rol de los cilios y el moco</h3>
+      <p>El tracto respiratorio cuenta con dos defensas mecánicas fundamentales: el moco, que atrapa partículas y microorganismos, y los cilios, pequeños filamentos que funcionan como una escalera mecánica, transportando el moco hacia la faringe para ser deglutido.</p>
+
+      <div class="kpis">
+        <div class="kpi">
+          <div class="kpi-val">10</div>
+          <div class="kpi-desc">ppm: nivel máximo recomendado en el ambiente del galpón</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-val">0</div>
+          <div class="kpi-desc">El ideal: si puede olerlo, ya es demasiado alto</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-val">&gt;20</div>
+          <div class="kpi-desc">ppm: efectos sistémicos — supresión hormonal e inflamación crónica</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-val">3×</div>
+          <div class="kpi-desc">Mayor susceptibilidad a infección cuando los cilios están paralizados</div>
+        </div>
+      </div>
+
+      <div class="alert">
+        <div class="alert-label">Alerta ambiental</div>
+        <p><strong>El amoníaco paraliza los cilios.</strong> Sin cilios funcionales, el polvo, virus, bacterias y hongos inhalados quedan atrapados y pueden colonizar los sacos aéreos, pulmones y huesos. El nivel máximo recomendado es 10 ppm — si lo puede oler al entrar al galpón, ya está por encima del límite. Por encima de 20 ppm los efectos son sistémicos: supresión de hormonas reproductivas e inflamación crónica de las mucosas. En el sur de Chile, el frío invernal dificulta la ventilación y potencia estos efectos de forma aditiva — el binomio frío + amoníaco es un factor de riesgo específico de la zona.</p>
+      </div>
+
+      <h3>Causas de amoníaco elevado</h3>
+      <ul class="blist">
+        <li>Cama húmeda o apelmazada (bebederos con pérdidas, condensación)</li>
+        <li>Ventilación insuficiente para la carga animal</li>
+        <li>Sobrepoblación del galpón</li>
+        <li>Falla en el manejo del foso de deyecciones</li>
+      </ul>
+
+      <h3>Deficiencia de Vitamina A</h3>
+      <p>La Vitamina A es esencial para mantener la integridad de la mucosa respiratoria. Su deficiencia, provocada por una formulación de alimento deficiente o premix de mala calidad, hace que la mucosa se vuelva seca, rugosa y friable, perdiendo su función de barrera.</p>
+
+      <div class="tip">
+        <div class="tip-label">Práctica recomendada</div>
+        <p>Verifique periódicamente la calidad del premix vitamínico. En planteles con signología respiratoria leve y sin diagnóstico claro, evalúe la historia nutricional antes de solo enfocarse en agentes infecciosos.</p>
+      </div>
+    </section>
+
+    <!-- SECTION 4: ENFERMEDADES DE LA TRÁQUEA -->
+    <section class="section" id="traquea">
+      <div class="sec-head">
+        <div class="sec-icon">🦴</div>
+        <div class="sec-title">
+          <div class="sec-num">04 · Clínica avanzada</div>
+          <h2>Enfermedades de la tráquea</h2>
+        </div>
+      </div>
+
+      <p class="lead">La tráquea puede ser afectada por virus y bacterias. Algunos cuadros son levemente perceptibles; otros causan obstrucción severa y mortalidad elevada en poco tiempo.</p>
+
+      <h3>Laringotraqueítis Infecciosa (ILT)</h3>
+      <p>Causada por un herpesvirus, la ILT produce <strong>traqueítis hemorrágica severa</strong> con formación de tapones purulentos o caseosos que obstruyen la vía aérea. En la forma grave, las aves respiran con la boca abierta, emiten un graznido característico (patognomónico) y mueren por asfixia. La mortalidad puede ser moderada a alta en pocos días.</p>
+      <p>La forma menos virulenta puede pasar desapercibida, presentando solo signos leves en el plantel completo: cara levemente inflamada, descarga nasal y estertores suaves.</p>
+
+      <div class="tip">
+        <div class="tip-label">Signo patognomónico</div>
+        <p>El graznido áspero característico de la ILT, junto con la respiración con boca abierta y el sacudido de la cabeza intentando expulsar los tapones traqueales, es un hallazgo clínico que no debe pasarse por alto. La necropsia confirma el diagnóstico: tráquea con hemorragias y exudado caseoso.</p>
+      </div>
+
+      <h3>Viruela Aviar — forma diftérica</h3>
+      <p>La forma húmeda de la viruela aviar puede producir lesiones nodulares en las mucosas de la boca, faringe, laringe y tráquea. Estas lesiones pueden dificultar la respiración, la deglución y la ingesta de alimento. En casos graves puede causar asfixia y mortalidad. Las infecciones bacterianas secundarias son frecuentes.</p>
+      <ul class="blist">
+        <li>Transmisión: contacto directo con aves infectadas, ambiente contaminado o picadura de mosquitos</li>
+        <li>Control: vacunación en el programa de crianza (punción alar) y control de vectores</li>
+        <li>En planteles comerciales es rara; más frecuente en aves de traspatio y sistemas al aire libre</li>
+      </ul>
+    </section>
+
+    <!-- SECTION 5: TRACTO INFERIOR -->
+    <section class="section" id="via-baja">
+      <div class="sec-head">
+        <div class="sec-icon">🫀</div>
+        <div class="sec-title">
+          <div class="sec-num">05 · Clínica sistémica</div>
+          <h2>Tracto respiratorio inferior</h2>
+        </div>
+      </div>
+
+      <p class="lead">Cuando los patógenos alcanzan los bronquios, pulmones y sacos aéreos, el cuadro clínico se vuelve sistémico: caída de postura, mala calidad de cáscara, peritonitis y aumento de mortalidad.</p>
+
+      <p>La ausencia de diafragma en las aves implica que una infección del tracto respiratorio bajo puede progresar con facilidad hacia el aparato reproductor, causando peritonitis por yema de huevo, o hacia el torrente sanguíneo, causando septicemia. <em>E. coli</em> es el patógeno secundario más frecuente en estos casos.</p>
+
+      <h3>Aerosaculitis</h3>
+      <p>La inflamación de los sacos aéreos (aerosaculitis) es un hallazgo frecuente en necropsia de aves con enfermedad respiratoria. Los sacos aéreos sanos son transparentes y finos; en aerosaculitis aparecen opacos, engrosados, con exudado fibrinoso o caseoso. Las principales causas son:</p>
+      <ul class="elist">
+        <li>
+          <span class="elist-num">IB</span>
+          <span class="elist-text"><strong>Bronquitis Infecciosa (IBV):</strong> predispone fuertemente a la colonización secundaria por E. coli</span>
+        </li>
+        <li>
+          <span class="elist-num">FC</span>
+          <span class="elist-text"><strong>Cólera Aviar (Pasteurella multocida):</strong> puede comprometer sacos aéreos en la forma crónica</span>
+        </li>
+        <li>
+          <span class="elist-num">MG</span>
+          <span class="elist-text"><strong>Mycoplasma gallisepticum:</strong> aerosaculitis crónica, frecuentemente complicada</span>
+        </li>
+        <li>
+          <span class="elist-num">IC</span>
+          <span class="elist-text"><strong>Coriza Infecciosa (Avibacterium paragallinarum):</strong> puede alcanzar sacos aéreos en infecciones graves</span>
+        </li>
+        <li>
+          <span class="elist-num">NH₃</span>
+          <span class="elist-text"><strong>Amoníaco elevado:</strong> daño ciliar que favorece la colonización por cualquier patógeno</span>
+        </li>
+      </ul>
+
+      <div class="tip">
+        <div class="tip-label">En la necropsia</div>
+        <p>Evalúe siempre el estado de los sacos aéreos durante la necropsia. La presencia de exudado fibrinoso o caseoso en sacos aéreos indica un proceso infeccioso activo que probablemente lleva más tiempo del que los signos clínicos sugieren. Envíe muestras frescas a laboratorio.</p>
+      </div>
+    </section>
+
+    <!-- SECTION 6: INFLUENZA AVIAR -->
+    <section class="section" id="influenza">
+      <div class="sec-head">
+        <div class="sec-icon">⚠️</div>
+        <div class="sec-title">
+          <div class="sec-num">06 · Enfermedad de declaración obligatoria</div>
+          <h2>Influenza Aviar</h2>
+        </div>
+      </div>
+
+      <p class="lead">La Influenza Aviar es la enfermedad de mayor impacto sanitario y económico en avicultura mundial. En Chile es de <strong>notificación obligatoria</strong> ante el SAG.</p>
+
+      <div class="alert">
+        <div class="alert-label">Notificación obligatoria — SAG Chile</div>
+        <p>Ante cualquier sospecha de Influenza Aviar de Alta Patogenicidad (IAAP), contacte inmediatamente al SAG y a su médico veterinario. La IAAP puede causar mortalidad cercana al 100% en pocas horas y requiere cuarentena y manejo de foco oficial. No espere la confirmación de laboratorio para notificar.</p>
+      </div>
+
+      <h3>Clasificación por patogenicidad</h3>
+      <div class="disease-grid">
+        <div class="disease-card env">
+          <div class="dc-type">Virus Influenza A — IABP</div>
+          <div class="dc-name">Influenza de Baja Patogenicidad</div>
+          <div class="dc-abbr">LPAI (Low Pathogenic Avian Influenza)</div>
+          <ul class="dc-signs">
+            <li>Signología leve: decaimiento, diarrea, signos respiratorios</li>
+            <li>Caída transitoria de postura</li>
+            <li>Mortalidad baja</li>
+            <li>Puede evolucionar a HPAI por mutación (H5, H7)</li>
+            <li>Aumento de huevos sin cáscara o con cáscara blanda</li>
+          </ul>
+        </div>
+        <div class="disease-card viral">
+          <div class="dc-type">Virus Influenza A — IAAP</div>
+          <div class="dc-name">Influenza de Alta Patogenicidad</div>
+          <div class="dc-abbr">HPAI (High Pathogenic Avian Influenza)</div>
+          <ul class="dc-signs">
+            <li>Inicio hiperagudo: muerte súbita sin signos previos</li>
+            <li>Cara edematosa, cresta cianótica</li>
+            <li>Mortalidad 0–100% según la cepa</li>
+            <li>Colapso total de la postura</li>
+            <li>Hemorragias en múltiples órganos en necropsia</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>Vías de transmisión</h3>
+      <ul class="blist">
+        <li>Aves silvestres acuáticas (principal reservorio y vector natural)</li>
+        <li>Vía aerógena a corta distancia entre planteles</li>
+        <li>Fómites: calzado, ropa, vehículos, equipos contaminados</li>
+        <li>Disposición inadecuada de cadáveres y purines infectados</li>
+        <li>Insectos y roedores que actúan como vectores mecánicos</li>
+      </ul>
+
+      <div class="tip">
+        <div class="tip-label">Contexto Chile</div>
+        <p>Durante el brote de H5N1 de 2022–2023, la onda de infección avanzó de norte a sur a razón de ~32 km por día. Los Ríos y Los Lagos — con alta densidad de humedales y cisnes — fueron zonas de alta presión. Los <strong>sistemas con acceso al exterior</strong> presentan un riesgo de introducción significativamente mayor que los sistemas cerrados, por el potencial de contacto directo o indirecto con fauna silvestre. La bioseguridad perimetral y el control de aves silvestres son las medidas de mayor impacto en estos sistemas.</p>
+      </div>
+
+      <div class="tip">
+        <div class="tip-label">Diagnóstico diferencial</div>
+        <p>La Influenza Aviar comparte signos con muchas otras enfermedades: Newcastle, IB, ILT, Cólera Aviar. No es posible diferenciarlas solo por clínica. Ante cualquier cuadro de alta mortalidad aguda o signología sistémica severa, consulte a su veterinario y gestione diagnóstico de laboratorio urgente.</p>
+      </div>
+    </section>
+
+    <!-- SECTION 7: ENFERMEDADES FRECUENTES -->
+    <section class="section" id="enfermedades">
+      <div class="sec-head">
+        <div class="sec-icon">🧫</div>
+        <div class="sec-title">
+          <div class="sec-num">07 · Enfermedades frecuentes</div>
+          <h2>Enfermedades frecuentes en el sur de Chile</h2>
+        </div>
+      </div>
+
+      <p class="lead">Estas enfermedades representan los desafíos respiratorios más frecuentes en planteles de postura de Los Ríos, La Araucanía y Los Lagos. Conocer sus características particulares permite actuar a tiempo.</p>
+
+      <h3>Bronquitis Infecciosa (IB)</h3>
+      <p>Causada por un gammacoronavirus, la IB es probablemente la enfermedad respiratoria más prevalente en Chile. El virus circula por vía aerógena y puede sobrevivir en equipos, ropa y vehículos. Las aves recuperadas pueden eliminar el virus durante semanas a meses.</p>
+      <p>En aves de postura, la caída de producción, los huevos deformes o con cáscara blanda pueden ser los únicos signos perceptibles. Los signos respiratorios suelen pasarse por alto.</p>
+      <p>Un aspecto clave para planteles de postura: el IBV no es solo una enfermedad respiratoria. Su <strong>tropismo por el oviducto</strong> explica por qué en aves adultas la principal manifestación suele ser la caída de calidad de cáscara — cáscaras pálidas, rugosas o deformes — sin signos respiratorios evidentes. El virus afecta las estructuras formadoras de cáscara de forma subclínica, con alteraciones funcionales que pueden aparecer días después de la infección y sin lesiones histológicas visibles en ese momento. Adicionalmente, el <strong>tropismo digestivo</strong> del IBV supera al respiratorio en frecuencia, lo que tiene implicancias directas para el muestreo: la muestra solo traqueal subestima la circulación viral. <strong>La muestra correcta es tráquea + cecal.</strong></p>
+      <ul class="blist">
+        <li>Incluirla siempre en el programa de vacunación de crianza y renovar durante la postura (cada 8 semanas si hay presión de campo)</li>
+        <li>Verificar qué variantes circulan en la región y elegir la vacuna adecuada al genotipo local</li>
+        <li>En pollas jóvenes: formas nefropatogénicas con alta mortalidad renal (dependientes del genotipo)</li>
+        <li>Infecciones secundarias por E. coli son frecuentes y agravan significativamente el cuadro</li>
+      </ul>
+
+      <h3>Cólera Aviar (FC)</h3>
+      <p><em>Pasteurella multocida</em> causa desde cuadros crónicos respiratorios hasta septicemias agudas fulminantes. Es una amenaza especial para planteles con acceso al exterior, ya que aves silvestres pueden introducirla. Las aves recuperadas son portadoras de por vida.</p>
+      <p>La forma crónica se caracteriza por senos infraorbitarios hinchados, estertores y dificultad respiratoria. La forma aguda puede matar un porcentaje importante del plantel en pocas horas, a veces sin signos previos.</p>
+
+      <div class="tip">
+        <div class="tip-label">Planteles al aire libre</div>
+        <p>En sistemas de producción con acceso al exterior, el Cólera Aviar debe incluirse en el programa de vacunación. La bioseguridad reduce el riesgo, pero el contacto con aves silvestres en zonas de pastoreo hace que la vacunación sea la medida preventiva más efectiva.</p>
+      </div>
+
+      <h3>Micoplasmosis (MG)</h3>
+      <p><em>Mycoplasma gallisepticum</em> se asocia a enfermedad respiratoria crónica. Puede estar presente en el plantel sin producir signos clínicos hasta que un evento de estrés (cambio de fase, transporte, coinfección viral) desencadene el cuadro. Se disemina por aves silvestres portadoras y por fómites.</p>
+      <p>Un punto importante: todas las vacunas vivas disponibles para MG producen <strong>eliminación vacunal</strong> (shedding), lo que genera positividad en ELISA, SPA y PCR post-vacunación. Es necesario considerar el historial vacunal antes de interpretar un resultado serológico positivo como infección de campo.</p>
+
+      <div class="kpis">
+        <div class="kpi">
+          <div class="kpi-val">MG</div>
+          <div class="kpi-desc">Puede estar presente sin síntomas hasta que el plantel es estresado</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-val">IC</div>
+          <div class="kpi-desc">Alta morbilidad, baja mortalidad — portadores de por vida</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-val">E. coli</div>
+          <div class="kpi-desc">El patógeno secundario más frecuente en complicaciones respiratorias</div>
+        </div>
+      </div>
+
+      <h3>Coriza Infecciosa (IC)</h3>
+      <p>Causada por <em>Avibacterium paragallinarum</em>, la Coriza Infecciosa puede presentarse de forma aguda con alta morbilidad (gran parte del plantel afectado) pero mortalidad generalmente baja. La principal consecuencia es la reducción de la postura y el crecimiento.</p>
+      <p>Las aves recuperadas son portadoras de por vida y pueden reintroducir la bacteria en planteles susceptibles. Para el control es clave la vacunación con autovacuna de serogrupo local y el estricto control de ingresos de aves nuevas.</p>
+      <p>Un aspecto diagnóstico importante: las <strong>cepas NAD-independientes</strong> son hoy las más frecuentes en campo y pueden generar un <strong>falso negativo en PCR estándar hasta en el 33% de los casos</strong>. Un resultado negativo no descarta la infección si la presentación clínica es compatible. Las bacterinas disponibles son serovar-específicas (A, B, C) y no generan protección cruzada — es fundamental identificar el serogrupo circulante en la zona antes de vacunar.</p>
+
+      <h3>Ornithobacterium rhinotracheale (ORT)</h3>
+      <p>Presente en el sur de Chile con un <strong>patrón marcadamente estacional</strong> (mayo–agosto), <em>Ornithobacterium rhinotracheale</em> actúa principalmente como co-infector: potencia y prolonga cuadros respiratorios causados por IBV, Mycoplasma o Newcastle sin producir enfermedad grave por sí solo. El frío y la alta humedad relativa del invierno austral favorecen su presentación y persistencia. Su diagnóstico requiere cultivo bacteriano o PCR específico; no está incluido en los paneles diagnósticos estándar, por lo que frecuentemente pasa inadvertido en cuadros que se atribuyen a MG o IBV.</p>
+      <ul class="blist">
+        <li>Signos: estertores traqueales, descarga nasal, traqueítis fibrinosa en casos avanzados</li>
+        <li>Co-infector frecuente de IBV, MG, Newcastle y <em>E. coli</em> — agrava cuadros que de otro modo serían leves</li>
+        <li>El frío y la humedad del sur de Chile favorecen su presentación en el período mayo–agosto</li>
+        <li>No existe vacuna comercial disponible; el control depende de la bioseguridad y la calidad ambiental</li>
+      </ul>
+    </section>
+
+    <!-- SECTION 8: PREVENCIÓN -->
+    <section class="section" id="prevencion">
+      <div class="sec-head">
+        <div class="sec-icon">🛡️</div>
+        <div class="sec-title">
+          <div class="sec-num">08 · Estrategia preventiva</div>
+          <h2>Prevención integral</h2>
+        </div>
+      </div>
+
+      <p class="lead">La prevención de enfermedades respiratorias se basa en tres pilares fundamentales que actúan de forma complementaria: vacunación oportuna, calidad ambiental y bioseguridad estricta.</p>
+
+      <h3>Pilar 1: Vacunación</h3>
+      <ul class="elist">
+        <li>
+          <span class="elist-num">IB</span>
+          <span class="elist-text"><strong>Bronquitis Infecciosa:</strong> debe estar en el programa base de crianza. Evalúe refuerzo cada 8 semanas durante postura si existe presión de campo. Verifique que el genotipo vacunal coincida con el circulante en la zona.</span>
+        </li>
+        <li>
+          <span class="elist-num">ILT</span>
+          <span class="elist-text"><strong>Laringotraqueítis:</strong> incluirla en crianza si hay historial en la zona o en planteles vecinos. Vacuna vectorizada (HVT-ILT) en el día 1.</span>
+        </li>
+        <li>
+          <span class="elist-num">FC</span>
+          <span class="elist-text"><strong>Cólera Aviar:</strong> recomendada en sistemas al aire libre o zonas de alta presión. Bacterina inactivada intramuscular en crianza.</span>
+        </li>
+        <li>
+          <span class="elist-num">IC</span>
+          <span class="elist-text"><strong>Coriza Infecciosa:</strong> autovacuna con serogrupo local. Fundamental en planteles con historial o en zonas donde ya se ha aislado. Identifique el serovar antes de vacunar.</span>
+        </li>
+        <li>
+          <span class="elist-num">FP</span>
+          <span class="elist-text"><strong>Viruela Aviar:</strong> vacuna vectorizada (punción alar) si hay riesgo en la zona, especialmente en sistemas al aire libre con mosquitos.</span>
+        </li>
+      </ul>
+
+      <h3>Pilar 2: Calidad ambiental</h3>
+      <ul class="blist">
+        <li>Mantener amoníaco por debajo de 10 ppm — si lo huele, es demasiado alto</li>
+        <li>Ventilación adecuada para la carga animal y la época del año</li>
+        <li>Cama seca: corregir pérdidas en bebederos y condensación en techos</li>
+        <li>Controlar polvo en suspensión, especialmente en sistemas con cama</li>
+        <li>Temperatura y humedad relativa estables dentro de rangos recomendados</li>
+        <li>Verificar calidad y nivel de Vitamina A en la dieta</li>
+      </ul>
+
+      <h3>Pilar 3: Bioseguridad</h3>
+      <ul class="blist">
+        <li>Ingreso controlado de personas, vehículos y equipos al galpón</li>
+        <li>Cuarentena de aves nuevas antes de incorporarlas al plantel</li>
+        <li>Control de aves silvestres, roedores e insectos (especialmente mosquitos)</li>
+        <li>Disposición correcta de cadáveres y purines</li>
+        <li>Higiene estricta de bebederos, comederos y equipos compartidos</li>
+        <li>Registro de mortalidades, signología y cambios productivos para detección temprana</li>
+      </ul>
+
+      <div class="alert">
+        <div class="alert-label">Ante cualquier brote respiratorio</div>
+        <p>No automédique ni cambie el programa de vacunación sin diagnóstico. Contacte a su médico veterinario para obtener muestras adecuadas (hisopados traqueales y cecales, órganos frescos en necropsia) y enviarlas a laboratorio. Un diagnóstico certero permite elegir la vacuna y el plan de manejo correctos.</p>
+      </div>
+
+      <div class="tip">
+        <div class="tip-label">Monitoreo continuo</div>
+        <p>Lleve registro semanal de mortalidad, consumo de agua y alimento, y producción de huevos. Las tendencias a la baja en agua y alimento, o el aumento de rechazos por cáscara, suelen preceder en días a los signos respiratorios. La detección temprana permite intervenir antes de que el brote se expanda.</p>
+      </div>
+
+    </section>
+
+  </main>
+</div><!-- /page-layout -->
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-inner">
+    <div class="cta-eyebrow">AviVet · Medicina aviar sur de Chile</div>
+    <h2>¿Signología respiratoria en su plantel? <em>Actúe hoy.</em></h2>
+    <p>Diagnóstico temprano, muestras de laboratorio adecuadas y un plan terapéutico certero marcan la diferencia entre un brote controlado y pérdidas productivas sostenidas.</p>
+    <div class="cta-btns">
+      <a class="btn-gold" href="mailto:andreslazomv@outlook.com">✉ andreslazomv@outlook.com</a>
+      <a class="btn-ghost" href="https://wa.me/56958956340">📱 WhatsApp</a>
+      <a class="btn-ghost" href="https://avivet.cl">🌐 avivet.cl</a>
+    </div>
+    <div class="cta-row">
+      <a href="#">Los Ríos</a><span class="cta-sep">·</span>
+      <a href="#">La Araucanía</a><span class="cta-sep">·</span>
+      <a href="#">Los Lagos</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <img src="../assets/img/Bioseguridad/avivet_invertido.png" alt="AviVet">
+  <div class="footer-text">
+    Guía técnica de referencia · AviVet 2026<br>
+    <a href="mailto:andreslazomv@outlook.com">andreslazomv@outlook.com</a> · <a href="https://avivet.cl">avivet.cl</a>
+  </div>
+</footer>
+
+<script>
+// Progress bar
+const pbar = document.getElementById('pbar');
+window.addEventListener('scroll', () => {
+  const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+  pbar.style.width = pct + '%';
+});
+
+// Intersection Observer for section animations
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.08 });
+document.querySelectorAll('.section').forEach(s => observer.observe(s));
+
+// TOC active link
+const sections = document.querySelectorAll('.section');
+const tocLinks = document.querySelectorAll('.toc-list a');
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      tocLinks.forEach(a => a.classList.remove('active'));
+      const active = document.querySelector('.toc-list a[href="#' + e.target.id + '"]');
+      if (active) active.classList.add('active');
+    }
+  });
+}, { rootMargin: '-30% 0px -60% 0px' });
+sections.forEach(s => io.observe(s));
+</script>
+</body>
+</html>
