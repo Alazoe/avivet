@@ -214,7 +214,7 @@ label { font-size:.85rem; color:#666; font-weight:500; }
     </label>
     <div id="info-edad" style="display:none;font-size:.82rem;color:#555;margin-top:4px;padding:5px 10px;background:#f0f7f0;border-radius:8px;border-left:3px solid var(--verde)"></div>
     <label style="margin-top:10px">Fecha de pesaje
-      <input type="date" id="fecha-pesaje">
+      <input type="date" id="fecha-pesaje" onchange="onFechaPesajeChange()">
     </label>
     <button class="btn btn-gris" style="color:#333;margin-top:12px" onclick="imprimirPlanillaBlanco()">🖨️ Planilla en blanco para pesar a mano</button>
   </div>
@@ -641,6 +641,24 @@ function poblarSelectLotes() {
       s.appendChild(o);
     });
   });
+}
+
+function onFechaPesajeChange() {
+  const fechaVal = document.getElementById('fecha-pesaje').value;
+  if (!fechaVal) return;
+  const id   = document.getElementById('sel-lote').value;
+  const lote = lotes.find(l => l.id === id);
+  if (!lote?.fechaNac) return;
+  const dias   = Math.floor((new Date(fechaVal) - new Date(lote.fechaNac)) / (24*3600*1000)) + 1;
+  if (dias < 1) return;
+  const semana = Math.ceil(dias / 7);
+  const sel    = document.getElementById('sel-semana');
+  if (sel) sel.value = semana;
+  const infoEl = document.getElementById('info-edad');
+  if (infoEl) {
+    infoEl.style.display = 'block';
+    infoEl.textContent   = `📅 Fecha seleccionada: día ${dias} de vida → semana ${semana}`;
+  }
 }
 
 function onLoteChange() {
