@@ -213,7 +213,7 @@ Módulo de recomendaciones para que el productor realice correctamente la vacuna
 - ✅ **Calidad del agua** — cloro, pH, temperatura, metales, filtros, biofilm, uso correcto de la leche descremada
 - ✅ **Espacio de bebedero** — verificador contra los estándares por tipo de bebedero
 - ✅ **Cronograma** — tres escenarios: piso, jaula con cebado nocturno y clima cálido
-- ✅ **Protocolo paso a paso** en 5 fases con ilustraciones propias, y comparación medicador vs bomba y barril
+- ✅ **Protocolo paso a paso** con **8 ilustraciones propias** de los momentos clave, comparación medicador vs bomba y barril, y los dos trazados de recorrido (paralelo a las paredes vs desde el centro)
 - ✅ **Monitoreo** — lenguas azules, escala de intensidad, dosis de colorante y seguimiento serológico
 - ✅ **Errores frecuentes** — 15 fallas de campo con su corrección
 - ✅ **Fuentes** — con qué aporta cada documento
