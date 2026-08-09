@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vacunación Inyectable y Punción Alar — AviVet</title>
+<meta name="description" content="Cómo vacunar aves por vía subcutánea, intramuscular y punción alar: sitios de inoculación, largo de aguja, control de agujas y bienestar animal. MV Andrés Lazo Escobar — AviVet.">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root{
+  --verde:#2e7d32; --verde-d:#1b5e20; --verde-l:#e8f5e9;
+  --azul:#1565c0; --azul-l:#e3f2fd;
+  --rojo:#c62828; --rojo-l:#ffebee;
+  --ambar:#ef6c00; --ambar-l:#fff3e0;
+  --gris:#555; --gris2:#777; --linea:#e0e0e0;
+}
+body{ font-family:'Segoe UI', Arial, sans-serif; background:#f0f4f0; color:#222; line-height:1.55; }
+
+.header{background:var(--verde); color:#fff; padding:26px 20px 20px; text-align:center;}
+.header .logo{display:inline-flex; align-items:center; justify-content:center; width:54px; height:54px;
+  border-radius:50%; background:rgba(255,255,255,.15); font-size:22px; font-weight:900; letter-spacing:-1px; margin-bottom:10px;}
+.header h1{font-size:23px; font-weight:900; letter-spacing:-.4px;}
+.header p{font-size:10.5pt; opacity:.88; margin-top:4px;}
+.header .subtitle{font-size:9pt; opacity:.7; margin-top:5px;}
+.back{display:inline-block; margin-top:12px; font-size:9pt; color:#fff; text-decoration:none; opacity:.8; border-bottom:1px solid rgba(255,255,255,.4);}
+.back:hover{opacity:1;}
+
+.tabs{position:sticky; top:0; z-index:100; background:#fff; border-bottom:1px solid var(--linea); box-shadow:0 1px 6px rgba(0,0,0,.06);}
+.tabs-inner{max-width:960px; margin:0 auto; display:flex; overflow-x:auto; scrollbar-width:none;}
+.tabs-inner::-webkit-scrollbar{display:none;}
+.tab{flex:0 0 auto; padding:13px 15px; font-size:9.5pt; font-weight:700; color:var(--gris); background:none;
+  border:none; border-bottom:3px solid transparent; cursor:pointer; white-space:nowrap; font-family:inherit; transition:color .15s;}
+.tab:hover{color:var(--verde);}
+.tab.active{color:var(--verde); border-bottom-color:var(--verde);}
+
+.container{max-width:960px; margin:24px auto; padding:0 16px 60px;}
+.panel{display:none; animation:fade .25s ease;}
+.panel.active{display:block;}
+@keyframes fade{from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none}}
+
+.card{background:#fff; border-radius:9px; box-shadow:0 1px 6px rgba(0,0,0,.09); padding:20px 22px; margin-bottom:18px;}
+.card h2{font-size:13.5pt; color:var(--verde); font-weight:800; margin-bottom:4px; letter-spacing:-.2px;}
+.card h3{font-size:11pt; font-weight:750; margin:18px 0 8px;}
+.card > .lead{font-size:9.5pt; color:var(--gris2); margin-bottom:16px;}
+.card p{font-size:10pt; color:#333; margin-bottom:9px;}
+.card ul, .card ol{margin:0 0 10px 20px; font-size:10pt; color:#333;}
+.card li{margin-bottom:6px;}
+
+.grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+@media(max-width:620px){ .grid{grid-template-columns:1fr;} }
+.field label{display:block; font-size:8.5pt; font-weight:700; color:var(--gris); text-transform:uppercase; letter-spacing:.5px; margin-bottom:5px;}
+.field input, .field select{width:100%; padding:9px 11px; font-size:10.5pt; font-family:inherit; border:1px solid #c8d4c8; border-radius:6px; background:#fff; color:#222;}
+.field input:focus, .field select:focus{outline:none; border-color:var(--verde); box-shadow:0 0 0 2px rgba(46,125,50,.15);}
+.field .hint{font-size:8pt; color:var(--gris2); margin-top:4px; line-height:1.4;}
+
+.btn{display:inline-flex; align-items:center; gap:7px; padding:11px 24px; background:var(--verde); color:#fff;
+  border:none; border-radius:7px; font-size:11pt; font-weight:800; font-family:inherit; cursor:pointer; transition:background .15s;}
+.btn:hover{background:var(--verde-d);}
+.btn.sec{background:#fff; color:var(--verde); border:1.5px solid var(--verde);}
+.btn.sec:hover{background:var(--verde-l);}
+.btn.rojo{background:var(--rojo);} .btn.rojo:hover{background:#8e1f1f;}
+.btn-row{display:flex; gap:10px; flex-wrap:wrap; margin-top:18px;}
+
+.res-hero{background:linear-gradient(135deg, var(--verde) 0%, var(--verde-d) 100%); color:#fff; border-radius:9px; padding:22px 24px; margin-bottom:16px;}
+.res-hero .rh-label{font-size:8.5pt; text-transform:uppercase; letter-spacing:1.2px; opacity:.85;}
+.res-hero .rh-value{font-size:34px; font-weight:900; letter-spacing:-1px; line-height:1.1; margin:4px 0;}
+.res-hero .rh-value small{font-size:16px; font-weight:700; opacity:.9;}
+.res-hero .rh-sub{font-size:9.5pt; opacity:.9;}
+.res-hero .rh-rango{display:inline-block; margin-top:10px; padding:4px 11px; border-radius:20px; background:rgba(255,255,255,.18); font-size:9pt; font-weight:600;}
+
+.res-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px; margin-bottom:16px;}
+.res-item{background:#fff; border-radius:8px; border-left:4px solid var(--verde); padding:13px 15px; box-shadow:0 1px 5px rgba(0,0,0,.08);}
+.res-item .ri-label{font-size:8pt; text-transform:uppercase; letter-spacing:.7px; color:var(--gris2); font-weight:700;}
+.res-item .ri-value{font-size:19px; font-weight:800; color:var(--verde); margin:3px 0; letter-spacing:-.4px;}
+.res-item .ri-note{font-size:8.5pt; color:var(--gris); line-height:1.4;}
+.res-item.azul{border-left-color:var(--azul);} .res-item.azul .ri-value{color:var(--azul);}
+.res-item.ambar{border-left-color:var(--ambar);} .res-item.ambar .ri-value{color:var(--ambar);}
+.res-item.rojo{border-left-color:var(--rojo);} .res-item.rojo .ri-value{color:var(--rojo);}
+
+.alert{border-radius:8px; padding:13px 16px; font-size:9.5pt; margin-bottom:12px; line-height:1.5;}
+.alert b{display:block; margin-bottom:3px; font-size:10pt;}
+.alert.rojo{background:var(--rojo-l); border-left:4px solid var(--rojo); color:#5d1a1a;}
+.alert.ambar{background:var(--ambar-l); border-left:4px solid var(--ambar); color:#6b3200;}
+.alert.azul{background:var(--azul-l); border-left:4px solid var(--azul); color:#0d3c6e;}
+.alert.verde{background:var(--verde-l); border-left:4px solid var(--verde); color:#1b3d1d;}
+
+.tabla-wrap{overflow-x:auto; margin:10px 0 14px;}
+table{width:100%; border-collapse:collapse; font-size:9.5pt; min-width:440px;}
+th{background:var(--verde-l); color:var(--verde-d); font-weight:800; text-align:left; padding:9px 11px; font-size:8.5pt; text-transform:uppercase; letter-spacing:.4px; border-bottom:2px solid #c5e1c5;}
+td{padding:9px 11px; border-bottom:1px solid var(--linea); vertical-align:top;}
+tr:last-child td{border-bottom:none;}
+tbody tr:nth-child(even){background:#fafcfa;}
+td.num{text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap;}
+.src{font-size:8pt; color:var(--gris2); display:block; font-weight:400; margin-top:2px;}
+
+.ilus{background:#f4f8f4; border:1px solid #dce8dc; border-radius:8px; padding:14px 10px 10px; text-align:center; margin:6px 0 4px;}
+.ilus svg{width:100%; height:auto; max-width:330px; display:block; margin:0 auto;}
+.ilus-cap{font-size:8.5pt; color:var(--gris2); margin-top:8px; line-height:1.4; font-style:italic;}
+.ilus-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:14px; margin:14px 0;}
+
+.fase{margin-bottom:26px;}
+.fase-head{display:flex; align-items:center; gap:10px; margin-bottom:12px;}
+.fase-num{flex:0 0 auto; width:30px; height:30px; border-radius:50%; background:var(--verde); color:#fff;
+  display:flex; align-items:center; justify-content:center; font-weight:900; font-size:13px;}
+.fase-title{font-size:12pt; font-weight:800; color:var(--verde-d);}
+.fase-sub{font-size:8.5pt; color:var(--gris2); text-transform:uppercase; letter-spacing:.6px;}
+.pasos{list-style:none; margin:0 0 0 14px; border-left:2px solid #d5e8d5; padding-left:20px;}
+.pasos li{position:relative; margin-bottom:14px; font-size:10pt;}
+.pasos li::before{content:""; position:absolute; left:-27px; top:6px; width:11px; height:11px; border-radius:50%; background:#fff; border:2.5px solid var(--verde);}
+.pasos li b{color:var(--verde-d);}
+.pasos li .porque{display:block; font-size:8.5pt; color:var(--gris2); margin-top:3px; font-style:italic;}
+
+.chk-item{display:flex; gap:11px; align-items:flex-start; padding:12px 0; border-bottom:1px solid var(--linea);}
+.chk-item:last-child{border-bottom:none;}
+.chk-item input{width:19px; height:19px; margin-top:2px; accent-color:var(--verde); cursor:pointer; flex:0 0 auto;}
+.chk-txt{flex:1; font-size:10pt;}
+.chk-txt .chk-t{font-weight:700;}
+.chk-txt .chk-d{font-size:8.5pt; color:var(--gris2); margin-top:2px; line-height:1.45;}
+.badge-crit{display:inline-block; background:var(--rojo); color:#fff; font-size:7pt; font-weight:800; padding:2px 6px;
+  border-radius:3px; text-transform:uppercase; letter-spacing:.5px; margin-left:6px; vertical-align:middle;}
+.score-box{border-radius:9px; padding:20px 22px; margin-bottom:16px; text-align:center; background:#eceff1; border:2px solid #cfd8dc;}
+.score-box .sb-num{font-size:42px; font-weight:900; letter-spacing:-1.5px; line-height:1;}
+.score-box .sb-lbl{font-size:9pt; text-transform:uppercase; letter-spacing:1px; font-weight:800; margin-top:6px;}
+.score-box .sb-msg{font-size:9.5pt; margin-top:8px; line-height:1.5;}
+.score-box.ok{background:var(--verde-l); border-color:#a5d6a7;} .score-box.ok .sb-num, .score-box.ok .sb-lbl{color:var(--verde-d);}
+.score-box.med{background:var(--ambar-l); border-color:#ffcc80;} .score-box.med .sb-num, .score-box.med .sb-lbl{color:var(--ambar);}
+.score-box.mal{background:var(--rojo-l); border-color:#ef9a9a;} .score-box.mal .sb-num, .score-box.mal .sb-lbl{color:var(--rojo);}
+
+.err{display:flex; gap:13px; padding:14px 0; border-bottom:1px solid var(--linea); align-items:flex-start;}
+.err:last-child{border-bottom:none;}
+.err-ico{flex:0 0 auto; font-size:20px; line-height:1.2;}
+.err-body .err-t{font-weight:750; font-size:10.5pt; color:var(--rojo); margin-bottom:3px;}
+.err-body .err-d{font-size:9.5pt; color:#333; margin-bottom:5px;}
+.err-body .err-f{font-size:9pt; color:var(--verde-d); background:var(--verde-l); padding:6px 10px; border-radius:5px; display:inline-block;}
+
+.fuentes{font-size:8.5pt; color:var(--gris2); line-height:1.7;}
+.fuentes a{color:var(--verde); text-decoration:none;}
+.fuentes a:hover{text-decoration:underline;}
+.fte{border-left:3px solid var(--verde-l); padding-left:14px; margin-bottom:16px;}
+.fte b{color:#333; font-size:9.5pt;}
+
+.footer{text-align:center; font-size:8.5pt; color:var(--gris2); padding:20px 16px 0; line-height:1.7;}
+.footer a{color:var(--verde); text-decoration:none; font-weight:600;}
+
+.rel-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:18px;}
+@media(max-width:560px){ .rel-grid{grid-template-columns:1fr;} }
+.rel{display:flex; align-items:center; gap:12px; background:var(--azul-l); border-left:4px solid var(--azul);
+  border-radius:8px; padding:13px 15px; text-decoration:none; color:inherit;}
+.rel:hover{background:#d6e9f8;}
+.rel .rel-ico{font-size:22px;}
+.rel .rel-t{font-weight:800; font-size:10pt; color:#0d3c6e;}
+.rel .rel-d{font-size:8.5pt; color:var(--gris);}
+
+/* Contador de agujas */
+.aguja-box{background:#fafafa; border:2px solid var(--linea); border-radius:9px; padding:18px 20px; margin-bottom:14px;}
+.aguja-row{display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:12px;}
+.aguja-row:last-child{margin-bottom:0;}
+.aguja-lbl{font-size:10pt; font-weight:700;}
+.aguja-ctrl{display:flex; align-items:center; gap:8px;}
+.aguja-ctrl button{width:34px; height:34px; border-radius:7px; border:1.5px solid var(--verde); background:#fff;
+  color:var(--verde); font-size:17px; font-weight:900; cursor:pointer; font-family:inherit; line-height:1;}
+.aguja-ctrl button:hover{background:var(--verde-l);}
+.aguja-ctrl input{width:78px; text-align:center; font-size:15pt; font-weight:800; padding:5px; border:1px solid #c8d4c8; border-radius:6px; font-family:inherit;}
+
+@media print{
+  body{background:#fff;}
+  .tabs, .btn-row, .back, .no-print{display:none !important;}
+  .panel{display:block !important; page-break-before:always;}
+  .panel:first-of-type{page-break-before:avoid;}
+  .card{box-shadow:none; border:1px solid #ccc; page-break-inside:avoid;}
+  .header{background:#fff !important; color:#222 !important; border-bottom:2px solid var(--verde);}
+  .header .logo{background:var(--verde) !important; color:#fff !important;}
+  .res-hero{background:#fff !important; color:#222 !important; border:2px solid var(--verde);}
+  .res-hero .rh-value{color:var(--verde) !important;}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">AV</div>
+  <h1>Vacunación Inyectable y Punción Alar</h1>
+  <p>Sitios de inoculación, agujas, técnica y control</p>
+  <p class="subtitle">MV Andrés Lazo Escobar · AviVet · Los Ríos / La Araucanía / Los Lagos</p>
+  <a class="back" href="../">← Volver a herramientas AviVet</a>
+</div>
+
+<div class="tabs">
+  <div class="tabs-inner">
+    <button class="tab active" data-panel="calc">🧮 Planificación</button>
+    <button class="tab" data-panel="sitios">📍 Sitios y agujas</button>
+    <button class="tab" data-panel="alar">🪶 Punción alar</button>
+    <button class="tab" data-panel="proto">📋 Protocolo</button>
+    <button class="tab" data-panel="agujas">🔢 Control de agujas</button>
+    <button class="tab" data-panel="frio">🧊 Cadena de frío</button>
+    <button class="tab" data-panel="monit">✅ Control de calidad</button>
+    <button class="tab" data-panel="errores">⚠️ Errores frecuentes</button>
+    <button class="tab" data-panel="fuentes">📚 Fuentes</button>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- ================= PLANIFICACIÓN ================= -->
+<div class="panel active" id="p-calc">
+
+  <div class="rel-grid">
+    <a class="rel" href="../vacunacion-agua/">
+      <div class="rel-ico">💧</div>
+      <div><div class="rel-t">Agua de bebida</div><div class="rel-d">Volumen, calidad del agua y lenguas azules.</div></div>
+    </a>
+    <a class="rel" href="../vacunacion-spray/">
+      <div class="rel-ico">💨</div>
+      <div><div class="rel-t">Spray</div><div class="rel-d">Calibración, tamaño de gota y papel hidrosensible.</div></div>
+    </a>
+  </div>
+
+  <div class="card">
+    <h2>Planificación de la jornada</h2>
+    <p class="lead">Esta vía se aplica ave por ave: el cuello de botella es el tiempo y la gente, no la vacuna.</p>
+
+    <div class="grid">
+      <div class="field">
+        <label for="aves">Número de aves</label>
+        <input type="number" id="aves" min="1" step="1" value="5000">
+      </div>
+      <div class="field">
+        <label for="via">Vía de aplicación</label>
+        <select id="via">
+          <option value="sc" selected>Subcutánea — cuello</option>
+          <option value="sc-cola">Subcutánea — pliegue caudal (cola)</option>
+          <option value="im-pechuga">Intramuscular — pechuga</option>
+          <option value="im-muslo">Intramuscular — muslo</option>
+          <option value="alar">Punción alar (lanceta)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="field">
+        <label for="peso">Tamaño del ave</label>
+        <select id="peso">
+          <option value="chica">Pollita / ave chica (&lt; 1 kg)</option>
+          <option value="media" selected>Ave mediana (1 – 2,5 kg)</option>
+          <option value="grande">Ave grande / pavo (&gt; 2,5 kg)</option>
+        </select>
+        <div class="hint">Determina el largo de aguja sugerido en las vías intramusculares.</div>
+      </div>
+      <div class="field">
+        <label for="dosis-ml">Dosis por ave (mL)</label>
+        <input type="number" id="dosis-ml" min="0.05" step="0.05" value="0.5">
+        <div class="hint">Lo indica el inserto de la vacuna. Suele ser 0,25 · 0,5 o 1 mL.</div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="field">
+        <label for="vacunadores">Vacunadores</label>
+        <input type="number" id="vacunadores" min="1" step="1" value="2">
+        <div class="hint">Personas aplicando la vacuna, sin contar a quienes atrapan y presentan las aves.</div>
+      </div>
+      <div class="field">
+        <label for="ritmo">Ritmo por vacunador (aves/hora)</label>
+        <input type="number" id="ritmo" min="50" step="50" value="500">
+        <div class="hint">Depende del equipo y del tamaño del ave. Mide el tuyo la primera vez y ajusta este valor.</div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="field">
+        <label for="frasco-ml">Volumen del frasco (mL)</label>
+        <select id="frasco-ml">
+          <option value="100">100 mL</option>
+          <option value="250">250 mL</option>
+          <option value="500" selected>500 mL</option>
+          <option value="1000">1.000 mL</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="aves-aguja">Cambio de aguja cada</label>
+        <select id="aves-aguja">
+          <option value="200">200 aves</option>
+          <option value="500" selected>500 aves</option>
+          <option value="1000">1.000 aves</option>
+        </select>
+        <div class="hint">Criterio del plantel. Una aguja roma daña el tejido y aumenta el reflujo.</div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn" id="btn-calc">Calcular</button>
+      <button class="btn sec" id="btn-reset">Limpiar</button>
+    </div>
+  </div>
+
+  <div id="resultados"></div>
+</div>
+
+<!-- ================= SITIOS Y AGUJAS ================= -->
+<div class="panel" id="p-sitios">
+  <div class="card">
+    <h2>Dónde se inyecta y con qué aguja</h2>
+    <p class="lead">El sitio determina el largo de aguja. Una aguja larga en el cuello atraviesa; una corta en la pechuga deposita en la piel.</p>
+
+    <div class="ilus" style="color:var(--verde-d)">
+      <svg viewBox="0 0 420 230" role="img" aria-label="Sitios de inoculación en el ave">
+        <!-- silueta del ave de perfil -->
+        <g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M96 118 Q70 96 74 78 Q92 88 104 106"/>
+          <ellipse cx="196" cy="140" rx="76" ry="52"/>
+          <path d="M252 106 Q268 78 272 58"/>
+          <circle cx="278" cy="50" r="24"/>
+          <path d="M264 26 q4 -12 12 -4 q6 -13 14 -3 q7 -10 12 2"/>
+          <path d="M302 46 l22 7 l-22 8"/>
+          <path d="M282 72 q8 12 -2 16"/>
+          <path d="M170 190 l-4 34 M166 224 l-14 4 M166 224 l12 5"/>
+          <path d="M216 190 l4 34 M220 224 l-12 4 M220 224 l14 5"/>
+          <circle cx="286" cy="46" r="3.4" fill="currentColor" stroke="none"/>
+        </g>
+        <!-- 1 subcutánea cuello -->
+        <circle cx="262" cy="86" r="9" fill="none" stroke="#1565c0" stroke-width="2.6"/>
+        <path d="M271 86 L336 96" fill="none" stroke="#1565c0" stroke-width="1.8" stroke-dasharray="4 3"/>
+        <text x="340" y="94" font-size="12" font-weight="800" fill="#1565c0">1</text>
+        <text x="340" y="108" font-size="10" fill="#555">S.C. cuello · 3/8"</text>
+        <!-- 2 intramuscular pechuga -->
+        <circle cx="232" cy="164" r="9" fill="none" stroke="#2e7d32" stroke-width="2.6"/>
+        <path d="M241 164 L296 164" fill="none" stroke="#2e7d32" stroke-width="1.8" stroke-dasharray="4 3"/>
+        <path d="M296 164 L296 46 L336 46" fill="none" stroke="#2e7d32" stroke-width="1.8" stroke-dasharray="4 3"/>
+        <text x="340" y="44" font-size="12" font-weight="800" fill="#2e7d32">2</text>
+        <text x="340" y="58" font-size="10" fill="#555">I.M. pechuga · ½–1"</text>
+        <!-- 3 intramuscular muslo -->
+        <circle cx="188" cy="180" r="9" fill="none" stroke="#ef6c00" stroke-width="2.6"/>
+        <path d="M188 189 L188 216" fill="none" stroke="#ef6c00" stroke-width="1.8" stroke-dasharray="4 3"/>
+        <path d="M188 216 L336 216" fill="none" stroke="#ef6c00" stroke-width="1.8" stroke-dasharray="4 3"/>
+        <text x="340" y="214" font-size="12" font-weight="800" fill="#ef6c00">3</text>
+        <text x="340" y="228" font-size="10" fill="#555">I.M. muslo · ½–1"</text>
+        <!-- 4 pliegue caudal -->
+        <circle cx="122" cy="130" r="9" fill="none" stroke="#c62828" stroke-width="2.6"/>
+        <path d="M113 132 L62 146" fill="none" stroke="#c62828" stroke-width="1.8" stroke-dasharray="4 3"/>
+        <text x="42" y="146" font-size="12" font-weight="800" fill="#c62828">4</text>
+        <text x="2" y="162" font-size="10" fill="#555">S.C. cola · 1"</text>
+      </svg>
+      <div class="ilus-cap">Los cuatro sitios de inoculación y el largo de aguja de cada uno.</div>
+    </div>
+
+    <div class="tabla-wrap">
+      <table>
+        <thead><tr><th>Vía y sitio</th><th>Cómo</th><th>Aguja</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><b>1 · Subcutánea<br>tercio medio del cuello</b></td>
+            <td>Bajo la piel, en dirección <b>paralela a la columna vertebral</b>. Levanta la piel para formar una carpa y desliza la aguja dentro.</td>
+            <td class="num"><b>3/8"</b><br><span class="src">≈ 10 mm</span></td>
+          </tr>
+          <tr>
+            <td><b>4 · Subcutánea<br>pliegue caudal (cola)</b></td>
+            <td>Bajo la piel del pliegue de la cola. Sitio alternativo al cuello.</td>
+            <td class="num"><b>1"</b><br><span class="src">≈ 25 mm</span></td>
+          </tr>
+          <tr>
+            <td><b>2 · Intramuscular<br>pechuga</b></td>
+            <td>En el <b>área más ancha de la musculatura pectoral</b>, con la aguja inclinada hacia la quilla, nunca perpendicular.</td>
+            <td class="num"><b>½ – 1"</b><br><span class="src">según tamaño</span></td>
+          </tr>
+          <tr>
+            <td><b>3 · Intramuscular<br>muslo</b></td>
+            <td>En la masa muscular del muslo, evitando la cara interna donde corren los vasos.</td>
+            <td class="num"><b>½ – 1"</b><br><span class="src">según tamaño</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="alert rojo">
+      <b>Nunca desinfectes la zona de aplicación</b>
+      En ningún caso. El desinfectante que queda en la piel <b>inactiva la vacuna viva</b> al momento de inyectar. La higiene va en las manos del vacunador y en el instrumental, no en el ave.
+    </div>
+
+    <div class="alert azul">
+      <b>Verifica el volumen de la jeringa antes de empezar</b>
+      Regula la jeringa dosificadora y <b>contrasta la dosis contra una jeringa desechable</b>. Un dosificador descalibrado aplica de menos a todo un lote sin que nadie lo note.
+    </div>
+
+    <h3>Vacunas oleosas</h3>
+    <ul>
+      <li><b>Agítalas vigorosamente antes y durante</b> todo el proceso — la emulsión se separa con el reposo.</li>
+      <li><b>Llévalas a temperatura ambiente antes de aplicar.</b> Se pueden sacar del refrigerador la noche anterior, o entibiar el frasco sumergiéndolo en agua caliente, tan caliente como la mano tolere.</li>
+    </ul>
+    <div class="alert ambar">
+      <b>Por qué importa entibiarlas</b>
+      Una vacuna oleosa fría es espesa: cuesta inyectarla, duele más, aumenta el reflujo y deja más reacción en el sitio. Entibiada fluye y la dosis entra completa.
+    </div>
+  </div>
+</div>
+
+<!-- ================= PUNCIÓN ALAR ================= -->
+<div class="panel" id="p-alar">
+  <div class="card">
+    <h2>Punción alar (pliegue del ala)</h2>
+    <p class="lead">Se usa casi exclusivamente para <b>viruela aviar</b>, sola o combinada con laringotraqueítis y encefalomielitis.</p>
+
+    <div class="ilus" style="color:var(--verde-d)">
+      <svg viewBox="0 0 400 230" role="img" aria-label="Punción en el pliegue alar con lanceta">
+        <!-- ala extendida -->
+        <g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M36 150 Q74 84 166 76 Q258 70 318 108"/>
+          <path d="M36 150 Q92 168 172 162 Q258 156 318 108"/>
+          <path d="M100 122 Q148 112 198 110 M112 142 Q160 136 214 130"/>
+        </g>
+        <!-- zona sin plumas del pliegue -->
+        <ellipse cx="98" cy="122" rx="34" ry="21" fill="#2e7d32" opacity=".14" stroke="#2e7d32" stroke-width="2" stroke-dasharray="5 4"/>
+        <path d="M98 101 L98 62" fill="none" stroke="#2e7d32" stroke-width="1.6" stroke-dasharray="4 3"/>
+        <text x="98" y="52" font-size="11" font-weight="800" fill="#2e7d32" text-anchor="middle">área sin plumas</text>
+        <text x="98" y="38" font-size="10" fill="#555" text-anchor="middle">(pliegue del ala)</text>
+        <!-- lanceta: mango + dos agujas -->
+        <g fill="none" stroke="#1565c0" stroke-width="4" stroke-linecap="round">
+          <path d="M254 206 L166 140"/>
+        </g>
+        <g fill="none" stroke="#1565c0" stroke-width="2.4" stroke-linecap="round">
+          <path d="M166 140 L128 116"/>
+          <path d="M172 132 L134 108"/>
+        </g>
+        <path d="M240 216 L268 196" fill="none" stroke="#1565c0" stroke-width="1.6" stroke-dasharray="4 3"/>
+        <text x="272" y="196" font-size="11" font-weight="800" fill="#1565c0">lanceta</text>
+        <text x="272" y="209" font-size="10" fill="#555">2 agujas</text>
+        <!-- flecha: traspasar -->
+        <path d="M112 96 L146 74" fill="none" stroke="#c62828" stroke-width="2.6" stroke-linecap="round"/>
+        <path d="M146 74 l-11 0 l3 10" fill="none" stroke="#c62828" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+        <text x="152" y="72" font-size="11" font-weight="800" fill="#c62828">traspasar el pliegue</text>
+      </svg>
+      <div class="ilus-cap">La lanceta atraviesa el pliegue en un área desprovista de plumas.</div>
+    </div>
+
+    <h3>La técnica</h3>
+    <ul>
+      <li>Se usa un instrumento llamado <b>lanceta o estilete</b>: dos agujas gruesas unidas por un mango, con una depresión a lo largo de cada aguja donde se aloja la vacuna.</li>
+      <li><b>Diluye la vacuna cuidadosamente</b> y sumerge la lanceta por completo en ella.</li>
+      <li><b>Elimina el exceso de líquido</b> que quede en la punta antes de puncionar.</li>
+      <li><b>Entierra la lanceta en el pliegue alar</b>, en un área desprovista de plumas, en dirección <b>medio-lateral o ventral-dorsal</b> — de adentro hacia afuera, o de abajo hacia arriba — <b>hasta traspasar el pliegue con las agujas</b>.</li>
+    </ul>
+
+    <div class="alert rojo">
+      <b>No mezcles marcas</b>
+      Cada marca de vacuna trae <b>su propio diluyente y su propia lanceta</b>. No se deben usar lancetas, diluyentes ni vacunas de marcas distintas entre sí: el volumen que carga la depresión de la aguja está calculado para esa combinación.
+    </div>
+
+    <div class="alert verde">
+      <b>El control que confirma que funcionó</b>
+      A los <b>7 a 10 días</b> se revisa el sitio de punción en una muestra del lote buscando la <b>reacción vacunal</b>: una costra o nódulo en el punto donde entró la lanceta. Si un porcentaje alto de aves no tiene reacción, la vacunación falló y hay que consultarlo con el veterinario del plantel.
+    </div>
+
+    <div class="alert ambar">
+      <b>Es una técnica laboriosa</b>
+      Requiere tomar las aves una por una, igual que la inyectable. Planifica gente y tiempo con el mismo criterio de la pestaña Planificación.
+    </div>
+  </div>
+</div>
+
+<!-- ================= PROTOCOLO ================= -->
+<div class="panel" id="p-proto">
+  <div class="card">
+    <h2>Lo que hace distinta a esta vía</h2>
+    <p class="lead">En agua y spray el riesgo es que el ave no reciba la dosis. Acá la dosis llega segura — el riesgo es otro.</p>
+    <div class="res-grid">
+      <div class="res-item"><div class="ri-label">La ventaja</div><div class="ri-value">Dosis exacta</div>
+        <div class="ri-note">Cada ave recibe su dosis completa, verificable en el momento.</div></div>
+      <div class="res-item ambar"><div class="ri-label">El costo</div><div class="ri-value">Manejo</div>
+        <div class="ri-note">Hay que atrapar y sujetar cada ave: estrés, riesgo de lesión y mucha mano de obra.</div></div>
+      <div class="res-item rojo"><div class="ri-label">El riesgo propio</div><div class="ri-value">Agujas</div>
+        <div class="ri-note">Una aguja perdida en el lote es un problema de inocuidad alimentaria.</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="fase">
+      <div class="fase-head"><div class="fase-num">1</div>
+        <div><div class="fase-title">Antes</div><div class="fase-sub">Preparación</div></div></div>
+      <ul class="pasos">
+        <li><b>El programa lo define el veterinario responsable</b> del plantel.</li>
+        <li><b>Lava y desinfecta cuidadosamente las manos</b> con jabón, o desinfecta con alcohol gel, antes de manipular las vacunas.</li>
+        <li><b>Prepara la mezcla en un ambiente libre de polvo.</b></li>
+        <li><b>Revisa el instrumental:</b> jeringas dosificadoras en buen estado y limpias, agujas nuevas, y suficientes agujas de repuesto para el recambio.</li>
+        <li><b>Regula el volumen de la jeringa y contrástalo con una jeringa desechable</b> antes de empezar.
+          <span class="porque">Es la única forma de saber que estás aplicando la dosis que crees.</span></li>
+        <li><b>Saca del refrigerador solo las dosis del día.</b> Si son oleosas, se pueden sacar la noche anterior para que alcancen temperatura ambiente.</li>
+        <li><b>Lleva la vacuna en termo portátil con geles refrigerantes</b> y solo la cantidad justa a usar en el momento.</li>
+        <li><b>Registra el número de agujas que ingresan al pabellón</b> — ver la pestaña Control de agujas.</li>
+      </ul>
+    </div>
+
+    <div class="fase">
+      <div class="fase-head"><div class="fase-num">2</div>
+        <div><div class="fase-title">Manejo de las aves</div><div class="fase-sub">Bienestar animal</div></div></div>
+      <ul class="pasos">
+        <li><b>Junta las aves en grupos pequeños</b>, cuidando de no dañarlas y de que no se amontonen.
+          <span class="porque">El amontonamiento causa asfixia y lesiones, y es la principal causa de mortalidad asociada a esta vía.</span></li>
+        <li><b>Usa corrales o paneles de encierro</b> para asegurar que todas las aves del grupo reciban su dosis y no se mezclen vacunadas con sin vacunar.</li>
+        <li><b>Toma las aves cuidadosamente de ambas patas o de ambas alas</b> y preséntalas al vacunador.
+          <span class="porque">De una sola pata o una sola ala se producen luxaciones y fracturas.</span></li>
+        <li><b>Trabaja con tiempo suficiente.</b> Apurar el proceso produce dosis incompletas, reflujo y lesiones.</li>
+      </ul>
+    </div>
+
+    <div class="fase">
+      <div class="fase-head"><div class="fase-num">3</div>
+        <div><div class="fase-title">Aplicación</div><div class="fase-sub">La técnica</div></div></div>
+      <ul class="pasos">
+        <li><b>No desinfectes la zona de aplicación en ningún caso.</b>
+          <span class="porque">El desinfectante inactiva la vacuna viva justo en el punto de entrada.</span></li>
+        <li><b>Aplica en el sitio que corresponde a la vía</b>, con el largo de aguja adecuado — ver la pestaña Sitios y agujas.</li>
+        <li><b>Agita las vacunas oleosas vigorosamente antes y durante</b> todo el proceso.</li>
+        <li><b>Verifica que la dosis entró completa y que no hubo reflujo</b> por el sitio de punción.
+          <span class="porque">El reflujo es la fuga más común y deja al ave subdosificada sin que se note.</span></li>
+        <li><b>Cambia la aguja según el criterio del plantel.</b> Si una aguja se dobla, <b>elimínala; nunca la endereces</b>.
+          <span class="porque">Una aguja enderezada tiene un punto débil y es la que se quiebra dentro del ave.</span></li>
+        <li><b>Si se quiebra una aguja dentro de un ave</b>, sigue el procedimiento de agujas quebradas del plantel: identificar el ave, separarla y dar aviso inmediato.</li>
+      </ul>
+    </div>
+
+    <div class="fase">
+      <div class="fase-head"><div class="fase-num">4</div>
+        <div><div class="fase-title">Después</div><div class="fase-sub">Cierre y registro</div></div></div>
+      <ul class="pasos">
+        <li><b>Cuenta las agujas que salen del pabellón</b> y compáralas con las que ingresaron. Si falta alguna, activa el aviso.</li>
+        <li><b>Lleva de inmediato el instrumental y los frascos sobrantes</b> al lugar de lavado y almacenamiento.</li>
+        <li><b>Los frascos con vacuna sobrante se sellan</b> — la tapa de goma se puede sellar con cera de vela — y se guardan en refrigeración.</li>
+        <li><b>Termina un frasco antes de abrir otro.</b></li>
+        <li><b>Los frascos usados se desnaturalizan</b> en solución desinfectante y se eliminan según el procedimiento de residuos del plantel.</li>
+        <li><b>Registra la vacunación:</b> vacuna, laboratorio, serie, vencimiento, dosis aplicada, número de aves, agujas ingresadas y retiradas, responsable y fecha.</li>
+        <li><b>Mantén el instrumental limpio y en buen estado</b>, y cambia periódicamente extensiones y cajas portátiles.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Un mismo vacunador en el tiempo</h2>
+    <p>Cuando es posible, conviene que <b>la misma persona haga las vacunaciones del plantel</b> a lo largo del tiempo, o que esté claramente definido quién la reemplaza cuando falta.</p>
+    <div class="alert azul">
+      <b>Por qué</b>
+      La técnica inyectable depende mucho de la mano: el ángulo, la profundidad y la velocidad se afinan con la práctica. Cambiar de vacunador entre lotes introduce una variación que después aparece como respuesta despareja en la serología.
+    </div>
+  </div>
+</div>
+
+<!-- ================= CONTROL DE AGUJAS ================= -->
+<div class="panel" id="p-agujas">
+  <div class="card">
+    <h2>Control de agujas</h2>
+    <p class="lead">Una aguja que queda dentro de un ave llega a la planta faenadora. Es el riesgo de inocuidad alimentaria más serio de esta vía.</p>
+
+    <div class="alert rojo">
+      <b>El principio</b>
+      <b>Todas las agujas que entran al pabellón tienen que salir del pabellón.</b> Se cuentan al entrar, se cuentan al salir, y el número queda registrado.
+    </div>
+
+    <div class="aguja-box">
+      <div class="aguja-row">
+        <span class="aguja-lbl">Agujas que ingresaron al pabellón</span>
+        <span class="aguja-ctrl">
+          <button type="button" data-t="in" data-d="-1">−</button>
+          <input type="number" id="ag-in" min="0" step="1" value="0">
+          <button type="button" data-t="in" data-d="1">+</button>
+        </span>
+      </div>
+      <div class="aguja-row">
+        <span class="aguja-lbl">Agujas que salieron del pabellón</span>
+        <span class="aguja-ctrl">
+          <button type="button" data-t="out" data-d="-1">−</button>
+          <input type="number" id="ag-out" min="0" step="1" value="0">
+          <button type="button" data-t="out" data-d="1">+</button>
+        </span>
+      </div>
+      <div class="aguja-row">
+        <span class="aguja-lbl">Agujas quebradas o dobladas descartadas</span>
+        <span class="aguja-ctrl">
+          <button type="button" data-t="mal" data-d="-1">−</button>
+          <input type="number" id="ag-mal" min="0" step="1" value="0">
+          <button type="button" data-t="mal" data-d="1">+</button>
+        </span>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn" id="btn-ag">Verificar cuadratura</button>
+      <button class="btn sec" id="btn-ag-reset">Reiniciar</button>
+    </div>
+
+    <div id="ag-out-box" style="margin-top:16px;"></div>
+
+    <h3>Qué hacer si falta una aguja</h3>
+    <ol>
+      <li><b>Detén la vacunación</b> y busca en la zona donde se estaba trabajando.</li>
+      <li><b>Da aviso inmediato al jefe de terreno o del sector</b>, que a su vez debe informar al responsable de sanidad.</li>
+      <li><b>Se informa a la planta faenadora</b> para que el lote quede identificado y se apliquen las medidas de detección correspondientes.</li>
+      <li><b>Si se sabe en qué ave quedó</b>, esa ave se identifica y se separa del lote.</li>
+      <li><b>Registra el hecho por escrito</b> en la planilla de vacunación, con fecha, pabellón y acciones tomadas.</li>
+    </ol>
+
+    <div class="alert ambar">
+      <b>Reglas que evitan el problema</b>
+      <ul style="margin:8px 0 0 18px;">
+        <li>Si una aguja <b>se dobla, se elimina</b> — nunca se endereza, porque queda con un punto débil</li>
+        <li>Llevar siempre <b>agujas de repuesto suficientes</b>, para que nadie siga trabajando con una aguja dañada</li>
+        <li>Cambiar la aguja según el criterio del plantel, sin estirarla más de la cuenta</li>
+        <li>Las aves grandes deben estar <b>bien sujetas o de pie</b> al momento de inyectar: el movimiento brusco es lo que quiebra la aguja</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ================= CADENA DE FRÍO ================= -->
+<div class="panel" id="p-frio">
+  <div class="card">
+    <h2>Almacenamiento y cadena de frío</h2>
+    <p class="lead">Aplica a todas las vías, pero acá es donde más se descuida: como la vacuna inyectable "se ve" bien aplicada, se asume que está viva.</p>
+
+    <div class="tabla-wrap">
+      <table>
+        <thead><tr><th>Parámetro</th><th>Referencia internacional</th><th>Protocolo de industria (Chile)</th></tr></thead>
+        <tbody>
+          <tr><td><b>Temperatura de almacenamiento</b></td><td>2 – 8 °C</td><td><b>2 – 7 °C</b></td></tr>
+          <tr><td><b>Control de temperatura</b></td><td>Termómetro de máxima y mínima, revisión diaria</td><td>Registro escrito <b>diario</b> mientras existan vacunas, con factor de corrección del termómetro</td></tr>
+          <tr><td><b>Uso del refrigerador</b></td><td>Exclusivo para vacunas</td><td>Exclusivo para vacunas e insumos que requieran frío</td></tr>
+          <tr><td><b>Transporte</b></td><td>Cooler a 2–8 °C, sin contacto directo con los ice packs</td><td>Caja térmica con refrigerantes; termo portátil con geles durante la jornada</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:9pt;color:var(--gris2);">Ambos criterios son compatibles: 2–7 °C es simplemente más estricto en el extremo alto. Si tu refrigerador se mantiene bajo 7 °C, cumples las dos referencias.</p>
+
+    <h3>Reglas de manejo del stock</h3>
+    <ul>
+      <li><b>Consume primero las vacunas que vencen antes.</b> Cada vez que se abre un frasco nuevo hay que chequear serie y fecha de vencimiento y dejarlo registrado.</li>
+      <li><b>Termina un frasco antes de abrir el siguiente.</b></li>
+      <li><b>Lleva solo la cantidad justa</b> al pabellón, no todo el stock.</li>
+      <li><b>Las dosis en frascos cerrados sin usar</b> pueden traspasarse a otro sector con su documentación de despacho.</li>
+      <li><b>Las que estén cerca de vencer</b> y no se vayan a usar, se devuelven a bodega para reasignación.</li>
+    </ul>
+
+    <div class="alert rojo">
+      <b>Vacuna congelada o sobrecalentada: no se usa</b>
+      Si detectas que un producto se congeló, o que sufrió un sobrecalentamiento notorio, <b>no lo apliques</b>. Da aviso al médico veterinario, que decide qué hacer con el lote de producto. Una vacuna que se congeló puede verse perfecta y estar muerta.
+    </div>
+
+    <div class="alert rojo">
+      <b>Vacunas vencidas</b>
+      No se usan. Se avisa al veterinario y se eliminan según el procedimiento de residuos del plantel, o se devuelven al proveedor.
+    </div>
+
+    <div class="alert azul">
+      <b>Desviaciones de temperatura</b>
+      Cuando la temperatura se sale del rango, hay que <b>dejarlo registrado</b>, buscar la causa y corregirla. Si se repite en días consecutivos, se escala al responsable para intervenir el equipo. No basta con anotarlo.
+    </div>
+  </div>
+</div>
+
+<!-- ================= CONTROL DE CALIDAD ================= -->
+<div class="panel" id="p-monit">
+  <div class="card">
+    <h2>Cómo se confirma que funcionó</h2>
+    <p class="lead">La ventaja de esta vía es que buena parte del control es inmediato y visual.</p>
+
+    <div class="tabla-wrap">
+      <table>
+        <thead><tr><th>Control</th><th>Cuándo</th><th>Qué buscar</th></tr></thead>
+        <tbody>
+          <tr><td><b>Dosis completa sin reflujo</b></td><td>En el momento</td><td>Que no salga líquido por el sitio de punción al retirar la aguja.</td></tr>
+          <tr><td><b>Cuadratura de agujas</b></td><td>Al terminar</td><td>Que salgan del pabellón todas las que entraron.</td></tr>
+          <tr><td><b>Reacción vacunal alar</b></td><td><b>7 – 10 días</b></td><td>Costra o nódulo en el sitio de punción, en vacunas de viruela.</td></tr>
+          <tr><td><b>Reacción en el sitio de inyección</b></td><td>7 – 14 días</td><td>Nódulos o abscesos indican técnica o higiene deficiente, o vacuna oleosa fría.</td></tr>
+          <tr><td><b>Serología (ELISA)</b></td><td><b>3 semanas</b> o más</td><td>Título alto y <b>coeficiente de variación bajo 50%</b>.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="alert azul">
+      <b>El CV manda también acá</b>
+      Igual que en agua y spray, un coeficiente de variación alto delata una aplicación despareja: distinto vacunador, distinta profundidad o dosificador descalibrado a media jornada.
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Pauta de verificación</h2>
+    <p class="lead">Marca lo que se cumplió. Los ítems CRÍTICOS invalidan la vacunación o abren un problema de inocuidad.</p>
+    <div id="checklist"></div>
+    <div class="btn-row">
+      <button class="btn" id="btn-score">Evaluar</button>
+      <button class="btn sec" id="btn-chk-reset">Limpiar</button>
+      <button class="btn sec no-print" onclick="window.print()">🖨️ Imprimir</button>
+    </div>
+    <div id="score-out" style="margin-top:18px;"></div>
+  </div>
+</div>
+
+<!-- ================= ERRORES ================= -->
+<div class="panel" id="p-errores">
+  <div class="card">
+    <h2>Los errores que arruinan una vacunación inyectable</h2>
+    <p class="lead">Acá los errores no son de cobertura, son de técnica y de manejo.</p>
+
+    <div class="err"><div class="err-ico">🪡</div><div class="err-body">
+      <div class="err-t">Perder una aguja en el lote</div>
+      <div class="err-d">Es el error más grave: la aguja llega a la planta faenadora dentro del ave. Compromete la inocuidad del alimento y al plantel completo.</div>
+      <div class="err-f">✔ Contar las agujas al entrar y al salir del pabellón, y dejar el número registrado.</div>
+    </div></div>
+
+    <div class="err"><div class="err-ico">📏</div><div class="err-body">
+      <div class="err-t">Enderezar una aguja doblada</div>
+      <div class="err-d">Queda con un punto débil y es exactamente la que se quiebra dentro del ave en la siguiente punción.</div>
+      <div class="err-f">✔ Aguja doblada se elimina. Siempre llevar repuestos suficientes.</div>
+    </div></div>
+
+    <div class="err"><div class="err-ico">🧴</div><div class="err-body">
+      <div class="err-t">Desinfectar la zona de aplicación</div>
+      <div class="err-d">Parece más higiénico, pero el desinfectante inactiva la vacuna viva justo donde entra.</div>
+      <div class="err-f">✔ No desinfectar el sitio en ningún caso. La higiene va en las manos y en el instrumental.</div>
+    </div></div>
+
+    <div class="err"><div class="err-ico">💧</div><div class="err-body">
+      <div class="err-t">No revisar el reflujo</div>
+      <div class="err-d">Si sale vacuna por el sitio al retirar la aguja, el ave quedó subdosificada. Es invisible si nadie mira.</div>
+      <div class="err-f">✔ Verificar cada punción. Aves sujetas o de pie, sin movimiento brusco.</div>
+    </div></div>
+
+    <div class="err"><div class="err-ico">🎚️</div><div class="err-body">
+      <div class="err-t">No contrastar la jeringa dosificadora</div>
+      <div class="err-d">Un dosificador descalibrado aplica de menos a todo el lote, o se desregula a media jornada sin que nadie lo note.</div>
+      <div class="err-f">✔ Regular y contrastar contra una jeringa desechable antes de empezar, y volver a chequear durante la jornada.</div>
+    </div></div>
+
+    <div class="err"><div class="err-ico">🧊</div><div class="err-body">
+      <div class="err-t">Aplicar vacuna oleosa fría</div>
+      <div class="err-d">Espesa, cuesta inyectarla, duele más, aumenta el reflujo y deja más reacción en el sitio.</div>
+      <div class="err-f">✔ Llevarla a temperatura ambiente antes de aplicar, y agitarla vigorosamente antes y durante.</div>
+    </div></div>
+
+    <div class="err"><div class="err-ico">🐔</div><div class="err-body">
+      <div class="err-t">Amontonar las aves</div>
+      <div class="err-d">Provoca asfixia y lesiones. Es la principal causa de mortalidad asociada a esta vía.</div>
+      <div class="err-f">✔ Grupos pequeños con corrales o paneles. Nunca apurar el encierro.</div>
+    </div></div>
+
+    <div class="err"><div class="err-ico">🦵</div><div class="err-body">
+      <div class="err-t">Tomar el ave de una sola pata o ala</div>
+      <div class="err-d">Produce luxaciones y fracturas, sobre todo en aves grandes.</div>
+      <div class="err-f">✔ Tomarlas de ambas patas o de ambas alas y presentarlas al vacunador.</div>
+    </div></div>
+
+    <div class="err"><div class="err-ico">📐</div><div class="err-body">
+      <div class="err-t">Usar el largo de aguja equivocado</div>
+      <div class="err-d">Una aguja larga en el cuello atraviesa la piel y la dosis se pierde; una corta en la pechuga deposita en el tejido subcutáneo en vez del músculo.</div>
+      <div class="err-f">✔ 3/8" en cuello, 1" en cola, ½–1" en pechuga y muslo según tamaño del ave.</div>
+    </div></div>
+
+    <div class="err"><div class="err-ico">🔀</div><div class="err-body">
+      <div class="err-t">Mezclar marcas en punción alar</div>
+      <div class="err-d">Cada marca trae su diluyente y su lanceta, calculados juntos. Mezclarlos cambia la dosis que carga la aguja.</div>
+      <div class="err-f">✔ Diluyente, lanceta y vacuna siempre de la misma marca.</div>
+    </div></div>
+
+    <div class="err"><div class="err-ico">🌡️</div><div class="err-body">
+      <div class="err-t">Usar vacuna congelada o sobrecalentada</div>
+      <div class="err-d">Puede verse perfecta y estar muerta. Nadie lo detecta hasta que el lote se enferma.</div>
+      <div class="err-f">✔ Control diario de temperatura con registro. Ante desviación, avisar al veterinario y no usar el producto.</div>
+    </div></div>
+
+    <div class="err"><div class="err-ico">🍶</div><div class="err-body">
+      <div class="err-t">Abrir varios frascos a la vez</div>
+      <div class="err-d">Se pierde el control de qué se usó y quedan frascos abiertos a medio consumir que después se contaminan.</div>
+      <div class="err-f">✔ Terminar un frasco antes de abrir otro. Sobrantes sellados y refrigerados.</div>
+    </div></div>
+
+    <div class="err"><div class="err-ico">📝</div><div class="err-body">
+      <div class="err-t">No dejar registro</div>
+      <div class="err-d">Sin registro no se puede investigar un brote, ni auditar la trazabilidad, ni responder ante la planta faenadora.</div>
+      <div class="err-f">✔ Vacuna, serie, vencimiento, dosis, aves, agujas in/out y responsable, en la planilla del lote.</div>
+    </div></div>
+  </div>
+</div>
+
+<!-- ================= FUENTES ================= -->
+<div class="panel" id="p-fuentes">
+  <div class="card">
+    <h2>Fuentes</h2>
+    <p class="lead">Este módulo se apoya principalmente en instructivos de la industria avícola y porcina chilena.</p>
+    <div class="fuentes">
+
+      <div class="fte">
+        <b>Agrosuper — Sopraval S.p.A.</b> <i>Instructivo Vacunación</i>, GE-VET-I-005, revisión 017, Departamento Producción Pavos.<br>
+        Aporta: sitios de inoculación subcutánea (tercio medio del cuello, paralela a la columna, y pliegue caudal) e intramuscular (pechuga y muslo); <b>largos de aguja por sitio</b> (3/8", 1", ½–1"); control de agujas ingresadas y retiradas con aviso a planta faenadora; contraste de la jeringa dosificadora contra una desechable; verificación de reflujo; manejo de vacunas oleosas y entibiado; técnica completa de <b>punción alar con lanceta</b> y la advertencia de no mezclar marcas; almacenamiento 2–7 °C con control diario y factor de corrección; desnaturalización de frascos usados.
+      </div>
+
+      <div class="fte">
+        <b>Agrosuper.</b> <i>Instructivo Vacunaciones</i>, ASC-VET-I-011, revisión 09, Sectores Reproductores y Crianza.<br>
+        Aporta: refrigerador exclusivo y registro diario de temperatura; conducta ante congelación o sobrecalentamiento; criterio de consumir primero lo que vence antes; llevar en el termo solo la cantidad justa; <b>no desinfectar la zona de aplicación en ningún caso</b>; eliminar la aguja doblada en vez de enderezarla; procedimiento de agujas quebradas; sellado y refrigeración de frascos sobrantes; terminar un frasco antes de abrir otro; mantener el mismo vacunador en el tiempo; inmovilización y bienestar animal durante la sujeción.
+      </div>
+
+      <p style="border-top:1px solid var(--linea); padding-top:12px;">
+        Los criterios de <b>bienestar animal</b>, verificación de dosis y seguimiento serológico se complementan con las guías usadas en los módulos hermanos de <a href="../vacunacion-agua/">agua de bebida</a> y <a href="../vacunacion-spray/">spray</a> (Aviagen, Zoetis, Intervet/MSD, Ceva, Pacificvet, Elanco, HIPRA).
+      </p>
+
+      <p style="color:#888;">
+        Nota: los instructivos citados son documentos internos de la empresa, marcados como copia no controlada. Se usan como <b>referencia de práctica de industria</b>; cada plantel debe seguir su propio procedimiento vigente y las indicaciones de su médico veterinario.
+      </p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Alcance de esta guía</h2>
+    <p>Es material de apoyo para el productor. <b>No reemplaza el programa de vacunación indicado por el médico veterinario responsable del plantel</b>, ni las instrucciones del inserto de cada vacuna, que siempre tienen prioridad.</p>
+    <div class="alert ambar">
+      <b>Sigue siempre el inserto del producto</b>
+      Cada vacuna tiene su propia indicación de dosis, vía, sitio y edad. Cuando el inserto diga algo distinto a esta guía, manda el inserto.
+    </div>
+    <p style="font-size:9pt;color:var(--gris2);margin-top:12px;">Las ilustraciones de esta guía son originales de AviVet.</p>
+  </div>
+</div>
+
+<div class="footer">
+  <b>MV Andrés Lazo Escobar</b> — Medicina Aviar, Sur de Chile<br>
+  WhatsApp: <a href="https://wa.me/56958956340">+56 9 5895 6340</a> ·
+  Email: <a href="mailto:andreslazomv@outlook.com">andreslazomv@outlook.com</a> ·
+  <a href="https://avivet.cl">avivet.cl</a>
+</div>
+
+</div>
+
+<script>
+/* ---------- Navegación ---------- */
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById('p'+'-'+t.dataset.panel).classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+});
+
+const fmt  = (n,d=1) => n.toLocaleString('es-CL',{minimumFractionDigits:d, maximumFractionDigits:d});
+const fmt0 = n => Math.round(n).toLocaleString('es-CL');
+
+/* =========================================================
+   Planificación de la jornada
+   ========================================================= */
+const AGUJAS = {
+  'sc':       {lbl:'Subcutánea — tercio medio del cuello', aguja:'3/8"', mm:'≈ 10 mm',
+               nota:'Bajo la piel, en dirección paralela a la columna vertebral.'},
+  'sc-cola':  {lbl:'Subcutánea — pliegue caudal (cola)',   aguja:'1"',   mm:'≈ 25 mm',
+               nota:'Bajo la piel del pliegue de la cola.'},
+  'im-pechuga':{lbl:'Intramuscular — pechuga',             aguja:null,   mm:null,
+               nota:'En el área más ancha de la musculatura pectoral, con la aguja inclinada hacia la quilla.'},
+  'im-muslo': {lbl:'Intramuscular — muslo',                aguja:null,   mm:null,
+               nota:'En la masa muscular del muslo, evitando la cara interna.'},
+  'alar':     {lbl:'Punción alar (lanceta)',               aguja:'Lanceta',mm:'2 agujas gruesas',
+               nota:'En el pliegue del ala, en área sin plumas, hasta traspasar.'}
+};
+const IM_POR_PESO = {chica:'1/2"', media:'3/4"', grande:'1"'};
+
+document.getElementById('btn-calc').addEventListener('click', calcular);
+
+function calcular(){
+  const aves = parseFloat(document.getElementById('aves').value);
+  const via  = document.getElementById('via').value;
+  const peso = document.getElementById('peso').value;
+  const dml  = parseFloat(document.getElementById('dosis-ml').value);
+  const vac  = parseFloat(document.getElementById('vacunadores').value);
+  const rit  = parseFloat(document.getElementById('ritmo').value);
+  const fml  = parseFloat(document.getElementById('frasco-ml').value);
+  const aa   = parseFloat(document.getElementById('aves-aguja').value);
+  const out  = document.getElementById('resultados');
+
+  if(!aves||!dml||!vac||!rit||aves<=0||dml<=0||vac<=0||rit<=0){
+    out.innerHTML = '<div class="alert rojo"><b>Faltan datos</b>Completa el número de aves, la dosis, los vacunadores y el ritmo.</div>';
+    return;
+  }
+
+  const cfg   = AGUJAS[via];
+  const esAlar= via==='alar';
+  const esIM  = via.indexOf('im-')===0;
+  const aguja = esAlar ? 'Lanceta' : (cfg.aguja || IM_POR_PESO[peso]);
+  const agujaNota = esAlar ? cfg.mm : (cfg.mm || 'según tamaño del ave');
+
+  const volTotal  = aves * dml;                       // mL
+  const frascos   = Math.ceil(volTotal / fml);
+  const horas     = aves / (rit * vac);
+  const agujasNec = esAlar ? 0 : Math.ceil(aves / aa);
+  const repuesto  = esAlar ? 0 : Math.max(5, Math.ceil(agujasNec * 0.25));
+
+  let html = '';
+
+  html += '<div class="res-hero">'
+        + '<div class="rh-label">Tiempo estimado de la jornada</div>'
+        + '<div class="rh-value">' + fmt(horas,1) + ' <small>horas</small></div>'
+        + '<div class="rh-sub">' + fmt0(aves) + ' aves · ' + vac + ' vacunador' + (vac>1?'es':'') + ' a ' + fmt0(rit) + ' aves/hora cada uno</div>'
+        + '<div class="rh-rango">' + cfg.lbl + '</div>'
+        + '</div>';
+
+  html += '<div class="res-grid">';
+  html += '<div class="res-item"><div class="ri-label">Volumen total de vacuna</div><div class="ri-value">' + fmt0(volTotal) + ' <span style="font-size:13px">mL</span></div>'
+        + '<div class="ri-note">' + fmt0(aves) + ' aves × ' + fmt(dml,2) + ' mL por dosis.</div></div>';
+  html += '<div class="res-item"><div class="ri-label">Frascos a usar</div><div class="ri-value">' + frascos + '</div>'
+        + '<div class="ri-note">' + frascos + ' × ' + fmt0(fml) + ' mL = ' + fmt0(frascos*fml) + ' mL disponibles. Termina un frasco antes de abrir el siguiente.</div></div>';
+  html += '<div class="res-item azul"><div class="ri-label">Aguja</div><div class="ri-value">' + aguja + '</div>'
+        + '<div class="ri-note">' + agujaNota + '. ' + cfg.nota + '</div></div>';
+
+  if(!esAlar){
+    html += '<div class="res-item ambar"><div class="ri-label">Agujas necesarias</div><div class="ri-value">' + agujasNec + '</div>'
+          + '<div class="ri-note">Cambiando cada ' + fmt0(aa) + ' aves. Lleva <b>' + repuesto + ' de repuesto</b> para reemplazar las que se doblen.</div></div>';
+    html += '<div class="res-item rojo"><div class="ri-label">A registrar</div><div class="ri-value">' + (agujasNec+repuesto) + '</div>'
+          + '<div class="ri-note">Agujas que ingresan al pabellón. <b>Las mismas deben salir.</b> Ver la pestaña Control de agujas.</div></div>';
+  }
+
+  html += '<div class="res-item azul"><div class="ri-label">Personal mínimo sugerido</div><div class="ri-value">' + (vac + Math.ceil(vac*1.5)) + '</div>'
+        + '<div class="ri-note">' + vac + ' vacunando y unas ' + Math.ceil(vac*1.5) + ' personas atrapando, sujetando y presentando las aves.</div></div>';
+  html += '</div>';
+
+  /* Avisos */
+  if(esIM){
+    html += '<div class="alert azul"><b>Largo de aguja según tamaño</b>'
+          + 'Para vía intramuscular el largo depende del ave: <b>1/2"</b> en aves chicas, <b>3/4"</b> en medianas y <b>1"</b> en aves grandes o pavos. '
+          + 'Con tu selección corresponde <b>' + aguja + '</b>.</div>';
+  }
+  if(esAlar){
+    html += '<div class="alert azul"><b>Punción alar</b>'
+          + 'No se usan agujas hipodérmicas sino <b>lanceta o estilete</b>. Usa el diluyente y la lanceta <b>de la misma marca</b> que la vacuna. '
+          + 'Revisa la reacción vacunal en el sitio de punción a los <b>7–10 días</b>.</div>';
+  }
+  if(horas > 6){
+    html += '<div class="alert rojo"><b>La jornada tomaría ' + fmt(horas,1) + ' horas</b>'
+          + 'Es demasiado para un solo día: el cansancio del equipo se traduce en dosis incompletas, reflujo y lesiones por manejo. '
+          + 'Suma vacunadores o divide el lote en dos días. Con <b>' + Math.ceil(aves/(rit*5)) + ' horas</b> lo harías con 5 vacunadores.</div>';
+  } else if(horas > 3){
+    html += '<div class="alert ambar"><b>Jornada larga (' + fmt(horas,1) + ' h)</b>'
+          + 'Programa relevos y controla la calibración del dosificador a media jornada: es cuando aparecen las dosis incompletas.</div>';
+  } else {
+    html += '<div class="alert verde"><b>Jornada manejable</b>'
+          + 'Aun así, trabaja con tiempo suficiente: apurar el proceso produce dosis incompletas, reflujo y lesiones.</div>';
+  }
+
+  html += '<div class="alert rojo"><b>Recordatorio de inocuidad</b>'
+        + 'Cuenta las agujas al entrar y al salir del pabellón. <b>Una aguja perdida en el lote llega a la planta faenadora.</b></div>';
+
+  /* Resumen */
+  html += '<div class="card"><h2>Resumen para llevar al galpón</h2>'
+        + '<div class="tabla-wrap"><table><tbody>'
+        + '<tr><td>Aves</td><td class="num"><b>' + fmt0(aves) + '</b></td></tr>'
+        + '<tr><td>Vía y sitio</td><td class="num"><b>' + cfg.lbl + '</b></td></tr>'
+        + '<tr><td>Aguja</td><td class="num"><b>' + aguja + '</b></td></tr>'
+        + '<tr><td>Dosis por ave</td><td class="num"><b>' + fmt(dml,2) + ' mL</b></td></tr>'
+        + '<tr><td>Volumen total</td><td class="num"><b>' + fmt0(volTotal) + ' mL</b></td></tr>'
+        + '<tr><td>Frascos</td><td class="num"><b>' + frascos + ' × ' + fmt0(fml) + ' mL</b></td></tr>'
+        + (esAlar ? '' : '<tr><td>Agujas a ingresar</td><td class="num"><b>' + (agujasNec+repuesto) + '</b></td></tr>')
+        + '<tr><td>Tiempo estimado</td><td class="num"><b>' + fmt(horas,1) + ' h</b></td></tr>'
+        + '<tr><td>Refrigeración</td><td class="num"><b>2 – 7 °C</b></td></tr>'
+        + '<tr><td>Desinfectar el sitio</td><td class="num"><b>NO</b></td></tr>'
+        + '<tr><td>Verificar reflujo</td><td class="num"><b>en cada punción</b></td></tr>'
+        + '<tr><td>Cuadratura de agujas</td><td class="num"><b>al cerrar</b></td></tr>'
+        + '</tbody></table></div>'
+        + '<div class="btn-row no-print"><button class="btn sec" onclick="window.print()">🖨️ Imprimir esta hoja</button></div>'
+        + '</div>';
+
+  out.innerHTML = html;
+  out.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+document.getElementById('btn-reset').addEventListener('click',()=>{
+  ['aves','dosis-ml','vacunadores','ritmo'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('resultados').innerHTML='';
+});
+
+/* =========================================================
+   Control de agujas
+   ========================================================= */
+document.querySelectorAll('.aguja-ctrl button').forEach(b=>{
+  b.addEventListener('click',()=>{
+    const id = {in:'ag-in', out:'ag-out', mal:'ag-mal'}[b.dataset.t];
+    const el = document.getElementById(id);
+    el.value = Math.max(0, (parseInt(el.value)||0) + parseInt(b.dataset.d));
+  });
+});
+
+document.getElementById('btn-ag').addEventListener('click',()=>{
+  const ent = parseInt(document.getElementById('ag-in').value)  || 0;
+  const sal = parseInt(document.getElementById('ag-out').value) || 0;
+  const mal = parseInt(document.getElementById('ag-mal').value) || 0;
+  const box = document.getElementById('ag-out-box');
+
+  if(ent === 0){
+    box.innerHTML = '<div class="alert ambar"><b>Falta el conteo de entrada</b>Registra cuántas agujas ingresaron al pabellón antes de empezar la vacunación.</div>';
+    return;
+  }
+
+  const faltan = ent - sal;
+  let cls, lbl, msg;
+
+  if(faltan === 0){
+    cls='ok'; lbl='Cuadratura correcta';
+    msg = 'Salieron las ' + ent + ' agujas que ingresaron' + (mal>0 ? ', incluidas las ' + mal + ' descartadas por daño' : '') + '. Registra el conteo en la planilla del lote.';
+  } else if(faltan < 0){
+    cls='med'; lbl='Salieron más de las que entraron';
+    msg = 'Se contaron ' + sal + ' de salida y solo ' + ent + ' de entrada. Revisa el conteo inicial: probablemente ingresaron agujas sin registrar.';
+  } else {
+    cls='mal'; lbl='Faltan ' + faltan + ' aguja' + (faltan>1?'s':'');
+    msg = '<b>No cierres la jornada.</b> Detén la vacunación, busca en la zona de trabajo y da aviso al jefe de terreno para que informe a planta faenadora. Si sabes en qué ave quedó, identifícala y sepárala del lote. Deja el hecho registrado por escrito.';
+  }
+
+  box.innerHTML = '<div class="score-box ' + cls + '">'
+    + '<div class="sb-num">' + (faltan===0 ? '✓' : (faltan>0 ? faltan : '?')) + '</div>'
+    + '<div class="sb-lbl">' + lbl + '</div>'
+    + '<div class="sb-msg"><b>Entraron ' + ent + ' · salieron ' + sal + (mal>0 ? ' · descartadas ' + mal : '') + '</b><br>' + msg + '</div>'
+    + '</div>';
+});
+
+document.getElementById('btn-ag-reset').addEventListener('click',()=>{
+  ['ag-in','ag-out','ag-mal'].forEach(id=>document.getElementById(id).value=0);
+  document.getElementById('ag-out-box').innerHTML='';
+});
+
+/* =========================================================
+   Pauta de verificación
+   ========================================================= */
+const CHECKS = [
+  {c:true,  t:'Cuadratura de agujas al cerrar', d:'Salieron del pabellón todas las agujas que ingresaron, y el número quedó registrado.'},
+  {c:true,  t:'No se desinfectó la zona de aplicación', d:'En ningún caso: el desinfectante inactiva la vacuna viva en el punto de entrada.'},
+  {c:true,  t:'Jeringa dosificadora contrastada', d:'Regulada y verificada contra una jeringa desechable antes de empezar, y rechequeada durante la jornada.'},
+  {c:true,  t:'Sitio y largo de aguja correctos', d:'3/8" en cuello, 1" en cola, ½–1" en pechuga y muslo según tamaño del ave.'},
+  {c:true,  t:'Dosis completa sin reflujo', d:'Se verificó en cada punción que no saliera vacuna por el sitio.'},
+  {c:true,  t:'Cadena de frío mantenida', d:'2–7 °C en refrigerador exclusivo con control diario registrado; termo con geles durante la jornada.'},
+  {c:true,  t:'Ninguna vacuna congelada ni sobrecalentada', d:'Ante cualquier duda se avisó al veterinario y no se aplicó el producto.'},
+  {c:false, t:'Agujas dobladas eliminadas, nunca enderezadas', d:'Y había repuestos suficientes para reemplazarlas.'},
+  {c:false, t:'Aves tomadas de ambas patas o ambas alas', d:'Nunca de una sola, para evitar luxaciones y fracturas.'},
+  {c:false, t:'Grupos pequeños, sin amontonamiento', d:'Con corrales o paneles, cuidando el bienestar animal durante la sujeción.'},
+  {c:false, t:'Manos lavadas y desinfectadas', d:'Con jabón o alcohol gel antes de manipular las vacunas.'},
+  {c:false, t:'Mezcla preparada en ambiente libre de polvo', d:'Sobre superficie limpia.'},
+  {c:false, t:'Vacunas oleosas agitadas y a temperatura ambiente', d:'Agitadas vigorosamente antes y durante el proceso.'},
+  {c:false, t:'Un frasco terminado antes de abrir el siguiente', d:'Sobrantes sellados y devueltos a refrigeración.'},
+  {c:false, t:'Se consumió primero lo que vence antes', d:'Serie y vencimiento chequeados y registrados al abrir cada frasco.'},
+  {c:false, t:'Punción alar: diluyente y lanceta de la misma marca', d:'Solo si aplica. No se mezclaron marcas.'},
+  {c:false, t:'Frascos usados desnaturalizados', d:'En solución desinfectante y eliminados según el procedimiento de residuos.'},
+  {c:false, t:'Vacunación registrada en la planilla del lote', d:'Vacuna, serie, vencimiento, dosis, aves, agujas in/out y responsable.'}
+];
+
+const cl = document.getElementById('checklist');
+cl.innerHTML = CHECKS.map((c,i) =>
+  '<div class="chk-item">'
+  + '<input type="checkbox" id="c'+i+'" data-crit="'+c.c+'">'
+  + '<label class="chk-txt" for="c'+i+'">'
+  +   '<div class="chk-t">' + c.t + (c.c ? '<span class="badge-crit">Crítico</span>' : '') + '</div>'
+  +   '<div class="chk-d">' + c.d + '</div>'
+  + '</label></div>'
+).join('');
+
+document.getElementById('btn-score').addEventListener('click',()=>{
+  const boxes = [...cl.querySelectorAll('input')];
+  const total = boxes.length;
+  const ok    = boxes.filter(b => b.checked).length;
+  const pct   = Math.round(ok / total * 100);
+  const critFallan = boxes.filter(b => b.dataset.crit === 'true' && !b.checked).length;
+
+  let cls, lbl, msg;
+  if(critFallan > 0){
+    cls='mal'; lbl='Vacunación comprometida';
+    msg = 'Falla ' + critFallan + ' punto' + (critFallan>1?'s':'') + ' crítico' + (critFallan>1?'s':'')
+        + '. Si el punto que falla es la cuadratura de agujas, además hay un problema de inocuidad que debe informarse de inmediato.';
+  } else if(pct >= 90){
+    cls='ok'; lbl='Vacunación correcta';
+    msg = 'Todos los puntos críticos se cumplieron. Confirma la respuesta con serología a las 3 semanas, y la reacción alar a los 7–10 días si corresponde.';
+  } else {
+    cls='med'; lbl='Mejorable';
+    msg = 'Los puntos críticos se cumplieron, pero hay ' + (total-ok) + ' punto' + ((total-ok)>1?'s':'')
+        + ' sin marcar. Corrígelos antes de la próxima vacunación.';
+  }
+
+  document.getElementById('score-out').innerHTML =
+      '<div class="score-box ' + cls + '">'
+    + '<div class="sb-num">' + pct + '%</div>'
+    + '<div class="sb-lbl">' + lbl + '</div>'
+    + '<div class="sb-msg"><b>' + ok + ' de ' + total + ' puntos cumplidos.</b><br>' + msg + '</div>'
+    + '</div>';
+});
+
+document.getElementById('btn-chk-reset').addEventListener('click',()=>{
+  cl.querySelectorAll('input').forEach(b => b.checked = false);
+  document.getElementById('score-out').innerHTML = '';
+});
+</script>
+</body>
+</html>

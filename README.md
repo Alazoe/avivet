@@ -8,6 +8,7 @@
 
 | Herramienta | Link | Descripción |
 |-------------|------|-------------|
+| **Vacunación Inyectable y Punción Alar** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/vacunacion-inyectable/) | Sitios de inoculación, largo de aguja, control de agujas y cadena de frío |
 | **Vacunación por Spray** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/vacunacion-spray/) | Calibración del pulverizador, tamaño de gota, papel hidrosensible y control de calidad |
 | **Vacunación en Agua de Bebida** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/vacunacion-agua/) | Volumen y dosis, calidad del agua, espacio de bebedero, cronograma del día y control de calidad |
 | **Calculadoras de Dosis** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/calculadoras-dosis/) | Cálculo de dosis de antibióticos en agua de bebida |
@@ -83,6 +84,55 @@ Herramienta para planificar y optimizar rutas de retiro de huevos frescos y desp
 | Camión Grande | 10 toneladas |
 | Camión Mediano | 6 toneladas |
 | Chevrolet Partner | ~1 tonelada |
+
+---
+
+## 💉 Vacunación Inyectable y Punción Alar
+
+### ➡️ [https://alazoe.github.io/avivet/vacunacion-inyectable/](https://alazoe.github.io/avivet/vacunacion-inyectable/)
+
+Tercer módulo de la serie de vías de vacunación. Cubre subcutánea, intramuscular y punción alar.
+
+### ¿Qué incluye?
+
+- ✅ **Planificación de la jornada** — volumen, frascos, agujas necesarias, tiempo estimado y personal sugerido
+- ✅ **Sitios y agujas** — diagrama de los 4 sitios con el largo de aguja de cada uno
+- ✅ **Punción alar** — técnica de la lanceta, con la advertencia de no mezclar marcas
+- ✅ **Protocolo** en 4 fases con foco en bienestar animal
+- ✅ **Control de agujas** — contador interactivo de cuadratura entrada/salida
+- ✅ **Cadena de frío** — comparación entre criterio internacional y de industria chilena
+- ✅ **Control de calidad** y pauta con puntaje
+- ✅ **12 errores frecuentes**
+
+### Sitios de inoculación y largo de aguja
+
+| Vía y sitio | Técnica | Aguja |
+|---|---|---|
+| **S.C. tercio medio del cuello** | Bajo la piel, paralela a la columna | **3/8"** |
+| **S.C. pliegue caudal (cola)** | Bajo la piel del pliegue | **1"** |
+| **I.M. pechuga** | Área más ancha del pectoral, inclinada hacia la quilla | **½–1"** según tamaño |
+| **I.M. muslo** | Masa muscular, evitando la cara interna | **½–1"** según tamaño |
+| **Punción alar** | Lanceta, área sin plumas, hasta traspasar | Lanceta de la marca |
+
+### Reglas críticas
+
+- **Todas las agujas que entran al pabellón deben salir** — una aguja perdida llega a la planta faenadora
+- **Nunca desinfectar la zona de aplicación** — el desinfectante inactiva la vacuna viva
+- **Aguja doblada se elimina, nunca se endereza** — queda con un punto débil y se quiebra dentro del ave
+- **Contrastar la jeringa dosificadora** contra una desechable antes de empezar
+- **Verificar reflujo** en cada punción
+- Vacunas oleosas: **agitar vigorosamente y llevar a temperatura ambiente**
+- **Terminar un frasco antes de abrir otro**; sobrantes sellados y refrigerados
+- Refrigeración **2–7 °C** con control diario registrado
+
+### Fuentes
+
+Instructivos de la industria avícola y porcina chilena:
+
+- **Agrosuper — Sopraval S.p.A.**, *Instructivo Vacunación* GE-VET-I-005 rev. 017 (Producción Pavos)
+- **Agrosuper**, *Instructivo Vacunaciones* ASC-VET-I-011 rev. 09 (Reproductores y Crianza)
+
+> Documentos internos marcados como copia no controlada, usados como referencia de práctica de industria. Cada plantel debe seguir su procedimiento vigente.
 
 ---
 
