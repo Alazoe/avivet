@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" width="300" height="170" viewBox="0 0 300 170" role="img" aria-label="Equipo de protección personal para vacunar por spray">
+            <g fill="none" stroke="#1b5e20" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="130" cy="76" r="46"/>
+              <path d="M92 52 q38 -18 76 0"/>
+            </g>
+            <path d="M96 62 h68 v20 q-34 12 -68 0 z" fill="#1565c0" opacity=".25" stroke="#1565c0" stroke-width="2.2" stroke-linejoin="round"/>
+            <circle cx="114" cy="72" r="5" fill="#1b5e20"/><circle cx="146" cy="72" r="5" fill="#1b5e20"/>
+            <path d="M100 96 h60 q-6 26 -30 26 q-24 0 -30 -26 z" fill="#2e7d32" opacity=".2" stroke="#1b5e20" stroke-width="2.4" stroke-linejoin="round"/>
+            <g fill="none" stroke="#1b5e20" stroke-width="2.2" stroke-linecap="round">
+              <path d="M86 74 L66 68 M174 74 L194 68"/>
+            </g>
+            <g fill="none" stroke="#1b5e20" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round">
+              <path d="M228 82 q0 -14 8 -14 q6 0 6 12 v-4 q0 -10 7 -10 q6 0 6 11 v-3 q0 -9 7 -9 q6 0 6 10 v18 q0 22 -18 22 q-16 0 -20 -16 l-6 -14 q-3 -8 4 -10 q5 -1 6 6 z"/>
+            </g>
+            <text x="150" y="150" font-size="10.5" font-weight="700" fill="#555" text-anchor="middle">antiparras · mascarilla · guantes</text>
+          </svg>

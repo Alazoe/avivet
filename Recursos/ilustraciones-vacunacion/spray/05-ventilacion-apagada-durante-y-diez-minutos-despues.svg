@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" width="300" height="170" viewBox="0 0 300 170" role="img" aria-label="Ventilación apagada durante y diez minutos después">
+            <g fill="none" stroke="#1b5e20" stroke-width="2.6" stroke-linejoin="round">
+              <rect x="30" y="38" width="96" height="96" rx="6"/>
+              <circle cx="78" cy="86" r="34"/>
+              <circle cx="78" cy="86" r="7"/>
+            </g>
+            <g fill="none" stroke="#1b5e20" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" opacity=".55">
+              <path d="M78 79 q-22 -16 -4 -26 q14 -6 12 20"/>
+              <path d="M85 89 q24 -12 24 8 q-2 15 -25 -1"/>
+              <path d="M72 92 q-4 27 -22 17 q-11 -9 15 -22"/>
+            </g>
+            <g stroke="#c62828" stroke-width="6" stroke-linecap="round">
+              <path d="M40 46 L118 126"/>
+            </g>
+            <g fill="none" stroke="#1565c0" stroke-width="2.8" stroke-linecap="round">
+              <circle cx="212" cy="82" r="38"/>
+              <path d="M212 58 v26 l18 12"/>
+            </g>
+            <text x="212" y="140" font-size="15" font-weight="900" fill="#1565c0" text-anchor="middle">10 min</text>
+            <text x="212" y="156" font-size="9.5" fill="#555" text-anchor="middle">después de terminar</text>
+          </svg>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" width="300" height="170" viewBox="0 0 300 170" role="img" aria-label="Altura y posición de la lanza del pulverizador"><defs><symbol id="gallina" viewBox="0 0 44 46">
+    <g fill="none" stroke="#1b5e20" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M6 20 Q1 13 3 11 Q6 13 8 17"/>
+      <ellipse cx="19" cy="26" rx="13.5" ry="9.5"/>
+      <path d="M28 19 Q30 14 31 11"/>
+      <circle cx="32" cy="12" r="5.6"/>
+      <path d="M29 6.6 Q30 4 31.4 6.2 Q32.6 3.4 34 6 Q35.4 4 36 6.8"/>
+      <path d="M37.4 11 L41.6 12.6 L37.4 14.4"/>
+      <path d="M33 17.4 Q34.6 19.6 32.6 20.4"/>
+      <path d="M15 35 L14 43 M13 43 L10 43.6 M13 43 L16 43.6"/>
+      <path d="M24 35 L25 43 M24 43 L21 43.6 M24 43 L27 43.6"/>
+      <path d="M14 24 Q19 21 24 24"/>
+    </g>
+    <circle cx="33.6" cy="11" r="1.1" fill="#1b5e20"/>
+  </symbol></defs>
+            <g fill="none" stroke="#1b5e20" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="70" cy="34" r="11"/>
+              <path d="M70 45 v40"/>
+              <path d="M70 54 l-16 10 M70 54 l20 6"/>
+              <path d="M70 85 l-12 32 M70 85 l12 32"/>
+              <path d="M90 60 h64"/>
+            </g>
+            <g stroke="#1565c0" stroke-width="2" stroke-linecap="round" opacity=".85">
+              <path d="M156 60 l40 -10 M156 60 l42 2 M156 60 l40 14 M156 62 l34 24"/>
+            </g>
+            <g fill="#1565c0" opacity=".6">
+              <circle cx="206" cy="48" r="3.4"/><circle cx="222" cy="58" r="3"/><circle cx="204" cy="72" r="3.2"/>
+              <circle cx="228" cy="76" r="2.6"/><circle cx="196" cy="86" r="3"/><circle cx="216" cy="92" r="2.8"/>
+            </g>
+            <g fill="none" stroke="#1b5e20" stroke-width="2" stroke-dasharray="5 4">
+              <line x1="30" y1="60" x2="60" y2="60"/>
+              <line x1="30" y1="140" x2="60" y2="140"/>
+              <line x1="45" y1="60" x2="45" y2="140"/>
+            </g>
+            <text x="6" y="104" font-size="13" font-weight="800" fill="#1b5e20">1 m</text>
+            <line x1="10" y1="140" x2="290" y2="140" stroke="#1b5e20" stroke-width="2.6"/>
+            <g style="color:var(--verde)">
+              <use href="#gallina" x="196" y="98" width="40" height="42"/>
+              <use href="#gallina" x="240" y="98" width="40" height="42"/>
+            </g>
+          </svg>

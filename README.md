@@ -8,6 +8,7 @@
 
 | Herramienta | Link | Descripción |
 |-------------|------|-------------|
+| **Ilustraciones de Vacunación** | [🔗 Abrir galería](https://alazoe.github.io/avivet/Recursos/ilustraciones-vacunacion/) | 21 ilustraciones SVG descargables de los módulos de vacunación |
 | **Vacunación Inyectable y Punción Alar** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/vacunacion-inyectable/) | Sitios de inoculación, largo de aguja, control de agujas y cadena de frío |
 | **Vacunación por Spray** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/vacunacion-spray/) | Calibración del pulverizador, tamaño de gota, papel hidrosensible y control de calidad |
 | **Vacunación en Agua de Bebida** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/vacunacion-agua/) | Volumen y dosis, calidad del agua, espacio de bebedero, cronograma del día y control de calidad |
@@ -84,6 +85,22 @@ Herramienta para planificar y optimizar rutas de retiro de huevos frescos y desp
 | Camión Grande | 10 toneladas |
 | Camión Mediano | 6 toneladas |
 | Chevrolet Partner | ~1 tonelada |
+
+---
+
+## 🖼️ Ilustraciones de Vacunación
+
+### ➡️ [https://alazoe.github.io/avivet/Recursos/ilustraciones-vacunacion/](https://alazoe.github.io/avivet/Recursos/ilustraciones-vacunacion/)
+
+Galería con las **21 ilustraciones SVG** de los tres módulos de vacunación, listas para descargar y reutilizar en charlas, informes o material de asesoría.
+
+| Módulo | Ilustraciones |
+|---|---|
+| Agua de bebida | 6 |
+| Spray | 13 |
+| Inyectable y punción alar | 2 |
+
+Son vectoriales: escalan sin pixelarse y sirven para PowerPoint, Word, Canva o impresión. Cada archivo es autocontenido — el símbolo compartido de la gallina va incrustado y los colores resueltos, así que funcionan fuera del módulo.
 
 ---
 

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" width="260" height="150" viewBox="0 0 260 150" role="img" aria-label="Revisar la lengua teñida de azul">
+            <g fill="none" stroke="#1b5e20" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+              <!-- cresta -->
+              <path d="M74 50 q4 -17 13 -7 q4 -19 14 -7 q6 -17 14 -4 q7 -12 11 2"/>
+              <!-- cabeza y cuello -->
+              <path d="M70 66 q0 -22 22 -26 q30 -6 44 14"/>
+              <path d="M70 66 q-2 30 16 42 q10 6 22 6"/>
+              <path d="M108 114 q4 14 -4 22"/>
+              <!-- pico superior abierto -->
+              <path d="M136 54 l58 12 l-52 12 z"/>
+              <!-- pico inferior abierto -->
+              <path d="M140 88 l52 14 l-56 2 z"/>
+              <!-- barbilla -->
+              <path d="M126 104 q10 12 0 18 q-8 -6 -6 -16"/>
+            </g>
+            <!-- lengua teñida -->
+            <path d="M146 76 q24 0 38 9 q-20 7 -38 1 z" fill="#1565c0" stroke="#0d3c6e" stroke-width="1.8" stroke-linejoin="round"/>
+            <circle cx="112" cy="58" r="4.6" fill="#1b5e20"/>
+          </svg>

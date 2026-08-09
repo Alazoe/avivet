@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" width="300" height="170" viewBox="0 0 300 170" role="img" aria-label="Trazado desde el centro de la nave">
+            <rect x="24" y="26" width="252" height="118" rx="4" fill="none" stroke="#1b5e20" stroke-width="2.6"/>
+            <line x1="24" y1="85" x2="276" y2="85" stroke="#1b5e20" stroke-width="1.6" stroke-dasharray="5 4" opacity=".5"/>
+            <path d="M252 78 H52" fill="none" stroke="#2e7d32" stroke-width="3" stroke-linecap="round"/>
+            <path d="M62 71 l-11 7 l11 7" fill="none" stroke="#2e7d32" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M52 92 H252" fill="none" stroke="#1565c0" stroke-width="3" stroke-linecap="round"/>
+            <path d="M242 85 l11 7 l-11 7" fill="none" stroke="#1565c0" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            <g stroke="#2e7d32" stroke-width="1.8" stroke-linecap="round" opacity=".7" fill="none">
+              <path d="M100 74 v-18 M150 74 v-18 M200 74 v-18"/>
+              <path d="M96 60 l4 -6 l4 6 M146 60 l4 -6 l4 6 M196 60 l4 -6 l4 6"/>
+            </g>
+            <g stroke="#1565c0" stroke-width="1.8" stroke-linecap="round" opacity=".7" fill="none">
+              <path d="M100 96 v18 M150 96 v18 M200 96 v18"/>
+              <path d="M96 110 l4 6 l4 -6 M146 110 l4 6 l4 -6 M196 110 l4 6 l4 -6"/>
+            </g>
+            <circle cx="252" cy="78" r="5" fill="#2e7d32"/>
+            <text x="150" y="42" font-size="10" font-weight="700" fill="#2e7d32" text-anchor="middle">ida: asperja a este lado</text>
+            <text x="150" y="136" font-size="10" font-weight="700" fill="#1565c0" text-anchor="middle">vuelta: asperja al otro</text>
+          </svg>

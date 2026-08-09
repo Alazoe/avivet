@@ -1,0 +1,92 @@
+{
+  "agua": [
+    [
+      "01-lineas-de-agua-levantadas-fuera-del-alcance-de-las-aves.svg",
+      "Líneas de agua levantadas fuera del alcance de las aves"
+    ],
+    [
+      "02-purgar-la-linea-hasta-que-salga-agua-con-colorante.svg",
+      "Purgar la línea hasta que salga agua con colorante"
+    ],
+    [
+      "03-bajar-las-lineas-a-la-altura-de-las-aves.svg",
+      "Bajar las líneas a la altura de las aves"
+    ],
+    [
+      "04-caminar-el-lote-durante-la-vacunacion.svg",
+      "Caminar el lote durante la vacunación"
+    ],
+    [
+      "05-revisar-la-lengua-tenida-de-azul.svg",
+      "Revisar la lengua teñida de azul"
+    ],
+    [
+      "06-preparacion-de-la-solucion-madre-estabilizada.svg",
+      "Preparación de la solución madre estabilizada"
+    ]
+  ],
+  "spray": [
+    [
+      "01-donde-se-deposita-la-vacuna-segun-el-tamano-de-gota.svg",
+      "Dónde se deposita la vacuna según el tamaño de gota"
+    ],
+    [
+      "02-bidones-de-agua-destilada-refrigerados-el-dia-antes.svg",
+      "Bidones de agua destilada refrigerados el día antes"
+    ],
+    [
+      "03-equipo-de-proteccion-personal-para-vacunar-por-spray.svg",
+      "Equipo de protección personal para vacunar por spray"
+    ],
+    [
+      "04-reconstitucion-de-la-vacuna-con-jeringa-desechable.svg",
+      "Reconstitución de la vacuna con jeringa desechable"
+    ],
+    [
+      "05-ventilacion-apagada-durante-y-diez-minutos-despues.svg",
+      "Ventilación apagada durante y diez minutos después"
+    ],
+    [
+      "06-luces-bajas-para-reducir-el-movimiento-de-las-aves.svg",
+      "Luces bajas para reducir el movimiento de las aves"
+    ],
+    [
+      "07-altura-y-posicion-de-la-lanza-del-pulverizador.svg",
+      "Altura y posición de la lanza del pulverizador"
+    ],
+    [
+      "08-dos-pasadas-de-vacunacion-en-el-galpon.svg",
+      "Dos pasadas de vacunación en el galpón"
+    ],
+    [
+      "09-segunda-persona-arreando-las-aves-hacia-el-lado-que-se-asp.svg",
+      "Segunda persona arreando las aves hacia el lado que se asperja"
+    ],
+    [
+      "10-trazado-paralelo-a-las-paredes.svg",
+      "Trazado paralelo a las paredes"
+    ],
+    [
+      "11-trazado-desde-el-centro-de-la-nave.svg",
+      "Trazado desde el centro de la nave"
+    ],
+    [
+      "12-patron-correcto-de-gotas-en-papel-hidrosensible.svg",
+      "Patrón correcto de gotas en papel hidrosensible"
+    ],
+    [
+      "13-patron-deficiente-de-gotas-en-papel-hidrosensible.svg",
+      "Patrón deficiente de gotas en papel hidrosensible"
+    ]
+  ],
+  "inyectable": [
+    [
+      "01-sitios-de-inoculacion-en-el-ave.svg",
+      "Sitios de inoculación en el ave"
+    ],
+    [
+      "02-puncion-en-el-pliegue-alar-con-lanceta.svg",
+      "Punción en el pliegue alar con lanceta"
+    ]
+  ]
+}

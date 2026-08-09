@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" width="260" height="150" viewBox="0 0 260 150" role="img" aria-label="Preparación de la solución madre estabilizada">
+            <g fill="none" stroke="#1b5e20" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round">
+              <path d="M40 46 h74 l-9 74 h-56 z"/>
+              <line x1="38" y1="46" x2="116" y2="46"/>
+              <path d="M114 58 q22 -4 22 14"/>
+            </g>
+            <path d="M45 70 h64 l-6 46 h-52 z" fill="#1565c0" opacity=".35" stroke="none"/>
+            <g fill="none" stroke="#1b5e20" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round">
+              <path d="M162 30 h34 v14 l-6 6 v58 h-22 v-58 l-6 -6 z"/>
+              <line x1="162" y1="52" x2="196" y2="52"/>
+            </g>
+            <path d="M170 58 h18 v46 h-18 z" fill="#1565c0" opacity=".35" stroke="none"/>
+            <g fill="none" stroke="#1b5e20" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M124 82 h26 M144 76 l8 6 l-8 6"/>
+            </g>
+            <text x="128" y="132" font-size="13" font-weight="800" fill="#1b5e20">20 min</text>
+          </svg>

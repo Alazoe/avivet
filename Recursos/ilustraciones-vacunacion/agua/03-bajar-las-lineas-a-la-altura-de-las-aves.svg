@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" width="260" height="150" viewBox="0 0 260 150" role="img" aria-label="Bajar las líneas a la altura de las aves"><defs><symbol id="gallina" viewBox="0 0 44 46">
+    <g fill="none" stroke="#1b5e20" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M6 20 Q1 13 3 11 Q6 13 8 17"/>
+      <ellipse cx="19" cy="26" rx="13.5" ry="9.5"/>
+      <path d="M28 19 Q30 14 31 11"/>
+      <circle cx="32" cy="12" r="5.6"/>
+      <path d="M29 6.6 Q30 4 31.4 6.2 Q32.6 3.4 34 6 Q35.4 4 36 6.8"/>
+      <path d="M37.4 11 L41.6 12.6 L37.4 14.4"/>
+      <path d="M33 17.4 Q34.6 19.6 32.6 20.4"/>
+      <path d="M15 35 L14 43 M13 43 L10 43.6 M13 43 L16 43.6"/>
+      <path d="M24 35 L25 43 M24 43 L21 43.6 M24 43 L27 43.6"/>
+      <path d="M14 24 Q19 21 24 24"/>
+    </g>
+    <circle cx="33.6" cy="11" r="1.1" fill="#1b5e20"/>
+  </symbol></defs>
+            <g fill="none" stroke="#1b5e20" stroke-width="2.4" stroke-linecap="round">
+              <line x1="18" y1="66" x2="242" y2="66"/>
+              <line x1="18" y1="74" x2="242" y2="74"/>
+              <path d="M60 74 v8 M120 74 v8 M180 74 v8"/>
+              <path d="M56 82 h8 l-4 6 z" fill="#1b5e20" stroke="none"/>
+              <path d="M116 82 h8 l-4 6 z" fill="#1b5e20" stroke="none"/>
+              <path d="M176 82 h8 l-4 6 z" fill="#1b5e20" stroke="none"/>
+              <path d="M40 58 v10 M130 58 v10 M220 58 v10" stroke-width="3"/>
+              <path d="M35 64 l5 6 l5 -6 M125 64 l5 6 l5 -6 M215 64 l5 6 l5 -6" stroke-width="3"/>
+            </g>
+            <g stroke="#1565c0" stroke-width="2.6" stroke-linecap="round">
+              <line x1="60" y1="90" x2="60" y2="96"/>
+              <line x1="120" y1="90" x2="120" y2="96"/>
+              <line x1="180" y1="90" x2="180" y2="96"/>
+            </g>
+            <g style="color:var(--verde)">
+              <use href="#gallina" x="40" y="90" width="50" height="52"/>
+              <use href="#gallina" x="100" y="90" width="50" height="52"/>
+              <use href="#gallina" x="160" y="90" width="50" height="52"/>
+            </g>
+          </svg>

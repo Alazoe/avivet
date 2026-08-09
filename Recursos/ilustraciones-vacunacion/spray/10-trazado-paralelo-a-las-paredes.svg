@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" width="300" height="170" viewBox="0 0 300 170" role="img" aria-label="Trazado paralelo a las paredes">
+            <rect x="24" y="26" width="252" height="118" rx="4" fill="none" stroke="#1b5e20" stroke-width="2.6"/>
+            <path d="M252 56 H48" fill="none" stroke="#2e7d32" stroke-width="3" stroke-linecap="round"/>
+            <path d="M58 49 l-11 7 l11 7" fill="none" stroke="#2e7d32" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M48 114 H252" fill="none" stroke="#2e7d32" stroke-width="3" stroke-linecap="round"/>
+            <path d="M242 107 l11 7 l-11 7" fill="none" stroke="#2e7d32" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            <g stroke="#1565c0" stroke-width="1.6" stroke-linecap="round" opacity=".55" fill="none">
+              <path d="M150 56 v-22 M150 114 v22 M90 56 v-22 M90 114 v22 M210 56 v-22 M210 114 v22"/>
+            </g>
+            <text x="150" y="90" font-size="11" font-weight="700" fill="#555" text-anchor="middle">cada ruta a su pared</text>
+          </svg>
