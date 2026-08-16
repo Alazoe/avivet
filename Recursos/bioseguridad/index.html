@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bioseguridad avícola: no es solo para la influenza — AviVet</title>
+<meta name="description" content="Guía práctica de bioseguridad para planteles de gallinas de postura en Chile: las ocho vías de entrada de enfermedades, control de visitas y vehículos, alimento y agua, cuarentena de aves nuevas, manejo entre galpones y qué notificar al SAG. Por MV Andrés Lazo, AviVet.">
+<link rel="canonical" href="https://avivet.cl/avivet/Recursos/bioseguridad/">
+<meta name="author" content="MV Andrés Lazo Escobar">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="AviVet">
+<meta property="og:locale" content="es_CL">
+<meta property="og:title" content="La bioseguridad no es solo para la influenza aviar">
+<meta property="og:description" content="Las pérdidas que de verdad se acumulan en un plantel entran todos los días, sin titulares. Las ocho vías de entrada y cómo cerrarlas.">
+<meta property="og:url" content="https://avivet.cl/avivet/Recursos/bioseguridad/">
+<meta property="og:image" content="https://avivet.cl/avivet/Recursos/bioseguridad/og-bioseguridad.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Camión de alimento a granel ingresando por el arco sanitario de un plantel avícola">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="La bioseguridad no es solo para la influenza aviar">
+<meta name="twitter:description" content="Las pérdidas que de verdad se acumulan en un plantel entran todos los días, sin titulares. Las ocho vías de entrada y cómo cerrarlas.">
+<meta name="twitter:image" content="https://avivet.cl/avivet/Recursos/bioseguridad/og-bioseguridad.jpg">
+<link rel="icon" href="https://avivet.cl/assets/img/brand/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="https://avivet.cl/assets/img/brand/favicon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500;1,9..144,600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#fafaf8; --paper2:#f0faf3; --paper3:#e3f0e8;
+  --ink:#141414; --ink2:#3a3a3a; --ink3:#6b6b6b;
+  --line:#d4e6da; --line2:#bcd6c5;
+  --rust:#1b4332; --rust-d:#0d2b1e; --rust-l:#d8f3dc;
+  --olive:#2d6a4f; --olive-d:#1b4332;
+  --amber:#c0392b; --amber-d:#7a1c1c;
+  --gold:#c9a84c; --gold2:#e8c96e; --gold-d:#a8842e;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:"DM Sans",sans-serif;background:var(--paper);color:var(--ink);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;}
+/* paper grain */
+body::before{content:"";position:fixed;inset:0;z-index:1;pointer-events:none;opacity:0.05;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+a{color:inherit;}
+
+/* Masthead bar */
+.topbar{position:sticky;top:0;z-index:200;background:rgba(243,237,225,0.94);backdrop-filter:saturate(1.2) blur(6px);
+  border-bottom:1px solid var(--line);height:48px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;}
+.brand{font-family:"Fraunces",serif;font-weight:600;font-size:17px;letter-spacing:-0.01em;}
+.brand .dotrust{color:var(--rust);}
+.topbar .meta{font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink3);}
+
+main{max-width:760px;margin:0 auto;padding:0 22px 90px;position:relative;z-index:2;animation:fadeIn .5s ease;}
+
+/* Masthead / opening */
+.masthead{padding:56px 0 34px;}
+.kicker{font-size:11.5px;letter-spacing:0.22em;text-transform:uppercase;color:var(--rust);font-weight:600;margin-bottom:22px;
+  display:flex;align-items:center;gap:12px;}
+.kicker::after{content:"";flex:1;height:1px;background:var(--line2);}
+.display{font-family:"Fraunces",serif;font-weight:600;font-size:clamp(40px,8vw,68px);line-height:0.98;letter-spacing:-0.02em;margin-bottom:24px;}
+.display em{font-style:italic;color:var(--rust);}
+.standfirst{font-family:"Fraunces",serif;font-size:clamp(18px,2.6vw,22px);line-height:1.45;color:var(--ink2);max-width:600px;font-weight:400;}
+.byline{margin-top:24px;font-size:12.5px;letter-spacing:0.04em;color:var(--ink3);text-transform:uppercase;}
+.byline b{color:var(--ink);font-weight:600;}
+
+/* Opening plate (photo) */
+.plate{margin:34px 0 6px;}
+.plate-frame{position:relative;border:1px solid var(--line2);padding:10px;background:var(--paper2);}
+.plate-frame img{width:100%;height:auto;display:block;filter:saturate(1.02) contrast(1.02);}
+.plate-cap{font-family:"Fraunces",serif;font-style:italic;font-size:13.5px;color:var(--ink2);margin-top:12px;text-align:center;}
+.plate-cap .credit{font-style:normal;color:var(--ink3);font-size:11px;}
+.plate-cap .credit a{color:var(--ink3);}
+.hint{text-align:center;font-size:12px;letter-spacing:0.04em;color:var(--ink3);margin-top:6px;}
+.dot{position:absolute;width:30px;height:30px;border-radius:50%;background:var(--paper);color:var(--rust);
+  border:1.5px solid var(--rust);font-family:"Fraunces",serif;font-weight:600;font-size:14px;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;text-decoration:none;
+  transform:translate(-50%,-50%);box-shadow:0 1px 4px rgba(60,30,10,0.25);transition:all .15s;}
+.dot:hover{background:var(--rust);color:var(--paper);transform:translate(-50%,-50%) scale(1.15);}
+
+/* Index nav */
+.index{position:sticky;top:48px;z-index:150;background:rgba(243,237,225,0.96);backdrop-filter:blur(6px);
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-top:30px;}
+.index-scroll{display:flex;overflow-x:auto;scrollbar-width:none;}
+.index-scroll::-webkit-scrollbar{display:none;}
+.idx{flex:0 0 auto;padding:11px 15px;font-size:12.5px;font-weight:600;color:var(--ink2);text-decoration:none;
+  white-space:nowrap;border-bottom:2px solid transparent;display:flex;align-items:baseline;gap:6px;transition:color .15s;}
+.idx .n{color:var(--ink3);font-variant-numeric:tabular-nums;font-size:11px;}
+.idx:hover{color:var(--rust);}
+.idx.active{color:var(--rust);border-bottom-color:var(--rust);}
+.idx.active .n{color:var(--rust);}
+
+/* Entries */
+.entry{display:grid;grid-template-columns:96px 1fr;gap:22px;padding:46px 0;border-top:1px solid var(--line);scroll-margin-top:104px;}
+.entry:first-of-type{border-top:none;}
+.entry-no{font-family:"Fraunces",serif;font-weight:500;font-size:54px;line-height:0.8;color:var(--rust);letter-spacing:-0.03em;}
+.entry-title{font-family:"Fraunces",serif;font-weight:600;font-size:30px;line-height:1.05;letter-spacing:-0.015em;margin-bottom:5px;}
+.entry-where{font-size:11.5px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink3);margin-bottom:16px;}
+.lead{font-family:"Fraunces",serif;font-size:18.5px;line-height:1.5;color:var(--ink2);max-width:560px;}
+.entry:first-of-type .lead::first-letter{initial-letter:2;font-weight:600;color:var(--rust);margin-right:8px;}
+
+.cols{display:grid;grid-template-columns:1fr 1fr;margin-top:24px;border-top:1px solid var(--line);}
+.col{padding:18px 0;}
+.col + .col{border-left:1px solid var(--line);padding-left:26px;}
+.col:first-child{padding-right:26px;}
+@media(max-width:540px){.cols{grid-template-columns:1fr;}.col + .col{border-left:none;border-top:1px solid var(--line);padding-left:0;}.col:first-child{padding-right:0;}}
+.tag{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;font-weight:700;display:inline-flex;align-items:center;gap:7px;margin-bottom:13px;}
+.tag::before{content:"";width:9px;height:9px;display:inline-block;}
+.tag-ok{color:var(--olive);}
+.tag-ok::before{background:var(--olive);}
+.tag-warn{color:var(--amber);}
+.tag-warn::before{width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:9px solid var(--amber);}
+.col ul{list-style:none;display:flex;flex-direction:column;gap:9px;}
+.col li{font-size:14.5px;line-height:1.45;color:var(--ink);padding-left:16px;position:relative;}
+.col li::before{content:"";position:absolute;left:0;top:9px;width:6px;height:1.5px;background:var(--line2);}
+.col li em{font-style:italic;color:var(--ink2);}
+
+/* Margin notes */
+.note{margin-top:22px;padding:2px 0 2px 18px;border-left:2px solid var(--amber);
+  font-family:"Fraunces",serif;font-size:15px;font-style:italic;line-height:1.5;color:var(--amber-d);}
+.note.tip{border-left-color:var(--gold);color:#5a4720;}
+.note .lbl{font-style:normal;font-weight:700;font-size:10.5px;letter-spacing:0.16em;text-transform:uppercase;
+  display:block;margin-bottom:3px;color:var(--amber);}
+.note.tip .lbl{color:var(--gold-d);}
+
+/* Pull quote */
+.pull{font-family:"Fraunces",serif;font-style:italic;font-weight:500;font-size:clamp(24px,4vw,32px);line-height:1.25;
+  color:var(--rust);text-align:center;max-width:600px;margin:8px auto;padding:54px 10px;letter-spacing:-0.01em;position:relative;}
+.pull::before,.pull::after{content:"";display:block;width:46px;height:1px;background:var(--line2);margin:0 auto;}
+.pull::before{margin-bottom:30px;}
+.pull::after{margin-top:30px;}
+
+/* Outro */
+.outro{margin-top:30px;border-top:2px solid var(--ink);padding-top:30px;}
+.disclaimer{font-family:"Fraunces",serif;font-style:italic;font-size:15px;line-height:1.55;color:var(--ink2);max-width:560px;margin-bottom:38px;}
+.contact{background:var(--paper2);border:1px solid var(--line2);padding:30px 30px 28px;}
+.contact .kicker{margin-bottom:14px;}
+.contact h3{font-family:"Fraunces",serif;font-weight:600;font-size:26px;line-height:1.1;margin-bottom:8px;letter-spacing:-0.01em;}
+.contact p{font-size:14.5px;color:var(--ink2);margin-bottom:20px;max-width:440px;}
+.contact-links{display:flex;flex-direction:column;gap:11px;}
+.clink{font-size:15px;color:var(--ink);text-decoration:none;display:flex;align-items:baseline;gap:12px;border-top:1px solid var(--line);padding-top:11px;transition:color .15s;}
+.clink:hover{color:var(--rust);}
+.clink .ck{font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink3);width:90px;flex:0 0 90px;}
+.clink b{font-weight:600;}
+.clink .arr{margin-left:auto;color:var(--rust);}
+.foot{text-align:center;font-size:12px;letter-spacing:0.04em;color:var(--ink3);margin-top:40px;text-transform:uppercase;}
+.foot a{color:var(--rust);text-decoration:none;}
+
+@media(max-width:560px){
+  .entry{grid-template-columns:1fr;gap:6px;}
+  .entry-no{font-size:38px;}
+}
+/* Láminas que rompen el ancho de la columna y usan más pantalla */
+.plate--wide{width:min(1140px,calc(100vw - 44px));margin-left:50%;transform:translateX(-50%);}
+.plate--wide .plate-frame{background:var(--paper2);}
+.plate-cap.wide-cap{max-width:760px;margin-left:auto;margin-right:auto;}
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "La bioseguridad no es solo para la influenza aviar",
+  "description": "Las pérdidas que de verdad se acumulan en un plantel entran todos los días, sin titulares. Las ocho vías de entrada y cómo cerrarlas.",
+  "inLanguage": "es-CL",
+  "image": "https://avivet.cl/avivet/Recursos/bioseguridad/og-bioseguridad.jpg",
+  "datePublished": "2026-08-16",
+  "dateModified": "2026-08-16",
+  "author": {"@type": "Person", "name": "Andrés Lazo Escobar", "jobTitle": "Médico Veterinario", "url": "https://avivet.cl/"},
+  "publisher": {"@type": "Organization", "name": "AviVet", "url": "https://avivet.cl/",
+    "logo": {"@type": "ImageObject", "url": "https://avivet.cl/assets/img/brand/favicon-180.png"}},
+  "mainEntityOfPage": {"@type": "WebPage", "@id": "https://avivet.cl/avivet/Recursos/bioseguridad/"},
+  "about": ["Bioseguridad avícola", "Influenza aviar", "Gallinas de postura", "Sanidad avícola"]
+}
+</script>
+</head>
+<body>
+
+<div class="topbar">
+  <span class="brand">AviVet<span class="dotrust">.</span></span>
+  <span class="meta">MV Andrés Lazo · Medicina aviar</span>
+</div>
+
+<main>
+
+  <!-- MASTHEAD -->
+  <header class="masthead">
+    <div class="kicker">Bioseguridad · N.º 03</div>
+    <h1 class="display">La bioseguridad no es solo para la <em>influenza</em></h1>
+    <p class="standfirst">Cuando aparece un brote de influenza aviar todos hablan de bioseguridad. Pero las pérdidas que de verdad se acumulan en un plantel entran todos los días, sin titulares y sin alarma. Esto es lo que hay que cerrar, y cómo hacerlo sin gastar una fortuna.</p>
+    <p class="byline"><b>MV Andrés Lazo Escobar</b> — Especialista en medicina aviar · Sur de Chile</p>
+  </header>
+
+  <!-- OPENING PLATE: el iceberg -->
+  <figure class="plate plate--wide">
+    <div class="plate-frame">
+      <svg viewBox="0 0 900 470" style="width:100%;height:auto;display:block" role="img"
+           aria-label="Iceberg: sobre la línea de flotación, la influenza aviar, que ocupa los titulares. Bajo el agua, la masa mayor: salmonela, E. coli, coccidiosis, micoplasma, bronquitis infecciosa, coriza y campylobacter, que generan pérdidas todo el año.">
+        <!-- agua -->
+        <rect x="0" y="195" width="900" height="275" fill="#2b6cb0" opacity="0.10"/>
+        <line x1="0" y1="195" x2="900" y2="195" stroke="#2b6cb0" stroke-width="2" opacity="0.55"/>
+
+        <!-- punta emergida -->
+        <path d="M450,62 L487,140 L515,195 L385,195 L413,140 Z" fill="#fafdff" stroke="#7ba7c4" stroke-width="2.5" stroke-linejoin="round"/>
+
+        <!-- masa sumergida -->
+        <path d="M385,195 L515,195 L600,290 L565,380 L455,430 L335,388 L285,290 Z" fill="#cfe3ef" opacity="0.92" stroke="#7ba7c4" stroke-width="2.5" stroke-linejoin="round"/>
+
+        <!-- etiqueta superior -->
+        <line x1="612" y1="104" x2="502" y2="152" stroke="#a8842e" stroke-width="1.5"/>
+        <circle cx="502" cy="152" r="3.5" fill="#a8842e"/>
+        <text x="622" y="82" font-family="DM Sans, sans-serif" font-size="13" font-weight="700" letter-spacing="2" fill="#a8842e">LOS TITULARES</text>
+        <text x="622" y="114" font-family="Fraunces, serif" font-size="26" font-weight="600" fill="#c0392b">Influenza aviar</text>
+        <text x="622" y="140" font-family="Fraunces, serif" font-style="italic" font-size="16" fill="#3a3a3a">Rara. Catastrófica.</text>
+        <text x="622" y="162" font-family="Fraunces, serif" font-style="italic" font-size="16" fill="#3a3a3a">Se notifica al SAG.</text>
+
+        <!-- nombres dentro del iceberg -->
+        <g font-family="DM Sans, sans-serif" font-size="17" font-weight="600" fill="#1b4332" text-anchor="middle">
+          <text x="442" y="236">Salmonella</text>
+          <text x="442" y="266">E. coli</text>
+          <text x="442" y="296">Coccidiosis</text>
+          <text x="442" y="326">Mycoplasma</text>
+          <text x="442" y="356">Bronquitis infecciosa</text>
+          <text x="442" y="386" font-size="14">Coriza · Campylobacter</text>
+        </g>
+
+        <!-- etiqueta inferior -->
+        <text x="636" y="300" font-family="DM Sans, sans-serif" font-size="13" font-weight="700" letter-spacing="2" fill="#2d6a4f">TODO EL AÑO</text>
+        <g font-family="DM Sans, sans-serif" font-size="15.5" fill="#1b4332">
+          <text x="636" y="330">— Menos huevos</text>
+          <text x="636" y="356">— Peor conversión</text>
+          <text x="636" y="382">— Más descartes</text>
+          <text x="636" y="408">— Tratamientos</text>
+        </g>
+
+        <!-- linea de flotacion -->
+        <text x="40" y="188" font-family="DM Sans, sans-serif" font-size="12" font-weight="600" letter-spacing="1.5" fill="#2b6cb0" opacity="0.85">LÍNEA DE FLOTACIÓN</text>
+      </svg>
+    </div>
+    <figcaption class="plate-cap wide-cap">
+      Lám. I — La influenza aviar es la punta que se ve. Bajo el agua está la masa que descuenta plata del bolsillo todos los meses, y ambas entran por las mismas puertas.
+    </figcaption>
+  </figure>
+
+  <!-- INDEX -->
+  <nav class="index">
+    <div class="index-scroll" id="navScroll">
+      <a class="idx" href="#que-es"><span class="n">01</span>Qué es</a>
+      <a class="idx" href="#vias"><span class="n">02</span>Por dónde entra</a>
+      <a class="idx" href="#porteria"><span class="n">03</span>La portería</a>
+      <a class="idx" href="#alimento-agua"><span class="n">04</span>Alimento y agua</a>
+      <a class="idx" href="#aves-nuevas"><span class="n">05</span>Aves nuevas</a>
+      <a class="idx" href="#entre-galpones"><span class="n">06</span>Entre galpones</a>
+      <a class="idx" href="#plagas"><span class="n">07</span>Plagas y silvestres</a>
+      <a class="idx" href="#chile"><span class="n">08</span>Chile y el SAG</a>
+    </div>
+  </nav>
+
+  <!-- 01 -->
+  <article class="entry" id="que-es">
+    <div class="entry-no">01</div>
+    <div>
+      <h2 class="entry-title">Una forma de trabajar, no una compra</h2>
+      <p class="entry-where">Qué es realmente la bioseguridad</p>
+      <p class="lead">La bioseguridad no es un producto que se instala y queda funcionando. Es el conjunto de decisiones que impiden que un patógeno entre a tu plantel, que se multiplique adentro y que salga hacia los vecinos. Tiene dos mitades: una mentalidad y una rutina. Sin la rutina, la mentalidad es una buena intención; sin la mentalidad, la rutina se abandona el primer día de apuro.</p>
+      <div class="cols">
+        <div class="col">
+          <span class="tag tag-warn">Lo que se ve</span>
+          <ul>
+            <li>Un brote de influenza aviar</li>
+            <li>Cuarentena y sacrificio del lote</li>
+            <li>Sale en las noticias <em>→ todos reaccionan una semana</em></li>
+          </ul>
+        </div>
+        <div class="col">
+          <span class="tag tag-ok">Lo que no se ve</span>
+          <ul>
+            <li>Postura que nunca llegó a la meta</li>
+            <li>Conversión alimenticia que se arrastra</li>
+            <li>Descartes y tratamientos <em>→ todos los meses, sin alarma</em></li>
+          </ul>
+        </div>
+      </div>
+      <p class="note"><span class="lbl">La pregunta correcta</span>No es «¿me va a llegar la influenza?». Es «¿qué está entrando hoy a mi galpón sin que yo lo vea?». La respuesta a la segunda pregunta te protege también de la primera, porque ambas usan las mismas puertas.</p>
+    </div>
+  </article>
+
+  <!-- 02 -->
+  <article class="entry" id="vias">
+    <div class="entry-no">02</div>
+    <div>
+      <h2 class="entry-title">Por dónde entra la enfermedad</h2>
+      <p class="entry-where">Ocho vías, casi siempre falla la misma</p>
+      <p class="lead">Un patógeno no viaja solo: necesita un vehículo. En un plantel avícola ese vehículo es casi siempre uno de estos ocho, y en la práctica cada predio tiene una vía débil que explica la mayoría de sus problemas. Identificarla vale más que aplicar las ocho medidas a medias.</p>
+      <div class="cols">
+        <div class="col">
+          <span class="tag tag-warn">Entran con algo que se mueve</span>
+          <ul>
+            <li><b>Personas</b> — botas, ropa, manos, celular</li>
+            <li><b>Vehículos</b> — ruedas y pisaderas</li>
+            <li><b>Equipos prestados</b> — jaulas, carros, herramientas</li>
+            <li><b>Aves nuevas</b> — la vía más directa de todas</li>
+          </ul>
+        </div>
+        <div class="col">
+          <span class="tag tag-warn">Entran con el ambiente</span>
+          <ul>
+            <li><b>Aves silvestres</b> — sobre todo por sus fecas</li>
+            <li><b>Roedores e insectos</b> — el puente permanente</li>
+            <li><b>Alimento</b> — contaminado o mal almacenado</li>
+            <li><b>Agua</b> — pozos y vertientes sin tratar</li>
+          </ul>
+        </div>
+      </div>
+      <p class="note tip"><span class="lbl">Cómo priorizar</span>Ordena tus medidas por vía, no por miedo. Anota las ocho, marca cuáles controlas hoy de verdad y trabaja primero la que esté más abierta. Es más barato cerrar bien una puerta que entornar las ocho.</p>
+    </div>
+  </article>
+
+  <!-- 03 -->
+  <article class="entry" id="porteria">
+    <div class="entry-no">03</div>
+    <div>
+      <h2 class="entry-title">La portería: donde se gana o se pierde</h2>
+      <p class="entry-where">Control de ingreso de personas y vehículos</p>
+      <p class="lead">El punto de control más barato de un plantel es su entrada. No requiere infraestructura cara: requiere que exista una línea clara entre «afuera» y «adentro», y que nadie la cruce sin cambiar de botas. Si esa línea no está dibujada en el suelo y en la cabeza de quien trabaja ahí, el resto de las medidas se cae sola.</p>
+      <div class="cols">
+        <div class="col">
+          <span class="tag tag-ok">Para las personas</span>
+          <ul>
+            <li>Registro de toda visita, con fecha y último contacto con aves</li>
+            <li>Regla de las 24 horas: nadie que haya estado con otras aves</li>
+            <li>Botas y overol <em>del predio</em>, nunca los del visitante</li>
+            <li>Lavado de manos al entrar y al salir</li>
+          </ul>
+        </div>
+        <div class="col">
+          <span class="tag tag-ok">Para los vehículos</span>
+          <ul>
+            <li>Estacionar fuera del área de galpones siempre que se pueda</li>
+            <li>Arco o pediluvio de ruedas cuando el ingreso es inevitable</li>
+            <li>Ruta definida para el camión de alimento</li>
+            <li>Nada de vehículos que vengan de otro plantel el mismo día</li>
+          </ul>
+        </div>
+      </div>
+      <p class="note tip"><span class="lbl">Hazlo fácil de cumplir</span>Un registro de visitas en papel se moja, se pierde y nadie lo revisa. Si quieres que se use, ponlo donde la gente ya tiene el celular en la mano: <a href="https://alazoe.github.io/registro-visitas-avicola/" target="_blank" rel="noopener">registro de visitas con código QR</a>, un cartel en la portería y listo. Además queda el respaldo escrito que te van a pedir.</p>
+    </div>
+  </article>
+
+  <!-- PULL -->
+  <p class="pull">La bioseguridad casi nunca falla por la medida que no se compró. Falla por la puerta que nadie estaba mirando.</p>
+
+  <!-- 04 -->
+  <article class="entry" id="alimento-agua">
+    <div class="entry-no">04</div>
+    <div>
+      <h2 class="entry-title">Alimento y agua: las entradas que se olvidan</h2>
+      <p class="entry-where">Dos insumos que van directo al ave</p>
+      <p class="lead">Son las dos únicas cosas que entran al galpón y terminan dentro del ave todos los días. Aun así, suelen quedar fuera del plan de bioseguridad, porque se asume que vienen limpias. El alimento es una vía clásica de salmonela y el agua de pozo, en el sur, arrastra lo que la lluvia lava desde la superficie.</p>
+      <div class="cols">
+        <div class="col">
+          <span class="tag tag-ok">Alimento</span>
+          <ul>
+            <li>Proveedor que controle salmonela en sus materias primas</li>
+            <li>Silos y sacos cerrados, sin acceso de roedores ni aves</li>
+            <li>Nunca mezclar restos de un lote anterior con el nuevo</li>
+            <li>Revisar humedad, apelmazado y olor a hongo antes de usar</li>
+          </ul>
+        </div>
+        <div class="col">
+          <span class="tag tag-ok">Agua</span>
+          <ul>
+            <li>Análisis al menos una vez al año, y ante cualquier problema</li>
+            <li>Estanques tapados y limpios, sin luz que genere algas</li>
+            <li>Lavado y desinfección de las líneas entre lote y lote</li>
+            <li>Cloración o tratamiento cuando la fuente no es potable</li>
+          </ul>
+        </div>
+      </div>
+      <p class="note"><span class="lbl">Ojo en el sur</span>Con pozos y vertientes, la calidad del agua cambia con la lluvia: después de un temporal puede arrastrar materia orgánica y fecas desde la superficie. Si tu agua no es de red, ese es el momento de mayor riesgo del año, no el verano.</p>
+    </div>
+  </article>
+
+  <!-- 05 -->
+  <article class="entry" id="aves-nuevas">
+    <div class="entry-no">05</div>
+    <div>
+      <h2 class="entry-title">Aves nuevas: la vía más directa</h2>
+      <p class="entry-where">Reposición, ferias y aves que vuelven</p>
+      <p class="lead">Ninguna otra vía introduce tantos patógenos de una sola vez como un ave infectada que entra caminando. Un ave puede verse perfectamente sana y estar eliminando micoplasma o salmonela. Por eso la decisión de dónde comprar pesa más que casi cualquier medida de desinfección posterior.</p>
+      <div class="cols">
+        <div class="col">
+          <span class="tag tag-ok">De dónde traerlas</span>
+          <ul>
+            <li>Plantel de origen con control veterinario y sanidad conocida</li>
+            <li>Historial vacunal por escrito, no de palabra</li>
+            <li>Evitar mezclar aves de distintos orígenes en un mismo galpón</li>
+          </ul>
+        </div>
+        <div class="col">
+          <span class="tag tag-warn">Lo que hay que evitar</span>
+          <ul>
+            <li>Comprar en ferias sin saber de qué plantel vienen</li>
+            <li>Reingresar aves que ya salieron del predio</li>
+            <li>Sumar aves nuevas a un lote que ya está en producción</li>
+          </ul>
+        </div>
+      </div>
+      <p class="note tip"><span class="lbl">Cuarentena que sirve</span>Tres a cuatro semanas, en un espacio realmente separado, atendido al final de la jornada y con botas propias. Una «cuarentena» en el galpón del lado, atendida con las mismas botas y antes que el resto, no es cuarentena: es una forma lenta de contagiar todo el plantel.</p>
+    </div>
+  </article>
+
+  <!-- 06 -->
+  <article class="entry" id="entre-galpones">
+    <div class="entry-no">06</div>
+    <div>
+      <h2 class="entry-title">Que no pase de un galpón a otro</h2>
+      <p class="entry-where">Bioseguridad interna</p>
+      <p class="lead">Si el patógeno ya entró, el objetivo cambia: dejar de defender el perímetro y empezar a defender cada galpón por separado. Aquí la herramienta más potente no cuesta dinero, cuesta orden: el sentido en que te mueves durante el día decide si un problema se queda en un lote o se pasea por todo el predio.</p>
+      <div class="cols">
+        <div class="col">
+          <span class="tag tag-ok">El orden del recorrido</span>
+          <ul>
+            <li>De las aves más jóvenes a las más viejas</li>
+            <li>De las sanas a las enfermas, nunca al revés</li>
+            <li>El galpón con problemas siempre al final del día</li>
+          </ul>
+        </div>
+        <div class="col">
+          <span class="tag tag-ok">La separación física</span>
+          <ul>
+            <li>Botas y ropa asignadas por galpón</li>
+            <li>Pediluvio a la entrada de cada uno, con desinfectante vigente</li>
+            <li>Carros, jaulas y herramientas que no se comparten</li>
+          </ul>
+        </div>
+      </div>
+      <p class="note"><span class="lbl">La mortalidad no espera</span>Retira las aves muertas al menos dos veces al día y define un destino cerrado: compostaje o fosa. Un ave muerta dentro del galpón es alimento para roedores y una fuente de contagio para las que siguen vivas.</p>
+    </div>
+  </article>
+
+  <!-- 07 -->
+  <article class="entry" id="plagas">
+    <div class="entry-no">07</div>
+    <div>
+      <h2 class="entry-title">Plagas y fauna silvestre</h2>
+      <p class="entry-where">El puente entre afuera y adentro</p>
+      <p class="lead">Los roedores y las aves silvestres son el puente permanente entre lo que hay en el entorno y lo que hay en tu galpón. No se cansan, no respetan horarios y no firman el registro de visitas. Controlarlos es menos glamoroso que instalar un arco sanitario, pero rinde bastante más.</p>
+      <div class="cols">
+        <div class="col">
+          <span class="tag tag-ok">Roedores</span>
+          <ul>
+            <li>Cebaderas numeradas, mapeadas y revisadas con frecuencia</li>
+            <li>Perímetro despejado: sin pasto alto, escombros ni pallets</li>
+            <li>Nada de alimento derramado en el suelo, ni un día</li>
+          </ul>
+        </div>
+        <div class="col">
+          <span class="tag tag-ok">Aves silvestres</span>
+          <ul>
+            <li>Malla en aberturas, ventilaciones y bajo el alero</li>
+            <li>Sin charcos ni agua estancada que las atraiga</li>
+            <li>Comederos y bebederos siempre bajo techo</li>
+          </ul>
+        </div>
+      </div>
+      <p class="note"><span class="lbl">La paradoja del free range</span>El acceso al exterior es justamente lo que valoriza el huevo y, al mismo tiempo, lo que más expone al plantel a las aves silvestres. No se resuelve encerrando: se maneja el patio, se drenan los charcos, se rotan los sectores y se vigila con más atención en los meses de migración.</p>
+    </div>
+  </article>
+
+  <!-- 08 -->
+  <article class="entry" id="chile">
+    <div class="entry-no">08</div>
+    <div>
+      <h2 class="entry-title">Chile: influenza aviar y lo que corresponde hacer</h2>
+      <p class="entry-where">Contexto local y obligaciones</p>
+      <p class="lead">Chile ya vivió la llegada de la influenza aviar altamente patógena, con casos en aves silvestres y en planteles, y el sur del país concentra humedales y rutas migratorias que mantienen ese riesgo vivo. Para un productor esto se traduce en dos cosas concretas: extremar el control de las vías del punto 02, y saber exactamente cuándo levantar el teléfono.</p>
+      <div class="cols">
+        <div class="col">
+          <span class="tag tag-ok">Lo que te corresponde</span>
+          <ul>
+            <li>Tener el plantel registrado ante el SAG</li>
+            <li>Mantener registro de visitas y de movimientos de aves</li>
+            <li>Avisar ante mortalidad anormal o sospecha</li>
+            <li>No mover ni vender aves de un lote sospechoso</li>
+          </ul>
+        </div>
+        <div class="col">
+          <span class="tag tag-warn">Señales para llamar hoy</span>
+          <ul>
+            <li>Mortalidad súbita y alta, sin explicación</li>
+            <li>Caída brusca de la postura en pocos días</li>
+            <li>Signos nerviosos: temblor, tortícolis, descoordinación</li>
+            <li>Cresta y barbillas moradas, edema de cara</li>
+          </ul>
+        </div>
+      </div>
+      <p class="note tip"><span class="lbl">Avisar temprano no te perjudica</span>La sospecha se notifica al SAG y se descarta con exámenes. Llamar a tiempo protege a tu plantel y a los vecinos; llamar tarde es lo que termina costando el lote completo. Las exigencias específicas se actualizan: confirma siempre la normativa vigente con la oficina SAG de tu zona.</p>
+    </div>
+  </article>
+
+  <!-- OUTRO -->
+  <div class="outro">
+    <p class="disclaimer">Esta guía ordena los principios de bioseguridad aplicables a planteles de postura y no reemplaza una evaluación en terreno. Cada predio tiene una vía débil distinta según su ubicación, tamaño y sistema productivo: identificarla requiere recorrer el lugar. Si te interesa profundizar en las enfermedades que estas medidas evitan, revisa la guía de <a href="https://avivet.cl/Recursos/Enfermedades-respiratorias.html">enfermedades respiratorias en aves de postura</a>.</p>
+
+    <div class="contact">
+      <div class="kicker">Asesoría veterinaria</div>
+      <h3>¿Quieres revisar la bioseguridad de tu plantel?</h3>
+      <p>Medicina aviar y avicultura para el sur de Chile — Los Ríos, La Araucanía y Los Lagos.</p>
+      <div class="contact-links">
+        <a class="clink" href="https://wa.me/56958956340" target="_blank" rel="noopener"><span class="ck">WhatsApp</span><b>+56 9 5895 6340</b><span class="arr">→</span></a>
+        <a class="clink" href="mailto:andreslazomv@outlook.com"><span class="ck">Email</span><b>andreslazomv@outlook.com</b><span class="arr">→</span></a>
+        <a class="clink" href="https://avivet.cl" target="_blank" rel="noopener"><span class="ck">Web</span><b>avivet.cl</b><span class="arr">→</span></a>
+      </div>
+    </div>
+
+    <p class="foot">MV Andrés Lazo Escobar · <a href="https://avivet.cl/">Volver a avivet.cl</a></p>
+  </div>
+
+</main>
+
+<script>
+(function(){
+  var navScroll = document.getElementById('navScroll');
+  var chips = {};
+  navScroll.querySelectorAll('.idx').forEach(function(c){
+    chips[c.getAttribute('href').slice(1)] = c;
+  });
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        var id = e.target.id;
+        Object.values(chips).forEach(function(c){c.classList.remove('active');});
+        var active = chips[id];
+        if(active){
+          active.classList.add('active');
+          var off = active.offsetLeft - navScroll.clientWidth/2 + active.clientWidth/2;
+          navScroll.scrollTo({left:off, behavior:'smooth'});
+        }
+      }
+    });
+  }, {rootMargin:'-45% 0px -50% 0px', threshold:0});
+  document.querySelectorAll('article.entry').forEach(function(s){io.observe(s);});
+})();
+</script>
+</body>
+</html>
