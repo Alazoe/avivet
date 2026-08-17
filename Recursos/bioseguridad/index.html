@@ -48,8 +48,8 @@ a{color:inherit;}
 /* Masthead bar */
 .topbar{position:sticky;top:0;z-index:200;background:rgba(243,237,225,0.94);backdrop-filter:saturate(1.2) blur(6px);
   border-bottom:1px solid var(--line);height:48px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;}
-.brand{font-family:"Fraunces",serif;font-weight:600;font-size:17px;letter-spacing:-0.01em;}
-.brand .dotrust{color:var(--rust);}
+.brand{font-family:"Fraunces",serif;font-weight:900;font-size:19px;letter-spacing:-0.02em;color:var(--ink);}
+.brand .dotrust{color:var(--olive);font-style:italic;}
 .topbar .meta{font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink3);}
 
 main{max-width:760px;margin:0 auto;padding:0 22px 90px;position:relative;z-index:2;animation:fadeIn .5s ease;}
@@ -98,6 +98,8 @@ main{max-width:760px;margin:0 auto;padding:0 22px 90px;position:relative;z-index
 .entry-title{font-family:"Fraunces",serif;font-weight:600;font-size:30px;line-height:1.05;letter-spacing:-0.015em;margin-bottom:5px;}
 .entry-where{font-size:11.5px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink3);margin-bottom:16px;}
 .lead{font-family:"Fraunces",serif;font-size:18.5px;line-height:1.5;color:var(--ink2);max-width:560px;}
+.lead,.note,.disclaimer,.col li{text-align:justify;text-justify:inter-word;hyphens:auto;-webkit-hyphens:auto;}
+@media (max-width:520px){.lead,.note,.disclaimer,.col li{text-align:left;hyphens:manual;}}
 .entry:first-of-type .lead::first-letter{initial-letter:2;font-weight:600;color:var(--rust);margin-right:8px;}
 
 .cols{display:grid;grid-template-columns:1fr 1fr;margin-top:24px;border-top:1px solid var(--line);}
@@ -177,7 +179,7 @@ main{max-width:760px;margin:0 auto;padding:0 22px 90px;position:relative;z-index
 <body>
 
 <div class="topbar">
-  <span class="brand">AviVet<span class="dotrust">.</span></span>
+  <span class="brand">Avi<span class="dotrust">Vet</span></span>
   <span class="meta">MV Andrés Lazo · Medicina aviar</span>
 </div>
 
@@ -262,7 +264,7 @@ main{max-width:760px;margin:0 auto;padding:0 22px 90px;position:relative;z-index
     <div>
       <h2 class="entry-title">Una forma de trabajar, no una compra</h2>
       <p class="entry-where">Qué es realmente la bioseguridad</p>
-      <p class="lead">La bioseguridad no es un producto que se instala y queda funcionando. Es el conjunto de decisiones que impiden que un patógeno entre a tu plantel, que se multiplique adentro y que salga hacia los vecinos. Tiene dos mitades: una mentalidad y una rutina. Sin la rutina, la mentalidad es una buena intención; sin la mentalidad, la rutina se abandona el primer día de apuro.</p>
+      <p class="lead">La bioseguridad no es un producto que se instala y queda funcionando. Es una forma de trabajo: el conjunto de decisiones que impiden que un patógeno entre a tu plantel, que se multiplique adentro y que salga hacia los vecinos. Decisiones que se toman todos los días, no una sola vez.</p>
       <div class="cols">
         <div class="col">
           <span class="tag tag-warn">Lo que se ve</span>
@@ -312,7 +314,7 @@ main{max-width:760px;margin:0 auto;padding:0 22px 90px;position:relative;z-index
           </ul>
         </div>
       </div>
-      <p class="note tip"><span class="lbl">Cómo priorizar</span>Ordena tus medidas por vía, no por miedo. Anota las ocho, marca cuáles controlas hoy de verdad y trabaja primero la que esté más abierta. Es más barato cerrar bien una puerta que entornar las ocho.</p>
+      <p class="note tip"><span class="lbl">Cómo priorizar</span>Ordena tus medidas por vía, no por miedo. Anota las ocho, marca cuáles controlas hoy de verdad y trabaja primero la que esté más abierta. Es más barato cerrar bien una puerta que dejar las ocho a medio cerrar.</p>
     </div>
   </article>
 
@@ -320,7 +322,7 @@ main{max-width:760px;margin:0 auto;padding:0 22px 90px;position:relative;z-index
   <article class="entry" id="porteria">
     <div class="entry-no">03</div>
     <div>
-      <h2 class="entry-title">La portería: donde se gana o se pierde</h2>
+      <h2 class="entry-title">La portería: todo comienza acá</h2>
       <p class="entry-where">Control de ingreso de personas y vehículos</p>
       <p class="lead">El punto de control más barato de un plantel es su entrada. No requiere infraestructura cara: requiere que exista una línea clara entre «afuera» y «adentro», y que nadie la cruce sin cambiar de botas. Si esa línea no está dibujada en el suelo y en la cabeza de quien trabaja ahí, el resto de las medidas se cae sola.</p>
       <div class="cols">
