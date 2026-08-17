@@ -6,6 +6,11 @@ Herramienta para generar el informe técnico de una visita a productor en un cli
 se ingresan las características del galpón y del lote, y se descarga un documento
 **Word (.docx) editable** con todos los requerimientos calculados.
 
+## Dos modos
+
+- **Informe** ([`index.html`](index.html)) — formulario de escritorio: llenas los datos y descargas el Word.
+- **Bitácora de terreno** ([`bitacora.html`](bitacora.html)) — pensada para el **celular**: dictas la visita por voz, se guarda sola en el teléfono y generas el informe desde ahí. Ver sección [Bitácora](#bitácora-de-terreno).
+
 ## ¿Cómo funciona?
 
 1. Completa el formulario: productor, fecha de visita, línea genética, fecha de
@@ -38,6 +43,22 @@ se ingresan las características del galpón y del lote, y se descarga un docume
   equipamiento y control ambiental para pollas de reemplazo (válida para todas
   las líneas).
 - **Densidad postura piso**: se comparan dos referencias — 6 aves/m² (recomendación MV Andrés Lazo) y 0,14 m²/ave ≈ 7,14 aves/m² (certificación).
+
+## Bitácora de terreno
+
+[`bitacora.html`](bitacora.html) — captura móvil de la visita:
+
+- **Datos del plantel** + **observaciones por tema**: estado sanitario, cama y ambiente,
+  agua y alimento, equipamiento, mortalidad y bioseguridad, más recomendaciones.
+- **Dictado por voz**: botón 🎤 en cada bloque (Web Speech API, `es-CL`) donde el navegador
+  lo soporta; en iPhone/Safari se usa el micrófono del teclado, que funciona en cualquier campo.
+- **Guardado automático en el teléfono** (localStorage): cada tecla se guarda; se mantiene una
+  lista de visitas que sobrevive al cerrar el navegador. Nada se envía a servidores.
+- **Generar informe Word**: arma las observaciones de todos los bloques y llama al mismo motor
+  `ivCalcular` / `ivConstruirDoc` del informe. Un solo motor, dos entradas.
+- **Respaldo**: exportar/importar la bitácora completa como JSON (para respaldar o mover de dispositivo).
+
+> `bitacora.js` expone `btArmarInput()` (bitácora → input del informe) vía `module.exports` para tests en Node.
 
 ## Stack
 
