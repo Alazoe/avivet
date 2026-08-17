@@ -991,6 +991,9 @@ let tabActual = 'crianza';
 
 // ── INIT ───────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
+  // Este app.js también se usa como fuente de datos (LINEAS/EQ) en informe-visita
+  // y bitacora; ahí no existe la UI de curvas, así que no inicializamos nada.
+  if (!document.getElementById('sel-lineas')) return;
   document.getElementById('fecha-hoy').textContent = new Date().toLocaleDateString('es-CL');
   document.getElementById('fecha-pie').textContent  = new Date().toLocaleDateString('es-CL');
   renderSelectores();
