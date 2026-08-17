@@ -60,6 +60,20 @@ se ingresan las características del galpón y del lote, y se descarga un docume
 
 > `bitacora.js` expone `btArmarInput()` (bitácora → input del informe) vía `module.exports` para tests en Node.
 
+## Diseño del documento
+
+El .docx se genera con una plantilla de informe técnico (`ivConstruirDoc`):
+
+- **Membrete y pie corridos** en cada página (AviVet · Medicina Aviar; contacto + número de página).
+- **Banner de portada** verde con el nombre del predio y la fecha.
+- **Franja-resumen** con las cifras clave (semana, etapa, aves, postura/peso objetivo).
+- **Secciones** con franja de color y numeración; **tablas** con encabezado verde,
+  filas alternadas (cebra) y bordes finos.
+- **Dictámenes con color**: ✔ Cumple en verde, ✘ Sobrecarga en rojo.
+- **Recuadros** para observaciones y recomendaciones, y bloque de firma.
+
+Paleta AviVet (verde `#1B4332`, ámbar `#F0A500`), tipografía Calibri.
+
 ## Stack
 
 - HTML / CSS / JavaScript vanilla, sin build.

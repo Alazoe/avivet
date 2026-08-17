@@ -175,56 +175,161 @@ function ivCalcular(inp) {
 
 // ── DOCUMENTO WORD ──────────────────────────────────────────────────────
 // D = librería docx (global en navegador, require('docx') en node)
+// Diseño de informe técnico: membrete + pie corridos, banner de portada,
+// franja-resumen, secciones con franja de color y tablas con cebra.
 function ivConstruirDoc(inf, D) {
-  const VERDE = '1B4332', AMBAR = 'F0A500', GRIS = '666666';
+  const VERDE = '1B4332', VERDE2 = '2D6A4F', AMBAR = 'F0A500', AMBAR_CL = 'FBEFCF',
+        GRIS = '6B6B6B', TINTA = '1A1A1A', BLANCO = 'FFFFFF',
+        BANDA = 'EDF1EE', ZEBRA = 'F6F3ED', CAJA = 'FAF7F0', LINEA = 'D9D4C8',
+        ROJO = 'B71C1C', LABEL = 'F0EEE7';
+  const FUENTE = 'Calibri';
+  const SB = D.BorderStyle.SINGLE, SH = D.ShadingType.CLEAR;
+  const AL = D.AlignmentType, VA = D.VerticalAlign;
+  const CONTENIDO = 10240;  // ancho útil en twips (carta - márgenes) para tab derecho
 
-  const p = (text, opts = {}) => new D.Paragraph({
-    children: [new D.TextRun({ text, size: opts.size || 22, bold: opts.bold, color: opts.color, italics: opts.italics })],
-    spacing: { after: opts.after != null ? opts.after : 120 },
-    alignment: opts.center ? D.AlignmentType.CENTER : undefined,
+  const run = (text, o = {}) => new D.TextRun({
+    text: String(text), size: o.size || 20, bold: o.bold, italics: o.italics,
+    color: o.color || TINTA, font: FUENTE, allCaps: o.caps,
   });
 
-  const h2 = text => new D.Paragraph({
-    children: [new D.TextRun({ text: text.toUpperCase(), size: 24, bold: true, color: VERDE })],
-    spacing: { before: 320, after: 160 },
-    border: { bottom: { color: AMBAR, size: 12, style: D.BorderStyle.SINGLE, space: 4 } },
+  const p = (text, o = {}) => new D.Paragraph({
+    children: Array.isArray(text) ? text : [run(text, o)],
+    spacing: { after: o.after != null ? o.after : 120, before: o.before || 0, line: o.line },
+    alignment: o.align,
+    shading: o.fill ? { type: SH, color: 'auto', fill: o.fill } : undefined,
+    border: o.border,
+    indent: o.indent,
   });
 
-  const celda = (text, { head, w, bold } = {}) => new D.TableCell({
-    children: [new D.Paragraph({ children: [new D.TextRun({ text: String(text), size: 20, bold: head || bold, color: head ? 'FFFFFF' : undefined })], spacing: { after: 0 } })],
-    shading: head ? { fill: VERDE, type: D.ShadingType.CLEAR, color: 'auto' } : undefined,
-    width: w ? { size: w, type: D.WidthType.PERCENTAGE } : undefined,
-    margins: { top: 60, bottom: 60, left: 100, right: 100 },
+  const nota = text => p(text, { size: 16, color: GRIS, italics: true, after: 60 });
+
+  // franja de sección: número ámbar + título verde sobre banda, borde izq. grueso
+  const h2 = (num, text) => new D.Paragraph({
+    children: [run(num + '   ', { bold: true, color: AMBAR, size: 22 }), run(text, { bold: true, color: VERDE, size: 22, caps: true })],
+    spacing: { before: 300, after: 140 },
+    shading: { type: SH, color: 'auto', fill: BANDA },
+    indent: { left: 130 },
+    border: {
+      left: { color: AMBAR, size: 22, style: SB, space: 10 },
+      bottom: { color: VERDE2, size: 4, style: SB, space: 2 },
+    },
   });
 
-  const tabla = (filas, anchos) => new D.Table({
-    rows: filas.map((f, i) => new D.TableRow({
-      children: f.map((c, j) => celda(c, { head: i === 0, w: anchos ? anchos[j] : undefined })),
-      tableHeader: i === 0,
-    })),
+  const bordes = () => {
+    const b = { style: SB, size: 2, color: LINEA };
+    return { top: b, bottom: b, left: b, right: b, insideHorizontal: b, insideVertical: b };
+  };
+
+  const celda = (text, { head, bold, fill, color, align, w } = {}) => {
+    const s = String(text);
+    const auto = s.startsWith('✔') ? VERDE : s.startsWith('✘') ? ROJO : null;
+    return new D.TableCell({
+      children: [new D.Paragraph({
+        children: [run(s, { bold: head || bold || !!auto, color: head ? BLANCO : (color || auto || TINTA), size: head ? 17 : 19, caps: head })],
+        spacing: { after: 0 }, alignment: align || (head ? AL.LEFT : undefined),
+      })],
+      shading: { type: SH, color: 'auto', fill: head ? VERDE : (fill || BLANCO) },
+      width: w ? { size: w, type: D.WidthType.PERCENTAGE } : undefined,
+      margins: { top: 55, bottom: 55, left: 110, right: 110 },
+      verticalAlign: VA.CENTER,
+    });
+  };
+
+  // tabla con encabezado + filas alternadas (cebra)
+  const tabla = (filas, anchos, aligns) => new D.Table({
     width: { size: 100, type: D.WidthType.PERCENTAGE },
+    borders: bordes(),
+    rows: filas.map((f, i) => new D.TableRow({
+      tableHeader: i === 0,
+      children: f.map((c, j) => celda(c, {
+        head: i === 0, w: anchos ? anchos[j] : undefined,
+        align: aligns ? aligns[j] : undefined,
+        fill: i > 0 && i % 2 === 0 ? ZEBRA : undefined,
+      })),
+    })),
   });
+
+  // tabla de datos: etiqueta (fondo) + valor
+  const tablaDatos = pares => new D.Table({
+    width: { size: 100, type: D.WidthType.PERCENTAGE },
+    borders: bordes(),
+    rows: pares.map(([k, v]) => new D.TableRow({
+      children: [celda(k, { bold: true, w: 36, fill: LABEL }), celda(v, { w: 64 })],
+    })),
+  });
+
+  // recuadro para texto libre (observaciones / recomendaciones)
+  const caja = txt => new D.Paragraph({
+    children: [run(txt, { size: 20 })],
+    shading: { type: SH, color: 'auto', fill: CAJA },
+    border: {
+      left: { color: AMBAR, size: 20, style: SB, space: 10 },
+      top: { color: LINEA, size: 2, style: SB, space: 6 },
+      bottom: { color: LINEA, size: 2, style: SB, space: 6 },
+      right: { color: LINEA, size: 2, style: SB, space: 6 },
+    },
+    spacing: { after: 140, line: 288 },
+    indent: { left: 120, right: 100 },
+  });
+  const lineasVacias = n => Array.from({ length: n }, () =>
+    p('', { border: { bottom: { color: LINEA, size: 4, style: SB, space: 8 } }, after: 260 }));
 
   const m = inf.meta, e = inf.edad, o = inf.objetivo;
   const visita = new Date((m.fechaVisita || new Date().toISOString().slice(0, 10)) + 'T00:00:00');
   const nac = new Date(m.nacimiento + 'T00:00:00');
   const hijos = [];
 
-  // ── encabezado ──
+  // ── banner de portada ──
   hijos.push(new D.Paragraph({
-    children: [new D.TextRun({ text: 'INFORME DE VISITA TÉCNICA', size: 40, bold: true, color: VERDE })],
-    alignment: D.AlignmentType.CENTER, spacing: { after: 60 },
+    shading: { type: SH, color: 'auto', fill: VERDE },
+    alignment: AL.CENTER, spacing: { after: 0 },
+    border: { top: { color: AMBAR, size: 26, style: SB }, bottom: { color: AMBAR, size: 26, style: SB } },
+    children: [
+      new D.TextRun({ break: 1 }),
+      new D.TextRun({ text: 'INFORME DE VISITA TÉCNICA', bold: true, color: BLANCO, size: 32, font: FUENTE }),
+      new D.TextRun({ break: 1 }),
+      new D.TextRun({ text: (m.productor || 'Productor') + '   ·   ' + ivFecha(visita), color: AMBAR_CL, size: 19, font: FUENTE }),
+      new D.TextRun({ break: 1 }),
+    ],
   }));
-  hijos.push(p('AviVet · MV Andrés Lazo Escobar · Medicina Aviar · avivet.cl', { center: true, color: GRIS, size: 20, after: 320 }));
+
+  // ── franja-resumen (cifras clave) ──
+  const fichas = [
+    { num: String(e.semana), lbl: 'Semana', sub: e.meses + ' meses' },
+    { num: e.etapa, lbl: 'Etapa', sub: e.enCrianza ? e.fase : 'en producción', size: 20 },
+    { num: ivFmt(m.aves), lbl: 'Aves', sub: (m.sistema === 'jaula' ? 'Jaula' : 'Piso') + (m.exterior ? ' + exterior' : '') },
+    o.pct != null
+      ? { num: ivFmt1(o.pct) + '%', lbl: 'Postura esperada', sub: '≈ ' + ivFmt(o.huevosDia) + ' huevos/día' }
+      : { num: ivFmt(o.pesoMin * 1000) + '–' + ivFmt(o.pesoMax * 1000), lbl: 'Peso objetivo (g)', sub: 'semana ' + e.semana, size: 18 },
+  ];
+  const ficha = f => new D.TableCell({
+    children: [
+      new D.Paragraph({ alignment: AL.CENTER, spacing: { before: 60, after: 20 }, children: [run(f.num, { bold: true, color: VERDE, size: f.size || 30 })] }),
+      new D.Paragraph({ alignment: AL.CENTER, spacing: { after: 8 }, children: [run(f.lbl, { bold: true, size: 15, caps: true, color: TINTA })] }),
+      new D.Paragraph({ alignment: AL.CENTER, spacing: { after: 60 }, children: [run(f.sub, { size: 14, color: GRIS })] }),
+    ],
+    shading: { type: SH, color: 'auto', fill: CAJA },
+    borders: { top: { color: AMBAR, size: 20, style: SB } },
+    margins: { top: 40, bottom: 40, left: 80, right: 80 },
+    width: { size: Math.round(100 / fichas.length), type: D.WidthType.PERCENTAGE },
+    verticalAlign: VA.CENTER,
+  });
+  hijos.push(new D.Paragraph({ spacing: { after: 60 }, children: [] }));
+  hijos.push(new D.Table({
+    width: { size: 100, type: D.WidthType.PERCENTAGE },
+    borders: { top: { style: D.BorderStyle.NONE }, bottom: { style: D.BorderStyle.NONE }, left: { style: D.BorderStyle.NONE }, right: { style: D.BorderStyle.NONE }, insideVertical: { color: BLANCO, size: 8, style: SB }, insideHorizontal: { style: D.BorderStyle.NONE } },
+    rows: [new D.TableRow({ children: fichas.map(ficha) })],
+  }));
+  hijos.push(new D.Paragraph({ spacing: { after: 120 }, children: [] }));
 
   // ── 1. datos generales ──
-  hijos.push(h2('1. Datos generales'));
+  hijos.push(h2('1', 'Datos generales'));
   const datos = [
-    ['Productor / Predio', m.productor || '________________'],
-    ['Ubicación', m.ubicacion || '________________'],
+    ['Productor / Predio', m.productor || '—'],
+    ['Ubicación', m.ubicacion || '—'],
     ['Fecha de visita', ivFecha(visita)],
     ['Línea genética', m.linea],
-    ['Fecha de nacimiento del lote', ivFecha(nac)],
+    ['Nacimiento del lote', ivFecha(nac)],
     ['Edad del lote', `Semana ${e.semana} · día ${e.diaVida} de vida (${e.meses} meses)`],
     ['Etapa', e.etapa + (e.enCrianza ? ` — fase ${e.fase}` : '')],
     ['Número de aves', ivFmt(m.aves)],
@@ -232,14 +337,11 @@ function ivConstruirDoc(inf, D) {
   if (m.largo > 0 && m.ancho > 0) datos.push(['Dimensiones del galpón', `${ivFmt1(m.largo)} × ${ivFmt1(m.ancho)} m`]);
   if (m.superficie > 0) datos.push(['Superficie del galpón', ivFmt1(m.superficie) + ' m²']);
   datos.push(['Sistema', (m.sistema === 'jaula' ? 'Jaula' : 'Piso') + (m.exterior ? ' con acceso exterior' : '')]);
-  hijos.push(new D.Table({
-    rows: datos.map(f => new D.TableRow({ children: [celda(f[0], { bold: true, w: 38 }), celda(f[1], { w: 62 })] })),
-    width: { size: 100, type: D.WidthType.PERCENTAGE },
-  }));
+  hijos.push(tablaDatos(datos));
 
   // ── 2. parámetros objetivo ──
-  hijos.push(h2(`2. Parámetros objetivo — semana ${e.semana}`));
-  if (e.notaClamp) hijos.push(p(e.notaClamp, { italics: true, color: GRIS, size: 18 }));
+  hijos.push(h2('2', `Parámetros objetivo — semana ${e.semana}`));
+  if (e.notaClamp) hijos.push(nota(e.notaClamp));
   const par = [
     ['Parámetro', 'Por ave', 'Total lote'],
     ['Peso corporal', `${ivFmt(o.pesoMin * 1000)}–${ivFmt(o.pesoMax * 1000)} g`, `Biomasa ≈ ${ivFmt(Math.round(o.biomasa))} kg`],
@@ -251,90 +353,114 @@ function ivConstruirDoc(inf, D) {
     par.push(['Peso del huevo', ivFmt1(o.pesoHuevo) + ' g', `≈ ${ivFmt1(o.huevosDia * o.pesoHuevo / 1000)} kg/día`]);
   }
   if (o.mortEsp != null) par.push(['Mortalidad acumulada esperada', ivFmt1(o.mortEsp) + ' %', `≈ ${ivFmt(o.avesEsperadas)} aves vivas esperadas`]);
-  hijos.push(tabla(par, [30, 30, 40]));
-  hijos.push(p('Fuente: ' + m.fuente, { size: 16, color: GRIS, italics: true }));
+  hijos.push(tabla(par, [34, 28, 38]));
+  hijos.push(nota('Fuente: ' + m.fuente));
 
   // ── 3. equipamiento requerido ──
-  hijos.push(h2(`3. Equipamiento requerido — ${ivFmt(m.aves)} aves (${e.enCrianza ? 'crianza ' + e.fase : 'postura'})`));
+  hijos.push(h2('3', `Equipamiento requerido — ${ivFmt(m.aves)} aves (${e.enCrianza ? 'crianza ' + e.fase : 'postura'})`));
   hijos.push(tabla([['Equipamiento', 'Requerido', 'Estándar'], ...inf.equip], [34, 26, 40]));
   if (e.enCrianza) {
-    hijos.push(p('Comederos redondos según diámetro: ' + IV_COMEDERO_DIAM.map(d => `Ø${d[0]} cm → ${ivFmt(Math.ceil(m.aves / d[1]))} unid. (${d[1]} aves c/u)`).join(' · '), { size: 18, color: GRIS }));
+    hijos.push(nota('Comederos redondos según diámetro: ' + IV_COMEDERO_DIAM.map(d => `Ø${d[0]} cm → ${ivFmt(Math.ceil(m.aves / d[1]))} unid. (${d[1]} aves c/u)`).join(' · ')));
   }
 
   // ── 4. densidad ──
   if (inf.densidad) {
     const d = inf.densidad;
-    hijos.push(h2('4. Densidad'));
-    hijos.push(p(`Densidad actual del galpón: ${ivFmt1(d.real)} aves/m²`, { bold: true, after: 100 }));
+    hijos.push(h2('4', 'Densidad'));
+    hijos.push(p([run('Densidad actual del galpón:  ', { bold: true }), run(ivFmt1(d.real) + ' aves/m²', { bold: true, color: VERDE, size: 24 })], { after: 100 }));
     hijos.push(tabla([
       ['Referencia', 'Densidad máx.', 'Superficie mínima', 'Evaluación'],
       ...d.refs.map(r => [
-        r.nombre,
-        ivFmt1(r.densidad) + ' aves/m²',
-        ivFmt1(r.superficieMin) + ' m²',
+        r.nombre, ivFmt1(r.densidad) + ' aves/m²', ivFmt1(r.superficieMin) + ' m²',
         r.ok ? '✔ Cumple' : `✘ Sobrecarga +${r.exceso}%`,
       ]),
     ], [34, 20, 22, 24]));
   }
 
   // ── 5. ventilación ──
-  hijos.push(h2(`${inf.densidad ? 5 : 4}. Ventilación`));
+  hijos.push(h2(inf.densidad ? '5' : '4', 'Ventilación'));
   hijos.push(tabla([
     ['Parámetro', 'Estándar', 'Requerido para el lote'],
     ['Ventilación mínima', IV_VENT.minima + ' m³/hora/kg', ivFmt(Math.round(inf.ventilacion.min)) + ' m³/hora'],
     ['Capacidad de ventilación', IV_VENT.capacidad + ' m³/hora/kg', ivFmt(Math.round(inf.ventilacion.cap)) + ' m³/hora'],
   ], [34, 26, 40]));
-  hijos.push(p(`Calculado sobre biomasa estimada de ${ivFmt(Math.round(o.biomasa))} kg (${ivFmt(m.aves)} aves × ${ivFmt(Math.round((o.pesoMin + o.pesoMax) / 2 * 1000))} g promedio).`, { size: 18, color: GRIS }));
+  hijos.push(nota(`Calculado sobre biomasa estimada de ${ivFmt(Math.round(o.biomasa))} kg (${ivFmt(m.aves)} aves × ${ivFmt(Math.round((o.pesoMin + o.pesoMax) / 2 * 1000))} g promedio).`));
 
   let nSec = inf.densidad ? 6 : 5;
 
   // ── ambiente crianza ──
   if (inf.ambiente) {
     const a = inf.ambiente;
-    hijos.push(h2(`${nSec}. Temperatura e iluminación de crianza`));
+    hijos.push(h2(String(nSec), 'Temperatura e iluminación de crianza'));
     let cab, filas;
     if (a.columnas) {
-      cab = a.columnas;
-      filas = a.periodos;
+      cab = a.columnas; filas = a.periodos;
     } else {
       const esJaula = a.periodos.some(x => x[1] != null);
       cab = esJaula ? ['Edad', 'T. jaula (°C)', 'T. piso (°C)', 'Intensidad (lux)', 'Horas de luz'] : ['Edad', 'T. piso (°C)', 'Intensidad (lux)', 'Horas de luz'];
       filas = a.periodos.map(x => esJaula ? x : [x[0], x[2], x[3], x[4]]);
     }
     hijos.push(tabla([cab, ...filas.map(f => f.map(v => v == null ? '—' : v))]));
-    hijos.push(p('Fuente: ' + a.fuente + (a.referencial ? ' (referencial — la línea seleccionada no publica tabla propia)' : ''), { size: 16, color: GRIS, italics: true }));
+    hijos.push(nota('Fuente: ' + a.fuente + (a.referencial ? ' (referencial — la línea seleccionada no publica tabla propia)' : '')));
     nSec++;
   }
 
   // ── proyección ──
-  hijos.push(h2(`${nSec}. Proyección próximas semanas`));
+  hijos.push(h2(String(nSec), 'Proyección próximas semanas'));
   hijos.push(tabla([
     ['Semana', 'Etapa', 'Peso corporal', 'Alimento/ave/día', 'Agua/ave/día', '% Postura', 'Peso huevo'],
     ...inf.proyeccion.map(f => [f.sem, f.etapa, f.peso, f.alimento, f.agua, f.pct, f.huevo]),
   ]));
   nSec++;
 
-  // ── observaciones y recomendaciones ──
-  hijos.push(h2(`${nSec}. Observaciones de la visita`));
-  hijos.push(p(m.obs || '_______________________________________________________________________', { after: 60 }));
-  if (!m.obs) { hijos.push(p('_______________________________________________________________________', { after: 60 })); hijos.push(p('_______________________________________________________________________')); }
+  // ── observaciones ──
+  hijos.push(h2(String(nSec), 'Observaciones de la visita'));
+  if (m.obs) hijos.push(caja(m.obs));
+  else hijos.push(...lineasVacias(3));
   nSec++;
 
-  hijos.push(h2(`${nSec}. Recomendaciones`));
-  hijos.push(p(m.reco || '_______________________________________________________________________', { after: 60 }));
-  if (!m.reco) { hijos.push(p('_______________________________________________________________________', { after: 60 })); hijos.push(p('_______________________________________________________________________')); }
+  // ── recomendaciones ──
+  hijos.push(h2(String(nSec), 'Recomendaciones'));
+  if (m.reco) hijos.push(caja(m.reco));
+  else hijos.push(...lineasVacias(3));
 
   // ── firma ──
-  hijos.push(new D.Paragraph({ children: [], spacing: { before: 600 } }));
-  hijos.push(p('______________________________', { center: true, after: 40 }));
-  hijos.push(p('MV Andrés Lazo Escobar', { center: true, bold: true, after: 20 }));
-  hijos.push(p('Medicina Aviar · AviVet', { center: true, color: GRIS, size: 20, after: 20 }));
-  hijos.push(p('WhatsApp +56 9 5895 6340 · andreslazomv@outlook.com · avivet.cl', { center: true, color: GRIS, size: 18 }));
+  hijos.push(new D.Paragraph({ children: [], spacing: { before: 700 } }));
+  hijos.push(p('', { border: { bottom: { color: TINTA, size: 6, style: SB, space: 4 } }, align: AL.CENTER, after: 40, indent: { left: 3200, right: 3200 } }));
+  hijos.push(p('MV Andrés Lazo Escobar', { align: AL.CENTER, bold: true, after: 20 }));
+  hijos.push(p('Médico Veterinario · Medicina Aviar', { align: AL.CENTER, color: GRIS, size: 18 }));
+
+  // ── membrete y pie corridos ──
+  const header = new D.Header({
+    children: [new D.Paragraph({
+      tabStops: [{ type: D.TabStopType.RIGHT, position: CONTENIDO }],
+      spacing: { after: 30 },
+      border: { bottom: { color: AMBAR, size: 10, style: SB, space: 4 } },
+      children: [
+        run('AviVet', { bold: true, color: VERDE, size: 22 }),
+        run('   Medicina Aviar', { color: AMBAR, size: 16 }),
+        new D.TextRun({ text: '\tMV Andrés Lazo Escobar · avivet.cl', color: GRIS, size: 16, font: FUENTE }),
+      ],
+    })],
+  });
+  const footer = new D.Footer({
+    children: [new D.Paragraph({
+      tabStops: [{ type: D.TabStopType.RIGHT, position: CONTENIDO }],
+      spacing: { before: 40 },
+      border: { top: { color: LINEA, size: 4, style: SB, space: 4 } },
+      children: [
+        run('WhatsApp +56 9 5895 6340 · andreslazomv@outlook.com', { color: GRIS, size: 15 }),
+        new D.TextRun({ children: ['\tPágina ', D.PageNumber.CURRENT, ' de ', D.PageNumber.TOTAL_PAGES], color: GRIS, size: 15, font: FUENTE }),
+      ],
+    })],
+  });
 
   return new D.Document({
-    styles: { default: { document: { run: { font: 'Calibri', size: 22 } } } },
+    styles: { default: { document: { run: { font: FUENTE, size: 20, color: TINTA } } } },
     sections: [{
-      properties: { page: { margin: { top: 1000, bottom: 1000, left: 1100, right: 1100 } } },
+      properties: { page: { margin: { top: 1100, bottom: 1000, left: 1000, right: 1000 } } },
+      headers: { default: header },
+      footers: { default: footer },
       children: hijos,
     }],
   });
