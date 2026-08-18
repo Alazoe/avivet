@@ -64,8 +64,10 @@ se ingresan las características del galpón y del lote, y se descarga un docume
 
 El .docx se genera con una plantilla de informe técnico (`ivConstruirDoc`):
 
-- **Membrete y pie corridos** en cada página (AviVet · Medicina Productiva; contacto + número de página).
-- **Banner de portada** verde con el nombre del predio y la fecha.
+- **Membrete con el logo real de AviVet** ([`assets/avivet_logo.png`](assets/)) a la izquierda
+  y el tipo de documento + predio + fecha a la derecha, con regla ámbar (si el logo no carga,
+  cae a un monograma tipográfico).
+- **Pie corrido** en cada página (contacto + número de página).
 - **Franja-resumen** con las cifras clave (semana, etapa, aves, postura/peso objetivo).
 - **Secciones** con franja de color y numeración; **tablas** con encabezado verde,
   filas alternadas (cebra) y bordes finos.

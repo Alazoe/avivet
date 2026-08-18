@@ -177,7 +177,7 @@ function ivCalcular(inp) {
 // D = librería docx (global en navegador, require('docx') en node)
 // Diseño de informe técnico: membrete + pie corridos, banner de portada,
 // franja-resumen, secciones con franja de color y tablas con cebra.
-function ivConstruirDoc(inf, D) {
+function ivConstruirDoc(inf, D, logo) {
   const VERDE = '1B4332', VERDE2 = '2D6A4F', AMBAR = 'F0A500', AMBAR_CL = 'FBEFCF',
         GRIS = '6B6B6B', TINTA = '1A1A1A', BLANCO = 'FFFFFF',
         BANDA = 'EDF1EE', ZEBRA = 'F6F3ED', CAJA = 'FAF7F0', LINEA = 'D9D4C8',
@@ -279,32 +279,35 @@ function ivConstruirDoc(inf, D) {
   const nac = new Date(m.nacimiento + 'T00:00:00');
   const hijos = [];
 
-  // ── portada de autor: monograma + wordmark + tipo de documento ──
+  // ── membrete: logo AviVet + tipo de documento ──
   const NONE = D.BorderStyle.NONE;
-  const celdaMast = (children, { fill, w, ml, mr } = {}) => new D.TableCell({
-    children, shading: { type: SH, color: 'auto', fill }, verticalAlign: VA.CENTER,
-    width: { size: w, type: D.WidthType.PERCENTAGE },
-    margins: { top: 150, bottom: 150, left: ml != null ? ml : 120, right: mr != null ? mr : 120 },
+  const brandCell = logo
+    ? new D.TableCell({
+        children: [new D.Paragraph({ spacing: { after: 0 }, children: [new D.ImageRun({ data: logo, transformation: { width: 250, height: 100 } })] })],
+        verticalAlign: VA.CENTER, width: { size: 50, type: D.WidthType.PERCENTAGE },
+        margins: { top: 80, bottom: 120, left: 60, right: 60 },
+      })
+    : new D.TableCell({
+        children: [
+          new D.Paragraph({ spacing: { after: 0 }, children: [run('AviVet', { bold: true, color: VERDE, size: 40 })] }),
+          new D.Paragraph({ spacing: { before: 20 }, children: [new D.TextRun({ text: 'M E D I C I N A   P R O D U C T I V A', color: AMBAR, size: 14, font: FUENTE })] }),
+        ],
+        verticalAlign: VA.CENTER, width: { size: 50, type: D.WidthType.PERCENTAGE },
+        margins: { top: 120, bottom: 120, left: 120, right: 60 },
+      });
+  const docInfoCell = new D.TableCell({
+    children: [
+      new D.Paragraph({ alignment: AL.RIGHT, spacing: { after: 0 }, children: [run('INFORME DE VISITA TÉCNICA', { bold: true, color: VERDE, size: 20, caps: true })] }),
+      new D.Paragraph({ alignment: AL.RIGHT, spacing: { before: 50 }, children: [run(m.productor || 'Productor', { color: TINTA, size: 18 })] }),
+      new D.Paragraph({ alignment: AL.RIGHT, spacing: { before: 4 }, children: [run(ivFecha(visita) + (m.ubicacion ? '  ·  ' + m.ubicacion : ''), { color: GRIS, size: 16 })] }),
+    ],
+    verticalAlign: VA.CENTER, width: { size: 50, type: D.WidthType.PERCENTAGE },
+    margins: { top: 120, bottom: 120, left: 60, right: 120 },
   });
   hijos.push(new D.Table({
     width: { size: 100, type: D.WidthType.PERCENTAGE },
     borders: { top: { style: NONE }, left: { style: NONE }, right: { style: NONE }, insideHorizontal: { style: NONE }, insideVertical: { style: NONE }, bottom: { color: AMBAR, size: 28, style: SB } },
-    rows: [new D.TableRow({ children: [
-      // monograma
-      celdaMast([new D.Paragraph({ alignment: AL.CENTER, spacing: { after: 0 }, children: [run('AV', { bold: true, color: VERDE, size: 44 })] })],
-        { fill: AMBAR, w: 16, ml: 40, mr: 40 }),
-      // wordmark + tagline
-      celdaMast([
-        new D.Paragraph({ spacing: { after: 0 }, children: [run('AviVet', { bold: true, color: BLANCO, size: 40 })] }),
-        new D.Paragraph({ spacing: { before: 30 }, children: [new D.TextRun({ text: 'M E D I C I N A   P R O D U C T I V A', color: AMBAR_CL, size: 15, font: FUENTE })] }),
-      ], { fill: VERDE, w: 48, ml: 220 }),
-      // tipo de documento + predio + fecha
-      celdaMast([
-        new D.Paragraph({ alignment: AL.RIGHT, spacing: { after: 0 }, children: [run('INFORME DE VISITA TÉCNICA', { bold: true, color: BLANCO, size: 16, caps: true })] }),
-        new D.Paragraph({ alignment: AL.RIGHT, spacing: { before: 40 }, children: [run(m.productor || 'Productor', { color: AMBAR_CL, size: 17 })] }),
-        new D.Paragraph({ alignment: AL.RIGHT, spacing: { before: 6 }, children: [run(ivFecha(visita), { color: AMBAR_CL, size: 15 })] }),
-      ], { fill: VERDE, w: 36, mr: 220 }),
-    ] })],
+    rows: [new D.TableRow({ children: [brandCell, docInfoCell] })],
   }));
 
   // ── franja-resumen (cifras clave) ──
@@ -485,6 +488,18 @@ function ivNombreArchivo(inf) {
   return `Informe_Visita_${prod}_${inf.meta.fechaVisita || new Date().toISOString().slice(0, 10)}.docx`;
 }
 
+// Carga el logo AviVet (assets/avivet_logo.png) como bytes para incrustarlo en el .docx.
+// Devuelve Uint8Array, o null si no está disponible (el documento cae al monograma).
+let ivLogoCache = null;
+async function ivCargarLogo() {
+  if (ivLogoCache !== null) return ivLogoCache || null;
+  try {
+    const r = await fetch('assets/avivet_logo.png');
+    ivLogoCache = r.ok ? new Uint8Array(await r.arrayBuffer()) : false;
+  } catch { ivLogoCache = false; }
+  return ivLogoCache || null;
+}
+
 // ── EXPORT PARA NODE (tests) ────────────────────────────────────────────
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = { ivCalcular, ivConstruirDoc, ivNombreArchivo, IV_FASES_CRIANZA, IV_VENT };
@@ -545,7 +560,8 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
 
   window.ivDescargarWord = async function () {
     if (!ivInforme) return;
-    const doc = ivConstruirDoc(ivInforme, docx);
+    const logo = await ivCargarLogo();
+    const doc = ivConstruirDoc(ivInforme, docx, logo);
     const blob = await docx.Packer.toBlob(doc);
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);

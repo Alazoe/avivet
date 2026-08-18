@@ -226,7 +226,8 @@ window.btGenerarWord = async function () {
   const inf = ivCalcular(btArmarInput(v));
   if (inf.error) { err.textContent = inf.error; err.style.display = 'block'; return; }
 
-  const doc = ivConstruirDoc(inf, docx);
+  const logo = await ivCargarLogo();
+  const doc = ivConstruirDoc(inf, docx, logo);
   const blob = await docx.Packer.toBlob(doc);
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
