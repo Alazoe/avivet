@@ -279,18 +279,32 @@ function ivConstruirDoc(inf, D) {
   const nac = new Date(m.nacimiento + 'T00:00:00');
   const hijos = [];
 
-  // ── banner de portada ──
-  hijos.push(new D.Paragraph({
-    shading: { type: SH, color: 'auto', fill: VERDE },
-    alignment: AL.CENTER, spacing: { after: 0 },
-    border: { top: { color: AMBAR, size: 26, style: SB }, bottom: { color: AMBAR, size: 26, style: SB } },
-    children: [
-      new D.TextRun({ break: 1 }),
-      new D.TextRun({ text: 'INFORME DE VISITA TÉCNICA', bold: true, color: BLANCO, size: 32, font: FUENTE }),
-      new D.TextRun({ break: 1 }),
-      new D.TextRun({ text: (m.productor || 'Productor') + '   ·   ' + ivFecha(visita), color: AMBAR_CL, size: 19, font: FUENTE }),
-      new D.TextRun({ break: 1 }),
-    ],
+  // ── portada de autor: monograma + wordmark + tipo de documento ──
+  const NONE = D.BorderStyle.NONE;
+  const celdaMast = (children, { fill, w, ml, mr } = {}) => new D.TableCell({
+    children, shading: { type: SH, color: 'auto', fill }, verticalAlign: VA.CENTER,
+    width: { size: w, type: D.WidthType.PERCENTAGE },
+    margins: { top: 150, bottom: 150, left: ml != null ? ml : 120, right: mr != null ? mr : 120 },
+  });
+  hijos.push(new D.Table({
+    width: { size: 100, type: D.WidthType.PERCENTAGE },
+    borders: { top: { style: NONE }, left: { style: NONE }, right: { style: NONE }, insideHorizontal: { style: NONE }, insideVertical: { style: NONE }, bottom: { color: AMBAR, size: 28, style: SB } },
+    rows: [new D.TableRow({ children: [
+      // monograma
+      celdaMast([new D.Paragraph({ alignment: AL.CENTER, spacing: { after: 0 }, children: [run('AV', { bold: true, color: VERDE, size: 44 })] })],
+        { fill: AMBAR, w: 16, ml: 40, mr: 40 }),
+      // wordmark + tagline
+      celdaMast([
+        new D.Paragraph({ spacing: { after: 0 }, children: [run('AviVet', { bold: true, color: BLANCO, size: 40 })] }),
+        new D.Paragraph({ spacing: { before: 30 }, children: [new D.TextRun({ text: 'M E D I C I N A   P R O D U C T I V A', color: AMBAR_CL, size: 15, font: FUENTE })] }),
+      ], { fill: VERDE, w: 48, ml: 220 }),
+      // tipo de documento + predio + fecha
+      celdaMast([
+        new D.Paragraph({ alignment: AL.RIGHT, spacing: { after: 0 }, children: [run('INFORME DE VISITA TÉCNICA', { bold: true, color: BLANCO, size: 16, caps: true })] }),
+        new D.Paragraph({ alignment: AL.RIGHT, spacing: { before: 40 }, children: [run(m.productor || 'Productor', { color: AMBAR_CL, size: 17 })] }),
+        new D.Paragraph({ alignment: AL.RIGHT, spacing: { before: 6 }, children: [run(ivFecha(visita), { color: AMBAR_CL, size: 15 })] }),
+      ], { fill: VERDE, w: 36, mr: 220 }),
+    ] })],
   }));
 
   // ── franja-resumen (cifras clave) ──
