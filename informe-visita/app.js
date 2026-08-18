@@ -445,7 +445,7 @@ function ivConstruirDoc(inf, D, logo) {
   hijos.push(new D.Paragraph({ children: [], spacing: { before: 700 } }));
   hijos.push(p('', { border: { bottom: { color: TINTA, size: 6, style: SB, space: 4 } }, align: AL.CENTER, after: 40, indent: { left: 3200, right: 3200 } }));
   hijos.push(p('MV Andrés Lazo Escobar', { align: AL.CENTER, bold: true, after: 20 }));
-  hijos.push(p('Médico Veterinario · Medicina Productiva', { align: AL.CENTER, color: GRIS, size: 18 }));
+  hijos.push(p('Médico Veterinario · Asesoría Veterinaria', { align: AL.CENTER, color: GRIS, size: 18 }));
 
   // ── membrete y pie corridos ──
   const header = new D.Header({
@@ -455,7 +455,7 @@ function ivConstruirDoc(inf, D, logo) {
       border: { bottom: { color: AMBAR, size: 10, style: SB, space: 4 } },
       children: [
         run('AviVet', { bold: true, color: VERDE, size: 22 }),
-        run('   Medicina Productiva', { color: AMBAR, size: 16 }),
+        run('   Asesoría Veterinaria', { color: AMBAR, size: 16 }),
         new D.TextRun({ text: '\tMV Andrés Lazo Escobar · avivet.cl', color: GRIS, size: 16, font: FUENTE }),
       ],
     })],
