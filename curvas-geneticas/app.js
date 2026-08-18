@@ -984,6 +984,96 @@ const LINEAS = {
   },
 };
 
+// ── REFERENCIA BIBLIOGRÁFICA POR LÍNEA ────────────────────────────────
+// Se muestra al pie de la página según la línea seleccionada.
+// `detalle`: [qué dato, de dónde sale]. Un texto que parte con (*) marca estimación.
+const REFERENCIAS = {
+
+  'Hy-Line Brown': {
+    manual:  'Guía de Rendimiento — Ponedoras Comerciales, Sistemas Convencionales · Estándares de Chile',
+    editor:  'Hy-Line International',
+    edicion: 'Octubre 2025',
+    codigo:  'BRNM STD CHILE 061726',
+    sistema: 'Jaula convencional y jaula de colonias',
+    url:     'https://www.hyline.com/filesimages/Hy-Line-Products/Hy-Line-Product-PDFs/Brown/Brown%20Max/MAX%20STD%20CHILE.pdf',
+    detalle: [
+      ['Peso, alimento, agua y mortalidad', 'Oficial — Tablas de Rendimiento de los períodos de crianza y producción'],
+      ['% postura y peso de huevo',         'Oficial — punto medio del rango bajo–alto de la tabla de producción'],
+      ['Distribución tamaño de huevo',      'Oficial — Estándares de la Unión Europea, semanal (semanas pares)'],
+      ['Temperatura e iluminación crianza', 'Oficial — Recomendaciones de Temperatura e Iluminación de Cría'],
+    ],
+  },
+
+  'Hy-Line Brown Alt.': {
+    manual:  'Guía de Rendimiento — Ponedoras Comerciales, Sistemas Alternativos · Estándares Internacionales',
+    editor:  'Hy-Line International',
+    edicion: 'Mayo 2026',
+    codigo:  'BRN ALT STD SPN 070226',
+    sistema: 'Piso, aviario y free-range (libre de jaula)',
+    url:     'https://www.hyline.com/filesimages/Hy-Line-Products/Hy-Line-Product-PDFs/Brown/Brown%20Alt/BRN%20ALT%20STD%20SPN.pdf',
+    detalle: [
+      ['Peso, alimento, agua y mortalidad', 'Oficial — Tablas de Rendimiento de los períodos de crianza y producción'],
+      ['% postura y peso de huevo',         'Oficial — punto medio del rango bajo–alto de la tabla de producción'],
+      ['Distribución tamaño de huevo',      'Oficial — Estándares de la Unión Europea, semanal (semanas pares)'],
+      ['Temperatura e iluminación crianza', 'Oficial — Recomendaciones de Temperatura e Iluminación de cría (piso)'],
+      ['Densidad de postura',               'Oficial — 7–9 aves/m² de espacio utilizable; mayor densidad en aviario según fabricante'],
+    ],
+  },
+
+  'Hy-Line W-80': {
+    manual:  'Hy-Line W-80 — Estándares de Chile',
+    editor:  'Hy-Line International',
+    edicion: 'Enero 2024',
+    sistema: 'Jaula',
+    detalle: [
+      ['Peso, alimento, agua y mortalidad', 'Oficial — tablas de rendimiento de crianza y producción'],
+      ['Distribución tamaño de huevo',      'Oficial — Estándares de la Unión Europea, semanal (semanas pares)'],
+      ['Temperatura e iluminación crianza', 'Oficial — recomendaciones de cría (temperatura de jaula y de piso)'],
+      ['Rangos sin cuadro explícito',       '(*) Estimados a partir de las curvas publicadas en el manual'],
+    ],
+  },
+
+  'Lohmann Brown': {
+    manual:  'Lohmann Brown-Lite — Guía de Manejo para Sistemas Alternativos',
+    editor:  'Lohmann Breeders',
+    edicion: '2021',
+    sistema: 'Sistemas alternativos',
+    detalle: [
+      ['% postura y peso de huevo (sem 19–90)', 'Oficial — tabla de objetivos de performance'],
+      ['Peso corporal',                          'Oficial — Tabla 17 del manual'],
+      ['Alimento, agua, crianza y sem 91–100',   '(*) Estimados: el manual no publica cuadro para estos tramos'],
+      ['Distribución tamaño de huevo',           '(*) Referencia tomada de Hy-Line Brown — pendiente dato propio de la línea'],
+    ],
+  },
+
+  'Nick Brown': {
+    manual:  'H&N Brown Nick — Guía de Manejo',
+    editor:  'H&N International',
+    sistema: 'Jaula',
+    detalle: [
+      ['Peso corporal de crianza',        'Oficial — Tabla 4 del manual'],
+      ['% postura, peso de huevo',        'Oficial — Tabla 28 (producción y viabilidad)'],
+      ['Mortalidad de postura',           'Derivada: 100 − % viabilidad de la Tabla 28'],
+      ['Alimento, agua y mort. crianza',  '(*) Estimados según curvas publicadas para manejo equivalente'],
+      ['Distribución tamaño de huevo',    '(*) Referencia tomada de Hy-Line Brown — pendiente dato propio de la línea'],
+    ],
+  },
+
+  'Dekalb Brown': {
+    manual:  'Dekalb Brown — Product Guide',
+    editor:  'Hendrix Genetics',
+    sistema: 'Jaula (ambiente de crianza tomado de la guía de sistemas alternativos)',
+    detalle: [
+      ['Peso, alimento, % postura y mortalidad', 'Oficial — tablas del Product Guide'],
+      ['Peso y tamaño de huevo',                 'Oficial — tabla de clasificación por peso, semanal'],
+      ['Agua',                                   '(*) Estimada: el Product Guide no publica cuadro de consumo'],
+      ['Temperatura, humedad e iluminación',     'Oficial — Hendrix Genetics, Guía de Manejo Sistemas Alternativos (Dekalb / ISA)'],
+      ['Técnica de alimentación en cría',        'Oficial — misma guía, sección 4.4'],
+    ],
+  },
+
+};
+
 // ── ESTADO GLOBAL ─────────────────────────────────────────────────────
 let lineaSel  = 'Hy-Line Brown';
 let nAves     = 2000;
@@ -1129,6 +1219,45 @@ function actualizarTodo() {
   renderCrianza();
   renderPostura();
   renderEquipamiento();
+  renderFuentes();
+}
+
+// ── FUENTE DE LA LÍNEA SELECCIONADA ───────────────────────────────────
+function renderFuentes() {
+  const cont = document.getElementById('fuente-linea');
+  if (!cont) return;
+
+  const R = REFERENCIAS[lineaSel];
+  if (!R) { cont.innerHTML = ''; return; }
+
+  const L = LINEAS[lineaSel];
+  const meta = [R.editor, R.edicion, R.codigo].filter(Boolean).join(' · ');
+  const titulo = R.url
+    ? `<a href="${R.url}" target="_blank" rel="noopener">${R.manual}</a>`
+    : R.manual;
+
+  const filas = R.detalle.map(([campo, origen]) => {
+    const est = origen.startsWith('(*)');
+    return `<tr>
+      <td class="fuente-campo">${campo}</td>
+      <td class="${est ? 'fuente-est' : ''}">${origen}</td>
+    </tr>`;
+  }).join('');
+
+  cont.innerHTML = `
+    <div class="fuente-cab">
+      <span class="fuente-linea-nom" style="--lcolor:${L.color}">${lineaSel}</span>
+      <span class="fuente-sistema">${R.sistema}</span>
+    </div>
+    <p class="fuente-manual">${titulo}</p>
+    <p class="fuente-meta">${meta}</p>
+    <div class="tabla-wrap">
+      <table class="tabla-fuente">
+        <thead><tr><th>Dato en la app</th><th>De dónde sale</th></tr></thead>
+        <tbody>${filas}</tbody>
+      </table>
+    </div>
+    <p class="fuente-pie">Cobertura: crianza semanas 1–${L.crianzaSem} · postura semanas ${L.postura[0][0]}–${L.postura[L.postura.length - 1][0]}. Las filas marcadas con (*) son estimaciones, no valores de tabla oficial.</p>`;
 }
 
 // ── HELPER MORTALIDAD ─────────────────────────────────────────────────

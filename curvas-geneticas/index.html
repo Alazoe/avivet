@@ -149,6 +149,26 @@ tbody tr:hover{background:var(--acento-cl)}
 .metodo-lista li::before{content:'·';position:absolute;left:6px;top:-2px;font-size:22px;color:var(--acento);font-weight:700}
 .metodo-lista strong{color:var(--prim);font-weight:600}
 
+/* ── Ficha de fuente por línea ──────────────────────────────────────── */
+#fuente-linea{background:var(--fondo);border:1px solid var(--linea);padding:20px 22px}
+.fuente-cab{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:12px}
+.fuente-linea-nom{font-family:var(--fuente-t);font-size:18px;font-weight:600;color:var(--prim);
+  padding-left:12px;position:relative}
+.fuente-linea-nom::before{content:'';position:absolute;left:0;top:3px;bottom:3px;width:4px;
+  background:var(--lcolor,var(--acento))}
+.fuente-sistema{font-family:var(--fuente-m);font-size:11px;color:var(--tenue);
+  background:var(--papel);border:1px solid var(--linea);padding:3px 10px;border-radius:3px}
+.fuente-manual{font-size:15px;color:var(--prim);line-height:1.5;margin-bottom:4px}
+.fuente-manual a{color:var(--prim);text-decoration:underline;text-underline-offset:3px}
+.fuente-manual a:hover{color:var(--acento)}
+.fuente-meta{font-family:var(--fuente-m);font-size:12px;color:var(--tenue);margin-bottom:16px}
+.tabla-fuente{font-size:13.5px}
+.tabla-fuente td{text-align:left;line-height:1.55}
+.tabla-fuente th{text-align:left}
+.fuente-campo{color:var(--prim);font-weight:500;white-space:nowrap}
+.fuente-est{color:var(--tenue);font-style:italic}
+.fuente-pie{font-size:13px;color:var(--suave);line-height:1.6;margin-top:14px}
+
 /* ── Pie ────────────────────────────────────────────────────────────── */
 .pie{margin-top:48px;padding:24px 0;border-top:1px solid var(--linea);font-size:13px;color:var(--tenue);text-align:center;line-height:1.7}
 .pie strong{color:var(--prim)}
@@ -643,13 +663,10 @@ tbody tr:hover{background:var(--acento-cl)}
   <!-- ░░ METODOLOGÍA ░░ -->
   <section class="bloque metodo">
     <h2>Fuentes y metodología</h2>
-    <ul class="metodo-lista">
-      <li><strong>Hy-Line Brown:</strong> crianza (sem 1–17) y postura (sem 18–100) de la <em>Guía de Rendimiento — Ponedoras Comerciales, Estándares de Chile</em> (sistemas convencionales / jaula), Hy-Line International, octubre 2025. Peso, alimento, agua, mortalidad, tamaño de huevo y ambiente de crianza son valores oficiales de tabla.</li>
-      <li><strong>Hy-Line Brown Alt.:</strong> misma línea genética en <strong>sistemas alternativos (libre de jaula: piso, aviario, free-range)</strong>. Crianza (sem 1–17) y postura (sem 18–100) de la <em>Guía de Rendimiento — Ponedoras Comerciales, Sistemas Alternativos</em> (estándares internacionales), Hy-Line International, mayo 2026. Densidad de referencia en postura: 7–9 aves/m² de espacio utilizable.</li>
-      <li><strong>Hy-Line W-80:</strong> datos del Manual Hy-Line W-80 Standard para Chile (sistema jaula). Valores estimados donde el manual entrega rangos sin cuadro explícito.</li>
-      <li><strong>Lohmann Brown:</strong> peso corporal, alimento y agua de sem 1–100 extraídos del Manual Lohmann Brown Lite. Porcentaje de postura y peso de huevo estimados según curvas de referencia de la línea.</li>
-      <li><strong>Nick Brown:</strong> datos estimados basados en el manual Nick Chick (Hendrix Genetics). Los valores se aproximan a las curvas publicadas para condiciones de manejo similar.</li>
-      <li><strong>Equipamiento:</strong> ratios tomados de los requisitos mínimos del manual Hy-Line para Chile y referencias de manejo no convencional. La calculadora entrega valores mínimos recomendados.</li>
+    <p class="bloque-desc">Referencia del manual de la línea seleccionada arriba. Cambia de línea y esta ficha se actualiza.</p>
+    <div id="fuente-linea"></div>
+    <ul class="metodo-lista" style="margin-top:28px">
+      <li><strong>Equipamiento:</strong> ratios tomados de los requisitos mínimos del manual Hy-Line para Chile y referencias de manejo no convencional. La calculadora entrega valores mínimos recomendados y es común a todas las líneas.</li>
       <li><strong>Advertencia:</strong> las curvas son referencias orientativas. El manejo real (sanidad, nutrición, fotoperiodo) puede modificar los resultados ±10–15%.</li>
     </ul>
   </section>

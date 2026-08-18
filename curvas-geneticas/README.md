@@ -27,6 +27,10 @@ Fuente de los números: `app.js` — cada línea tiene indicada su fuente origin
 - **Tab Postura** — % postura, peso de huevo, peso corporal, alimento, agua + tabla con mortalidad + distribución tamaño de huevo (biweekly)
 - **Tab Equipamiento** — calculadora automática para el N° de aves configurado
 - **Iniciar lote** — calcula semana actual y etapa productiva desde la fecha de nacimiento
+- **Ficha de fuente** — al pie de la página, cambia con la línea seleccionada: manual, editor, edición, código de documento, sistema de alojamiento y, dato por dato, de dónde sale cada valor. Las filas marcadas con (*) son estimaciones, no tabla oficial. Cuando el PDF es público, el título enlaza al manual.
+
+Las referencias viven en la constante `REFERENCIAS` de `app.js`, separada de `LINEAS` para no mezclar
+datos numéricos con procedencia. Al agregar una línea nueva hay que sumar su entrada ahí también.
 
 ## Cómo leer las tablas
 
