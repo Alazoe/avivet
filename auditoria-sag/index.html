@@ -646,12 +646,19 @@ function guardarEnSupabase(cb){
     items_no_cumple:sc.tNC,
     items_na:sc.tNA
   };
-  sb.from('auditorias_bioseguridad').upsert([payload]).then(function(res){
+  // Insert la primera vez, update las siguientes — evitamos upsert()
+  // a propósito: el ON CONFLICT DO UPDATE que genera internamente exige
+  // permisos de lectura de la fila para detectar el conflicto, incluso
+  // cuando no hay ninguno, y esta tabla no tiene política de SELECT.
+  var esNueva=!STATE.ultimoSync;
+  var query=esNueva
+    ? sb.from('auditorias_bioseguridad').insert([payload])
+    : sb.from('auditorias_bioseguridad').update(payload).eq('id',STATE.auditoriaId);
+  query.then(function(res){
     if(res.error){STATE.pendienteSync=true;saveState();setSC('error','Error');if(cb)cb(false,res.error.message);return;}
-    var eraNueva=!STATE.ultimoSync;
     STATE.pendienteSync=false;STATE.ultimoSync=new Date().toISOString();saveState();actualizarSync();
     if(cb)cb(true);
-    if(eraNueva){
+    if(esNueva){
       sb.functions.invoke('alerta-bioseguridad',{body:{
         establecimiento:STATE.establecimiento,
         responsable:STATE.nombre,
