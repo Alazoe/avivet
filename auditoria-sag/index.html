@@ -6,6 +6,7 @@
 <title>Auditoría SAG Bioseguridad — AviVet</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root {
   --bg:#f5f4f0; --surface:#ffffff; --surface2:#f0ede8;
@@ -176,6 +177,11 @@ header{
 }
 .form-input:focus,.form-select:focus{outline:none;border-color:var(--accent);background:#fff;}
 .form-select option{background:#fff;}
+.form-check{display:flex;align-items:center;gap:8px;margin-top:4px;}
+.form-check input{width:16px;height:16px;accent-color:var(--accent);}
+.form-check label{font-size:13px;color:var(--text2);}
+.form-error{font-size:12px;color:var(--red);margin-top:10px;display:none;}
+.form-error.visible{display:block;}
 
 .subsection{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:12px;overflow:hidden;box-shadow:var(--shadow);}
 .subsection-header{padding:11px 18px;background:var(--surface2);border-bottom:1px solid var(--border2);font-size:12px;font-weight:700;color:var(--text2);letter-spacing:0.3px;text-transform:uppercase;}
@@ -297,19 +303,19 @@ header{
 <div id="pantalla-inicio">
   <div class="inicio-card">
     <div class="inicio-hero">
-      <div class="inicio-badge">🇨🇱 SAG Chile · Res. 7695/2024</div>
+      <div class="inicio-badge">🇨🇱 SAG Chile · Res. Ex. N°2114/2023</div>
       <div class="inicio-titulo">Auditoría de<br>Bioseguridad Avícola</div>
-      <div class="inicio-sub">Herramienta oficial basada en los manuales SAG · AviVet</div>
+      <div class="inicio-sub">Para planteles industriales de Engorda y Ponedoras · AviVet</div>
     </div>
     <div class="inicio-body">
       <div class="inicio-pasos">
-        <div class="paso"><div class="paso-num">1</div><div class="paso-text"><strong>Ingresa los datos de tu predio</strong><span>Nombre del establecimiento, rubro y fecha</span></div></div>
+        <div class="paso"><div class="paso-num">1</div><div class="paso-text"><strong>Ingresa los datos de tu predio</strong><span>Establecimiento, rubro (Engorda o Ponedoras) y fecha</span></div></div>
         <div class="paso"><div class="paso-num">2</div><div class="paso-text"><strong>Responde cada ítem de bioseguridad</strong><span>Marca Cumple, No Cumple o N/A según lo que observas en terreno</span></div></div>
-        <div class="paso"><div class="paso-num">3</div><div class="paso-text"><strong>Revisa el resumen y guarda el PDF</strong><span>Los resultados quedan registrados automáticamente</span></div></div>
+        <div class="paso"><div class="paso-num">3</div><div class="paso-text"><strong>Revisa el resumen y guarda el PDF</strong><span>Tu resultado queda registrado automáticamente y puedes descargarlo</span></div></div>
       </div>
       <div class="inicio-aviso">
         <div class="aviso-icon">💡</div>
-        <div>Los ítems con <strong style="color:var(--red)">*</strong> son requisitos críticos según la Res. 7695/2024. Puedes completar la auditoría sin internet — se sincronizará automáticamente cuando tengas conexión.</div>
+        <div>Los ítems con <strong style="color:var(--red)">*</strong> son medidas críticas exigidas por el manual oficial del SAG (<em>D-VYC-VIS-PP-004</em>). Puedes completar la auditoría sin internet — se guarda automáticamente cuando recuperes conexión.</div>
       </div>
       <div class="inicio-retomar" id="inicioBanner">
         <div class="retomar-txt">
@@ -331,7 +337,7 @@ header{
   <header>
     <div class="logo">
       <div class="logo-mark">🐔</div>
-      <div><div class="logo-text">SAG Bioseguridad</div><div class="logo-sub">Res. 7695/2024 · AviVet</div></div>
+      <div><div class="logo-text">SAG Bioseguridad</div><div class="logo-sub">Res. Ex. N°2114/2023 · AviVet</div></div>
     </div>
     <div class="hdr-mid">
       <div class="progress-bar"><div class="progress-fill" id="pFill"></div></div>
@@ -339,7 +345,7 @@ header{
     </div>
     <div class="hdr-right">
       <div class="sync-pill offline" id="syncInd"><div class="sync-dot"></div><span id="syncTxt">Sin conexión</span></div>
-      <button class="btn-sync" id="btnSync" onclick="sincronizarPendientes()">↑ Sincronizar</button>
+      <button class="btn-sync" id="btnSync" onclick="sincronizarPendientes()">↑ Guardar</button>
       <button class="btn-nueva" onclick="confirmarNueva()">+ Nueva</button>
       <button class="btn-pdf" onclick="guardar()">Guardar PDF</button>
     </div>
@@ -356,7 +362,7 @@ header{
   <div class="modal-box">
     <div class="modal-icon">⚠️</div>
     <div class="modal-title">¿Comenzar nueva auditoría?</div>
-    <div class="modal-msg">Se borrarán todos los datos de la auditoría actual. Esta acción no se puede deshacer.<br><br>Asegúrate de haber guardado el PDF si necesitas el registro.</div>
+    <div class="modal-msg">Se borrarán todos los datos de la auditoría actual en este dispositivo. Esta acción no se puede deshacer.<br><br>Asegúrate de haber guardado el PDF si necesitas el registro.</div>
     <div class="modal-btns">
       <button class="btn" onclick="cerrarModal()">Cancelar</button>
       <button class="btn" onclick="limpiarYComenzar()" style="background:var(--red);color:#fff;border-color:var(--red);font-weight:700">Sí, nueva auditoría</button>
@@ -365,140 +371,170 @@ header{
 </div>
 
 <script>
-var APPS_SCRIPT_URL='https://script.google.com/macros/s/AKfycbxqLF0jiNGb2KR14V5Jt-6E5qIezyl02jtsuM6NIW9NXJ95Ri0eAtPMoibIKdJCn_pX/exec';
+// ══ SUPABASE ═══════════════════════════════════════════════════
+// Mismo proyecto que el resto de las herramientas AviVet (registro
+// productivo, ventas). Tabla propia `auditorias_bioseguridad`, de solo
+// inserción pública — ver auditoria-sag/supabase-schema.sql.
+var SUPABASE_URL = 'https://xewujmpycclqjhlmiica.supabase.co';
+var SUPABASE_KEY = 'sb_publishable_v5_FU1w-7P7oeNrW6FYRBQ_cuX-pa9_';
+var sb = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+
+var RUBRO_LABEL = {
+  engorda: 'Engorda',
+  ponedora_a: 'Ponedora A (≥20.000 aves)',
+  ponedora_b: 'Ponedora B (<20.000 aves)'
+};
+
+// =====================================================
+// DATA: checklist oficial SAG — Manual de Bioseguridad en Planteles
+// de Aves (D-VYC-VIS-PP-004 v.02, vigente 13-11-2024, Res. Ex. N°2114/2023)
+// Acotado a establecimientos industriales de Engorda y Ponedoras
+// (no incluye Reproductoras/Abuelas ni Incubadoras).
+//
+// item.req    → medida clasificada como inmediata/crítica en el manual (§10.1)
+// item.rubro  → 'engorda' | 'ponedora' (solo aplica a ese grupo); sin definir = aplica a ambos
+// item.excluye→ lista de valores exactos de STATE.rubro para los que NO aplica
+// =====================================================
 
 var SAGS=[
-  {id:"datos",name:"Datos del Predio",icon:"📋",isDatos:true},
-  {id:"secA",name:"A) Infraestructura y Control",icon:"🏗️",subsections:[
-    {sub:"1. Instalación e Infraestructura",items:[
-      {l:"El establecimiento cuenta con un Responsable de Bioseguridad.",req:true},
-      {l:"Existe imagen o plano de la granja donde se observen caminos de acceso, cercos, zona de ingreso, entre otros.",req:true},
-      {l:"Existe letrero visible que prohíbe la entrada a personas ajenas a la empresa.",req:true},
-      {l:"El establecimiento cuenta con cerco perimetral.",req:true},
-      {l:"El cerco perimetral delimita la unidad epidemiológica e impide el ingreso de personas y vehículos no autorizados.",req:true},
-      {l:"El cerco perimetral evita el ingreso de animales domésticos al establecimiento.",req:true},
-      {l:"Cuenta con señalética de bioseguridad visible para personal y visitas al ingreso.",req:true},
-      {l:"Existe zona de acceso para control y registro de personas y vehículos.",req:true},
-      {l:"Existe zona de desinfección de vehículos que ingresen al establecimiento.",req:true},
-      {l:"Los vehículos del personal o visitas se estacionan fuera del cerco perimetral.",req:true},
-      {l:"Existe filtro sanitario de desinfección para el ingreso y egreso de objetos e insumos.",req:true}
+  {id:'datos',name:'Datos del Predio',icon:'📋',isDatos:true},
+  {id:'secA',name:'A) Infraestructura y Control',icon:'🏗️',subsections:[
+    {sub:'1. Instalación e Infraestructura',items:[
+      {l:'Existe un Responsable de Bioseguridad designado.',req:true},
+      {l:'Existe una imagen, plano o croquis de la granja donde se observan caminos de acceso, cercos perimetrales, zona de ingreso y pabellones.',req:true},
+      {l:'Existe letrero visible y claro que prohíbe la entrada a personas ajenas a la empresa.'},
+      {l:'El establecimiento cuenta con cerco perimetral.',req:true},
+      {l:'El cerco perimetral delimita la unidad epidemiológica e impide el ingreso de personas, maquinaria y vehículos no autorizados.',req:true},
+      {l:'El cerco perimetral evita el ingreso de animales domésticos al establecimiento.',req:true},
+      {l:'Existe señalética de bioseguridad visible en portería y al interior, para personal y visitas.'},
+      {l:'Existe zona de acceso donde se controla y registra el ingreso de personas y vehículos.',req:true},
+      {l:'En portería existe una zona de desinfección para los vehículos que ingresan.',req:true},
+      {l:'Los vehículos del personal o de visitas se estacionan fuera del cerco perimetral.'},
+      {l:'Existe filtro sanitario de desinfección para el ingreso y egreso de objetos e insumos.',req:true}
     ]},
-    {sub:"2. Control de Vehículos",items:[
-      {l:"Existe control y registro de vehículos que ingresan al establecimiento."},
-      {l:"Existe una ruta de tránsito de vehículos autorizados incorporada en los planos.",req:true},
-      {l:"Existe filtro sanitario que permite la desinfección de todos los vehículos que ingresen."},
-      {l:"El establecimiento solo ocupa productos desinfectantes autorizados por el organismo estatal sanitario."},
-      {l:"Existe procedimiento documentado de mantención de los equipos de desinfección."},
-      {l:"Existen registros de verificación de operación y dosificación de desinfectantes auditables."}
+    {sub:'2. Control de Vehículos',items:[
+      {l:'Existe control y registro de los vehículos que ingresan al establecimiento.',req:true},
+      {l:'Existe una ruta de tránsito de vehículos autorizados, incorporada en los planos o croquis.'},
+      {l:'Existe filtro sanitario que permite la desinfección de todos los vehículos que ingresan.',req:true},
+      {l:'El establecimiento solo utiliza productos desinfectantes autorizados por el organismo estatal sanitario correspondiente.',req:true},
+      {l:'Existe un procedimiento documentado de mantención de los equipos de desinfección.'},
+      {l:'Existen registros auditables de verificación de operación y dosificación de los desinfectantes.'}
     ]},
-    {sub:"3. Control de Personas y Visitas",items:[
-      {l:"Existe registro de visitas al ingreso del establecimiento."},
-      {l:"Para reproductoras/abuelas, existe ducha obligatoria. (Aplica para rubro reproductora)"},
-      {l:"Se capacita a visitas sobre normas de bioseguridad al ingreso del establecimiento."},
-      {l:"Existe filtro sanitario al ingreso de personas al establecimiento."},
-      {l:"El filtro sanitario permite el lavado y desinfección de manos.",req:true},
-      {l:"El establecimiento cumple con periodo de vacío sanitario exigido para el ingreso de visitas."},
-      {l:"Existen señaléticas claras con indicaciones de operación del filtro sanitario."},
-      {l:"Se realiza desinfección del calzado al ingreso y egreso del filtro sanitario.",req:true},
-      {l:"El filtro sanitario cuenta con delimitación de zona sucia y zona limpia."},
-      {l:"Existe un procedimiento de limpieza y mantención del filtro sanitario."},
-      {l:"El filtro asegura el cambio completo de vestuario y calzado exclusivo de la empresa, o uso de overol desechable y cubrecalzado."}
+    {sub:'3. Control de Personas y Visitas',items:[
+      {l:'Existe registro de visitas al ingreso del establecimiento.',req:true},
+      {l:'Se capacita a las visitas sobre normas de bioseguridad al momento del ingreso.',req:true},
+      {l:'Existe filtro sanitario al ingreso de personas al establecimiento.',req:true},
+      {l:'El establecimiento cumple con el período de vacío sanitario exigido para el ingreso de visitas.',req:true},
+      {l:'Existen señaléticas claras con las indicaciones de operación del filtro sanitario.'},
+      {l:'Se realiza desinfección del calzado al ingreso y egreso del filtro sanitario, o se usa cubrecalzado.',req:true},
+      {l:'El filtro sanitario cuenta con una delimitación clara entre zona sucia y zona limpia.'},
+      {l:'Existe un procedimiento de limpieza y mantención del filtro sanitario.'},
+      {l:'El filtro asegura cambio completo de vestuario y calzado exclusivo de la empresa, u overol desechable y cubrecalzado.',req:true},
+      {l:'El filtro sanitario permite el lavado y desinfección de manos.',req:true}
     ]},
-    {sub:"4. Trazabilidad de Aves",items:[
-      {l:"Las aves de un día que ingresan provienen de plantas de incubación de empresas registradas ante el SAG."},
-      {l:"Toda ave que ingrese o egrese del establecimiento cumple con la normativa de trazabilidad vigente."},
-      {l:"En caso de expendio de gallinas vivas al detalle, mantiene registro auditable por al menos 1 año. (Aplica rubro postura)",req:true}
+    {sub:'4. Control de Implementos',items:[
+      {l:'Todos los implementos que ingresan o egresan del establecimiento son desinfectados.',req:true}
     ]},
-    {sub:"5. Control de Implementos",items:[
-      {l:"Todos los implementos que ingresan o egresan del establecimiento son desinfectados.",req:true}
+    {sub:'5. Trazabilidad de Aves',items:[
+      {l:'Toda ave que ingresa o egresa del establecimiento cumple con la normativa de trazabilidad vigente, con registros al día.',req:true},
+      {l:'En caso de expendio de gallinas vivas al detalle, se mantiene registro auditable por al menos 1 año.',req:true,rubro:'ponedora'}
     ]}
   ]},
-  {id:"secB",name:"B) Pabellones e Incubación",icon:"🏠",subsections:[
-    {sub:"1. Infraestructura de Pabellones",items:[
-      {l:"El área de tránsito dentro de la zona perimetral está libre de malezas y desechos que puedan atraer vectores y roedores.",req:true},
-      {l:"Cuenta con pediluvio al ingreso de cada pabellón."},
-      {l:"La infraestructura permite realizar limpieza y desinfección.",req:true},
-      {l:"Planteles con cuerpos de agua u otro tipo de producción ajena al avícola al interior de la granja, adoptan medidas de mitigación."},
-      {l:"La infraestructura de los pabellones evita el ingreso de aves silvestres, domésticas y otros animales ajenos."}
+  {id:'secB',name:'B) Pabellones e Instalaciones',icon:'🏠',subsections:[
+    {sub:'1. Infraestructura de Pabellones',items:[
+      {l:'El área de tránsito dentro de la zona perimetral de los pabellones está libre de malezas y desechos que atraigan vectores y roedores.',req:true},
+      {l:'Cada pabellón cuenta con pediluvio al ingreso.',req:true},
+      {l:'La infraestructura permite realizar una limpieza y desinfección adecuadas.'},
+      {l:'Si hay cuerpos de agua u otra producción ajena al rubro avícola dentro de la granja, se adoptan medidas de mitigación.'},
+      {l:'La infraestructura evita el ingreso de aves silvestres, domésticas u otros animales ajenos al establecimiento.'}
     ]},
-    {sub:"2. Limpieza y Desinfección de Pabellones",items:[
-      {l:"El producto desinfectante usado se encuentra autorizado por la autoridad competente."},
-      {l:"El producto desinfectante es usado y dosificado según su ficha técnica disponible."},
-      {l:"Existen registros que avalen el cumplimiento de la frecuencia de limpieza y desinfección establecida por la empresa."}
+    {sub:'2. Limpieza y Desinfección de Instalaciones',items:[
+      {l:'El producto desinfectante utilizado está autorizado por la autoridad competente.',req:true},
+      {l:'El producto desinfectante se usa y dosifica según su ficha técnica disponible en el establecimiento.',req:true},
+      {l:'Existen registros que respaldan el cumplimiento de la frecuencia de limpieza y desinfección establecida por la empresa.'}
     ]}
   ]},
-  {id:"secC",name:"C) Procedimientos Operacionales",icon:"⚙️",subsections:[
-    {sub:"1. Agua de Bebida",items:[
-      {l:"El agua de bebida provista a las aves es potable, sanitizada o potabilizada, o en su defecto mantienen resultados de análisis microbiológicos vigentes."},
-      {l:"Realiza aseo, desinfección y mantención de estanques y red de agua al menos 1 vez al año. Registros auditables.",req:true}
+  {id:'secC',name:'C) Procedimientos Operacionales',icon:'⚙️',subsections:[
+    {sub:'1. Agua de Bebida',items:[
+      {l:'El agua de bebida es potable, sanitizada o potabilizada, o se mantienen análisis microbiológicos vigentes que acrediten su aptitud.',req:true},
+      {l:'Se realiza aseo, desinfección y mantención de estanques y red de agua al menos 1 vez al año, con registros auditables.'}
     ]},
-    {sub:"2. Alimentación",items:[
-      {l:"El establecimiento mantiene guías de despacho o facturas de procedencia del alimento."},
-      {l:"El alimento para las aves se almacena en silos o bodegas cerradas que evitan el ingreso de aves silvestres o roedores."},
-      {l:"La base del silo o alrededor del lugar de almacenamiento del alimento, se encuentra limpia y sin alimento."},
-      {l:"Los silos se limpian y desinfectan en su interior al menos una vez al año o al término del proceso productivo. Registro."},
-      {l:"Para alimento de autoconsumo, el camión que lo transporta es lavado y desinfectado al menos una vez a la semana. Registros verificables."}
+    {sub:'2. Alimentación',items:[
+      {l:'Se mantienen guías de despacho o facturas que acrediten la procedencia del alimento.',req:true},
+      {l:'El alimento se almacena en silos o bodegas cerradas que evitan el ingreso de aves silvestres o roedores.',req:true},
+      {l:'La base del silo y su entorno se mantiene limpia y sin restos de alimento.',req:true},
+      {l:'Los silos se limpian y desinfectan por dentro al menos 1 vez al año, con registro.'},
+      {l:'Para alimento de autoconsumo, el camión que lo transporta se lava y desinfecta al menos 1 vez por semana, con registros verificables.'}
     ]},
-    {sub:"3. Personal y Materiales",items:[
-      {l:"El personal se encuentra capacitado en normas de bioseguridad para el manejo de las aves. Registros."},
-      {l:"Los materiales, herramientas o implementos utilizados con las aves son de uso exclusivo del establecimiento. Maquinarias de uso común son limpiadas y desinfectadas.",req:true},
-      {l:"Se desinfectan los implementos a ocupar con las aves.",req:true}
+    {sub:'3. Manejo de las Aves',items:[
+      {l:'El personal está capacitado en normas de bioseguridad para el manejo de las aves, con registros.'},
+      {l:'Los materiales, herramientas e implementos usados con las aves son de uso exclusivo del establecimiento; el equipo de uso común se limpia y desinfecta.'},
+      {l:'Los implementos a utilizar con las aves se desinfectan antes de su uso.'}
     ]},
-    {sub:"4. Manejo de Huevos",items:[
-      {l:"Los huevos de consumo son almacenados en bodegas en condiciones que disminuyan al mínimo el contacto con polvo y plagas. (Aplica para rubro ponedora)"},
-      {l:"Para huevos de desecho, el establecimiento cuenta con una zona de disposición final separada del área de producción. (Aplica reproductora, incubadora y ponedora)"},
-      {l:"Los huevos fértiles que irán a plantas de incubación son desinfectados. (Aplica para rubro reproductora)"},
-      {l:"En caso de utilizar bandejas plásticas para huevos fértiles, estas son sanitizadas. (Aplica para reproductora e incubadora)"}
+    {sub:'4. Manejo de Huevos',items:[
+      {l:'Los huevos de consumo se almacenan en condiciones que minimizan el contacto con polvo, plagas u otros contaminantes, evitando el ingreso de aves silvestres o roedores.',rubro:'ponedora'},
+      {l:'Los huevos de desecho cuentan con una zona de disposición final separada del área de producción.',rubro:'ponedora'}
     ]},
-    {sub:"5. Manejo de Mortandad",items:[
-      {l:"El establecimiento cuenta con una zona o área para disposición de cadáveres, cerrada."},
-      {l:"Los contenedores para almacenar y/o transportar aves muertas son fáciles de limpiar y desinfectar."},
-      {l:"Existe registro de mortalidad diaria."},
-      {l:"Las aves muertas son depositadas en recipientes cerrados e identificados, a la espera de necropsia y/o disposición final."},
-      {l:"El establecimiento cuenta con una zona de transferencia de cadáveres separada de la zona de producción, cuando se envía a planta de rendering."},
-      {l:"El retiro de aves muertas en ponedoras con destino a rendering es en camión encarpado o cerrado, con certificado médico veterinario."},
-      {l:"Existe un protocolo de necropsia y/o de huevos picados no nacidos. (No aplica para ponedora B)"}
+    {sub:'5. Manejo de Aves Muertas',items:[
+      {l:'Existe una zona o área cerrada para la disposición de cadáveres.',req:true},
+      {l:'Los contenedores para almacenar o transportar aves muertas son fáciles de limpiar y desinfectar.',req:true},
+      {l:'Existe registro de mortalidad diaria.',req:true},
+      {l:'Las aves muertas se depositan en recipientes cerrados e identificados, a la espera de necropsia o disposición final.',req:true},
+      {l:'Existe una zona de transferencia de cadáveres separada de la zona de producción, para el envío a rendering.',req:true},
+      {l:'El retiro de aves muertas con destino a rendering se hace en camión encarpado o cerrado, con certificado del médico veterinario sobre su estatus sanitario.',req:true,rubro:'ponedora'},
+      {l:'Existe un protocolo de necropsia y/o de huevos picados no nacidos.',excluye:['ponedora_b']}
     ]},
-    {sub:"6. Movimiento de Aves",items:[
-      {l:"Los movimientos de aves cuentan con registro de salida que cumple con normativa de trazabilidad vigente. (Aplica para engorda y reproductoras)",req:true},
-      {l:"El retiro de las aves del pabellón es al término del ciclo productivo."},
-      {l:"El retiro de las aves sigue un esquema todo adentro todo afuera. (Aplica solo para rubro engorda)"},
-      {l:"El transporte de aves se realiza en jaulas específicas, lavadas y desinfectadas. (Aplica para engorda y reproductora)"}
+    {sub:'6. Traslado de Aves',items:[
+      {l:'El retiro de las aves del pabellón se realiza al término del ciclo productivo, registrado en planilla.',req:true},
+      {l:'Los movimientos de aves cuentan con registro de salida según la normativa de trazabilidad vigente.',req:true,rubro:'engorda'},
+      {l:'El retiro de las aves del pabellón sigue un esquema de manejo todo adentro / todo afuera.',req:true,rubro:'engorda'},
+      {l:'El transporte de aves se realiza en jaulas específicas, lavadas y desinfectadas.',req:true,rubro:'engorda'}
     ]},
-    {sub:"7. Manejo de Guano",items:[
-      {l:"El establecimiento realiza retiro de guano en forma periódica de acuerdo al tipo de producción."},
-      {l:"Existe registro de salida, ya sea por venta o regalo del guano."},
-      {l:"En caso de tener guanera, está señalizada y tiene un cerco perimetral en perfecto estado."}
+    {sub:'7. Manejo de Guano',items:[
+      {l:'Se realiza retiro de guano en forma periódica, de acuerdo al tipo de producción.'},
+      {l:'Existe registro de salida del guano, ya sea por venta o regalo.'},
+      {l:'Si existe guanera, está señalizada y cuenta con cerco perimetral en buen estado.'}
     ]},
-    {sub:"8. Control de Plagas y Vectores",items:[
-      {l:"Existen registros del cumplimiento del programa periódico de control de plagas y vectores."},
-      {l:"Existen medidas correctivas frente al aumento en la detección de plagas y vectores."}
+    {sub:'8. Control de Plagas y Vectores',items:[
+      {l:'Existen registros del cumplimiento del programa periódico de control de plagas y vectores.',req:true},
+      {l:'Existen medidas correctivas frente a un aumento en la detección de plagas y vectores.',req:true}
     ]},
-    {sub:"9. Capacitación",items:[
-      {l:"Existe programa de capacitación anual en normas de bioseguridad.",req:true},
-      {l:"Registro de capacitaciones realizadas y a quiénes fueron orientadas.",req:true}
+    {sub:'9. Capacitación',items:[
+      {l:'Existe un programa de capacitación anual en normas de bioseguridad.',req:true},
+      {l:'Existe registro de las capacitaciones realizadas y de a quiénes fueron dirigidas.',req:true}
     ]}
   ]},
-  {id:"resumen",name:"Resumen",icon:"📊",isResumen:true}
+  {id:'resumen',name:'Resumen',icon:'📊',isResumen:true}
 ];
 
 var __ic=0,ITEMS_FLAT=[];
 SAGS.forEach(function(s){
   if(!s.subsections)return;
-  s.totalItems=0;
   s.subsections.forEach(function(sub){
-    s.totalItems+=sub.items.length;
     sub.items.forEach(function(item){
-      item.id='i'+(__ic++);item.seccion=s.name;
-      ITEMS_FLAT.push({id:item.id,label:item.l,seccion:s.name,subseccion:sub.sub});
+      item.id='i'+(__ic++);item.seccion=s.name;item.subseccion=sub.sub;
+      ITEMS_FLAT.push(item);
     });
   });
 });
 
-var STATE={nombre:'',email:'',rubro:'',establecimiento:'',fecha:new Date().toISOString().split('T')[0],responses:{},currentPage:0,pendienteSync:false,ultimoSync:null};
-var SK='sag_bio_v3';
+var STATE={nombre:'',email:'',telefono:'',copiaCorreo:false,rubro:'',establecimiento:'',fecha:new Date().toISOString().split('T')[0],responses:{},currentPage:0,pendienteSync:false,ultimoSync:null,auditoriaId:null};
+var SK='sag_bio_v4';
 function saveState(){try{localStorage.setItem(SK,JSON.stringify(STATE));}catch(e){}}
 function loadState(){try{var s=JSON.parse(localStorage.getItem(SK)||'null');if(s)Object.assign(STATE,s);}catch(e){}}
+
+// ── Filtrado por rubro ──────────────────────────────────────────
+function itemVisible(item){
+  if(item.excluye && item.excluye.indexOf(STATE.rubro)!==-1) return false;
+  if(!item.rubro) return true;
+  if(item.rubro==='engorda') return STATE.rubro==='engorda';
+  if(item.rubro==='ponedora') return STATE.rubro==='ponedora_a'||STATE.rubro==='ponedora_b';
+  return true;
+}
+function subVisibleItems(sub){ return sub.items.filter(itemVisible); }
+function sectionVisibleItems(s){
+  var arr=[];s.subsections.forEach(function(sub){arr=arr.concat(subVisibleItems(sub));});return arr;
+}
 
 function comenzar(){
   document.getElementById('pantalla-inicio').style.display='none';
@@ -510,7 +546,7 @@ function comenzar(){
 function limpiarYComenzar(){
   cerrarModal();
   try{ localStorage.removeItem(SK); }catch(e){}
-  STATE={nombre:'',email:'',rubro:'',establecimiento:'',fecha:new Date().toISOString().split('T')[0],responses:{},currentPage:0,pendienteSync:false,ultimoSync:null};
+  STATE={nombre:'',email:'',telefono:'',copiaCorreo:false,rubro:'',establecimiento:'',fecha:new Date().toISOString().split('T')[0],responses:{},currentPage:0,pendienteSync:false,ultimoSync:null,auditoriaId:null};
   document.getElementById('pantalla-inicio').style.display='none';
   document.getElementById('app').classList.add('visible');
   buildSidebar();renderPage(0);updateProgress();actualizarSync();
@@ -523,7 +559,6 @@ function confirmarNueva(){
 function cerrarModal(){
   document.getElementById('modalNueva').style.display='none';
 }
-// Cerrar modal al click fuera
 document.getElementById('modalNueva').addEventListener('click',function(e){
   if(e.target===this)cerrarModal();
 });
@@ -545,8 +580,6 @@ function verificarDatosGuardados(){
     btnComenzar.onclick=function(){ confirmarNueva(); };
   }catch(e){}
 }
-
-// Llamar al cargar la página
 verificarDatosGuardados();
 
 var isOnline=navigator.onLine;
@@ -557,58 +590,108 @@ function actualizarSync(){
   var ind=document.getElementById('syncInd'),txt=document.getElementById('syncTxt'),btn=document.getElementById('btnSync');
   if(!ind)return;
   isOnline=navigator.onLine;
-  if(isOnline){ind.className='sync-pill online';txt.textContent=STATE.ultimoSync?'Sincronizado '+fmtH(STATE.ultimoSync):'En línea';}
+  if(isOnline){ind.className='sync-pill online';txt.textContent=STATE.ultimoSync?'Guardado '+fmtH(STATE.ultimoSync):'En línea';}
   else{ind.className='sync-pill offline';txt.textContent='Sin conexión';}
   btn.classList.toggle('visible',!!(STATE.pendienteSync&&isOnline));
 }
 function fmtH(iso){try{return new Date(iso).toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'});}catch(e){return '';}}
 
+function uuid(){
+  if(window.crypto && crypto.randomUUID) return crypto.randomUUID();
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,function(c){
+    var r=Math.random()*16|0,v=c==='x'?r:(r&0x3|0x8);return v.toString(16);
+  });
+}
+
 function calcScores(){
-  var scores={},tC=0,tNC=0;
+  var scores={},tC=0,tNC=0,tNA=0;
   SAGS.forEach(function(s){
     if(!s.subsections)return;
     var c=0,nc=0,na=0;
-    s.subsections.forEach(function(sub){sub.items.forEach(function(i){var r=STATE.responses[i.id];if(r==='cumple')c++;else if(r==='nocumple')nc++;else if(r==='noaplica')na++;});});
-    var ap=c+nc;scores[s.id]={cumple:c,nocumple:nc,noaplica:na,ap:ap,pct:ap?Math.round(c/ap*100):0};tC+=c;tNC+=nc;
+    sectionVisibleItems(s).forEach(function(i){var r=STATE.responses[i.id];if(r==='cumple')c++;else if(r==='nocumple')nc++;else if(r==='noaplica')na++;});
+    var ap=c+nc;scores[s.id]={nombre:s.name.replace(/^[A-C]\) /,''),cumple:c,nocumple:nc,noaplica:na,ap:ap,pct:ap?Math.round(c/ap*100):0};
+    tC+=c;tNC+=nc;tNA+=na;
   });
-  var tAp=tC+tNC;return{scores:scores,totalPct:tAp?Math.round(tC/tAp*100):0};
+  var tAp=tC+tNC;return{scores:scores,totalPct:tAp?Math.round(tC/tAp*100):0,tC:tC,tNC:tNC,tNA:tNA};
 }
 
-function enviarAlSheet(cb){
-  if(!APPS_SCRIPT_URL||APPS_SCRIPT_URL.indexOf('PEGA_AQUI')!==-1){if(cb)cb(false,'Sin URL');return;}
+function listaNoCumple(){
+  var out=[];
+  ITEMS_FLAT.forEach(function(i){
+    if(itemVisible(i) && STATE.responses[i.id]==='nocumple') out.push(i.l);
+  });
+  return out;
+}
+
+// ── Guardado en Supabase + alerta por correo ────────────────────
+function guardarEnSupabase(cb){
+  if(!sb){if(cb)cb(false,'Supabase no disponible');return;}
   if(!isOnline){STATE.pendienteSync=true;saveState();actualizarSync();if(cb)cb(false,'offline');return;}
+  if(!STATE.establecimiento||!STATE.rubro){if(cb)cb(false,'Faltan datos del predio');return;}
   var sc=calcScores();
+  if(!STATE.auditoriaId) STATE.auditoriaId=uuid();
   setSC('saving','Guardando...');
-  fetch(APPS_SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action:'guardar',nombre:STATE.nombre,email:STATE.email,rubro:STATE.rubro,establecimiento:STATE.establecimiento,fecha:STATE.fecha,responses:STATE.responses,items:ITEMS_FLAT,scores:sc.scores,totalPct:sc.totalPct})})
-  .then(function(r){return r.json();})
-  .then(function(d){if(d.ok){STATE.pendienteSync=false;STATE.ultimoSync=new Date().toISOString();saveState();actualizarSync();if(cb)cb(true,d.msg);}else{STATE.pendienteSync=true;saveState();setSC('error','Error');if(cb)cb(false,d.msg);}})
-  .catch(function(){STATE.pendienteSync=true;saveState();setSC('error','Error de red');if(cb)cb(false,'Error de red');});
+  var payload={
+    id:STATE.auditoriaId,
+    establecimiento:STATE.establecimiento,
+    responsable:STATE.nombre||null,
+    email:STATE.email||null,
+    telefono:STATE.telefono||null,
+    rubro:STATE.rubro,
+    fecha_auditoria:STATE.fecha,
+    respuestas:STATE.responses,
+    puntaje_global:sc.totalPct,
+    puntajes_seccion:sc.scores,
+    items_cumple:sc.tC,
+    items_no_cumple:sc.tNC,
+    items_na:sc.tNA
+  };
+  sb.from('auditorias_bioseguridad').upsert([payload]).then(function(res){
+    if(res.error){STATE.pendienteSync=true;saveState();setSC('error','Error');if(cb)cb(false,res.error.message);return;}
+    var eraNueva=!STATE.ultimoSync;
+    STATE.pendienteSync=false;STATE.ultimoSync=new Date().toISOString();saveState();actualizarSync();
+    if(cb)cb(true);
+    if(eraNueva){
+      sb.functions.invoke('alerta-bioseguridad',{body:{
+        establecimiento:STATE.establecimiento,
+        responsable:STATE.nombre,
+        rubro:STATE.rubro,
+        puntajeGlobal:sc.totalPct,
+        puntajesSeccion:sc.scores,
+        itemsNoCumple:listaNoCumple(),
+        emailProductor:(STATE.copiaCorreo && STATE.email) ? STATE.email : null
+      }}).catch(function(){/* la auditoría ya quedó guardada igual */});
+    }
+  }).catch(function(e){
+    STATE.pendienteSync=true;saveState();setSC('error','Error de red');if(cb)cb(false,String(e));
+  });
 }
 function setSC(cls,txt){var ind=document.getElementById('syncInd'),sp=document.getElementById('syncTxt');if(!ind)return;ind.className='sync-pill '+cls;sp.textContent=txt;}
-function sincronizarPendientes(){enviarAlSheet(function(ok,msg){toast(ok?'✓ Sincronizado con Google Sheets':'✗ '+msg,ok?'ok':'err');actualizarSync();});}
+function sincronizarPendientes(){guardarEnSupabase(function(ok,msg){toast(ok?'✓ Guardado':'✗ '+msg,ok?'ok':'err');actualizarSync();});}
 
 function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');}
 function toast(msg,type){var t=document.getElementById('toast');t.textContent=msg;t.className='toast '+(type||'');t.classList.add('show');setTimeout(function(){t.classList.remove('show');},3000);}
 
 function updateProgress(){
   var total=0,ans=0;
-  SAGS.forEach(function(s){if(s.subsections)s.subsections.forEach(function(sub){sub.items.forEach(function(i){total++;if(STATE.responses[i.id])ans++;});});});
+  SAGS.forEach(function(s){if(s.subsections)sectionVisibleItems(s).forEach(function(i){total++;if(STATE.responses[i.id])ans++;});});
   var pct=total?Math.round(ans/total*100):0;
   var pf=document.getElementById('pFill'),pt=document.getElementById('pText');
   if(pf)pf.style.width=pct+'%';if(pt)pt.textContent=pct+'%';
 }
 
 function buildSidebar(){
-  var sb=document.getElementById('sb');if(!sb)return;
-  sb.innerHTML='<div class="sidebar-section">Secciones</div>';
+  var sb2=document.getElementById('sb');if(!sb2)return;
+  sb2.innerHTML='<div class="sidebar-section">Secciones</div>';
   SAGS.forEach(function(s,idx){
-    var ans=0;if(s.subsections)s.subsections.forEach(function(sub){sub.items.forEach(function(i){if(STATE.responses[i.id])ans++;});});
-    var total=s.totalItems||0,done=total&&ans>=total;
+    var vis=s.subsections?sectionVisibleItems(s):null;
+    var ans=0;if(vis)vis.forEach(function(i){if(STATE.responses[i.id])ans++;});
+    var total=vis?vis.length:0,done=total&&ans>=total;
     var d=document.createElement('div');
     d.className='sidebar-item'+(STATE.currentPage===idx?' active':'');
-    d.innerHTML='<span class="sidebar-item-name">'+s.icon+' '+s.name+'</span>'+(total?'<span class="sidebar-badge'+(done?' done':'')+'">'+ans+'/'+total+'</span>':'');
+    d.innerHTML='<span class="sidebar-item-name">'+s.icon+' '+s.name+'</span>'+(vis?'<span class="sidebar-badge'+(done?' done':'')+'">'+ans+'/'+total+'</span>':'');
     d.onclick=(function(i){return function(){navigateTo(i);};})(idx);
-    sb.appendChild(d);
+    sb2.appendChild(d);
   });
 }
 
@@ -617,8 +700,6 @@ function setResp(id,val){
   var ci=document.getElementById('ci_'+id);
   if(ci){ci.querySelectorAll('.btn-check').forEach(function(b){b.classList.remove('active');if(b.dataset.val===val)b.classList.add('active');});}
   updateProgress();buildSidebar();saveState();
-  clearTimeout(window._st);
-  window._st=setTimeout(function(){enviarAlSheet(function(ok){if(!ok&&STATE.pendienteSync)actualizarSync();});},2000);
 }
 
 function renderCheck(item){
@@ -640,34 +721,56 @@ function renderPage(idx){
     mc.innerHTML='<div class="section-header"><div class="section-icon">📋</div><div><div class="section-title">Datos del Establecimiento</div><div class="section-meta">Complete los datos antes de iniciar la evaluación</div></div></div>'
       +'<div class="datos-card"><h3>Información general</h3><div class="datos-grid">'
       +'<div class="form-group"><label class="form-label">Nombre del responsable</label><input class="form-input" placeholder="Ej: Juan Pérez" value="'+esc(STATE.nombre)+'" oninput="STATE.nombre=this.value;saveState()"></div>'
-      +'<div class="form-group"><label class="form-label">Correo electrónico</label><input class="form-input" type="email" placeholder="Ej: juan@granja.cl" value="'+esc(STATE.email)+'" oninput="STATE.email=this.value;saveState()"></div>'
       +'<div class="form-group"><label class="form-label">Nombre del establecimiento *</label><input class="form-input" placeholder="Ej: Granja Santa Rosa" value="'+esc(STATE.establecimiento)+'" oninput="STATE.establecimiento=this.value;saveState()"></div>'
-      +'<div class="form-group"><label class="form-label">Rubro *</label><select class="form-select" onchange="STATE.rubro=this.value;saveState()">'
+      +'<div class="form-group"><label class="form-label">Correo electrónico</label><input class="form-input" type="email" placeholder="Ej: juan@granja.cl" value="'+esc(STATE.email)+'" oninput="STATE.email=this.value;saveState();syncCheckVis();"></div>'
+      +'<div class="form-group"><label class="form-label">Teléfono</label><input class="form-input" type="tel" placeholder="Ej: +56 9 1234 5678" value="'+esc(STATE.telefono)+'" oninput="STATE.telefono=this.value;saveState()"></div>'
+      +'<div class="form-group"><label class="form-label">Rubro *</label><select class="form-select" onchange="STATE.rubro=this.value;saveState();buildSidebar();updateProgress();">'
       +'<option value="">Seleccione un rubro...</option>'
-      +'<option value="reproductora"'+(STATE.rubro==='reproductora'?' selected':'')+'>Abuela / Reproductora</option>'
-      +'<option value="incubadora"'+(STATE.rubro==='incubadora'?' selected':'')+'>Incubadora</option>'
       +'<option value="engorda"'+(STATE.rubro==='engorda'?' selected':'')+'>Engorda</option>'
       +'<option value="ponedora_a"'+(STATE.rubro==='ponedora_a'?' selected':'')+'>Ponedora A (≥20.000 aves)</option>'
       +'<option value="ponedora_b"'+(STATE.rubro==='ponedora_b'?' selected':'')+'>Ponedora B (&lt;20.000 aves)</option>'
       +'</select></div>'
       +'<div class="form-group"><label class="form-label">Fecha de auditoría</label><input class="form-input" type="date" value="'+esc(STATE.fecha)+'" oninput="STATE.fecha=this.value;saveState()"></div>'
-      +'</div></div>'
-      +'<div class="nav-btns"><span></span><button class="btn btn-primary" onclick="navigateTo(1)">Comenzar evaluación →</button></div>';
+      +'</div>'
+      +'<div class="form-check" id="copiaCorreoWrap" style="display:'+(STATE.email?'flex':'none')+'"><input type="checkbox" id="copiaCorreoChk" '+(STATE.copiaCorreo?'checked':'')+' onchange="STATE.copiaCorreo=this.checked;saveState()"><label for="copiaCorreoChk">Enviarme también a mí una copia del resultado por correo</label></div>'
+      +'<div class="form-error" id="datosError">Completa el nombre del establecimiento y el rubro para continuar.</div>'
+      +'</div>'
+      +'<div class="nav-btns"><span></span><button class="btn btn-primary" onclick="irASeccion1()">Comenzar evaluación →</button></div>';
   }else if(s.isResumen){
     renderResumen(mc);
   }else{
+    var visItems=sectionVisibleItems(s);
     var ans=0,c=0,na=0;
-    s.subsections.forEach(function(sub){sub.items.forEach(function(i){if(STATE.responses[i.id])ans++;if(STATE.responses[i.id]==='cumple')c++;if(STATE.responses[i.id]==='noaplica')na++;});});
+    visItems.forEach(function(i){if(STATE.responses[i.id])ans++;if(STATE.responses[i.id]==='cumple')c++;if(STATE.responses[i.id]==='noaplica')na++;});
     var ap=ans-na,pct=ap?Math.round(c/ap*100):0;
     var pctCol=pct>=80?'color:var(--ok)':pct>=60?'color:var(--gold)':'color:var(--red)';
-    var html='<div class="section-header"><div class="section-icon">'+s.icon+'</div><div><div class="section-title">'+s.name+'</div><div class="section-meta">'+ans+' de '+s.totalItems+' ítems evaluados'+(ap?' · <span style="'+pctCol+';font-weight:600">'+pct+'% cumplimiento</span>':'')+'</div></div></div>';
-    s.subsections.forEach(function(sub){html+='<div class="subsection"><div class="subsection-header">'+sub.sub+'</div>';sub.items.forEach(function(item){html+=renderCheck(item);});html+='</div>';});
+    var html='<div class="section-header"><div class="section-icon">'+s.icon+'</div><div><div class="section-title">'+s.name+'</div><div class="section-meta">'+ans+' de '+visItems.length+' ítems evaluados'+(ap?' · <span style="'+pctCol+';font-weight:600">'+pct+'% cumplimiento</span>':'')+'</div></div></div>';
+    s.subsections.forEach(function(sub){
+      var subItems=subVisibleItems(sub);
+      if(!subItems.length)return;
+      html+='<div class="subsection"><div class="subsection-header">'+sub.sub+'</div>';
+      subItems.forEach(function(item){html+=renderCheck(item);});
+      html+='</div>';
+    });
     var prev=idx>0?'<button class="btn" onclick="navigateTo('+(idx-1)+')">← Anterior</button>':'<span></span>';
     var nextI=idx<SAGS.length-1?idx+1:SAGS.length-1;
     var nextTxt=idx<SAGS.length-2?'Siguiente →':'Ver resumen →';
     html+='<div class="nav-btns">'+prev+'<button class="btn btn-primary" onclick="navigateTo('+nextI+')">'+nextTxt+'</button></div>';
     mc.innerHTML=html;
   }
+}
+
+function syncCheckVis(){
+  var w=document.getElementById('copiaCorreoWrap');
+  if(w) w.style.display=STATE.email?'flex':'none';
+}
+
+function irASeccion1(){
+  if(!STATE.establecimiento||!STATE.rubro){
+    document.getElementById('datosError').classList.add('visible');
+    return;
+  }
+  navigateTo(1);
 }
 
 function donaSVG(pct, color) {
@@ -681,79 +784,65 @@ function donaSVG(pct, color) {
 }
 
 function renderResumen(mc){
-  var tC=0,tNC=0,tNA=0,ss=[];
-  SAGS.forEach(function(s){
-    if(!s.subsections)return;var c=0,nc=0,na=0;
-    s.subsections.forEach(function(sub){sub.items.forEach(function(i){var r=STATE.responses[i.id];if(r==='cumple')c++;else if(r==='nocumple')nc++;else if(r==='noaplica')na++;});});
-    var ap=c+nc,pct=ap?Math.round(c/ap*100):0;tC+=c;tNC+=nc;tNA+=na;
-    ss.push({name:s.name.replace(/^[A-C]\) /,''),icon:s.icon,c:c,nc:nc,na:na,ap:ap,pct:pct});
-  });
-  var tAp=tC+tNC,tPct=tAp?Math.round(tC/tAp*100):0;
+  var sc=calcScores();
+  var tC=sc.tC,tNC=sc.tNC,tNA=sc.tNA,tPct=sc.totalPct;
+  var ss=Object.keys(sc.scores).map(function(k){var v=sc.scores[k];v.icon=(SAGS.filter(function(s){return s.id===k;})[0]||{}).icon||'';return v;});
   var vCls=tPct>=80?'verde':tPct>=60?'amarillo':'rojo';
   var vTxt=tPct>=80?'✓ Cumplimiento Satisfactorio':tPct>=60?'⚠ Cumplimiento Parcial':'✗ Requiere Mejoras Urgentes';
-  var rl={reproductora:'Reproductora',incubadora:'Incubadora',engorda:'Engorda',ponedora_a:'Ponedora A',ponedora_b:'Ponedora B'};
-  var banner=STATE.pendienteSync?'<div class="offline-banner visible"><span class="offline-banner-text">⚠ Hay cambios sin sincronizar con Google Sheets.</span><button class="btn" onclick="sincronizarPendientes()">↑ Sincronizar ahora</button></div>':'';
+  var banner=STATE.pendienteSync?'<div class="offline-banner visible"><span class="offline-banner-text">⚠ Hay cambios sin guardar.</span><button class="btn" onclick="sincronizarPendientes()">↑ Guardar ahora</button></div>':'';
 
-  // Colores dona
   function donaColor(pct){ return pct>=80?'#1b7a4a':pct>=60?'#b5813a':'#c0392b'; }
-  function donaColorTotal(pct){ return pct>=80?'#1b7a4a':pct>=60?'#b5813a':'#c0392b'; }
 
   var html='<div class="section-header"><div class="section-icon">📊</div><div>'
     +'<div class="section-title">Resumen de Auditoría</div>'
     +'<div class="section-meta">'+(STATE.establecimiento?STATE.establecimiento+' · ':'')+STATE.fecha+'</div>'
     +'</div></div>'+banner;
 
-  if(STATE.rubro) html+='<div style="margin-bottom:16px"><span style="background:var(--accent-l);color:var(--accent);border:1px solid #a8dfc0;border-radius:20px;padding:4px 14px;font-size:12px;font-weight:700">Rubro: '+(rl[STATE.rubro]||STATE.rubro)+'</span></div>';
+  if(STATE.rubro) html+='<div style="margin-bottom:16px"><span style="background:var(--accent-l);color:var(--accent);border:1px solid #a8dfc0;border-radius:20px;padding:4px 14px;font-size:12px;font-weight:700">Rubro: '+(RUBRO_LABEL[STATE.rubro]||STATE.rubro)+'</span></div>';
 
-  // Bloque de puntaje total
   html+='<div class="resumen-total">'
-    +'<div><div class="resumen-pct">'+tPct+'%</div><div class="resumen-pct-sub">Cumplimiento total · '+tC+' de '+tAp+' ítems aplicables</div></div>'
+    +'<div><div class="resumen-pct">'+tPct+'%</div><div class="resumen-pct-sub">Cumplimiento total · '+tC+' de '+(tC+tNC)+' ítems aplicables</div></div>'
     +'<span class="verdict '+vCls+'">'+vTxt+'</span></div>';
 
-  // ── GRÁFICOS DE DONA ──
   html+='<div style="margin-bottom:8px"><span style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px">Cumplimiento por sección</span></div>';
   html+='<div class="donas-grid">';
 
-  // Dona total
   html+='<div class="dona-card">'
-    +'<div class="dona-wrap">'+donaSVG(tPct, donaColorTotal(tPct))
-    +'<div class="dona-label"><span class="dona-pct" style="color:'+donaColorTotal(tPct)+'">'+tPct+'%</span></div></div>'
+    +'<div class="dona-wrap">'+donaSVG(tPct, donaColor(tPct))
+    +'<div class="dona-label"><span class="dona-pct" style="color:'+donaColor(tPct)+'">'+tPct+'%</span></div></div>'
     +'<div class="dona-name">Total general</div>'
     +'<div class="dona-counts">'+tC+' ✓ · '+tNC+' ✗ · '+tNA+' N/A</div>'
     +'</div>';
 
-  // Donas por sección
   ss.forEach(function(s){
     var col=donaColor(s.pct);
     html+='<div class="dona-card">'
       +'<div class="dona-wrap">'+donaSVG(s.pct, col)
       +'<div class="dona-label"><span class="dona-pct" style="color:'+col+'">'+s.pct+'%</span></div></div>'
-      +'<div class="dona-name">'+s.icon+' '+s.name+'</div>'
-      +'<div class="dona-counts">'+s.c+' ✓ · '+s.nc+' ✗ · '+s.na+' N/A</div>'
+      +'<div class="dona-name">'+s.icon+' '+s.nombre+'</div>'
+      +'<div class="dona-counts">'+s.cumple+' ✓ · '+s.nocumple+' ✗ · '+s.noaplica+' N/A</div>'
       +'</div>';
   });
   html+='</div>';
 
-  // ── BLOQUE DE CONTACTO ──
-  var waMsg = encodeURIComponent('Hola Andrés, necesito asesoría en bioseguridad avícola. Mi establecimiento es: ' + (STATE.establecimiento||'(sin nombre)') + ', rubro: ' + (rl[STATE.rubro]||STATE.rubro||'no indicado') + ', cumplimiento SAG: ' + tPct + '%.');
+  var waMsg = encodeURIComponent('Hola Andrés, necesito asesoría en bioseguridad avícola. Mi establecimiento es: ' + (STATE.establecimiento||'(sin nombre)') + ', rubro: ' + (RUBRO_LABEL[STATE.rubro]||STATE.rubro||'no indicado') + ', cumplimiento SAG: ' + tPct + '%.');
   html+='<div class="contacto-card">'
     +'<div class="contacto-txt">'
-    +'<h3>¿Necesitas asesoría profesional?</h3>'
-    +'<p>Si tu predio tiene ítems que mejorar, podemos ayudarte a implementar las medidas de bioseguridad exigidas por el SAG.</p>'
+    +'<h3>¿Quieres mejorar tu bioseguridad?</h3>'
+    +'<p>Si tu predio tiene ítems que mejorar, trabaja con nosotros: te ayudamos a implementar las medidas exigidas por el SAG según tus propios resultados.</p>'
     +'</div>'
     +'<div class="contacto-btns">'
     +'<a class="btn-wa" href="https://wa.me/56958956340?text='+waMsg+'" target="_blank">'
     +'<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>'
     +'WhatsApp</a>'
-    +'<a class="btn-mail" href="mailto:andreslazomv@outlook.com?subject=Asesoría bioseguridad - '+encodeURIComponent(STATE.establecimiento||'Mi predio')+'&body='+encodeURIComponent('Hola Andrés,\n\nNecesito asesoría en bioseguridad avícola.\n\nEstablecimiento: '+(STATE.establecimiento||'')+ '\nRubro: '+(rl[STATE.rubro]||'')+ '\nCumplimiento SAG: '+tPct+'%\n\nQuedo a la espera.')+'" target="_blank">'
+    +'<a class="btn-mail" href="mailto:andreslazomv@outlook.com?subject=Asesoría bioseguridad - '+encodeURIComponent(STATE.establecimiento||'Mi predio')+'&body='+encodeURIComponent('Hola Andrés,\n\nNecesito asesoría en bioseguridad avícola.\n\nEstablecimiento: '+(STATE.establecimiento||'')+ '\nRubro: '+(RUBRO_LABEL[STATE.rubro]||'')+ '\nCumplimiento SAG: '+tPct+'%\n\nQuedo a la espera.')+'" target="_blank">'
     +'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>'
     +'Correo</a>'
     +'</div></div>';
 
-  // Botones finales
   var syncBtn=STATE.pendienteSync
-    ?'<button class="btn" onclick="sincronizarPendientes()" style="border-color:var(--accent);color:var(--accent)">↑ Guardar en Sheet</button>'
-    :'<button class="btn" onclick="enviarAlSheet(function(ok){toast(ok?\'✓ Re-enviado\':\'Ya sincronizado\',\'ok\');})" style="opacity:0.55">↑ Re-enviar</button>';
+    ?'<button class="btn" onclick="sincronizarPendientes()" style="border-color:var(--accent);color:var(--accent)">↑ Guardar</button>'
+    :'<button class="btn" onclick="guardarEnSupabase(function(ok){toast(ok?\'✓ Actualizado\':\'Error al actualizar\',ok?\'ok\':\'err\');})" style="opacity:0.55">↑ Re-guardar</button>';
   html+='<div class="nav-btns"><button class="btn" onclick="navigateTo('+(SAGS.length-2)+')">← Volver</button>'
     +'<div style="display:flex;gap:8px">'+syncBtn+'<button class="btn-pdf" onclick="guardar()">Guardar PDF</button></div></div>';
 
@@ -761,7 +850,7 @@ function renderResumen(mc){
 }
 
 function guardar(){
-  enviarAlSheet(function(ok){toast(ok?'✓ Guardado — preparando PDF...':'PDF listo (sin conexión)','ok');});
+  guardarEnSupabase(function(ok,msg){toast(ok?'✓ Guardado — preparando PDF...':(msg==='offline'?'PDF listo (sin conexión)':'⚠ '+msg),ok?'ok':'err');});
   saveState();setTimeout(function(){window.print();},400);
 }
 </script>
