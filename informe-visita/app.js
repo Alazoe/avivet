@@ -358,7 +358,10 @@ function ivConstruirDoc(inf, D, logo) {
     ['Número de aves', ivFmt(m.aves)],
   ];
   if (m.largo > 0 && m.ancho > 0) datos.push(['Dimensiones del galpón', `${ivFmt1(m.largo)} × ${ivFmt1(m.ancho)} m`]);
-  if (m.superficie > 0) datos.push(['Superficie del galpón', ivFmt1(m.superficie) + ' m²']);
+  if (m.superficie > 0) {
+    datos.push(['Superficie del galpón', ivFmt1(m.superficie) + ' m²']);
+    datos.push(['Densidad actual', ivFmt1(m.aves / m.superficie) + ' aves/m²']);
+  }
   datos.push(['Sistema', (m.sistema === 'jaula' ? 'Jaula' : 'Piso') + (m.exterior ? ' con acceso exterior' : '')]);
   hijos.push(tablaDatos(datos));
 
@@ -572,6 +575,8 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
       <div class="eq-ficha"><div class="eq-num">${e.semana}</div><div class="eq-lbl">Semana de vida</div><div class="eq-unit">día ${e.diaVida} · ${e.meses} meses</div></div>
       <div class="eq-ficha"><div class="eq-num" style="font-size:20px;padding-top:8px">${e.etapa}</div><div class="eq-lbl">Etapa</div><div class="eq-unit">${e.enCrianza ? 'fase ' + e.fase : 'en producción'}</div></div>
       <div class="eq-ficha"><div class="eq-num">${ivFmt(m.aves)}</div><div class="eq-lbl">Aves</div><div class="eq-unit">${m.sistema === 'jaula' ? 'Jaula' : 'Piso'}</div></div>`;
+    if (m.superficie > 0) fichas += `
+      <div class="eq-ficha"><div class="eq-num">${ivFmt1(m.aves / m.superficie)}</div><div class="eq-lbl">Densidad actual</div><div class="eq-unit">aves/m²</div></div>`;
     if (!seguimiento) fichas += `
       <div class="eq-ficha"><div class="eq-num">${ivFmt1(o.alimentoLoteMin)}–${ivFmt1(o.alimentoLoteMax)}</div><div class="eq-lbl">Alimento lote</div><div class="eq-unit">kg/día</div></div>
       <div class="eq-ficha"><div class="eq-num">${ivFmt1(o.aguaLoteMin)}–${ivFmt1(o.aguaLoteMax)}</div><div class="eq-lbl">Agua lote</div><div class="eq-unit">L/día</div></div>
