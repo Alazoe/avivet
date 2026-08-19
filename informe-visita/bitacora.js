@@ -41,6 +41,7 @@ function btVisitaActual() {
 function btNuevaVisita() {
   const v = {
     id: 'v' + Date.now(),
+    tipoVisita: 'primera',
     productor: '', ubicacion: '', fechaVisita: new Date().toISOString().slice(0, 10),
     linea: Object.keys(LINEAS)[0], nacimiento: '', aves: '',
     largo: '', ancho: '', superficie: '', sistema: 'piso', exterior: false,
@@ -55,6 +56,7 @@ function btNuevaVisita() {
 
 function btLeerFormularioA(v) {
   const g = id => document.getElementById(id);
+  v.tipoVisita = g('bt-tipo').value;
   v.productor  = g('bt-productor').value.trim();
   v.ubicacion  = g('bt-ubicacion').value.trim();
   v.fechaVisita= g('bt-fecha-visita').value;
@@ -75,6 +77,7 @@ function btLeerFormularioA(v) {
 
 function btPintarFormularioDe(v) {
   const g = id => document.getElementById(id);
+  g('bt-tipo').value        = v.tipoVisita || 'primera';
   g('bt-productor').value   = v.productor || '';
   g('bt-ubicacion').value   = v.ubicacion || '';
   g('bt-fecha-visita').value= v.fechaVisita || '';
@@ -125,6 +128,7 @@ function btArmarInput(v) {
   }
   const obs = partes.join(' ');
   return {
+    tipoVisita: v.tipoVisita || 'primera',
     productor: v.productor, ubicacion: v.ubicacion, fechaVisita: v.fechaVisita,
     linea: v.linea, nacimiento: v.nacimiento,
     aves: parseInt(v.aves) || 0,

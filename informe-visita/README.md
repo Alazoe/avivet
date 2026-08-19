@@ -19,7 +19,19 @@ se ingresan las características del galpón y del lote, y se descarga un docume
 3. Presiona **Descargar Word (.docx)** — el archivo queda listo para editar
    (agregar observaciones, fotos, firma) y entregar al productor.
 
-## ¿Qué calcula?
+## Tipos de visita
+
+Un selector define qué contiene el informe:
+
+- **Primera visita** (completa, diagnóstico): datos, parámetros objetivo, equipamiento,
+  densidad, ambiente de crianza, observaciones y recomendaciones/acciones. Deja el estándar
+  por escrito una vez.
+- **Seguimiento** (liviana, 1–2 páginas): solo datos generales, observaciones y
+  **recomendaciones y acciones a seguir**. Omite objetivo, equipamiento, densidad y ambiente
+  — para no dejar registrado en cada visita lo que ya se estableció en la primera. El
+  documento se titula **INFORME DE SEGUIMIENTO**.
+
+## ¿Qué calcula? (secciones de la primera visita)
 
 | Sección | Contenido |
 |---|---|
@@ -27,10 +39,8 @@ se ingresan las características del galpón y del lote, y se descarga un docume
 | **Parámetros objetivo** | Peso corporal, consumo de alimento y agua (por ave y total del lote), % postura, huevos/día y bandejas esperadas, mortalidad acumulada esperada |
 | **Equipamiento requerido** | Bebederos (campana, nipple, arranque), comederos (lineal, redondo por diámetro, arranque), perchas, nidos, superficie mínima — según fase |
 | **Densidad** | Densidad real del galpón comparada contra referencias, con superficie mínima y dictamen Cumple / Sobrecarga por cada una. En postura: recomendación AviVet (6 aves/m²) y certificación (0,14 m²/ave ≈ 7,14 aves/m²) |
-| **Ventilación** | Mínima (0,7 m³/h/kg) y capacidad (4 m³/h/kg) sobre la biomasa estimada |
 | **Ambiente de crianza** | Temperatura, intensidad lumínica y horas de luz por edad (primeras 6 semanas) |
-| **Proyección** | Peso, consumo y postura de las próximas 4 semanas |
-| **Observaciones y recomendaciones** | Texto libre del veterinario (o líneas en blanco para completar en Word) |
+| **Observaciones y recomendaciones y acciones** | Texto libre del veterinario (o líneas en blanco para completar en Word). Presentes en ambos tipos de visita |
 
 ## Fuentes de datos
 

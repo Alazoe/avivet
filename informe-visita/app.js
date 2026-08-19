@@ -275,6 +275,7 @@ function ivConstruirDoc(inf, D, logo) {
     p('', { border: { bottom: { color: LINEA, size: 4, style: SB, space: 8 } }, after: 260 }));
 
   const m = inf.meta, e = inf.edad, o = inf.objetivo;
+  const seguimiento = m.tipoVisita === 'seguimiento';   // seguimiento = documento liviano (sin objetivo/equipamiento/densidad/ambiente)
   const visita = new Date((m.fechaVisita || new Date().toISOString().slice(0, 10)) + 'T00:00:00');
   const nac = new Date(m.nacimiento + 'T00:00:00');
   const hijos = [];
@@ -297,7 +298,7 @@ function ivConstruirDoc(inf, D, logo) {
       });
   const docInfoCell = new D.TableCell({
     children: [
-      new D.Paragraph({ alignment: AL.RIGHT, spacing: { after: 0 }, children: [run('INFORME DE VISITA TÉCNICA', { bold: true, color: VERDE, size: 20, caps: true })] }),
+      new D.Paragraph({ alignment: AL.RIGHT, spacing: { after: 0 }, children: [run(seguimiento ? 'INFORME DE SEGUIMIENTO' : 'INFORME DE VISITA TÉCNICA', { bold: true, color: VERDE, size: 20, caps: true })] }),
       new D.Paragraph({ alignment: AL.RIGHT, spacing: { before: 50 }, children: [run(m.productor || 'Productor', { color: TINTA, size: 18 })] }),
       new D.Paragraph({ alignment: AL.RIGHT, spacing: { before: 4 }, children: [run(ivFecha(visita) + (m.ubicacion ? '  ·  ' + m.ubicacion : ''), { color: GRIS, size: 16 })] }),
     ],
@@ -315,10 +316,11 @@ function ivConstruirDoc(inf, D, logo) {
     { num: String(e.semana), lbl: 'Semana', sub: e.meses + ' meses' },
     { num: e.etapa, lbl: 'Etapa', sub: e.enCrianza ? e.fase : 'en producción', size: 20 },
     { num: ivFmt(m.aves), lbl: 'Aves', sub: (m.sistema === 'jaula' ? 'Jaula' : 'Piso') + (m.exterior ? ' + exterior' : '') },
-    o.pct != null
-      ? { num: ivFmt1(o.pct) + '%', lbl: 'Postura esperada', sub: '≈ ' + ivFmt(o.huevosDia) + ' huevos/día' }
-      : { num: ivFmt(o.pesoMin * 1000) + '–' + ivFmt(o.pesoMax * 1000), lbl: 'Peso objetivo (g)', sub: 'semana ' + e.semana, size: 18 },
   ];
+  // la ficha de objetivo (postura/peso esperado) solo en primera visita
+  if (!seguimiento) fichas.push(o.pct != null
+    ? { num: ivFmt1(o.pct) + '%', lbl: 'Postura esperada', sub: '≈ ' + ivFmt(o.huevosDia) + ' huevos/día' }
+    : { num: ivFmt(o.pesoMin * 1000) + '–' + ivFmt(o.pesoMax * 1000), lbl: 'Peso objetivo (g)', sub: 'semana ' + e.semana, size: 18 });
   const ficha = f => new D.TableCell({
     children: [
       new D.Paragraph({ alignment: AL.CENTER, spacing: { before: 60, after: 20 }, children: [run(f.num, { bold: true, color: VERDE, size: f.size || 30 })] }),
@@ -339,8 +341,12 @@ function ivConstruirDoc(inf, D, logo) {
   }));
   hijos.push(new D.Paragraph({ spacing: { after: 120 }, children: [] }));
 
-  // ── 1. datos generales ──
-  hijos.push(h2('1', 'Datos generales'));
+  // numeración de secciones automática (según qué bloques se incluyan)
+  let nSec = 0;
+  const H = titulo => h2(String(++nSec), titulo);
+
+  // ── datos generales (siempre) ──
+  hijos.push(H('Datos generales'));
   const datos = [
     ['Productor / Predio', m.productor || '—'],
     ['Ubicación', m.ubicacion || '—'],
@@ -356,88 +362,70 @@ function ivConstruirDoc(inf, D, logo) {
   datos.push(['Sistema', (m.sistema === 'jaula' ? 'Jaula' : 'Piso') + (m.exterior ? ' con acceso exterior' : '')]);
   hijos.push(tablaDatos(datos));
 
-  // ── 2. parámetros objetivo ──
-  hijos.push(h2('2', `Parámetros objetivo — semana ${e.semana}`));
-  if (e.notaClamp) hijos.push(nota(e.notaClamp));
-  const par = [
-    ['Parámetro', 'Por ave', 'Total lote'],
-    ['Peso corporal', `${ivFmt(o.pesoMin * 1000)}–${ivFmt(o.pesoMax * 1000)} g`, `Biomasa ≈ ${ivFmt(Math.round(o.biomasa))} kg`],
-    ['Consumo de alimento', `${o.alMin}–${o.alMax} g/día`, `${ivFmt1(o.alimentoLoteMin)}–${ivFmt1(o.alimentoLoteMax)} kg/día`],
-    ['Consumo de agua', `${o.aguaMin}–${o.aguaMax} ml/día`, `${ivFmt1(o.aguaLoteMin)}–${ivFmt1(o.aguaLoteMax)} L/día`],
-  ];
-  if (o.pct != null) {
-    par.push(['Postura esperada', ivFmt1(o.pct) + ' %', `≈ ${ivFmt(o.huevosDia)} huevos/día (${ivFmt(o.bandejasDia)} bandejas de 30)`]);
-    par.push(['Peso del huevo', ivFmt1(o.pesoHuevo) + ' g', `≈ ${ivFmt1(o.huevosDia * o.pesoHuevo / 1000)} kg/día`]);
-  }
-  if (o.mortEsp != null) par.push(['Mortalidad acumulada esperada', ivFmt1(o.mortEsp) + ' %', `≈ ${ivFmt(o.avesEsperadas)} aves vivas esperadas`]);
-  hijos.push(tabla(par, [34, 28, 38]));
-  hijos.push(nota('Fuente: ' + m.fuente));
-
-  // ── 3. equipamiento requerido ──
-  hijos.push(h2('3', `Equipamiento requerido — ${ivFmt(m.aves)} aves (${e.enCrianza ? 'crianza ' + e.fase : 'postura'})`));
-  hijos.push(tabla([['Equipamiento', 'Requerido', 'Estándar'], ...inf.equip], [34, 26, 40]));
-  if (e.enCrianza) {
-    hijos.push(nota('Comederos redondos según diámetro: ' + IV_COMEDERO_DIAM.map(d => `Ø${d[0]} cm → ${ivFmt(Math.ceil(m.aves / d[1]))} unid. (${d[1]} aves c/u)`).join(' · ')));
-  }
-
-  // ── 4. densidad ──
-  if (inf.densidad) {
-    const d = inf.densidad;
-    hijos.push(h2('4', 'Densidad'));
-    hijos.push(p([run('Densidad actual del galpón:  ', { bold: true }), run(ivFmt1(d.real) + ' aves/m²', { bold: true, color: VERDE, size: 24 })], { after: 100 }));
-    hijos.push(tabla([
-      ['Referencia', 'Densidad máx.', 'Superficie mínima', 'Evaluación'],
-      ...d.refs.map(r => [
-        r.nombre, ivFmt1(r.densidad) + ' aves/m²', ivFmt1(r.superficieMin) + ' m²',
-        r.ok ? '✔ Cumple' : `✘ Sobrecarga +${r.exceso}%`,
-      ]),
-    ], [34, 20, 22, 24]));
-  }
-
-  // ── 5. ventilación ──
-  hijos.push(h2(inf.densidad ? '5' : '4', 'Ventilación'));
-  hijos.push(tabla([
-    ['Parámetro', 'Estándar', 'Requerido para el lote'],
-    ['Ventilación mínima', IV_VENT.minima + ' m³/hora/kg', ivFmt(Math.round(inf.ventilacion.min)) + ' m³/hora'],
-    ['Capacidad de ventilación', IV_VENT.capacidad + ' m³/hora/kg', ivFmt(Math.round(inf.ventilacion.cap)) + ' m³/hora'],
-  ], [34, 26, 40]));
-  hijos.push(nota(`Calculado sobre biomasa estimada de ${ivFmt(Math.round(o.biomasa))} kg (${ivFmt(m.aves)} aves × ${ivFmt(Math.round((o.pesoMin + o.pesoMax) / 2 * 1000))} g promedio).`));
-
-  let nSec = inf.densidad ? 6 : 5;
-
-  // ── ambiente crianza ──
-  if (inf.ambiente) {
-    const a = inf.ambiente;
-    hijos.push(h2(String(nSec), 'Temperatura e iluminación de crianza'));
-    let cab, filas;
-    if (a.columnas) {
-      cab = a.columnas; filas = a.periodos;
-    } else {
-      const esJaula = a.periodos.some(x => x[1] != null);
-      cab = esJaula ? ['Edad', 'T. jaula (°C)', 'T. piso (°C)', 'Intensidad (lux)', 'Horas de luz'] : ['Edad', 'T. piso (°C)', 'Intensidad (lux)', 'Horas de luz'];
-      filas = a.periodos.map(x => esJaula ? x : [x[0], x[2], x[3], x[4]]);
+  // ── bloques diagnósticos: SOLO en primera visita ──
+  if (!seguimiento) {
+    // parámetros objetivo
+    hijos.push(H(`Parámetros objetivo — semana ${e.semana}`));
+    if (e.notaClamp) hijos.push(nota(e.notaClamp));
+    const par = [
+      ['Parámetro', 'Por ave', 'Total lote'],
+      ['Peso corporal', `${ivFmt(o.pesoMin * 1000)}–${ivFmt(o.pesoMax * 1000)} g`, `Biomasa ≈ ${ivFmt(Math.round(o.biomasa))} kg`],
+      ['Consumo de alimento', `${o.alMin}–${o.alMax} g/día`, `${ivFmt1(o.alimentoLoteMin)}–${ivFmt1(o.alimentoLoteMax)} kg/día`],
+      ['Consumo de agua', `${o.aguaMin}–${o.aguaMax} ml/día`, `${ivFmt1(o.aguaLoteMin)}–${ivFmt1(o.aguaLoteMax)} L/día`],
+    ];
+    if (o.pct != null) {
+      par.push(['Postura esperada', ivFmt1(o.pct) + ' %', `≈ ${ivFmt(o.huevosDia)} huevos/día (${ivFmt(o.bandejasDia)} bandejas de 30)`]);
+      par.push(['Peso del huevo', ivFmt1(o.pesoHuevo) + ' g', `≈ ${ivFmt1(o.huevosDia * o.pesoHuevo / 1000)} kg/día`]);
     }
-    hijos.push(tabla([cab, ...filas.map(f => f.map(v => v == null ? '—' : v))]));
-    hijos.push(nota('Fuente: ' + a.fuente + (a.referencial ? ' (referencial — la línea seleccionada no publica tabla propia)' : '')));
-    nSec++;
+    if (o.mortEsp != null) par.push(['Mortalidad acumulada esperada', ivFmt1(o.mortEsp) + ' %', `≈ ${ivFmt(o.avesEsperadas)} aves vivas esperadas`]);
+    hijos.push(tabla(par, [34, 28, 38]));
+    hijos.push(nota('Fuente: ' + m.fuente));
+
+    // equipamiento requerido
+    hijos.push(H(`Equipamiento requerido — ${ivFmt(m.aves)} aves (${e.enCrianza ? 'crianza ' + e.fase : 'postura'})`));
+    hijos.push(tabla([['Equipamiento', 'Requerido', 'Estándar'], ...inf.equip], [34, 26, 40]));
+    if (e.enCrianza) {
+      hijos.push(nota('Comederos redondos según diámetro: ' + IV_COMEDERO_DIAM.map(d => `Ø${d[0]} cm → ${ivFmt(Math.ceil(m.aves / d[1]))} unid. (${d[1]} aves c/u)`).join(' · ')));
+    }
+
+    // densidad
+    if (inf.densidad) {
+      const d = inf.densidad;
+      hijos.push(H('Densidad'));
+      hijos.push(p([run('Densidad actual del galpón:  ', { bold: true }), run(ivFmt1(d.real) + ' aves/m²', { bold: true, color: VERDE, size: 24 })], { after: 100 }));
+      hijos.push(tabla([
+        ['Referencia', 'Densidad máx.', 'Superficie mínima', 'Evaluación'],
+        ...d.refs.map(r => [
+          r.nombre, ivFmt1(r.densidad) + ' aves/m²', ivFmt1(r.superficieMin) + ' m²',
+          r.ok ? '✔ Cumple' : `✘ Sobrecarga +${r.exceso}%`,
+        ]),
+      ], [34, 20, 22, 24]));
+    }
+
+    // ambiente de crianza
+    if (inf.ambiente) {
+      const a = inf.ambiente;
+      hijos.push(H('Temperatura e iluminación de crianza'));
+      let cab, filas;
+      if (a.columnas) {
+        cab = a.columnas; filas = a.periodos;
+      } else {
+        const esJaula = a.periodos.some(x => x[1] != null);
+        cab = esJaula ? ['Edad', 'T. jaula (°C)', 'T. piso (°C)', 'Intensidad (lux)', 'Horas de luz'] : ['Edad', 'T. piso (°C)', 'Intensidad (lux)', 'Horas de luz'];
+        filas = a.periodos.map(x => esJaula ? x : [x[0], x[2], x[3], x[4]]);
+      }
+      hijos.push(tabla([cab, ...filas.map(f => f.map(v => v == null ? '—' : v))]));
+      hijos.push(nota('Fuente: ' + a.fuente + (a.referencial ? ' (referencial — la línea seleccionada no publica tabla propia)' : '')));
+    }
   }
 
-  // ── proyección ──
-  hijos.push(h2(String(nSec), 'Proyección próximas semanas'));
-  hijos.push(tabla([
-    ['Semana', 'Etapa', 'Peso corporal', 'Alimento/ave/día', 'Agua/ave/día', '% Postura', 'Peso huevo'],
-    ...inf.proyeccion.map(f => [f.sem, f.etapa, f.peso, f.alimento, f.agua, f.pct, f.huevo]),
-  ]));
-  nSec++;
-
-  // ── observaciones ──
-  hijos.push(h2(String(nSec), 'Observaciones de la visita'));
+  // ── observaciones (siempre) ──
+  hijos.push(H('Observaciones de la visita'));
   if (m.obs) hijos.push(caja(m.obs));
   else hijos.push(...lineasVacias(3));
-  nSec++;
 
-  // ── recomendaciones ──
-  hijos.push(h2(String(nSec), 'Recomendaciones'));
+  // ── recomendaciones y acciones a seguir (siempre) ──
+  hijos.push(H('Recomendaciones y acciones a seguir'));
   if (m.reco) hijos.push(caja(m.reco));
   else hijos.push(...lineasVacias(3));
 
@@ -526,6 +514,7 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
 
   function ivLeerFormulario() {
     return {
+      tipoVisita:  document.getElementById('iv-tipo').value,
       productor:   document.getElementById('iv-productor').value.trim(),
       ubicacion:   document.getElementById('iv-ubicacion').value.trim(),
       fechaVisita: document.getElementById('iv-fecha-visita').value,
@@ -572,71 +561,74 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
 
   function ivRenderPreview(inf) {
     const e = inf.edad, o = inf.objetivo, m = inf.meta;
+    const seguimiento = m.tipoVisita === 'seguimiento';
     const fila = (a, b) => `<tr><td style="text-align:left;font-weight:500">${a}</td><td style="text-align:left">${b}</td></tr>`;
+    const esc = t => (t || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
     document.getElementById('iv-prev-titulo').textContent =
-      `${m.productor || 'Productor'} · ${m.linea} · Semana ${e.semana} (${e.etapa})`;
+      `${m.productor || 'Productor'} · ${m.linea} · Semana ${e.semana} (${e.etapa})` + (seguimiento ? ' · Seguimiento' : '');
 
-    let html = `<div class="eq-grid" style="margin-bottom:24px">
+    let fichas = `
       <div class="eq-ficha"><div class="eq-num">${e.semana}</div><div class="eq-lbl">Semana de vida</div><div class="eq-unit">día ${e.diaVida} · ${e.meses} meses</div></div>
-      <div class="eq-ficha"><div class="eq-num" style="font-size:20px;padding-top:8px">${e.etapa}</div><div class="eq-lbl">Etapa</div><div class="eq-unit">${e.enCrianza ? 'fase ' + e.fase : 'semana ' + e.semana}</div></div>
+      <div class="eq-ficha"><div class="eq-num" style="font-size:20px;padding-top:8px">${e.etapa}</div><div class="eq-lbl">Etapa</div><div class="eq-unit">${e.enCrianza ? 'fase ' + e.fase : 'en producción'}</div></div>
+      <div class="eq-ficha"><div class="eq-num">${ivFmt(m.aves)}</div><div class="eq-lbl">Aves</div><div class="eq-unit">${m.sistema === 'jaula' ? 'Jaula' : 'Piso'}</div></div>`;
+    if (!seguimiento) fichas += `
       <div class="eq-ficha"><div class="eq-num">${ivFmt1(o.alimentoLoteMin)}–${ivFmt1(o.alimentoLoteMax)}</div><div class="eq-lbl">Alimento lote</div><div class="eq-unit">kg/día</div></div>
       <div class="eq-ficha"><div class="eq-num">${ivFmt1(o.aguaLoteMin)}–${ivFmt1(o.aguaLoteMax)}</div><div class="eq-lbl">Agua lote</div><div class="eq-unit">L/día</div></div>
-      ${o.huevosDia != null ? `<div class="eq-ficha"><div class="eq-num">${ivFmt(o.huevosDia)}</div><div class="eq-lbl">Huevos/día esperados</div><div class="eq-unit">${ivFmt(o.bandejasDia)} bandejas de 30</div></div>` : ''}
-    </div>`;
+      ${o.huevosDia != null ? `<div class="eq-ficha"><div class="eq-num">${ivFmt(o.huevosDia)}</div><div class="eq-lbl">Huevos/día esperados</div><div class="eq-unit">${ivFmt(o.bandejasDia)} bandejas de 30</div></div>` : ''}`;
+    let html = `<div class="eq-grid" style="margin-bottom:24px">${fichas}</div>`;
 
-    html += `<h4 class="iv-prev-h">Parámetros objetivo — semana ${e.semana}${e.notaClamp ? ' <span class="iv-nota">(' + e.notaClamp + ')</span>' : ''}</h4>
-      <div class="tabla-wrap" style="max-height:none"><table><thead><tr><th>Parámetro</th><th>Valor</th></tr></thead><tbody>
-      ${fila('Peso corporal', `${ivFmt(o.pesoMin * 1000)}–${ivFmt(o.pesoMax * 1000)} g`)}
-      ${fila('Consumo alimento', `${o.alMin}–${o.alMax} g/ave/día`)}
-      ${fila('Consumo agua', `${o.aguaMin}–${o.aguaMax} ml/ave/día`)}
-      ${o.pct != null ? fila('% Postura esperada', ivFmt1(o.pct) + ' %') + fila('Peso huevo', ivFmt1(o.pesoHuevo) + ' g') : ''}
-      ${o.mortEsp != null ? fila('Mortalidad acumulada esperada', ivFmt1(o.mortEsp) + ' % → ≈ ' + ivFmt(o.avesEsperadas) + ' aves vivas') : ''}
-      </tbody></table></div>`;
+    if (seguimiento) html += `<p class="iv-nota" style="margin-bottom:22px">Informe de <strong>seguimiento</strong>: datos generales, observaciones y recomendaciones/acciones. Los parámetros objetivo y el equipamiento se omiten (van en la primera visita).</p>`;
 
-    html += `<h4 class="iv-prev-h">Equipamiento requerido (${ivFmt(m.aves)} aves)</h4>
-      <div class="tabla-wrap" style="max-height:none"><table><thead><tr><th>Equipamiento</th><th>Requerido</th><th>Estándar</th></tr></thead>
-      <tbody>${inf.equip.map(f => `<tr><td style="text-align:left;font-weight:500">${f[0]}</td><td>${f[1]}</td><td style="text-align:left;color:var(--tenue)">${f[2]}</td></tr>`).join('')}</tbody></table></div>`;
+    if (!seguimiento) {
+      html += `<h4 class="iv-prev-h">Parámetros objetivo — semana ${e.semana}${e.notaClamp ? ' <span class="iv-nota">(' + e.notaClamp + ')</span>' : ''}</h4>
+        <div class="tabla-wrap" style="max-height:none"><table><thead><tr><th>Parámetro</th><th>Valor</th></tr></thead><tbody>
+        ${fila('Peso corporal', `${ivFmt(o.pesoMin * 1000)}–${ivFmt(o.pesoMax * 1000)} g`)}
+        ${fila('Consumo alimento', `${o.alMin}–${o.alMax} g/ave/día`)}
+        ${fila('Consumo agua', `${o.aguaMin}–${o.aguaMax} ml/ave/día`)}
+        ${o.pct != null ? fila('% Postura esperada', ivFmt1(o.pct) + ' %') + fila('Peso huevo', ivFmt1(o.pesoHuevo) + ' g') : ''}
+        ${o.mortEsp != null ? fila('Mortalidad acumulada esperada', ivFmt1(o.mortEsp) + ' % → ≈ ' + ivFmt(o.avesEsperadas) + ' aves vivas') : ''}
+        </tbody></table></div>`;
 
-    if (inf.densidad) {
-      const d = inf.densidad;
-      const todasOk = d.refs.every(r => r.ok);
-      html += `<div class="iv-densidad ${todasOk ? 'ok' : 'alerta'}">
-        Densidad actual del galpón: <strong>${ivFmt1(d.real)} aves/m²</strong>
-      </div>
-      <div class="tabla-wrap" style="max-height:none"><table><thead><tr><th>Referencia</th><th>Densidad máx.</th><th>Superficie mínima</th><th>Evaluación</th></tr></thead>
-      <tbody>${d.refs.map(r => `<tr>
-        <td style="text-align:left;font-weight:500">${r.nombre}</td>
-        <td>${ivFmt1(r.densidad)} aves/m²</td>
-        <td>${ivFmt1(r.superficieMin)} m²</td>
-        <td style="font-weight:600;color:${r.ok ? '#1b4332' : '#b71c1c'}">${r.ok ? '✔ Cumple' : '✘ Sobrecarga +' + r.exceso + '%'}</td>
-      </tr>`).join('')}</tbody></table></div>`;
-    }
+      html += `<h4 class="iv-prev-h">Equipamiento requerido (${ivFmt(m.aves)} aves)</h4>
+        <div class="tabla-wrap" style="max-height:none"><table><thead><tr><th>Equipamiento</th><th>Requerido</th><th>Estándar</th></tr></thead>
+        <tbody>${inf.equip.map(f => `<tr><td style="text-align:left;font-weight:500">${f[0]}</td><td>${f[1]}</td><td style="text-align:left;color:var(--tenue)">${f[2]}</td></tr>`).join('')}</tbody></table></div>`;
 
-    html += `<h4 class="iv-prev-h">Ventilación (biomasa ≈ ${ivFmt(Math.round(o.biomasa))} kg)</h4>
-      <div class="tabla-wrap" style="max-height:none"><table><thead><tr><th>Parámetro</th><th>Estándar</th><th>Requerido</th></tr></thead><tbody>
-      <tr><td style="text-align:left">Ventilación mínima</td><td>0,7 m³/h/kg</td><td>${ivFmt(Math.round(inf.ventilacion.min))} m³/hora</td></tr>
-      <tr><td style="text-align:left">Capacidad de ventilación</td><td>4 m³/h/kg</td><td>${ivFmt(Math.round(inf.ventilacion.cap))} m³/hora</td></tr>
-      </tbody></table></div>`;
-
-    if (inf.ambiente) {
-      const a = inf.ambiente;
-      let cab, filas;
-      if (a.columnas) { cab = a.columnas; filas = a.periodos; }
-      else {
-        const esJaula = a.periodos.some(x => x[1] != null);
-        cab = esJaula ? ['Edad', 'T. jaula (°C)', 'T. piso (°C)', 'Lux', 'Horas luz'] : ['Edad', 'T. piso (°C)', 'Lux', 'Horas luz'];
-        filas = a.periodos.map(x => esJaula ? x : [x[0], x[2], x[3], x[4]]);
+      if (inf.densidad) {
+        const d = inf.densidad;
+        const todasOk = d.refs.every(r => r.ok);
+        html += `<div class="iv-densidad ${todasOk ? 'ok' : 'alerta'}">
+          Densidad actual del galpón: <strong>${ivFmt1(d.real)} aves/m²</strong>
+        </div>
+        <div class="tabla-wrap" style="max-height:none"><table><thead><tr><th>Referencia</th><th>Densidad máx.</th><th>Superficie mínima</th><th>Evaluación</th></tr></thead>
+        <tbody>${d.refs.map(r => `<tr>
+          <td style="text-align:left;font-weight:500">${r.nombre}</td>
+          <td>${ivFmt1(r.densidad)} aves/m²</td>
+          <td>${ivFmt1(r.superficieMin)} m²</td>
+          <td style="font-weight:600;color:${r.ok ? '#1b4332' : '#b71c1c'}">${r.ok ? '✔ Cumple' : '✘ Sobrecarga +' + r.exceso + '%'}</td>
+        </tr>`).join('')}</tbody></table></div>`;
       }
-      html += `<h4 class="iv-prev-h">Temperatura e iluminación de crianza</h4>
-        <div class="tabla-wrap" style="max-height:none"><table><thead><tr>${cab.map(c => `<th>${c}</th>`).join('')}</tr></thead>
-        <tbody>${filas.map(f => `<tr>${f.map(v => `<td>${v == null ? '—' : v}</td>`).join('')}</tr>`).join('')}</tbody></table></div>
-        <p class="iv-nota">Fuente: ${a.fuente}${a.referencial ? ' (referencial)' : ''}</p>`;
+
+      if (inf.ambiente) {
+        const a = inf.ambiente;
+        let cab, filas;
+        if (a.columnas) { cab = a.columnas; filas = a.periodos; }
+        else {
+          const esJaula = a.periodos.some(x => x[1] != null);
+          cab = esJaula ? ['Edad', 'T. jaula (°C)', 'T. piso (°C)', 'Lux', 'Horas luz'] : ['Edad', 'T. piso (°C)', 'Lux', 'Horas luz'];
+          filas = a.periodos.map(x => esJaula ? x : [x[0], x[2], x[3], x[4]]);
+        }
+        html += `<h4 class="iv-prev-h">Temperatura e iluminación de crianza</h4>
+          <div class="tabla-wrap" style="max-height:none"><table><thead><tr>${cab.map(c => `<th>${c}</th>`).join('')}</tr></thead>
+          <tbody>${filas.map(f => `<tr>${f.map(v => `<td>${v == null ? '—' : v}</td>`).join('')}</tr>`).join('')}</tbody></table></div>
+          <p class="iv-nota">Fuente: ${a.fuente}${a.referencial ? ' (referencial)' : ''}</p>`;
+      }
     }
 
-    html += `<h4 class="iv-prev-h">Proyección próximas semanas</h4>
-      <div class="tabla-wrap" style="max-height:none"><table><thead><tr><th>Sem</th><th>Etapa</th><th>Peso</th><th>Alimento</th><th>Agua</th><th>% Postura</th><th>Huevo</th></tr></thead>
-      <tbody>${inf.proyeccion.map(f => `<tr><td>${f.sem}</td><td>${f.etapa}</td><td>${f.peso}</td><td>${f.alimento}</td><td>${f.agua}</td><td>${f.pct}</td><td>${f.huevo}</td></tr>`).join('')}</tbody></table></div>`;
+    html += `<h4 class="iv-prev-h">Observaciones de la visita</h4>
+      <p style="white-space:pre-wrap;color:${m.obs ? 'var(--tinta)' : 'var(--tenue)'}">${m.obs ? esc(m.obs) : '(se completará en el documento)'}</p>`;
+    html += `<h4 class="iv-prev-h">Recomendaciones y acciones a seguir</h4>
+      <p style="white-space:pre-wrap;color:${m.reco ? 'var(--tinta)' : 'var(--tenue)'}">${m.reco ? esc(m.reco) : '(se completará en el documento)'}</p>`;
 
     document.getElementById('iv-prev-cuerpo').innerHTML = html;
   }
