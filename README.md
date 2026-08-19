@@ -13,7 +13,7 @@
 | **Vacunación por Spray** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/vacunacion-spray/) | Calibración del pulverizador, tamaño de gota, papel hidrosensible y control de calidad |
 | **Vacunación en Agua de Bebida** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/vacunacion-agua/) | Volumen y dosis, calidad del agua, espacio de bebedero, cronograma del día y control de calidad |
 | **Calculadoras de Dosis** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/calculadoras-dosis/) | Cálculo de dosis de antibióticos en agua de bebida |
-| **Auditoría SAG Bioseguridad** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/auditoria-sag/) | Pauta de verificación Res. 7695/2024 |
+| **Auditoría SAG Bioseguridad** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/auditoria-sag/) | Pauta de verificación para Engorda y Ponedoras, Res. Ex. N°2114/2023 |
 | **Inventario de Huevos** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/inventario-huevos/) | Control de stock y ventas |
 | **Inventario Alimento — Portal** | [🔗 Plantas de alimento](https://avivet.cl/avivet/plantasdealimento) | Acceso directo a las 3 plantas |
 | **Inventario — La Campestre** | [Conteo](https://avivet.cl/avivet/inventario/?c=campestre) · [Admin](https://avivet.cl/avivet/inventario/admin.html?c=campestre) | Materias primas planta La Campestre |
@@ -34,32 +34,33 @@
 
 ### ➡️ [https://alazoe.github.io/avivet/auditoria-sag/](https://alazoe.github.io/avivet/auditoria-sag/)
 
-Herramienta digital basada en la **Resolución Exenta N° 7695/2024** del SAG, que actualiza los manuales de bioseguridad para el rubro avícola.
+Herramienta digital basada en el manual oficial del SAG *Sistema Oficial de Bioseguridad en Establecimientos Pecuarios — Bioseguridad en planteles de aves* (documento **D-VYC-VIS-PP-004 v.02**, dictado en el marco de la **Resolución Exenta N°2114/2023**), acotada a **planteles industriales de Engorda y Ponedoras**.
 
 ### ¿Qué incluye?
 
-- ✅ Pauta completa de verificación para **planteles de aves** (Res. 7695/2024)
+- ✅ Pauta completa de verificación tomada de la sección de implementación del manual (D-VYC-VIS-PP-004)
 - ✅ Secciones A, B y C: Infraestructura, Pabellones y Procedimientos Operacionales
-- ✅ Clasificación por rubro: Reproductora, Incubadora, Engorda, Ponedora A y B
+- ✅ Clasificación por rubro: Engorda, Ponedora A y Ponedora B — el checklist se **filtra automáticamente** según el rubro elegido (ítems que no aplican, como manejo de huevos en Engorda, no se muestran)
 - ✅ Ítems críticos marcados con `*` según la normativa
 - ✅ Gráficos de cumplimiento por sección (dona)
 - ✅ Exportación a PDF
-- ✅ Funciona **sin internet** — sincroniza automáticamente al recuperar conexión
-- ✅ Registro centralizado en Google Sheets por establecimiento
+- ✅ Funciona **sin internet** — guarda automáticamente al recuperar conexión
+- ✅ Registro centralizado en Supabase por establecimiento, con **aviso automático por correo** al asesor (y copia opcional al productor) en cada auditoría enviada
+- ✅ Tarjeta final de contacto (WhatsApp / correo) para pedir asesoría, con el % de cumplimiento ya incluido en el mensaje
 
 ### ¿Para quién es?
 
-Productores avícolas del sur de Chile que necesitan autoevaluar su nivel de cumplimiento de la normativa SAG vigente, y veterinarios que asesoran predios avícolas.
+Productores de Engorda y Ponedoras del sur de Chile que necesitan autoevaluar su nivel de cumplimiento de la normativa SAG vigente, y veterinarios que asesoran esos predios.
 
 ### Rubros cubiertos
 
 | Rubro | Descripción |
 |-------|-------------|
-| Abuela / Reproductora | Planteles de reproducción |
-| Incubadora | Plantas de incubación y nacedoras |
 | Engorda | Broiler, pavos |
-| Ponedora A | ≥ 20.000 aves en el RUP |
-| Ponedora B | < 20.000 aves en el RUP |
+| Ponedora A | ≥ 20.000 aves en el RUP (sector) |
+| Ponedora B | < 20.000 aves en el RUP (sector) |
+
+No cubre Reproductoras/Abuelas ni Incubadoras — ver el detalle técnico en [`auditoria-sag/README.md`](auditoria-sag/README.md).
 
 ---
 
