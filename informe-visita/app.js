@@ -201,18 +201,15 @@ function ivConstruirDoc(inf, D, logo) {
     indent: o.indent,
   });
 
-  const nota = text => p(text, { size: 16, color: GRIS, italics: true, after: 60 });
+  // nota al pie de una tabla (fuente): texto plano, algo más pequeño
+  const nota = text => p(text, { size: 18, after: 60 });
 
-  // franja de sección: número ámbar + título verde sobre banda, borde izq. grueso
+  // encabezado de sección: usa el estilo nativo "Título 2" de Word
+  // (sin color/banda; el texto sale con el estilo del documento y es editable)
   const h2 = (num, text) => new D.Paragraph({
-    children: [run(num + '   ', { bold: true, color: AMBAR, size: 22 }), run(text, { bold: true, color: VERDE, size: 22, caps: true })],
-    spacing: { before: 300, after: 140 },
-    shading: { type: SH, color: 'auto', fill: BANDA },
-    indent: { left: 130 },
-    border: {
-      left: { color: AMBAR, size: 22, style: SB, space: 10 },
-      bottom: { color: VERDE2, size: 4, style: SB, space: 2 },
-    },
+    heading: D.HeadingLevel.HEADING_2,
+    spacing: { before: 260, after: 100 },
+    children: [new D.TextRun({ text: num + '. ' + text })],
   });
 
   const bordes = () => {
@@ -258,19 +255,8 @@ function ivConstruirDoc(inf, D, logo) {
     })),
   });
 
-  // recuadro para texto libre (observaciones / recomendaciones)
-  const caja = txt => new D.Paragraph({
-    children: [run(txt, { size: 20 })],
-    shading: { type: SH, color: 'auto', fill: CAJA },
-    border: {
-      left: { color: AMBAR, size: 20, style: SB, space: 10 },
-      top: { color: LINEA, size: 2, style: SB, space: 6 },
-      bottom: { color: LINEA, size: 2, style: SB, space: 6 },
-      right: { color: LINEA, size: 2, style: SB, space: 6 },
-    },
-    spacing: { after: 140, line: 288 },
-    indent: { left: 120, right: 100 },
-  });
+  // texto libre (observaciones / recomendaciones): párrafo plano, sin recuadro ni color
+  const caja = txt => p(txt, { line: 288, after: 140 });
   const lineasVacias = n => Array.from({ length: n }, () =>
     p('', { border: { bottom: { color: LINEA, size: 4, style: SB, space: 8 } }, after: 260 }));
 
@@ -395,7 +381,7 @@ function ivConstruirDoc(inf, D, logo) {
     if (inf.densidad) {
       const d = inf.densidad;
       hijos.push(H('Densidad'));
-      hijos.push(p([run('Densidad actual del galpón:  ', { bold: true }), run(ivFmt1(d.real) + ' aves/m²', { bold: true, color: VERDE, size: 24 })], { after: 100 }));
+      hijos.push(p([run('Densidad actual del galpón:  ', { bold: true }), run(ivFmt1(d.real) + ' aves/m²', { bold: true })], { after: 100 }));
       hijos.push(tabla([
         ['Referencia', 'Densidad máx.', 'Superficie mínima', 'Evaluación'],
         ...d.refs.map(r => [
@@ -436,7 +422,7 @@ function ivConstruirDoc(inf, D, logo) {
   hijos.push(new D.Paragraph({ children: [], spacing: { before: 700 } }));
   hijos.push(p('', { border: { bottom: { color: TINTA, size: 6, style: SB, space: 4 } }, align: AL.CENTER, after: 40, indent: { left: 3200, right: 3200 } }));
   hijos.push(p('MV Andrés Lazo Escobar', { align: AL.CENTER, bold: true, after: 20 }));
-  hijos.push(p('Médico Veterinario · Asesoría Veterinaria', { align: AL.CENTER, color: GRIS, size: 18 }));
+  hijos.push(p('Médico Veterinario · Asesoría Veterinaria', { align: AL.CENTER, size: 18 }));
 
   // ── membrete y pie corridos ──
   const header = new D.Header({
