@@ -1506,56 +1506,46 @@ function renderLinea(svgId, datos, iMin, iMax, titulo, yMin, yMax, color, single
 }
 
 // ── EQUIPAMIENTO ────────────────────────────────────────────────────────
-function renderEquipamiento() {
-  const n = nAves;
-  const eq = EQ;
+// Cálculo de equipamiento para un lote de n aves.
+// Fuente única: la usan la vista, el export a Excel y el PDF, para que los
+// tres no se desincronicen si cambia un ratio.
+function calcEquipamiento(n) {
+  const m2Crianza = Math.ceil(n * 0.14);
+  const perchasP  = Math.ceil(n * 15 / 100);
+  return {
+    crianza: [
+      ['Superficie galpón',  m2Crianza,               'm²',         `${(n / m2Crianza).toFixed(1)} aves/m²`],
+      ['Perchas',            Math.ceil(n * 15 / 100), 'm lineales', '15 cm/ave'],
+      ['Bebederos campana',  Math.ceil(n / 125),      'unidades',   '1 c/125 aves'],
+      ['Nipples',            Math.ceil(n / 12.5),     'unidades',   '1 c/12 aves'],
+      ['Comederos lineales', Math.ceil(n * 2 / 100),  'm',          '2 cm/ave'],
+    ],
+    postura: [
+      ['Nidos individuales', Math.ceil(n / 5),           'unidades',   '1 c/5 aves'],
+      ['Nidos comunitarios', Math.ceil(n / 120),         'm lineales', '1 m c/120 aves'],
+      ['Bebederos campana',  Math.ceil(n / 100),         'unidades',   '1 c/100 aves'],
+      ['Nipples',            Math.ceil(n / 12),          'unidades',   '1 c/12 aves'],
+      ['Comederos lineales', Math.ceil(n * 4 / 100),     'm',          '4 cm/ave'],
+      ['Perchas totales',    perchasP,                   'm lineales', '15 cm/ave'],
+      ['Perchas elevadas',   Math.ceil(perchasP * 0.20), 'm lineales', '≥ 20% del total'],
+      ['Acceso exterior',    Math.ceil(n * 0.19),        'm²',         '0,19 m²/ave'],
+    ],
+  };
+}
 
-  function ficha(label, val, unidad, nota) {
-    return `<div class="eq-ficha">
+function renderEquipamiento() {
+  const eq = calcEquipamiento(nAves);
+
+  const grid = items => `<div class="eq-grid">${items.map(([label, val, unidad, nota]) => `
+    <div class="eq-ficha">
       <div class="eq-num">${val}</div>
       <div class="eq-lbl">${label}</div>
       <div class="eq-unit">${unidad}</div>
-      ${nota ? `<div class="eq-nota">${nota}</div>` : ''}
-    </div>`;
-  }
+      <div class="eq-nota">${nota}</div>
+    </div>`).join('')}</div>`;
 
-  // Crianza
-  const mCrianza = Math.ceil(n * 0.14);
-  const perchasCrianza = Math.ceil(n * 15 / 100);  // metros
-  const bebC   = Math.ceil(n / 125);
-  const nipC   = Math.ceil(n / 12.5);
-  const comC   = Math.ceil(n * 2 / 100);           // metros lineales
-
-  document.getElementById('eq-crianza').innerHTML = `
-    <div class="eq-grid">
-      ${ficha('Superficie galpón',  mCrianza,        'm²',       `${(n/mCrianza).toFixed(1)} aves/m²`)}
-      ${ficha('Perchas',            perchasCrianza,  'm lineales', '15 cm/ave')}
-      ${ficha('Bebederos campana',  bebC,            'unidades',  `1 c/125 aves`)}
-      ${ficha('Nipples',            nipC,            'unidades',  `1 c/12 aves`)}
-      ${ficha('Comederos lineales', comC,            'm',         '2 cm/ave')}
-    </div>`;
-
-  // Postura
-  const nidosInd = Math.ceil(n / 5);
-  const nidosComM = Math.ceil(n / 120);           // metros lineales
-  const bebP     = Math.ceil(n / 100);
-  const nipP     = Math.ceil(n / 12);
-  const comP     = Math.ceil(n * 4 / 100);        // metros lineales
-  const perchasP = Math.ceil(n * 15 / 100);
-  const perchasEl= Math.ceil(perchasP * 0.20);
-  const extM2    = Math.ceil(n * 0.19);
-
-  document.getElementById('eq-postura').innerHTML = `
-    <div class="eq-grid">
-      ${ficha('Nidos individuales', nidosInd,  'unidades',   '1 c/5 aves')}
-      ${ficha('Nidos comunitarios', nidosComM, 'm lineales', '1 m c/120 aves')}
-      ${ficha('Bebederos campana',  bebP,      'unidades',   '1 c/100 aves')}
-      ${ficha('Nipples',            nipP,      'unidades',   '1 c/12 aves')}
-      ${ficha('Comederos lineales', comP,      'm',          '4 cm/ave')}
-      ${ficha('Perchas totales',    perchasP,  'm lineales', '15 cm/ave')}
-      ${ficha('Perchas elevadas',   perchasEl, 'm lineales', '≥ 20% del total')}
-      ${ficha('Acceso exterior',    extM2,     'm²',         '0,19 m²/ave')}
-    </div>`;
+  document.getElementById('eq-crianza').innerHTML = grid(eq.crianza);
+  document.getElementById('eq-postura').innerHTML = grid(eq.postura);
 }
 
 // ── INICIAR — CALCULAR EDAD ────────────────────────────────────────────
@@ -1670,43 +1660,13 @@ function exportarExcel() {
   XLSX.utils.book_append_sheet(wb, wsPostura, 'Postura');
 
   // ── Hoja 3: Equipamiento ─────────────────────────────────────────────
-  const n           = nAves;
-  const mCrianza    = Math.ceil(n * 0.14);
-  const perchasC    = Math.ceil(n * 15 / 100);
-  const bebC        = Math.ceil(n / 125);
-  const nipC        = Math.ceil(n / 12.5);
-  const comC        = Math.ceil(n * 2 / 100);
-  const nidosInd    = Math.ceil(n / 5);
-  const nidosComM   = Math.ceil(n / 120);
-  const bebP        = Math.ceil(n / 100);
-  const nipP        = Math.ceil(n / 12);
-  const comP        = Math.ceil(n * 4 / 100);
-  const perchasP    = Math.ceil(n * 15 / 100);
-  const perchasEl   = Math.ceil(perchasP * 0.20);
-  const extM2       = Math.ceil(n * 0.19);
-
-  const eqData = [
-    ['N° de aves:', n],
-    [],
-    ['CRIANZA'],
-    ['Ítem', 'Valor', 'Unidad', 'Ratio'],
-    ['Superficie galpón',  mCrianza,   'm²',          `${(n / mCrianza).toFixed(1)} aves/m²`],
-    ['Perchas',            perchasC,   'm lineales',   '15 cm/ave'],
-    ['Bebederos campana',  bebC,       'unidades',     '1 c/125 aves'],
-    ['Nipples',            nipC,       'unidades',     '1 c/12 aves'],
-    ['Comederos lineales', comC,       'm',            '2 cm/ave'],
-    [],
-    ['POSTURA'],
-    ['Ítem', 'Valor', 'Unidad', 'Ratio'],
-    ['Nidos individuales', nidosInd,   'unidades',     '1 c/5 aves'],
-    ['Nidos comunitarios', nidosComM,  'm lineales',   '1 m c/120 aves'],
-    ['Bebederos campana',  bebP,       'unidades',     '1 c/100 aves'],
-    ['Nipples',            nipP,       'unidades',     '1 c/12 aves'],
-    ['Comederos lineales', comP,       'm',            '4 cm/ave'],
-    ['Perchas totales',    perchasP,   'm lineales',   '15 cm/ave'],
-    ['Perchas elevadas',   perchasEl,  'm lineales',   '≥ 20% del total'],
-    ['Acceso exterior',    extM2,      'm²',           '0,19 m²/ave'],
-  ];
+  const eq = calcEquipamiento(nAves);
+  const eqData = [['N° de aves:', nAves], []];
+  [['CRIANZA', eq.crianza], ['POSTURA', eq.postura]].forEach(([titulo, items]) => {
+    eqData.push([titulo], ['Ítem', 'Valor', 'Unidad', 'Ratio']);
+    items.forEach(f => eqData.push(f));
+    eqData.push([]);
+  });
   const wsEq = XLSX.utils.aoa_to_sheet(eqData);
   wsEq['!cols'] = [22, 10, 14, 18].map(w => ({ wch: w }));
   XLSX.utils.book_append_sheet(wb, wsEq, 'Equipamiento');
@@ -1732,4 +1692,304 @@ function exportarExcel() {
   const fecha    = new Date().toISOString().slice(0, 10);
   const nombreFn = `curva-genetica_${lineaSel.replace(/[\s/]/g, '-')}_${fecha}.xlsx`;
   XLSX.writeFile(wb, nombreFn);
+}
+
+// ══ EXPORTAR A PDF POR SECCIÓN ════════════════════════════════════════
+// Genera un documento entregable al productor: portada con la línea, la
+// referencia del manual del que salen los datos, y las tablas de la sección.
+
+const PDF_SECCIONES = {
+  crianza:      'Crianza',
+  postura:      'Postura',
+  equipamiento: 'Equipamiento',
+  alimentacion: 'Técnicas de alimentación',
+  iluminacion:  'Programa de iluminación',
+};
+
+function hexRGB(hex) {
+  const h = hex.replace('#', '');
+  return [0, 2, 4].map(i => parseInt(h.slice(i, i + 2), 16));
+}
+
+const PDF_VERDE = [27, 67, 50];
+const PDF_GRIS  = [110, 110, 110];
+
+// Encabezado de página: banda de color de la línea + título de la sección.
+function pdfEncabezado(doc, titulo) {
+  const L = LINEAS[lineaSel];
+  const w = doc.internal.pageSize.getWidth();
+
+  doc.setFillColor(...PDF_VERDE);
+  doc.rect(0, 0, w, 26, 'F');
+  doc.setFillColor(...hexRGB(L.color));
+  doc.rect(0, 26, w, 2.5, 'F');
+
+  doc.setTextColor(255, 255, 255);
+  doc.setFont('helvetica', 'bold').setFontSize(13);
+  doc.text(titulo, 14, 12);
+  doc.setFont('helvetica', 'normal').setFontSize(9);
+  doc.text(`${lineaSel} · ${L.produccion}`, 14, 19.5);
+
+  doc.setFontSize(8);
+  doc.text('avivet.cl · Curvas Genéticas', w - 14, 12, { align: 'right' });
+  doc.text(new Date().toLocaleDateString('es-CL'), w - 14, 19.5, { align: 'right' });
+
+  doc.setTextColor(0, 0, 0);
+  return 38;
+}
+
+// Ficha de procedencia: de qué manual salen los datos de esta línea.
+function pdfFuente(doc, y) {
+  const R = REFERENCIAS[lineaSel];
+  if (!R) return y;
+  const w = doc.internal.pageSize.getWidth();
+
+  doc.setDrawColor(210, 208, 200).setFillColor(248, 246, 241);
+  doc.rect(14, y, w - 28, 22, 'FD');
+
+  doc.setFont('helvetica', 'bold').setFontSize(8).setTextColor(...PDF_VERDE);
+  doc.text('FUENTE DE LOS DATOS', 18, y + 6);
+
+  doc.setFont('helvetica', 'normal').setFontSize(8.5).setTextColor(30, 30, 30);
+  doc.text(doc.splitTextToSize(R.manual, w - 36), 18, y + 11.5);
+
+  doc.setFontSize(7.5).setTextColor(...PDF_GRIS);
+  doc.text([R.editor, R.edicion, R.codigo, R.sistema].filter(Boolean).join(' · '), 18, y + 19);
+
+  doc.setTextColor(0, 0, 0);
+  return y + 30;
+}
+
+function pdfTabla(doc, y, titulo, head, body, anchoCol) {
+  if (titulo) {
+    doc.setFont('helvetica', 'bold').setFontSize(10).setTextColor(...PDF_VERDE);
+    doc.text(titulo, 14, y);
+    doc.setTextColor(0, 0, 0);
+    y += 5;
+  }
+  doc.autoTable({
+    startY: y,
+    head: [head],
+    body,
+    theme: 'grid',
+    margin: { left: 14, right: 14 },
+    styles: { fontSize: 7.5, cellPadding: 1.6, halign: 'center', lineColor: [222, 220, 212] },
+    headStyles: { fillColor: PDF_VERDE, textColor: 255, fontSize: 7, fontStyle: 'bold' },
+    alternateRowStyles: { fillColor: [250, 249, 245] },
+    columnStyles: anchoCol || {},
+  });
+  return doc.lastAutoTable.finalY + 9;
+}
+
+// Nota al pie de una tabla. Si no cabe en lo que queda de página, abre una
+// nueva, para que nunca quede cortada fuera del papel.
+function pdfNota(doc, y, texto, titulo) {
+  const w = doc.internal.pageSize.getWidth();
+  const lineas = doc.splitTextToSize(texto, w - 28);
+  if (y + lineas.length * 4 > doc.internal.pageSize.getHeight() - 18) {
+    doc.addPage();
+    y = pdfEncabezado(doc, titulo);
+  }
+  doc.setFont('helvetica', 'italic').setFontSize(7.5).setTextColor(...PDF_GRIS);
+  doc.text(lineas, 14, y);
+  doc.setTextColor(0, 0, 0);
+  return y + lineas.length * 4 + 4;
+}
+
+// Convierte el contenido editorial de un panel (títulos, párrafos, listas)
+// en párrafos para el PDF. Se usa en Alimentación e Iluminación, que son
+// texto de manejo y no tablas de datos.
+function pdfTextoPanel(doc, y, panelId) {
+  const panel = document.getElementById(panelId);
+  if (!panel) return y;
+  const w = doc.internal.pageSize.getWidth();
+  const alto = doc.internal.pageSize.getHeight();
+
+  panel.querySelectorAll('h3, h4, p, li, .alim-obj, .alim-intro').forEach(el => {
+    const txt = (el.textContent || '').replace(/\s+/g, ' ').trim();
+    if (!txt || txt.length < 3) return;
+
+    const esTitulo = /^H[34]$/.test(el.tagName);
+    doc.setFont('helvetica', esTitulo ? 'bold' : 'normal');
+    doc.setFontSize(esTitulo ? 10 : 8.5);
+    doc.setTextColor(...(esTitulo ? PDF_VERDE : [40, 40, 40]));
+
+    const lineas = doc.splitTextToSize(txt, w - 32);
+    const necesita = lineas.length * (esTitulo ? 5 : 4.2) + (esTitulo ? 4 : 2.5);
+
+    if (y + necesita > alto - 18) { doc.addPage(); y = pdfEncabezado(doc, PDF_SECCIONES[tabActual]); }
+    if (esTitulo) y += 3;
+
+    doc.text(lineas, el.tagName === 'LI' ? 20 : 16, y);
+    y += necesita;
+  });
+
+  doc.setTextColor(0, 0, 0);
+  return y;
+}
+
+function pdfPie(doc) {
+  const w = doc.internal.pageSize.getWidth();
+  const h = doc.internal.pageSize.getHeight();
+  const total = doc.internal.getNumberOfPages();
+
+  for (let i = 1; i <= total; i++) {
+    doc.setPage(i);
+    doc.setDrawColor(222, 220, 212).line(14, h - 13, w - 14, h - 13);
+    doc.setFont('helvetica', 'normal').setFontSize(7).setTextColor(...PDF_GRIS);
+    doc.text('Valores de referencia. El manejo real (sanidad, nutrición, fotoperiodo) puede modificarlos ±10–15%.', 14, h - 8.5);
+    doc.text(`${i} / ${total}`, w - 14, h - 8.5, { align: 'right' });
+  }
+}
+
+// ── Contenido de cada sección ─────────────────────────────────────────
+function pdfSeccionCrianza(doc, y) {
+  const L  = LINEAS[lineaSel];
+  const mC = L.mortCrianza || null;
+  const fc = fmtConsumo(L.crianza, [3, 4, 5, 6]);
+
+  const head = ['Sem', 'Peso mín\n(kg)', 'Peso máx\n(kg)', 'Alim mín\n(g/día)', 'Alim máx\n(g/día)',
+                'Agua mín\n(ml/día)', 'Agua máx\n(ml/día)'];
+  if (mC) head.push('Mort. sem\n(%)', 'Mort. acum\n(%)');
+
+  const body = L.crianza.map((r, i) => {
+    const fila = [r[0], r[1].toFixed(3), r[2].toFixed(3), fc(r[3]), fc(r[4]), fc(r[5]), fc(r[6])];
+    if (mC) fila.push(mortSem(mC, i).toFixed(2), mC[i].toFixed(2));
+    return fila;
+  });
+
+  y = pdfTabla(doc, y, `Crianza · semanas 1 a ${L.crianzaSem}`, head, body);
+
+  const amb = L.crianzaAmb;
+  if (amb) {
+    const jaula = amb.sistema === 'jaula';
+    const hAmb = jaula
+      ? ['Edad', 'T. Jaula (°C)', 'T. Piso (°C)', 'Intensidad (lux)', 'Horas de luz']
+      : ['Edad', 'T. Piso (°C)', 'Intensidad (lux)', 'Horas de luz'];
+    const bAmb = amb.periodos.map(p => jaula ? [p[0], p[1], p[2], p[3], p[4]] : [p[0], p[2], p[3], p[4]]);
+    if (y > doc.internal.pageSize.getHeight() - 70) { doc.addPage(); y = pdfEncabezado(doc, 'Crianza'); }
+    y = pdfTabla(doc, y, 'Temperatura e iluminación de crianza', hAmb, bAmb,
+                 { 0: { halign: 'left', fontStyle: 'bold' } });
+  }
+  return y;
+}
+
+function pdfSeccionPostura(doc, y) {
+  const L  = LINEAS[lineaSel];
+  const mP = L.mortPostura || null;
+  const fc = fmtConsumo(L.postura, [5, 6, 7, 8]);
+
+  const head = ['Sem', 'Peso mín\n(kg)', 'Peso máx\n(kg)', '% Postura', 'Peso huevo\n(g)',
+                'Alim mín\n(g/día)', 'Alim máx\n(g/día)', 'Agua mín\n(ml/día)', 'Agua máx\n(ml/día)'];
+  if (mP) head.push('Mort. acum\n(%)');
+
+  const body = L.postura.map((r, i) => {
+    const fila = [r[0], r[1].toFixed(3), r[2].toFixed(3), r[3].toFixed(1), r[4].toFixed(1),
+                  fc(r[5]), fc(r[6]), fc(r[7]), fc(r[8])];
+    if (mP) fila.push(mP[i].toFixed(2));
+    return fila;
+  });
+
+  const desde = L.postura[0][0], hasta = L.postura[L.postura.length - 1][0];
+  y = pdfTabla(doc, y, `Postura · semanas ${desde} a ${hasta}`, head, body);
+
+  const tam = getTamHuevoData();
+  if (tam) {
+    doc.addPage();
+    y = pdfEncabezado(doc, 'Postura');
+    y = pdfTabla(doc, y, 'Distribución del tamaño de huevo (semanas pares)',
+      ['Sem', '% Chico\n43–53 g', '% Mediano\n53–63 g', '% Grande\n63–73 g', '% Muy grande\n> 73 g'],
+      tam.datos.map(r => [r[0], r[1].toFixed(2), r[2].toFixed(2), r[3].toFixed(2), r[4].toFixed(2)]));
+    y = pdfNota(doc, y, fuenteTamHuevo(tam.esRef), 'Postura');
+  }
+  return y;
+}
+
+function pdfSeccionEquipamiento(doc, y) {
+  const eq = calcEquipamiento(nAves);
+
+  doc.setFont('helvetica', 'normal').setFontSize(9);
+  doc.text(`Cálculo para un lote de ${nAves.toLocaleString('es-CL')} aves.`, 14, y);
+  y += 7;
+
+  const cols = { 0: { halign: 'left', fontStyle: 'bold' }, 3: { halign: 'left', textColor: PDF_GRIS } };
+  y = pdfTabla(doc, y, 'Crianza', ['Ítem', 'Cantidad', 'Unidad', 'Ratio'], eq.crianza, cols);
+  y = pdfTabla(doc, y, 'Postura', ['Ítem', 'Cantidad', 'Unidad', 'Ratio'], eq.postura, cols);
+
+  return pdfNota(doc, y,
+    'Ratios de manejo no convencional para el sur de Chile. Son mínimos recomendados y no dependen de la línea genética seleccionada.',
+    'Equipamiento');
+}
+
+function pdfSeccionIluminacion(doc, y) {
+  y = pdfTabla(doc, y, 'Programa de iluminación semanal',
+    ['Semana', 'Horas de luz', 'Fase'],
+    LUZ_PROGRAMA.map(r => [r.sem, `${r.horas} h`, FASE_COLORES[r.fase].texto]),
+    { 2: { halign: 'left' } });
+  return pdfTextoPanel(doc, y, 'panel-iluminacion');
+}
+
+function exportarPDF(seccion) {
+  const sec = seccion || tabActual;
+  const titulo = PDF_SECCIONES[sec] || 'Curvas genéticas';
+
+  if (!window.jspdf || !window.jspdf.jsPDF) {
+    alert('No se pudo cargar el generador de PDF. Revisa la conexión e intenta de nuevo.');
+    return;
+  }
+
+  const doc = new window.jspdf.jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  let y = pdfEncabezado(doc, titulo);
+  y = pdfFuente(doc, y);
+
+  if (sec === 'crianza')            pdfSeccionCrianza(doc, y);
+  else if (sec === 'postura')       pdfSeccionPostura(doc, y);
+  else if (sec === 'equipamiento')  pdfSeccionEquipamiento(doc, y);
+  else if (sec === 'iluminacion')   pdfSeccionIluminacion(doc, y);
+  else                              pdfTextoPanel(doc, y, 'panel-' + sec);
+
+  pdfPie(doc);
+
+  const limpio = t => t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-|-$/g, '');
+  doc.save(`curvas-${limpio(lineaSel)}-${limpio(titulo)}.pdf`.toLowerCase());
+}
+
+// Informe completo: todas las secciones, cada una en página nueva.
+function exportarPDFCompleto() {
+  if (!window.jspdf || !window.jspdf.jsPDF) {
+    alert('No se pudo cargar el generador de PDF. Revisa la conexión e intenta de nuevo.');
+    return;
+  }
+  const doc = new window.jspdf.jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  const tabPrevio = tabActual;
+  let primera = true;
+
+  Object.keys(PDF_SECCIONES).forEach(sec => {
+    tabActual = sec;                       // pdfTextoPanel lo usa al saltar de página
+    if (!primera) doc.addPage();
+    let y = pdfEncabezado(doc, PDF_SECCIONES[sec]);
+    if (primera) { y = pdfFuente(doc, y); primera = false; }
+
+    if (sec === 'crianza')            pdfSeccionCrianza(doc, y);
+    else if (sec === 'postura')       pdfSeccionPostura(doc, y);
+    else if (sec === 'equipamiento')  pdfSeccionEquipamiento(doc, y);
+    else if (sec === 'iluminacion')   pdfSeccionIluminacion(doc, y);
+    else                              pdfTextoPanel(doc, y, 'panel-' + sec);
+  });
+
+  tabActual = tabPrevio;
+  pdfPie(doc);
+  const limpio = t => t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9]+/g, '-');
+  doc.save(`curvas-${limpio(lineaSel)}-completo.pdf`.toLowerCase());
+}
+
+// ── NAVEGACIÓN DE LA CABECERA ─────────────────────────────────────────
+// Los enlaces del menú apuntaban a secciones que viven dentro de paneles
+// ocultos, así que el navegador no tenía a dónde saltar y no pasaba nada.
+// Ahora abren la pestaña correspondiente y recién ahí hacen scroll.
+function irASeccion(sec, ev) {
+  if (ev) ev.preventDefault();
+  if (PDF_SECCIONES[sec]) selTab(sec);
+  const destino = document.getElementById(sec);
+  if (destino) destino.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }

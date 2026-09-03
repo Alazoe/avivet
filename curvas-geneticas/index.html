@@ -96,12 +96,14 @@ body{
 .cfg-aves input:focus{outline:2px solid var(--acento);outline-offset:1px;border-color:transparent}
 
 /* ── Tabs ───────────────────────────────────────────────────────────── */
-.tabs{display:flex;gap:4px;margin-bottom:32px;border-bottom:2px solid var(--linea)}
+.tabs{display:flex;gap:4px;margin-bottom:32px;border-bottom:2px solid var(--linea);
+  overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.tabs::-webkit-scrollbar{display:none}
 .tab{
   font-family:var(--fuente-c);font-size:13px;font-weight:600;
   padding:10px 22px;border:none;border-bottom:3px solid transparent;
   background:none;cursor:pointer;color:var(--tenue);letter-spacing:.02em;
-  transition:color .18s,border-color .18s;margin-bottom:-2px;
+  transition:color .18s,border-color .18s;margin-bottom:-2px;white-space:nowrap;flex:0 0 auto;
 }
 .tab:hover{color:var(--prim)}
 .tab.activo{color:var(--prim);border-bottom-color:var(--acento)}
@@ -174,6 +176,7 @@ tbody tr:hover{background:var(--acento-cl)}
 .pie strong{color:var(--prim)}
 
 /* ── Botón exportar ─────────────────────────────────────────────────── */
+.cfg-exportar{display:flex;flex-wrap:wrap;gap:8px}
 .btn-exportar{
   font-family:var(--fuente-c);font-size:13px;font-weight:600;
   padding:7px 16px;border:2px solid var(--acento);border-radius:6px;
@@ -255,6 +258,46 @@ tbody tr:hover{background:var(--acento-cl)}
   .cont{padding:0 16px}
   .hero{padding:40px 0 32px}
 }
+
+/* Celular: el menú de la cabecera se reemplaza por las pestañas, que ya
+   cumplen la misma función y sí caben en el ancho de pantalla. */
+@media(max-width:760px){
+  .nav{display:none}
+  .cabecera{padding:11px 0}
+  .cabecera .cont{gap:8px}
+  .marca-titulo{font-size:18px}
+  .marca-sub{font-size:10px}
+
+  .hero{padding:28px 0 24px;margin-bottom:32px}
+  .hero-bajada{font-size:15px;margin-bottom:26px}
+  .hero-fichas{grid-template-columns:1fr}
+  .ficha{padding:14px 16px}
+
+  .bloque{margin-bottom:44px;scroll-margin-top:64px}
+  .bloque-desc{font-size:14px;margin-bottom:20px}
+
+  /* El panel de configuración pasa a una columna: los botones de línea y de
+     exportar necesitan el ancho completo para no quedar apretados. */
+  #config-panel{flex-direction:column;align-items:stretch;gap:16px;padding:16px;margin-bottom:32px}
+  .cfg-sep{display:none}
+  .cfg-aves input{width:100%}
+  .cfg-exportar .btn-exportar{flex:1 1 auto;justify-content:center}
+
+  .tab{padding:10px 14px;font-size:12.5px}
+  .tabla-wrap{max-height:340px}
+  .metodo{padding:20px 16px}
+  #fuente-linea{padding:16px 14px}
+  .fuente-campo{white-space:normal}
+  .luz-diagram{font-size:11px}
+}
+
+/* Pantallas muy angostas: el gráfico deja de exigir 360 px y se adapta. */
+@media(max-width:420px){
+  .grafico-wrap{padding:12px 10px 6px}
+  .grafico-wrap svg{min-width:300px}
+  .eq-grid{grid-template-columns:1fr 1fr}
+  .eq-num{font-size:24px}
+}
 </style>
 </head>
 <body>
@@ -267,9 +310,11 @@ tbody tr:hover{background:var(--acento-cl)}
     </div>
     <nav class="nav">
       <a href="#iniciar">Iniciar</a>
-      <a href="#crianza">Crianza</a>
-      <a href="#postura">Postura</a>
-      <a href="#equipamiento">Equipamiento</a>
+      <a href="#crianza"      onclick="irASeccion('crianza', event)">Crianza</a>
+      <a href="#postura"      onclick="irASeccion('postura', event)">Postura</a>
+      <a href="#equipamiento" onclick="irASeccion('equipamiento', event)">Equipamiento</a>
+      <a href="#alimentacion" onclick="irASeccion('alimentacion', event)">Alimentación</a>
+      <a href="#iluminacion"  onclick="irASeccion('iluminacion', event)">Iluminación</a>
     </nav>
   </div>
 </header>
@@ -280,7 +325,7 @@ tbody tr:hover{background:var(--acento-cl)}
     <div class="hero-meta">Referencia técnica · <span id="fecha-hoy"></span></div>
     <h1>Curvas de rendimiento por línea genética</h1>
     <p class="hero-bajada">
-      Peso corporal, consumo de alimento y agua semana a semana para las cuatro líneas
+      Peso corporal, consumo de alimento y agua semana a semana para las seis líneas
       ponedoras de uso en el sur de Chile. Calculadora de equipamiento integrada.
     </p>
     <div class="hero-fichas">
@@ -333,10 +378,20 @@ tbody tr:hover{background:var(--acento-cl)}
     <div class="cfg-sep"></div>
     <div>
       <div class="cfg-lbl" style="margin-bottom:10px">Exportar</div>
-      <button class="btn-exportar" onclick="exportarExcel()">
-        <svg viewBox="0 0 16 16"><path d="M8 1v8.793L5.854 7.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 9.793V1a.5.5 0 0 0-1 0zM2 13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5v-2a.5.5 0 0 0-1 0v2z"/></svg>
-        Descargar Excel
-      </button>
+      <div class="cfg-exportar">
+        <button class="btn-exportar" onclick="exportarExcel()">
+          <svg viewBox="0 0 16 16"><path d="M8 1v8.793L5.854 7.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 9.793V1a.5.5 0 0 0-1 0zM2 13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5v-2a.5.5 0 0 0-1 0v2z"/></svg>
+          Excel
+        </button>
+        <button class="btn-exportar" onclick="exportarPDF()" title="PDF de la pestaña que estás viendo">
+          <svg viewBox="0 0 16 16"><path d="M8 1v8.793L5.854 7.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 9.793V1a.5.5 0 0 0-1 0zM2 13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5v-2a.5.5 0 0 0-1 0v2z"/></svg>
+          PDF de esta sección
+        </button>
+        <button class="btn-exportar" onclick="exportarPDFCompleto()" title="Un PDF con las cinco secciones">
+          <svg viewBox="0 0 16 16"><path d="M8 1v8.793L5.854 7.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 9.793V1a.5.5 0 0 0-1 0zM2 13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5v-2a.5.5 0 0 0-1 0v2z"/></svg>
+          PDF completo
+        </button>
+      </div>
     </div>
   </div>
 
@@ -681,6 +736,8 @@ tbody tr:hover{background:var(--acento-cl)}
 </main>
 
 <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <script src="app.js"></script>
 <script>
   // sync el número de aves en el título del equipamiento

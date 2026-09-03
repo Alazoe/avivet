@@ -23,14 +23,23 @@ Fuente de los números: `app.js` — cada línea tiene indicada su fuente origin
 - **Selector de línea genética** — alterna entre las 6 líneas con un clic
 - **N° de aves** — configura el tamaño del lote para la calculadora de equipamiento
 - **Exportar a Excel** — descarga las 4 hojas: Crianza, Postura, Equipamiento y Tamaño Huevo
+- **Exportar a PDF** — dos botones: *PDF de esta sección* genera un documento de la pestaña que se está viendo, y *PDF completo* arma uno con las cinco. Cada PDF lleva encabezado con la línea, la ficha de fuente del manual, numeración de páginas y la advertencia de variación por manejo, para poder entregárselo al productor tal cual sale.
 - **Tab Crianza** — gráficos de peso, alimento y agua + tabla con mortalidad semanal y acumulada
 - **Tab Postura** — % postura, peso de huevo, peso corporal, alimento, agua + tabla con mortalidad + distribución tamaño de huevo (biweekly)
 - **Tab Equipamiento** — calculadora automática para el N° de aves configurado
 - **Iniciar lote** — calcula semana actual y etapa productiva desde la fecha de nacimiento
 - **Ficha de fuente** — al pie de la página, cambia con la línea seleccionada: manual, editor, edición, código de documento, sistema de alojamiento y, dato por dato, de dónde sale cada valor. Las filas marcadas con (*) son estimaciones, no tabla oficial. Cuando el PDF es público, el título enlaza al manual.
+- **Menú de la cabecera** — cada enlace abre su pestaña y baja a la sección. Antes apuntaban a secciones
+  que viven dentro de paneles ocultos, así que el navegador no tenía a dónde saltar y el clic no hacía nada.
+- **Celular** — el menú de la cabecera se oculta bajo 760 px (las pestañas cumplen la misma función),
+  la fila de pestañas se desplaza en horizontal y el panel de configuración pasa a una columna.
 
 Las referencias viven en la constante `REFERENCIAS` de `app.js`, separada de `LINEAS` para no mezclar
 datos numéricos con procedencia. Al agregar una línea nueva hay que sumar su entrada ahí también.
+
+Los ratios de equipamiento se calculan en `calcEquipamiento(n)`, que usan la vista, el Excel y el PDF:
+antes el cálculo estaba escrito dos veces y podía desincronizarse. Las secciones exportables se declaran
+en `PDF_SECCIONES`, que además define qué pestañas alcanza el menú de la cabecera.
 
 ## Cómo leer las tablas
 
