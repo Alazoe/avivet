@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Informe de Telemedicina · avivet.cl</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --fondo:#f8f6f1; --papel:#ffffff; --tinta:#1a1a1a; --suave:#555; --tenue:#888;
+  --linea:#e0ddd5; --linea-f:#c4c0b6; --prim:#1b4332; --prim-osc:#133024;
+  --acento:#f0a500; --acento-cl:#fef5e0; --rojo:#b71c1c;
+  --fuente-t:'Crimson Pro',Georgia,serif; --fuente-c:'Inter',system-ui,sans-serif; --fuente-m:'IBM Plex Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--fuente-c);font-size:16px;line-height:1.6;color:var(--tinta);background:var(--fondo);-webkit-font-smoothing:antialiased}
+.cont{max-width:760px;margin:0 auto;padding:0 20px}
+
+.cabecera{background:var(--prim);border-bottom:3px solid var(--acento);padding:12px 0;position:sticky;top:0;z-index:100}
+.cabecera .cont{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.marca{display:flex;flex-direction:column;line-height:1.1}
+.marca-titulo{font-family:var(--fuente-t);font-size:20px;font-weight:700;color:#fff}
+.marca-sub{font-size:10px;color:var(--acento);letter-spacing:.06em;text-transform:uppercase;margin-top:2px}
+.nav a{color:rgba(255,255,255,.85);text-decoration:none;font-size:13px;font-weight:500;margin-left:16px}
+.nav a:hover{color:var(--acento)}
+
+.hero{padding:26px 0 18px}
+.hero h1{font-family:var(--fuente-t);font-size:clamp(24px,6vw,34px);font-weight:700;color:var(--prim);line-height:1.05;margin-bottom:8px}
+.hero p{font-size:14px;color:var(--suave);max-width:60ch}
+
+.tm-voz-aviso{display:none;background:var(--acento-cl);border:1px solid var(--acento);border-radius:6px;
+  padding:10px 14px;font-size:13px;color:#8a6100;margin:12px 0}
+
+.tm-barra{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:16px 0 6px;position:sticky;top:60px;z-index:50;
+  background:var(--fondo);padding:8px 0}
+.btn-prim{font-family:var(--fuente-c);font-size:15px;font-weight:600;padding:12px 22px;border:none;border-radius:8px;
+  background:var(--prim);color:#fff;cursor:pointer;flex:1;min-width:150px}
+.btn-prim:active{background:var(--prim-osc)}
+.btn-sec{font-family:var(--fuente-c);font-size:14px;font-weight:600;padding:11px 18px;border:2px solid var(--prim);
+  border-radius:8px;background:transparent;color:var(--prim);cursor:pointer}
+.btn-word{font-family:var(--fuente-c);font-size:15px;font-weight:600;padding:12px 22px;border:2px solid var(--acento);
+  border-radius:8px;background:var(--acento);color:#1a1a1a;cursor:pointer;flex:1;min-width:150px;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-word:active{background:#d99400}
+.btn-word svg{width:16px;height:16px;fill:currentColor}
+#tm-estado{font-size:12px;color:var(--tenue);flex-basis:100%;opacity:0;transition:opacity .3s}
+#tm-estado.visible{opacity:1}
+
+.tarjeta{background:var(--papel);border:1px solid var(--linea);border-radius:10px;padding:18px 18px;margin-bottom:18px}
+.tarjeta h2{font-family:var(--fuente-t);font-size:19px;font-weight:600;color:var(--prim);margin-bottom:14px;
+  padding-bottom:8px;border-bottom:1px solid var(--linea)}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+.campo{display:flex;flex-direction:column;gap:6px}
+.campo label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--suave)}
+.campo input,.campo select,.campo textarea{font-family:var(--fuente-c);font-size:16px;padding:11px 12px;
+  border:1px solid var(--linea-f);border-radius:7px;background:#fff;color:var(--tinta);width:100%}
+.campo input:focus,.campo select:focus,.campo textarea:focus{outline:2px solid var(--acento);outline-offset:1px;border-color:transparent}
+.campo-full{grid-column:1/-1}
+.campo textarea{resize:vertical;min-height:80px;line-height:1.5}
+.campo-check{flex-direction:row;align-items:center;gap:8px}
+.campo-check input{width:18px;height:18px;accent-color:var(--prim)}
+.campo-check label{text-transform:none;font-size:14px;letter-spacing:0;color:var(--tinta);font-weight:500}
+
+.tm-blk-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.tm-blk-head h2{margin:0;padding:0;border:none}
+.tm-mic{font-family:var(--fuente-c);font-size:13px;font-weight:600;padding:6px 12px;border:1px solid var(--acento);
+  border-radius:20px;background:var(--acento-cl);color:#8a6100;cursor:pointer;flex-shrink:0}
+.tm-mic.grabando{background:var(--rojo);color:#fff;border-color:var(--rojo);animation:tm-pulse 1s infinite}
+@keyframes tm-pulse{0%,100%{opacity:1}50%{opacity:.55}}
+
+.tm-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.tm-chip-wrap{display:inline-flex;align-items:stretch;border-radius:20px;overflow:hidden}
+.tm-chip{font-family:var(--fuente-c);font-size:13px;font-weight:500;padding:6px 12px;border:1px solid var(--linea-f);
+  border-radius:20px;background:#fff;color:var(--prim);cursor:pointer}
+.tm-chip:hover{background:var(--acento-cl);border-color:var(--acento)}
+.tm-chip-wrap .tm-chip{border-radius:20px 0 0 20px;border-right:none}
+.tm-chip-link{display:flex;align-items:center;padding:6px 10px;border:1px solid var(--linea-f);border-left:1px solid var(--linea);
+  border-radius:0 20px 20px 0;background:var(--acento-cl);text-decoration:none;font-size:13px}
+.tm-chip-link:hover{background:var(--acento);border-color:var(--acento)}
+.tm-blk-head + .tm-chips{margin-top:-2px}
+.tarjeta textarea{width:100%}
+
+.tm-calendario{margin:2px 0 16px;font-size:13px}
+.tm-calendario summary{cursor:pointer;color:var(--prim);font-weight:600;padding:4px 0}
+.tm-calendario-nota{color:var(--tenue);font-size:12px;margin:6px 0 10px;line-height:1.4}
+.tm-calendario table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:6px}
+.tm-calendario th,.tm-calendario td{border:1px solid var(--linea);padding:5px 8px;text-align:left}
+.tm-calendario th{background:var(--prim);color:#fff;font-weight:600}
+.tm-calendario tr:nth-child(even) td{background:var(--fondo)}
+@media (max-width:520px){.tm-calendario{overflow-x:auto}.tm-calendario table{min-width:480px}}
+
+.hint-mic{font-size:12px;color:var(--tenue);margin-top:4px;line-height:1.4}
+
+#tm-error{display:none;background:#ffebee;border:1px solid #e05c5c;color:var(--rojo);
+  padding:11px 15px;border-radius:7px;font-size:14px;font-weight:500;margin:6px 0 14px}
+
+.tm-lista-wrap{margin-bottom:26px}
+.tm-lista-wrap h2{font-family:var(--fuente-t);font-size:18px;font-weight:600;color:var(--prim);margin-bottom:10px}
+.tm-item{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--papel);
+  border:1px solid var(--linea);border-left:4px solid var(--linea-f);border-radius:8px;padding:12px 14px;
+  margin-bottom:8px;cursor:pointer;transition:border-color .15s}
+.tm-item:hover{border-left-color:var(--acento)}
+.tm-item.activo{border-left-color:var(--prim);background:#f3f7f4}
+.tm-item-tit{font-weight:600;font-size:15px;color:var(--tinta)}
+.tm-item-sub{font-size:12px;color:var(--tenue);margin-top:2px}
+.tm-item-del{background:none;border:none;font-size:18px;cursor:pointer;padding:4px 6px;opacity:.6}
+.tm-item-del:hover{opacity:1}
+.tm-vacio{font-size:14px;color:var(--tenue);font-style:italic}
+
+.tm-respaldo{display:flex;gap:10px;flex-wrap:wrap;align-items:center;font-size:13px;color:var(--tenue);margin-top:6px}
+.tm-link{color:var(--prim);font-weight:600;cursor:pointer;text-decoration:underline}
+.tm-link input{display:none}
+
+.pie{margin:36px 0 24px;padding-top:20px;border-top:1px solid var(--linea);font-size:13px;color:var(--tenue);text-align:center;line-height:1.7}
+.pie strong{color:var(--prim)}
+
+@media (max-width:520px){
+  .tm-barra{top:58px}
+  .btn-prim,.btn-word{min-width:120px}
+}
+</style>
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="cont">
+    <div class="marca">
+      <span class="marca-titulo">AviVet</span>
+      <span class="marca-sub">Informe de Telemedicina</span>
+    </div>
+    <nav class="nav">
+      <a href="../">Inicio</a>
+    </nav>
+  </div>
+</header>
+
+<main class="cont">
+  <section class="hero">
+    <h1>Informe de telemedicina</h1>
+    <p>Registra tus indicaciones y observaciones al cierre de una sesión remota — dicta con el micrófono o usa los chips de temas frecuentes, y descarga el Word para el productor. <span id="tm-fecha-hoy"></span></p>
+    <div id="tm-voz-aviso" class="tm-voz-aviso">
+      Tu navegador no tiene dictado integrado: usa el <strong>micrófono del teclado</strong> (el ícono 🎤 junto a la barra espaciadora) para hablar dentro de cualquier campo.
+    </div>
+  </section>
+
+  <div class="tm-barra">
+    <button class="btn-prim" onclick="tmNueva()">+ Nueva sesión</button>
+    <button class="btn-word" onclick="tmGenerarWord()">
+      <svg viewBox="0 0 24 24"><path d="M12 16l-5-5h3V4h4v7h3l-5 5zm-8 2h16v2H4v-2z"/></svg>
+      Generar informe Word
+    </button>
+    <span id="tm-estado"></span>
+  </div>
+
+  <div id="tm-error"></div>
+
+  <form id="tm-form" autocomplete="off">
+    <div class="tarjeta">
+      <h2>Datos de la sesión</h2>
+      <div class="form-grid">
+        <div class="campo campo-full"><label for="tm-productor">Productor / Predio</label>
+          <input id="tm-productor" type="text" placeholder="Ej: Don José, gallinas criollas"></div>
+        <div class="campo"><label for="tm-ubicacion">Ubicación</label>
+          <input id="tm-ubicacion" type="text" placeholder="Ej: Panguipulli"></div>
+        <div class="campo"><label for="tm-fecha">Fecha de la sesión</label>
+          <input id="tm-fecha" type="date"></div>
+        <div class="campo"><label for="tm-tipo-aves">Tipo de aves</label>
+          <select id="tm-tipo-aves"></select></div>
+        <div class="campo"><label for="tm-aves">N° de aves aprox.</label>
+          <input id="tm-aves" type="number" inputmode="numeric" min="0" placeholder="opcional"></div>
+        <div class="campo campo-full"><label for="tm-modalidad">Modalidad</label>
+          <select id="tm-modalidad"></select></div>
+      </div>
+    </div>
+
+    <div class="tarjeta">
+      <h2>Temas tratados en la sesión</h2>
+      <div id="tm-temas" class="form-grid"></div>
+    </div>
+
+    <div id="tm-bloques"></div>
+
+    <div class="tarjeta">
+      <div class="tm-blk-head">
+        <h2>Observaciones generales</h2>
+        <button type="button" class="tm-mic" onclick="tmToggleDictado('tm-observaciones',this)" title="Dictar por voz">🎤 Dictar</button>
+      </div>
+      <textarea id="tm-observaciones" placeholder="Estado general del plantel, hallazgos comentados en la sesión…"></textarea>
+    </div>
+
+    <div class="tarjeta">
+      <div class="tm-blk-head">
+        <h2>Próximos pasos y seguimiento</h2>
+        <button type="button" class="tm-mic" onclick="tmToggleDictado('tm-seguimiento',this)" title="Dictar por voz">🎤 Dictar</button>
+      </div>
+      <textarea id="tm-seguimiento" placeholder="Qué debe hacer el productor, cuándo revisar de nuevo, próxima sesión…"></textarea>
+    </div>
+  </form>
+
+  <div class="tm-lista-wrap">
+    <h2>Sesiones guardadas</h2>
+    <div id="tm-lista"></div>
+    <div class="tm-respaldo">
+      <span>Respaldo:</span>
+      <span class="tm-link" onclick="tmExportar()">Exportar sesiones (JSON)</span>
+      <label class="tm-link">Importar<input type="file" accept="application/json" onchange="tmImportar(this)"></label>
+    </div>
+  </div>
+
+  <footer class="pie">
+    <strong>AviVet</strong> · MV Andrés Lazo Escobar · Asesoría Veterinaria<br>
+    Los datos se guardan únicamente en este dispositivo (no se envían a ningún servidor). Exporta el JSON para respaldar o pasar a otro dispositivo.
+  </footer>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

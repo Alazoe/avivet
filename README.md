@@ -24,6 +24,7 @@
 | **Planilla Telemedicina** | [🔗 Abrir herramienta](https://avivet.cl/avivet/telemedicina/) | Formulario pre/post consulta con envío automático a Google Sheets |
 | **Informe de Visita Técnica** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/informe-visita/) | Genera el informe Word (.docx) de la visita: equipamiento, densidad, ventilación y consumos según edad y línea genética |
 | **Bitácora de Terreno** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/informe-visita/bitacora.html) | Captura la visita por voz en el celular, se guarda en el teléfono y genera el informe Word |
+| **Informe de Telemedicina** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/informe-telemedicina/) | Indicaciones y observaciones del MV al cierre de una sesión remota (vacunación, antiparasitarios, otros medicamentos), por chips o dictado; genera el informe Word |
 | **Recepción de Insumos** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/recepcion-insumos/) | Divide el camión (maíz, harina de soya, conchuela) en maxisacos de 800–1000 kg con correlativo automático para imprimir, y cuadra el peso real contra la guía |
 | **Cómo examinar una gallina** | [🔗 Abrir guía](https://alazoe.github.io/avivet/Recursos/examen-gallina/) | Guía técnica de revisión de salud de cabeza a cola (nivel productor) |
 | **Condensación y cama húmeda** | [🔗 Abrir guía](https://alazoe.github.io/avivet/Recursos/condensacion-galpon/) | Por qué se moja la cama del gallinero y cómo evitarlo: humedad, condensación y ventilación |
