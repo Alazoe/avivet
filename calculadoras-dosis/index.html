@@ -82,6 +82,26 @@ main{max-width:960px;margin:0 auto;padding:48px 20px 60px;animation:fadeIn 0.4s 
 .drug-card:hover .drug-cta{background:var(--accent2);}
 
 .footer-note{margin-top:32px;background:var(--gold-l);border:1px solid #e8d5a8;border-radius:10px;padding:12px 16px;font-size:12px;color:#7a5a1a;display:flex;gap:8px;align-items:flex-start;}
+
+/* Tabla de referencia aves de compañía */
+.ref-section{margin-top:52px;padding-top:36px;border-top:2px solid var(--border);}
+.ref-badge{display:inline-flex;align-items:center;gap:6px;background:#f3f0ff;border:1px solid #c4b5fd;color:#5b21b6;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:10px;}
+.ref-title{font-family:"Fraunces",serif;font-size:22px;font-weight:700;margin-bottom:5px;}
+.ref-sub{font-size:14px;color:var(--text2);margin-bottom:16px;}
+.ref-table-wrap{overflow-x:auto;border-radius:12px;border:1px solid var(--border);box-shadow:var(--shadow);}
+.ref-table{width:100%;border-collapse:collapse;font-size:13px;background:var(--surface);}
+.ref-table thead tr{background:var(--surface2);}
+.ref-table th{padding:11px 16px;text-align:left;font-weight:600;font-size:12px;color:var(--text2);border-bottom:2px solid var(--border);white-space:nowrap;}
+.ref-table td{padding:10px 16px;border-bottom:1px solid var(--border2);color:var(--text);vertical-align:top;line-height:1.45;}
+.ref-table tbody tr:last-child td{border-bottom:none;}
+.ref-table tbody tr:hover td{background:var(--surface2);}
+.ref-table td:first-child{font-weight:600;white-space:nowrap;}
+.ref-tag{display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;margin-left:5px;vertical-align:middle;letter-spacing:0.3px;}
+.ref-tag.fl{background:#fff7ed;color:#92400e;border:1px solid #fed7aa;}
+.ref-tag.inyect{background:var(--ok-l);color:var(--ok);border:1px solid #a8dfc0;}
+.ref-source{margin-top:10px;font-size:11px;color:var(--text3);line-height:1.6;}
+.ref-source a{color:var(--accent);text-decoration:none;}
+.ref-source a:hover{text-decoration:underline;}
 </style>
 </head>
 <body>
@@ -353,6 +373,87 @@ main{max-width:960px;margin:0 auto;padding:48px 20px 60px;animation:fadeIn 0.4s 
     <span>⚠️</span>
     <span>Todas las calculadoras son de uso exclusivo bajo prescripción veterinaria. Los valores de consumo de agua son estimados — ajusta según el consumo real medido en el plantel.</span>
   </div>
+
+  <!-- Tabla de referencia: Aves de compañía -->
+  <div class="ref-section">
+    <div class="ref-badge">🦜 Referencia · Aves de compañía</div>
+    <h2 class="ref-title">Antimicrobianos en Aves de Compañía</h2>
+    <p class="ref-sub">Psitácidas y otras aves de compañía · Dosis orientativas — uso extrafichas, bajo prescripción veterinaria</p>
+    <div class="ref-table-wrap">
+      <table class="ref-table">
+        <thead>
+          <tr>
+            <th>Antimicrobiano</th>
+            <th>Dosis, vía y frecuencia</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Sulfato de amikacina</td>
+            <td>15 mg/kg, IM, 2 veces al día</td>
+          </tr>
+          <tr>
+            <td>Amoxicilina / ácido clavulánico</td>
+            <td>125 mg/kg, PO, 2–3 veces al día</td>
+          </tr>
+          <tr>
+            <td>Azitromicina</td>
+            <td>40–50 mg/kg, PO, una vez al día</td>
+          </tr>
+          <tr>
+            <td>Ceftazidima sódica</td>
+            <td>75 mg/kg, IM, 3 veces al día</td>
+          </tr>
+          <tr>
+            <td>Ciprofloxacina <span class="ref-tag fl">Fluoroquinolona</span></td>
+            <td>25 mg/kg, PO, 2 veces al día</td>
+          </tr>
+          <tr>
+            <td>Clindamicina</td>
+            <td>100 mg/kg, PO, 2 veces al día · 5 días (<em>Clostridium</em>)</td>
+          </tr>
+          <tr>
+            <td>Doxiciclina</td>
+            <td>25 mg/kg, PO, 2 veces al día · 45 días</td>
+          </tr>
+          <tr>
+            <td>Doxiciclina inyectable 20 mg/mL <span class="ref-tag inyect">IM/SC</span></td>
+            <td>75–100 mg/kg, IM o SC, cada 5 días; luego semanalmente ×6</td>
+          </tr>
+          <tr>
+            <td>Enrofloxacino <span class="ref-tag fl">Fluoroquinolona</span></td>
+            <td>15–20 mg/kg, PO o IM, 2 veces al día</td>
+          </tr>
+          <tr>
+            <td>Marbofloxacino <span class="ref-tag fl">Fluoroquinolona</span></td>
+            <td>2,5–5 mg/kg, PO, una vez al día</td>
+          </tr>
+          <tr>
+            <td>Metronidazol</td>
+            <td>25 mg/kg, PO, 2 veces al día · 14 días</td>
+          </tr>
+          <tr>
+            <td>Piperacilina <span class="ref-tag inyect">IM</span></td>
+            <td>100 mg/kg, IM, cada 4–6 horas</td>
+          </tr>
+          <tr>
+            <td>Pradofloxacino <span class="ref-tag fl">Fluoroquinolona</span></td>
+            <td>7,5 mg/kg, PO, cada 24 horas</td>
+          </tr>
+          <tr>
+            <td>Trimetoprima-sulfametoxazol</td>
+            <td>50–100 mg/kg, PO, 2 veces al día</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="ref-source">
+      Fuente: <a href="https://www.msdvetmanual.com/es/multimedia/table/antimicrobianos-utilizados-en-aves-de-compa%C3%B1%C3%ADa" target="_blank" rel="noopener">MSD Veterinary Manual — Antimicrobianos utilizados en aves de compañía</a>.
+      La mayoría de estos fármacos no están aprobados para su uso en aves; se recomienda utilizarlos con precaución bajo prescripción veterinaria retenida.
+      Las dosis pueden variar según el agente infeccioso y la especie tratada.
+    </p>
+  </div>
+
 </main>
 
 </body>
