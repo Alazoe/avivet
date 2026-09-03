@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Referencia Farmacológica Aviar — AviVet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#f5f4f0; --surface:#ffffff; --surface2:#f0ede8;
+  --border:#ddd9d0; --border2:#e8e4de;
+  --text:#1a1916; --text2:#5a5650; --text3:#9a948c;
+  --accent:#1b4332; --accent2:#2d6a4f; --accent-l:#d8f3dc;
+  --gold:#b5813a; --gold-l:#fdf3e0;
+  --ok:#1b7a4a; --ok-l:#e8f7ee;
+  --blue:#1a4a7a; --blue-l:#e8f0fc;
+  --orange:#92400e; --orange-l:#fff7ed; --orange-b:#fed7aa;
+  --purple:#5b21b6; --purple-l:#f3eeff; --purple-b:#c4b5fd;
+  --radius:12px;
+  --shadow:0 1px 3px rgba(0,0,0,0.06),0 4px 16px rgba(0,0,0,0.04);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;line-height:1.5;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;height:56px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100;}
+.hdr-back{display:flex;align-items:center;gap:5px;font-size:13px;font-weight:500;color:var(--text2);text-decoration:none;padding:5px 10px;border-radius:8px;border:1px solid var(--border);transition:all 0.15s;}
+.hdr-back:hover{border-color:var(--accent);color:var(--accent);}
+.logo-mark{width:32px;height:32px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.logo-text{font-family:"Fraunces",serif;font-weight:700;font-size:16px;color:var(--text);}
+.logo-sub{font-size:11px;color:var(--text3);font-weight:500;margin-left:2px;}
+.hdr-sep{width:1px;height:20px;background:var(--border);margin:0 4px;}
+.hdr-title{font-size:13px;color:var(--text2);font-weight:500;}
+
+main{max-width:1100px;margin:0 auto;padding:32px 20px 60px;animation:fadeIn 0.4s ease;}
+
+.page-hero{margin-bottom:20px;}
+.drug-badge{display:inline-flex;align-items:center;gap:6px;background:var(--purple-l);border:1px solid var(--purple-b);color:var(--purple);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:10px;}
+.page-title{font-family:"Fraunces",serif;font-size:28px;font-weight:700;line-height:1.2;margin-bottom:6px;}
+.page-sub{font-size:14px;color:var(--text2);max-width:720px;}
+
+.source-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 18px;margin:18px 0;font-size:12.5px;color:var(--text2);line-height:1.6;}
+.source-box strong{color:var(--text);}
+
+.warn-box{background:var(--orange-l);border:1.5px solid var(--orange-b);border-radius:12px;padding:16px 18px;margin-bottom:24px;display:flex;gap:12px;align-items:flex-start;}
+.warn-icon{font-size:20px;flex-shrink:0;}
+.warn-title{font-size:13px;font-weight:700;color:var(--orange);margin-bottom:4px;}
+.warn-text{font-size:12.5px;color:#78350f;line-height:1.55;}
+
+/* TOC */
+.toc{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px;position:sticky;top:66px;z-index:50;background:var(--bg);padding:10px 0;}
+.toc a{font-size:12px;font-weight:600;color:var(--text2);background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:6px 14px;text-decoration:none;transition:all 0.15s;}
+.toc a:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-l);}
+
+/* Search */
+.search-wrap{margin-bottom:28px;}
+.search-input{width:100%;padding:12px 16px;border:1.5px solid var(--border);border-radius:var(--radius);font-family:"DM Sans",sans-serif;font-size:14px;background:var(--surface);outline:none;}
+.search-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(27,67,50,0.1);}
+.search-count{font-size:11px;color:var(--text3);margin-top:6px;}
+
+/* Secciones */
+.ref-section{margin-bottom:44px;scroll-margin-top:130px;}
+.ref-sec-badge{display:inline-flex;align-items:center;gap:6px;background:var(--accent-l);border:1px solid #a8dfc0;color:var(--accent);border-radius:20px;padding:3px 11px;font-size:10px;font-weight:700;letter-spacing:0.4px;text-transform:uppercase;margin-bottom:8px;}
+.ref-sec-title{font-family:"Fraunces",serif;font-size:19px;font-weight:700;margin-bottom:4px;}
+.ref-sec-sub{font-size:12.5px;color:var(--text2);margin-bottom:14px;line-height:1.5;}
+
+.ref-table-wrap{overflow-x:auto;border-radius:12px;border:1px solid var(--border);box-shadow:var(--shadow);}
+.ref-table{width:100%;border-collapse:collapse;font-size:12.5px;background:var(--surface);}
+.ref-table thead tr{background:var(--surface2);}
+.ref-table th{padding:10px 14px;text-align:left;font-weight:600;font-size:11px;color:var(--text2);border-bottom:2px solid var(--border);white-space:nowrap;text-transform:uppercase;letter-spacing:0.3px;}
+.ref-table td{padding:9px 14px;border-bottom:1px solid var(--border2);color:var(--text);vertical-align:top;line-height:1.5;}
+.ref-table tbody tr:last-child td{border-bottom:none;}
+.ref-table td:first-child{font-weight:600;white-space:nowrap;}
+.ref-table td.dose{white-space:normal;min-width:180px;}
+.ref-table td.comment{min-width:220px;}
+.ref-table tr.filtered-out{display:none;}
+.drug-group:not(:last-child) td{border-bottom:1px solid var(--border2);}
+
+.ref-note{font-size:11px;color:var(--text3);margin-top:8px;line-height:1.5;}
+
+.back-to-top{position:fixed;bottom:24px;right:24px;background:var(--accent);color:#fff;border:none;border-radius:50%;width:44px;height:44px;font-size:18px;cursor:pointer;box-shadow:var(--shadow);display:none;align-items:center;justify-content:center;z-index:60;}
+.back-to-top.visible{display:flex;}
+
+@media(max-width:640px){
+  .toc{position:static;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="hdr-back">← Volver</a>
+  <div class="hdr-sep"></div>
+  <div class="logo-mark">🐔</div>
+  <span class="logo-text">AviVet</span>
+  <span class="logo-sub">MV Andrés Lazo</span>
+  <div class="hdr-sep"></div>
+  <span class="hdr-title">Referencia Clínica</span>
+</header>
+
+<main>
+  <div class="page-hero">
+    <div class="drug-badge">📖 Referencia clínica</div>
+    <h1 class="page-title">Farmacología Aviar de Referencia</h1>
+    <p class="page-sub">Anticoccidiales, antiparasitarios y antimicrobianos para aves de traspatio y ornamentales — dosis en agua de bebida, vía oral y parenteral, tanto de productos con registro como de uso extraetiqueta reportado en la literatura.</p>
+  </div>
+
+  <div class="source-box">
+    <strong>Fuente:</strong> <em>Backyard Poultry Medicine and Surgery: A Guide for Veterinary Practitioners</em> — Wiley-Blackwell. Tablas 29.10 a 29.14 (capítulo de fármacos de uso común).
+  </div>
+
+  <div class="warn-box">
+    <span class="warn-icon">⚠️</span>
+    <div>
+      <div class="warn-title">Uso bajo prescripción veterinaria — Muchas dosis son extraetiqueta</div>
+      <div class="warn-text">
+        Las Tablas 3, 4 y 5 de esta página incluyen fármacos administrados de forma <strong>anecdótica y extraetiqueta</strong>, sin estudio formal de referencia en todos los casos. Las Tablas 1 y 2 contienen productos con y sin registro (NADA/ANADA, EE.UU.). <strong>Antes de usar, consultar <a href="https://www.farad.org" target="_blank" rel="noopener" style="color:inherit;">farad.org</a></strong> para tiempos de resguardo de carne y huevo vigentes — los aquí listados corresponden a la etiqueta original en EE.UU. y pueden no aplicar en Chile. Esta tabla es de referencia bibliográfica, no reemplaza el criterio clínico ni la normativa SAG.
+      </div>
+    </div>
+  </div>
+
+  <div class="toc">
+    <a href="#tabla1">1 · Anticoccidiales agua (etiquetados)</a>
+    <a href="#tabla2">2 · Anticoccidiales extraetiqueta</a>
+    <a href="#tabla3">3 · Antibióticos agua (etiquetados)</a>
+    <a href="#tabla4">4 · Antimicrobianos parenterales</a>
+    <a href="#tabla5">5 · Fármacos misceláneos</a>
+  </div>
+
+  <div class="search-wrap">
+    <input type="text" class="search-input" id="buscador" placeholder="🔍 Buscar fármaco (ej: tilosina, oxitetraciclina, ivermectina)…" oninput="filtrar()">
+    <div class="search-count" id="contador"></div>
+  </div>
+
+  <!-- ============ TABLA 1 ============ -->
+  <div class="ref-section" id="tabla1">
+    <div class="ref-sec-badge">Tabla 29.10</div>
+    <h2 class="ref-sec-title">Anticoccidiales y Antiparasitarios — Agua de Bebida (Productos Etiquetados)</h2>
+    <p class="ref-sec-sub">Medicamentos con registro (NADA/ANADA, EE.UU.) para uso en agua de bebida de aves de corral.</p>
+    <div class="ref-table-wrap">
+      <table class="ref-table">
+        <thead><tr><th>Medicamento</th><th>Dosis</th><th>Comentario</th></tr></thead>
+        <tbody>
+          <tr class="fila">
+            <td>Amprolium polvo soluble 20%<br><span style="font-weight:400;color:var(--text3);">(NADA #33-165 Amprol 128; NADA #200-488 AmproMed-P)</span></td>
+            <td class="dose">0,012–0,024% en agua × 3–5 d, luego 0,006% × 1–2 sem</td>
+            <td class="comment">Pollos y pavos en crecimiento, ponedoras: tratamiento de coccidiosis</td>
+          </tr>
+          <tr class="fila">
+            <td>Amprolium solución 9,6%<br><span style="font-weight:400;color:var(--text3);">(NADA #200-496 CocciCure-P; ANADA #200-630 CocciAid)</span></td>
+            <td class="dose">0,012–0,024% en agua × 3–5 d, luego 0,006% × 1–2 sem</td>
+            <td class="comment">Pollos y pavos en crecimiento, ponedoras: tratamiento de coccidiosis</td>
+          </tr>
+          <tr class="fila">
+            <td>Fenbendazol 200 mg/mL<br><span style="font-weight:400;color:var(--text3);">(NADA 141-449 Safe-Guard Aqua-Sol)</span></td>
+            <td class="dose">1 mg/kg PV/día × 5 d en agua (25 mL tratan 5000 kg PV de pollos/día)</td>
+            <td class="comment">Pollos broiler y de reemplazo: tratamiento y control de <em>Ascaridia galli</em> adulto. Sin resguardo.<br>Reproductoras y ponedoras: <em>A. galli</em> y <em>Heterakis gallinarum</em>. Sin resguardo.</td>
+          </tr>
+          <tr class="fila drug-group">
+            <td rowspan="4">Piperazina sulfato<br><span style="font-weight:400;color:var(--text3);">(NADA #10-005 Wazine-17; 100 mL = 17 g piperazina)</span></td>
+            <td class="dose">Por cada 100 aves: 1 oz (30 mL) por galón (3,8 L) de agua. Repetible cada 30 d</td>
+            <td class="comment">Pollos 4–6 sem de edad. Resguardo carne 21 d</td>
+          </tr>
+          <tr class="fila drug-group">
+            <td class="dose">Por cada 100 aves: 2 oz (60 mL) por 2 galones (7,6 L). Repetible cada 30 d</td>
+            <td class="comment">Pollos >6 sem de edad. Resguardo carne 21 d</td>
+          </tr>
+          <tr class="fila drug-group">
+            <td class="dose">Por cada 100 aves: 2 oz (60 mL) por 2 galones (7,6 L). Repetible cada 30 d</td>
+            <td class="comment">Pavos <12 sem de edad</td>
+          </tr>
+          <tr class="fila drug-group">
+            <td class="dose">Por cada 100 aves: 4 oz (120 mL) por 4 galones (15 L). Repetible cada 30 d</td>
+            <td class="comment">Pavos >12 sem de edad</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="ref-note">Eliminación de áscaris grandes (<em>Ascaridia spp.</em>) en pavos y pollos con piperazina.</p>
+  </div>
+
+  <!-- ============ TABLA 2 ============ -->
+  <div class="ref-section" id="tabla2">
+    <div class="ref-sec-badge">Tabla 29.11</div>
+    <h2 class="ref-sec-title">Anticoccidiales y Antiparasitarios — Uso Extraetiqueta Individual</h2>
+    <p class="ref-sec-sub">Consultar farad.org antes de usar para tiempos de resguardo de carne y huevo.</p>
+    <div class="ref-table-wrap">
+      <table class="ref-table">
+        <thead><tr><th>Agente</th><th>Dosis</th><th>Comentario</th></tr></thead>
+        <tbody>
+          <tr class="fila drug-group">
+            <td rowspan="2">Albendazol</td>
+            <td class="dose">10 mg/kg VO una vez</td>
+            <td class="comment">Aves de corral en general</td>
+          </tr>
+          <tr class="fila drug-group">
+            <td class="dose">47 mg/kg VO una vez, repetir en 4 sem</td>
+            <td class="comment">Pollos: <em>Heterakis</em></td>
+          </tr>
+          <tr class="fila">
+            <td>Amprolium</td>
+            <td class="dose">13–26 mg/kg VO</td>
+            <td class="comment">Pollos</td>
+          </tr>
+          <tr class="fila drug-group">
+            <td rowspan="3">Fenbendazol</td>
+            <td class="dose">20 mg/kg VO, repetir en 10–14 d</td>
+            <td class="comment">Aves acuáticas</td>
+          </tr>
+          <tr class="fila drug-group">
+            <td class="dose">10–50 mg/kg VO, repetir en 10–14 d</td>
+            <td class="comment">Pollos: ascárides</td>
+          </tr>
+          <tr class="fila drug-group">
+            <td class="dose">10–50 mg/kg VO cada 24 h × 5 d</td>
+            <td class="comment">Pollos: <em>Capillaria</em></td>
+          </tr>
+          <tr class="fila">
+            <td>Ivermectina inyectable<br><span style="font-weight:400;color:var(--text3);">(1% = 10 mg/mL)</span></td>
+            <td class="dose">0,2 mg/kg SC o VO, repetir en 10–14 d</td>
+            <td class="comment">Aves de corral: nematodos, sanguijuelas, ácaros</td>
+          </tr>
+          <tr class="fila drug-group">
+            <td rowspan="2">Permetrina 40% CE<br><span style="font-weight:400;color:var(--text3);">(Y-Tex GardStar)</span></td>
+            <td class="dose">Diluir 1–4 oz (30–118 mL) en 3,75 gal y usar en spray grueso (1 gal trata 100 aves)</td>
+            <td class="comment">Aves: ácaros de la gallina, piojos. Seguir precauciones de seguridad para personas y abejas</td>
+          </tr>
+          <tr class="fila drug-group">
+            <td class="dose">Diluir 4 oz (118 mL) en 10 gal de agua para tratar el ambiente (infestación severa: hasta 4 oz en 4 gal). Rociar grietas de perchas, muros y nidales</td>
+            <td class="comment">Ambiente: chinches, ácaros de la gallina, piojos, garrapatas y pulgas</td>
+          </tr>
+          <tr class="fila drug-group">
+            <td rowspan="2">Permetrina 0,25% polvo<br><span style="font-weight:400;color:var(--text3);">(Y-Tex GardStar Garden & Poultry Dust)</span></td>
+            <td class="dose">Aplicar directo al ave: 1 lb por 100 aves, tratando bien la zona de la cloaca</td>
+            <td class="comment">Aves: control de ácaro común de la gallina y piojos</td>
+          </tr>
+          <tr class="fila drug-group">
+            <td class="dose">1 lb por 40 pies² para tratar el ambiente. Aplicar en pisos, perchas y superficies interiores. No aplicar directo en huevos ni cama del nido. No contaminar alimento ni agua</td>
+            <td class="comment">Ambiente: control de ácaro común de la gallina, ácaro rojo y piojos en galpones</td>
+          </tr>
+          <tr class="fila drug-group">
+            <td rowspan="3">Piperazina</td>
+            <td class="dose">45–200 mg/kg VO una vez</td>
+            <td class="comment">Aves acuáticas: <em>Tetrameres, Capillaria</em></td>
+          </tr>
+          <tr class="fila drug-group">
+            <td class="dose">50–100 mg/kg VO una vez</td>
+            <td class="comment">Pollos</td>
+          </tr>
+          <tr class="fila drug-group">
+            <td class="dose">100–500 mg/kg VO una vez, repetir en 10–14 d</td>
+            <td class="comment">Aves de caza</td>
+          </tr>
+          <tr class="fila">
+            <td>Praziquantel</td>
+            <td class="dose">10 mg/kg VO o SC, repetir en 10–14 d</td>
+            <td class="comment">Aves acuáticas y pollos: trematodos, cestodos</td>
+          </tr>
+          <tr class="fila">
+            <td>Sulfametazina</td>
+            <td class="dose">125–185 mg/kg VO cada 24 h × algunos días, luego 64–94 mg/kg × algunos días más</td>
+            <td class="comment">Pollos</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ============ TABLA 3 ============ -->
+  <div class="ref-section" id="tabla3">
+    <div class="ref-sec-badge">Tabla 29.12</div>
+    <h2 class="ref-sec-title">Antibióticos Etiquetados para Agua de Bebida</h2>
+    <p class="ref-sec-sub">Con número NADA/ANADA (EE.UU.) para búsqueda en animaldrugsatfda.fda.gov. Los resguardos listados son de la etiqueta original — verificar siempre en farad.org. Si la dosis figura como "X mg/kg PV/día", el ave debe beber una cantidad determinada de agua en 24 h para alcanzar ese consumo (consumo de agua estimado según categoría).</p>
+    <div class="ref-table-wrap">
+      <table class="ref-table">
+        <thead><tr><th>Fármaco</th><th>Dosis</th><th>Comentario</th></tr></thead>
+        <tbody>
+          <tr class="fila drug-group">
+            <td rowspan="3">Bacitracina metilendisalicilato polvo soluble<br><span style="font-weight:400;color:var(--text3);">(NADA #065-470 BMD Soluble)</span></td>
+            <td class="dose">100 mg/gal agua (prevención)</td>
+            <td class="comment">Pollos broiler y de reemplazo: enteritis necrótica por <em>Clostridium perfringens</em></td>
+          </tr>
+          <tr class="fila drug-group">
+            <td class="dose">200–400 mg/gal (control)</td>
+            <td class="comment">Pavos en crecimiento: enteritis transmisible (blue comb, fiebre del barro) complicada por organismos susceptibles a bacitracina</td>
+          </tr>
+          <tr class="fila drug-group">
+            <td class="dose">400 mg/gal (control) o 400 mg/gal (prevención)</td>
+            <td class="comment">Codornices en crecimiento: enteritis ulcerativa por <em>Clostridium colinum</em></td>
+          </tr>
+
+          <tr class="fila drug-group">
+            <td rowspan="2">Ceftiofur sódico<br><span style="font-weight:400;color:var(--text3);">(NADA 140-338 Naxcel; ANADA #200-420 Ceftiflex)</span></td>
+            <td class="dose">0,08–0,20 mg ceftiofur/pollito, SC en región del cuello</td>
+            <td class="comment">Pollitos de 1 día: control de mortalidad temprana por <em>E. coli</em> susceptible a ceftiofur</td>
+          </tr>
+          <tr class="fila drug-group">
+            <td class="dose">0,17–0,5 mg ceftiofur/pavipollo, SC en región del cuello</td>
+            <td class="comment">Pavipollos de 1 día: control de mortalidad temprana por <em>E. coli</em> susceptible a ceftiofur</td>
+          </tr>
+
+          <tr class="fila drug-group">
+            <td rowspan="5">Clortetraciclina HCl<br><span style="font-weight:400;color:var(--text3);">(NADA 65-440 Chloronex; ANADA #200-441 Aureomycin)</span></td>
+            <td class="dose">200–400 mg/gal × 7–14 d</td>
+            <td class="comment">Pollos: control de sinovitis infecciosa por <em>Mycoplasma synoviae</em> sensible</td>
+          </tr>
+          <tr class="fila drug-group">
+            <td class="dose">400–800 mg/gal × 7–14 d, o 1000 mg/gal × 7–14 d</td>
+            <td class="comment">Pollos: control de enfermedad respiratoria crónica y aerosaculitis por <em>M. gallisepticum</em> y <em>E. coli</em></td>
+          </tr>
+          <tr class="fila drug-group">
+            <td class="dose">400 mg/gal × 7–14 d</td>
+            <td class="comment">Pollos: control de mortalidad por cólera aviar (<em>Pasteurella multocida</em>)</td>
+          </tr>
+          <tr class="fila drug-group">
+            <td class="dose">25 mg/lb PV/día × 7–14 d</td>
+            <td class="comment">Pavos en crecimiento: control de sinovitis infecciosa por <em>M. synoviae</em></td>
+          </tr>
+          <tr class="fila drug-group">
+            <td class="dose">25 mg/lb PV/día × 7–14 d</td>
+            <td class="comment">Pavos en crecimiento: control de organismos bacterianos complicantes asociados a bluecomb (enteritis transmisible/coronaviral)</td>
+          </tr>
+
+          <tr class="fila drug-group">
+            <td rowspan="3">Eritromicina fosfato<br><span style="font-weight:400;color:var(--text3);">(NADA #035-157 Gallimycin PFC)</span></td>
+            <td class="dose">500 mg/gal × 5 d (aporta 5,0–17,8 mg/lb PV/día)</td>
+            <td class="comment">Pollos broiler y de reemplazo: control de ERC por <em>M. gallisepticum</em>. Retirar 1 día antes del faenado</td>
+          </tr>
+          <tr class="fila drug-group">
+            <td class="dose">500 mg/gal × 7 d (aporta 5,0–17,8 mg/lb PV/día)</td>
+            <td class="comment">Pollos de reemplazo (<16 sem) y reproductoras: control de coriza infecciosa por <em>Haemophilus/Avibacterium gallinarum</em>. Retirar 1 día antes del faenado</td>
+          </tr>
+          <tr class="fila drug-group">
+            <td class="dose">500 mg/gal × 7 d (aporta 3,1–34,2 mg/lb PV/día)</td>
+            <td class="comment">Pavos en crecimiento: control de bluecomb (enteritis inespecífica). Retirar 1 día antes del faenado</td>
+          </tr>
+
+          <tr class="fila drug-group">
+            <td rowspan="2">Gentamicina sulfato<br><span style="font-weight:400;color:var(--text3);">(NADA #101-862 Garasol; ANADA #200-468 Genta-Med-P)</span></td>
+            <td class="dose">0,2 mg/pollito SC en el cuello (volumen usual 0,2 mL)</td>
+            <td class="comment">Pollitos de 1 día: prevención de mortalidad temprana por <em>E. coli, Salmonella typhimurium</em> y <em>Pseudomonas aeruginosa</em>. No faenar para consumo antes de 5 semanas post-tratamiento</td>
+          </tr>
+          <tr class="fila drug-group">
+            <td class="dose">1 mg/pavipollo SC en el cuello (volumen usual 0,2 mL)</td>
+            <td class="comment">Pavipollos de 1–3 días: prevención de mortalidad temprana por infecciones de <em>Arizona paracolon</em>. No faenar antes de 9 semanas post-tratamiento</td>
+          </tr>
+
+          <tr class="fila">
+            <td>Lincomicina HCl polvo soluble<br><span style="font-weight:400;color:var(--text3);">(NADA #111-636 Lincomix Soluble; ANADA #200-189/200-377)</span></td>
+            <td class="dose">64 mg/gal × 7 d</td>
+            <td class="comment">Pollos broiler: control de enteritis necrótica por <em>Clostridium perfringens</em> sensible</td>
+          </tr>
+          <tr class="fila">
+            <td>Lincomicina HCl + Espectinomicina sulfato tetrahidrato<br><span style="font-weight:400;color:var(--text3);">(NADA #46-109 LS-50)</span></td>
+            <td class="dose">50–65 mg/lb PV (1 botella/25 gal DW)</td>
+            <td class="comment">Pollos hasta 7 días de edad: aerosaculitis por <em>Mycoplasma synoviae</em> o <em>M. gallisepticum</em>, o ERC complicada por <em>E. coli</em> y <em>M. gallisepticum</em></td>
+          </tr>
+
+          <tr class="fila drug-group">
+            <td rowspan="4">Oxitetraciclina HCl polvo soluble<br><span style="font-weight:400;color:var(--text3);">(varias concentraciones; NADA#130-435 Oxytet; ANADA #200-146/200-247)</span></td>
+            <td class="dose">200–400 mg/gal, no más de 14 d</td>
+            <td class="comment">Pollos: control de sinovitis infecciosa por <em>M. synoviae</em>. Pavos: control de hexamitiasis por <em>Hexamita meleagridis</em></td>
+          </tr>
+          <tr class="fila drug-group">
+            <td class="dose">400–800 mg/gal, no más de 14 d</td>
+            <td class="comment">Pollos: control de ERC y aerosaculitis por <em>M. gallisepticum</em> y <em>E. coli</em>; control de cólera aviar por <em>P. multocida</em></td>
+          </tr>
+          <tr class="fila drug-group">
+            <td class="dose">400–800 mg/gal, no más de 14 d</td>
+            <td class="comment">Pavos: control de sinovitis infecciosa por <em>M. synoviae</em></td>
+          </tr>
+          <tr class="fila drug-group">
+            <td class="dose">25 mg/lb PV, no más de 14 d</td>
+            <td class="comment">Pavos en crecimiento: control de organismos bacterianos complicantes asociados a bluecomb</td>
+          </tr>
+
+          <tr class="fila drug-group">
+            <td rowspan="2">Espectinomicina<br><span style="font-weight:400;color:var(--text3);">(NADA 038-661 SpectoGard; 1000 g = 500 g espectinomicina)</span></td>
+            <td class="dose">2 g/gal × primeros 3 días de vida y 1 día tras cada vacunación</td>
+            <td class="comment">Pollos broiler: prevención/control de pérdidas por ERC asociada a <em>M. gallisepticum</em>. No administrar dentro de 5 días del faenado. No administrar a ponedoras</td>
+          </tr>
+          <tr class="fila drug-group">
+            <td class="dose">1 g/gal × primeros 3–5 días de vida</td>
+            <td class="comment">Pollos broiler: control de sinovitis infecciosa por <em>M. synoviae</em>. No administrar dentro de 5 días del faenado. No administrar a ponedoras. Nota: raramente personas pueden desarrollar reacciones serias al manipularlo</td>
+          </tr>
+
+          <tr class="fila drug-group">
+            <td rowspan="2">Sulfadimetoxina<br><span style="font-weight:400;color:var(--text3);">(ANADA #200-238; también Sulfadived, Sulfa Med G)</span></td>
+            <td class="dose">0,05% (1 sobre/50 gal) × 6 d</td>
+            <td class="comment">Pollos broiler y de reemplazo: brotes de coccidiosis, cólera aviar y coriza infecciosa. Resguardo carne >5 d. No administrar a pollos >16 sem (112 d)</td>
+          </tr>
+          <tr class="fila drug-group">
+            <td class="dose">0,025% (1 sobre/100 gal) × 6 d</td>
+            <td class="comment">Pavos de carne: brotes de coccidiosis y cólera aviar. Resguardo carne >5 d. No administrar a pavos >24 sem (168 d)</td>
+          </tr>
+
+          <tr class="fila drug-group">
+            <td rowspan="2">Sulfadimetoxina solución concentrada 12,5%<br><span style="font-weight:400;color:var(--text3);">(ANADA #200-251; Sulfadived, Sulforal)</span></td>
+            <td class="dose">0,05% (1 oz/2 gal, o 25 oz/50 gal) × 6 d</td>
+            <td class="comment">Pollos broiler y de reemplazo: brotes de coccidiosis, cólera aviar y coriza infecciosa. Resguardo carne >5 d. No administrar a pollos >16 sem</td>
+          </tr>
+          <tr class="fila drug-group">
+            <td class="dose">0,025% (1 oz/4 gal, o 25 oz/100 gal) × 6 d</td>
+            <td class="comment">Pavos de carne: brotes de coccidiosis y cólera aviar. Resguardo carne >5 d. No administrar a pavos >24 sem</td>
+          </tr>
+
+          <tr class="fila drug-group">
+            <td rowspan="3">Sulfamerazina + Sulfametazina + Sulfaquinoxalina combinados<br><span style="font-weight:400;color:var(--text3);">(NADA #100-094 PoultrySulfa)</span></td>
+            <td class="dose">0,04% × 2–3 d, puede repetirse</td>
+            <td class="comment">Pollos y pavos: cólera aviar agudo por <em>P. multocida</em>. Resguardo carne 14 d</td>
+          </tr>
+          <tr class="fila drug-group">
+            <td class="dose">0,04% × 2–3 d, luego agua sola × 3 d, luego 0,025% × 2 d. Si es necesario, repetir a 0,025% × 2 d más. No cambiar la cama</td>
+            <td class="comment">Pollos: coccidiosis por <em>Eimeria tenella</em> y <em>E. necatrix</em>. Resguardo carne 14 d</td>
+          </tr>
+          <tr class="fila drug-group">
+            <td class="dose">0,025% × 2 d, luego agua sola × 3 d, repetido 3 veces. No cambiar la cama</td>
+            <td class="comment">Pavos: coccidiosis por <em>E. meleagrimitis</em> y <em>E. adenoeides</em>. Resguardo carne 14 d. Nota: no mezclar ni administrar en envases galvanizados</td>
+          </tr>
+
+          <tr class="fila drug-group">
+            <td rowspan="2">Sulfametazina sódica<br><span style="font-weight:400;color:var(--text3);">(NADA #122-272 Sulmet Soluble; ANADA #200-434 SMZ-Med454)</span></td>
+            <td class="dose">58–85 mg/lb PV/día (128–187 mg/kg PV/día)</td>
+            <td class="comment">Pollos: coriza infecciosa (tratar 2 d), coccidiosis (tratar 2 d, luego media dosis 4 d más), cólera aviar agudo (tratar 6 d), pulorosis (tratar 6 d). Resguardo carne comestible 10 d</td>
+          </tr>
+          <tr class="fila drug-group">
+            <td class="dose">50–124 mg/lb PV/día (110–273 mg/kg PV/día)</td>
+            <td class="comment">Pavos: coccidiosis (tratar 2 d, luego media dosis 4 d más). Resguardo carne comestible 10 d</td>
+          </tr>
+
+          <tr class="fila drug-group">
+            <td rowspan="2">Sulfametazina sódica solución 12,5%<br><span style="font-weight:400;color:var(--text3);">(ANADA #006-084 Sulmet Drinking Water Solution)</span></td>
+            <td class="dose">61–89 mg/lb PV/día</td>
+            <td class="comment">Pollos (excluye ponedoras): coriza infecciosa, coccidiosis, cólera aviar agudo, pulorosis. Resguardo 10 d</td>
+          </tr>
+          <tr class="fila drug-group">
+            <td class="dose">53–130 mg/lb PV/día</td>
+            <td class="comment">Pavos (excluye ponedoras): coccidiosis. Resguardo 10 d</td>
+          </tr>
+
+          <tr class="fila drug-group">
+            <td rowspan="4">Tetraciclina HCl polvo soluble 324<br><span style="font-weight:400;color:var(--text3);">(ANADA #200-234; ANADA #200-374)</span></td>
+            <td class="dose">400–800 mg/gal × 7–14 d</td>
+            <td class="comment">Pollos: ERC y aerosaculitis por <em>M. gallisepticum</em> y <em>E. coli</em></td>
+          </tr>
+          <tr class="fila drug-group">
+            <td class="dose">200–400 mg/gal × 7–14 d</td>
+            <td class="comment">Pollos: sinovitis infecciosa por <em>M. synoviae</em></td>
+          </tr>
+          <tr class="fila drug-group">
+            <td class="dose">400 mg/gal × 7–14 d</td>
+            <td class="comment">Pavos: sinovitis infecciosa por <em>M. synoviae</em></td>
+          </tr>
+          <tr class="fila drug-group">
+            <td class="dose">25 mg/lb PV/día dividido × 7–14 d</td>
+            <td class="comment">Bluecomb complicado por organismos sensibles a tetraciclina. No faenar antes de 4 días de tratamiento</td>
+          </tr>
+
+          <tr class="fila">
+            <td>Tilosina tartrato soluble<br><span style="font-weight:400;color:var(--text3);">(NADA 13-076, Elanco)</span></td>
+            <td class="dose">851–1419 mg/gal (225–375 ppm) × 5 d; consumo ~50 mg/lb/d</td>
+            <td class="comment">Pollos broiler: enteritis necrótica por <em>C. perfringens</em>. Resguardo carne >1 d</td>
+          </tr>
+          <tr class="fila drug-group">
+            <td rowspan="2">Tilosina tartrato polvo soluble<br><span style="font-weight:400;color:var(--text3);">(NADA 13-076 Tylan; ANADA 200-455; BiloVet; Tylovet)</span></td>
+            <td class="dose">2000 mg/gal (528 ppm) × 3–5 d; consumo ~50 mg/lb/d</td>
+            <td class="comment">Pollos broiler y de reemplazo: ERC por <em>M. gallisepticum</em> o <em>M. synoviae</em>. Resguardo carne >1 d</td>
+          </tr>
+          <tr class="fila drug-group">
+            <td class="dose">2000 mg/gal (528 ppm) × 3–5 d; consumo ~60 mg/lb/d</td>
+            <td class="comment">Pavos: sinusitis infecciosa por <em>M. gallisepticum</em>. Resguardo carne >5 d</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ============ TABLA 4 ============ -->
+  <div class="ref-section" id="tabla4">
+    <div class="ref-sec-badge">Tabla 29.13</div>
+    <h2 class="ref-sec-title">Antimicrobianos Parenterales — Uso Extraetiqueta</h2>
+    <p class="ref-sec-sub">Fármacos administrados de forma anecdótica y extraetiqueta a aves de corral individuales, sin estudio formal en todos los casos. Consultar farad.org antes de usar.</p>
+    <div class="ref-table-wrap">
+      <table class="ref-table">
+        <thead><tr><th>Fármaco</th><th>Dosis</th><th>Comentario / Uso</th></tr></thead>
+        <tbody>
+          <tr class="fila">
+            <td>Amikacina</td>
+            <td class="dose">5,3 mg/kg IV-RLP (una vez, 15 min)</td>
+            <td class="comment">Pollos con pododermatitis: perfusión regional de miembro (RLP) en vena metatarsiana medial con torniquete proximal al jarrete</td>
+          </tr>
+          <tr class="fila">
+            <td>Amoxicilina sódica<br><span style="font-weight:400;color:var(--text3);">(inyectable 250 mg/mL)</span></td>
+            <td class="dose">100 mg/kg IM/IV cada 4–8 h; o 50–250 mg/kg IM cada 12–24 h</td>
+            <td class="comment">Extrapolado de otras especies aviares. Puede reducir el potasio sanguíneo</td>
+          </tr>
+          <tr class="fila">
+            <td>Amoxicilina trihidrato<br><span style="font-weight:400;color:var(--text3);">(susp. 50 mg/mL, o comp. 50/100/200/400 mg)</span></td>
+            <td class="dose">15–20 mg/kg VO cada 24 h; o 100–200 mg/kg VO cada 4–8 h</td>
+            <td class="comment">Dosis baja extrapolada de la dosis en agua de bebida; dosis alta extrapolada de otras especies. Puede reducir el potasio sanguíneo</td>
+          </tr>
+          <tr class="fila">
+            <td>Amoxicilina + Ácido clavulánico<br><span style="font-weight:400;color:var(--text3);">(susp. 62,5 mg/mL, o comprimidos/masticables)</span></td>
+            <td class="dose">125–250 mg/kg VO cada 8 h</td>
+            <td class="comment">Aves de corral y otras especies aviares: un estudio reciente mostró que los niveles terapéuticos (0,5 µg/mL) nunca se alcanzaron con la dosis de 125 mg/kg en comprimidos, en gallinas White Leghorn</td>
+          </tr>
+          <tr class="fila">
+            <td>Ampicilina trihidrato</td>
+            <td class="dose">55–110 mg/kg IM cada 8–12 h</td>
+            <td class="comment">Aves de corral: clostridiosis</td>
+          </tr>
+          <tr class="fila">
+            <td>Ampicilina sódica + Sulbactam sódico</td>
+            <td class="dose">200–300 mg/kg IM/IV cada 8 h</td>
+            <td class="comment">Pollos y pavos</td>
+          </tr>
+          <tr class="fila">
+            <td>Clindamicina</td>
+            <td class="dose">100 mg/kg VO cada 24 h × 3–5 d</td>
+            <td class="comment">Codornices: clostridiosis</td>
+          </tr>
+          <tr class="fila drug-group">
+            <td rowspan="2">Doxiciclina suspensión oral 10 mg/mL</td>
+            <td class="dose">25–50 mg/kg VO cada 12 h</td>
+            <td class="comment">Aves acuáticas: clamidiosis</td>
+          </tr>
+          <tr class="fila drug-group">
+            <td class="dose">20 mg/kg VO cada 24 h</td>
+            <td class="comment">Pollos: clamidiosis</td>
+          </tr>
+          <tr class="fila">
+            <td>Doxiciclina monohidrato<br><span style="font-weight:400;color:var(--text3);">(Vibramycin, Zoetis)</span></td>
+            <td class="dose">20–50 mg/kg/día VO × 3–7 d</td>
+            <td class="comment">Aves de corral en general</td>
+          </tr>
+          <tr class="fila">
+            <td>Eritromicina</td>
+            <td class="dose">55–110 mg/kg VO cada 12 h</td>
+            <td class="comment">Aves de corral: micoplasmosis, coriza infecciosa (pollos)</td>
+          </tr>
+          <tr class="fila drug-group">
+            <td rowspan="2">Itraconazol</td>
+            <td class="dose">10 mg/kg VO cada 24 h × 7–10 d</td>
+            <td class="comment">Aves acuáticas: profilaxis de aspergilosis</td>
+          </tr>
+          <tr class="fila drug-group">
+            <td class="dose">10 mg/kg VO cada 24 h × 4–6 sem</td>
+            <td class="comment">Aves acuáticas: tratamiento de aspergilosis</td>
+          </tr>
+          <tr class="fila">
+            <td>Nistatina</td>
+            <td class="dose">300.000 U/kg VO cada 12 h × 7 d</td>
+            <td class="comment">Aves acuáticas: candidiasis</td>
+          </tr>
+          <tr class="fila drug-group">
+            <td rowspan="3">Oxitetraciclina</td>
+            <td class="dose">5 mg/kg SC/IM cada 12–24 h</td>
+            <td class="comment">Pollitos. La vía IM causa necrosis muscular</td>
+          </tr>
+          <tr class="fila drug-group">
+            <td class="dose">23 mg/kg IV cada 6–8 h</td>
+            <td class="comment">Faisanes</td>
+          </tr>
+          <tr class="fila drug-group">
+            <td class="dose">43 mg/kg IM cada 24 h</td>
+            <td class="comment">Faisanes</td>
+          </tr>
+          <tr class="fila">
+            <td>Oxitetraciclina HCl inyectable 100 mg/mL</td>
+            <td class="dose">
+              <strong>Pollos:</strong> 1 d–2 sem: 6,25 mg SC/ave (diluido 1:3 en agua estéril) × 1–4 d · 2–4 sem: 12,5 mg SC/ave (diluido 1:3) × 1–4 d · 4–8 sem: 25 mg/ave sin diluir · 8 sem: 50 mg SC sin diluir · Adultos: 100 mg/ave SC sin diluir × 1–4 d.<br>
+              <strong>Pavos:</strong> 4–6 sem: 50 mg/ave SC sin diluir · 9–12 sem: 150 mg/ave SC sin diluir · >12 sem: 200 mg/ave SC sin diluir.<br>
+              <strong>General:</strong> 5 mg/kg SC/IM cada 12–24 h
+            </td>
+            <td class="comment">Pollos (broiler, reproductoras) y pavos: aerosaculitis (ERC) por <em>M. gallisepticum</em> y <em>E. coli</em>; cólera aviar por <em>P. multocida</em>; sinusitis infecciosa por <em>M. gallisepticum</em>; sinovitis infecciosa por <em>M. synoviae</em>.<br>
+            Pavos de raza liviana: no más de 25 mg/lb PV SC.<br>
+            Sinusitis infecciosa en pavos: puede inyectarse 0,25–0,5 mL directo en cada seno inflamado (según edad/severidad), junto con la dosis SC; puede repetirse en 5–7 d.<br>
+            La vía IM puede causar necrosis muscular en el sitio de inyección.</td>
+          </tr>
+          <tr class="fila">
+            <td>Penicilina</td>
+            <td class="dose">50.000 UI/kg IM</td>
+            <td class="comment">Aves acuáticas: erisipela</td>
+          </tr>
+          <tr class="fila">
+            <td>Penicilina benzatínica/procaínica</td>
+            <td class="dose">200 mg/kg IM cada 24 h</td>
+            <td class="comment">Extrapolado de otras especies aviares. Aves <1 kg pueden presentar efectos tóxicos</td>
+          </tr>
+          <tr class="fila drug-group">
+            <td rowspan="2">Trimetoprima / Sulfametoxazol</td>
+            <td class="dose">50 mg/kg VO cada 12 h</td>
+            <td class="comment">Pollos. Antibacteriano/anticoccidial</td>
+          </tr>
+          <tr class="fila drug-group">
+            <td class="dose">20–50 mg/kg VO cada 12 h</td>
+            <td class="comment">Patos. (En la mayoría de especies de aves la dosis es 100 mg/kg VO cada 12 h)</td>
+          </tr>
+          <tr class="fila drug-group">
+            <td rowspan="3">Tilosina</td>
+            <td class="dose">10–40 mg/kg IM cada 6–8 h</td>
+            <td class="comment">Aves de corral: micoplasmosis</td>
+          </tr>
+          <tr class="fila drug-group">
+            <td class="dose">20–30 mg/kg cada 8 h × 3–7 d</td>
+            <td class="comment">Aves acuáticas: micoplasmosis</td>
+          </tr>
+          <tr class="fila drug-group">
+            <td class="dose">25 mg/kg IM cada 6 h</td>
+            <td class="comment">Codornices: enteritis necrótica</td>
+          </tr>
+          <tr class="fila drug-group">
+            <td rowspan="3">Voraconazol</td>
+            <td class="dose">10 mg/kg VO/IV cada 12 h</td>
+            <td class="comment">Pollos. Aspergilosis</td>
+          </tr>
+          <tr class="fila drug-group">
+            <td class="dose">20 mg/kg VO/IV cada 8–12 h</td>
+            <td class="comment">Patos. Aspergilosis</td>
+          </tr>
+          <tr class="fila drug-group">
+            <td class="dose">40 mg/kg VO cada 24 h</td>
+            <td class="comment">Codornices. Aspergilosis</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ============ TABLA 5 ============ -->
+  <div class="ref-section" id="tabla5">
+    <div class="ref-sec-badge">Tabla 29.14</div>
+    <h2 class="ref-sec-title">Fármacos Misceláneos — Uso Extraetiqueta</h2>
+    <p class="ref-sec-sub">Analgésicos, sedantes y otros agentes administrados de forma anecdótica y extraetiqueta, sin estudio formal en todos los casos. Consultar farad.org antes de usar.</p>
+    <div class="ref-table-wrap">
+      <table class="ref-table">
+        <thead><tr><th>Agente</th><th>Dosis</th><th>Comentario</th></tr></thead>
+        <tbody>
+          <tr class="fila drug-group">
+            <td rowspan="2">Bupivacaína HCl</td>
+            <td class="dose">2 mg/kg infundido SC</td>
+            <td class="comment">Patos silvestres (mallard): niveles plasmáticos altos a las 6 y 12 h post-administración; toxicidad tardía posible</td>
+          </tr>
+          <tr class="fila drug-group">
+            <td class="dose">2–8 mg/kg perineural</td>
+            <td class="comment">Patos silvestres: efectividad variable para bloqueo del plexo braquial</td>
+          </tr>
+          <tr class="fila drug-group">
+            <td rowspan="2">Butorfanol</td>
+            <td class="dose">0,5–2 mg/kg IM</td>
+            <td class="comment">Patos: efecto ahorrador de isoflurano demostrado</td>
+          </tr>
+          <tr class="fila drug-group">
+            <td class="dose">2 mg/kg IM</td>
+            <td class="comment">Pollos</td>
+          </tr>
+          <tr class="fila">
+            <td>EDTA cálcico<br><span style="font-weight:400;color:var(--text3);">(edetato de calcio disódico)</span></td>
+            <td class="dose">10–40 mg/kg IM cada 12 h × 5–10 d</td>
+            <td class="comment">Aves acuáticas: quela cationes +2 como plomo y zinc</td>
+          </tr>
+          <tr class="fila">
+            <td>Ácido dimercaptosuccínico<br><span style="font-weight:400;color:var(--text3);">(DMSA)</span></td>
+            <td class="dose">25–35 mg/kg VO cada 12–24 h, 5 d/sem × 3–5 sem</td>
+            <td class="comment">Aves acuáticas: quela cationes +2 como plomo y zinc. Cruza la barrera hematoencefálica</td>
+          </tr>
+          <tr class="fila">
+            <td>Hierro dextrano</td>
+            <td class="dose">10 mg/kg IM, repetir en 1 sem</td>
+            <td class="comment">Aves acuáticas: deficiencia de hierro</td>
+          </tr>
+          <tr class="fila">
+            <td>Ketoprofeno</td>
+            <td class="dose">5–10 mg/kg IM</td>
+            <td class="comment">Aves acuáticas: analgesia</td>
+          </tr>
+          <tr class="fila">
+            <td>Meloxicam</td>
+            <td class="dose">1 mg/kg cada 12–24 h VO, IM</td>
+            <td class="comment">Pollos: gallinas White Leghorn metabolizan la vía oral más rápido que las Wyandotte</td>
+          </tr>
+          <tr class="fila">
+            <td>Midazolam</td>
+            <td class="dose">2 mg/kg IM</td>
+            <td class="comment">Gansos canadienses: sedación por 15–20 min</td>
+          </tr>
+          <tr class="fila">
+            <td>Tramadol</td>
+            <td class="dose">7,5 mg/kg VO</td>
+            <td class="comment">Pavos reales: solo 2/6 aves alcanzaron concentraciones analgésicas humanas de tramadol, mientras 5/6 alcanzaron concentraciones del metabolito O-tramadol por 10–12 h, y 3/6 por 24 h</td>
+          </tr>
+          <tr class="fila">
+            <td>Tiamina<br><span style="font-weight:400;color:var(--text3);">(vitamina B1)</span></td>
+            <td class="dose">1–3 mg/kg IM</td>
+            <td class="comment">Aves: deficiencia de tiamina</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="source-box">
+    <strong>Abreviaturas:</strong> VO/PO = vía oral · IM = intramuscular · IV = intravenosa · SC = subcutánea · RLP = perfusión regional de miembro · PK = estudio farmacocinético · PD = estudio farmacodinámico · DW = agua de bebida · PV/BW = peso vivo.
+  </div>
+
+</main>
+
+<button class="back-to-top" id="btnTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Volver arriba">↑</button>
+
+<script>
+function filtrar() {
+  // Filtramos por GRUPO de fármaco (bloque de filas que comparte rowspan en la 1ª columna),
+  // nunca fila suelta: así nunca se rompe la alineación de columnas de un rowspan.
+  const q = document.getElementById('buscador').value.trim().toLowerCase();
+  let gruposVisibles = 0, seccionesConMatch = 0;
+
+  document.querySelectorAll('.ref-table-wrap').forEach(wrap => {
+    const filas = Array.from(wrap.querySelectorAll('tbody tr'));
+    let grupoActual = [];
+    let huboMatchEnTabla = false;
+
+    function cerrarGrupo() {
+      if (grupoActual.length === 0) return;
+      const texto = grupoActual.map(f => f.textContent.toLowerCase()).join(' ');
+      const match = q === '' || texto.includes(q);
+      grupoActual.forEach(f => f.style.display = match ? '' : 'none');
+      if (match) { gruposVisibles++; huboMatchEnTabla = true; }
+      grupoActual = [];
+    }
+
+    filas.forEach(f => {
+      // Una fila abre grupo nuevo si su primera celda NO es continuación de un rowspan
+      // (heurística: filas con clase drug-group comparten grupo hasta que aparezca una fila sin esa clase,
+      // o hasta que la primera celda vuelva a tener contenido propio — es decir, tiene <td> no vacío como 1ª col visible).
+      const primeraCelda = f.children[0];
+      const esNuevoFarmaco = primeraCelda && primeraCelda.hasAttribute('rowspan') || !f.classList.contains('drug-group');
+      if (esNuevoFarmaco) cerrarGrupo();
+      grupoActual.push(f);
+    });
+    cerrarGrupo();
+
+    // Ocultar la tabla completa (y su sección) si no hubo ningún match
+    const seccion = wrap.closest('.ref-section');
+    if (q === '') {
+      seccion.style.display = '';
+    } else {
+      seccion.style.display = huboMatchEnTabla ? '' : 'none';
+      if (huboMatchEnTabla) seccionesConMatch++;
+    }
+  });
+
+  document.getElementById('contador').textContent = q === ''
+    ? ''
+    : `${gruposVisibles} fármaco(s) encontrado(s) en ${seccionesConMatch} sección(es) para "${q}"`;
+}
+
+window.addEventListener('scroll', () => {
+  document.getElementById('btnTop').classList.toggle('visible', window.scrollY > 400);
+});
+</script>
+</body>
+</html>

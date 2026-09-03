@@ -312,6 +312,7 @@ python3 oxitetraciclina.py
 | `enrofloxacino.html` | Web | Enrofloxacino · Enromic® 20% | Pollos broiler / Pollas reemplazo | 0,05 mL/kg PV/día · 3–5 días |
 | `duflosan.html` | Web | Florfenicol · DUFLOSAN® 2% | Pollos broiler / Cerdos | 0,5–0,75 mL/kg/dosis × 2/día (pollos) · 0,5 mL/kg/día (cerdos) · 5 días |
 | `coliprim.html` | Web | Sulfacloropiridazina + Trimetoprima · COLIPRIM® | Pollos broiler / Pollas reemplazo / Conejos | 1–1,5 mL/L agua · ~30 mg/kg PV · 5 días |
+| `referencia-farmacologia-aviar.html` | Web (referencia) | +50 fármacos: anticoccidiales, antiparasitarios y antimicrobianos | Aves de corral, traspatio y ornamentales | Agua de bebida y vía parenteral · fuente: *Backyard Poultry Medicine and Surgery* (Wiley-Blackwell) |
 | `oxitetraciclina.py` | Python CLI | Oxitetraciclina · Zanil® HCL 80% | Pollos / Pavos | 27–80 mg/kg PV/día · 7–14 días |
 
 ---

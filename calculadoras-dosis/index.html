@@ -102,6 +102,14 @@ main{max-width:960px;margin:0 auto;padding:48px 20px 60px;animation:fadeIn 0.4s 
 .ref-source{margin-top:10px;font-size:11px;color:var(--text3);line-height:1.6;}
 .ref-source a{color:var(--accent);text-decoration:none;}
 .ref-source a:hover{text-decoration:underline;}
+
+.ref-more-link{margin-top:20px;display:flex;align-items:center;gap:14px;background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:16px 20px;text-decoration:none;color:inherit;transition:all 0.15s;}
+.ref-more-link:hover{border-color:#c4b5fd;box-shadow:var(--shadow-md);transform:translateY(-1px);}
+.ref-more-link > span:first-child{font-size:24px;flex-shrink:0;}
+.ref-more-link div{flex:1;display:flex;flex-direction:column;gap:2px;}
+.ref-more-link strong{font-size:14px;color:var(--text);}
+.ref-more-link div span{font-size:12px;color:var(--text3);}
+.ref-more-arrow{font-size:18px;color:#5b21b6;flex-shrink:0;}
 </style>
 </head>
 <body>
@@ -453,6 +461,16 @@ main{max-width:960px;margin:0 auto;padding:48px 20px 60px;animation:fadeIn 0.4s 
       Las dosis pueden variar según el agente infeccioso y la especie tratada.
     </p>
   </div>
+
+  <!-- Enlace a referencia extendida -->
+  <a href="referencia-farmacologia-aviar.html" class="ref-more-link">
+    <span>📖</span>
+    <div>
+      <strong>Ver tabla extendida — Farmacología Aviar de Referencia</strong>
+      <span>Más de 50 fármacos: anticoccidiales, antiparasitarios y antimicrobianos en agua de bebida y vía parenteral · Backyard Poultry Medicine and Surgery (Wiley-Blackwell)</span>
+    </div>
+    <span class="ref-more-arrow">→</span>
+  </a>
 
 </main>
 
