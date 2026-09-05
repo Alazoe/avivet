@@ -2133,7 +2133,8 @@ function renderDashboardCrianza(lote) {
       <strong>${lote.nombre}</strong>
       · <span style="font-weight:600;color:${col}">${gen}</span>
       · ${NUM(nAves)} aves · ingreso sem ${edadIng===0?'1 día':edadIng+' sem'} · venta sem ${edadIng+semC}.
-      <button class="btn btn-sm btn-linea" style="margin-left:16px" onclick="generarPDFCrianza()">↓ PDF crianza</button>
+      <button class="btn btn-ok btn-sm" style="margin-left:16px" onclick="exportarExcelCrianza()">↓ Excel</button>
+      <button class="btn btn-sm btn-linea" style="margin-left:6px" onclick="generarPDFCrianza()">↓ PDF crianza</button>
     </p>
     <div class="tabs">
       <button class="tab activo" data-tab="tc-graficos" onclick="setTabCrianza(event,'tc-graficos')">Gráficos</button>
@@ -2671,7 +2672,10 @@ function renderSensibilidadCrianza(lote) {
       </tbody>
     </table>
     </div>
-    ${specHtml}`;
+    ${specHtml}
+    <div style="margin-top:18px">
+      <button class="btn btn-ok btn-sm" onclick="exportarEscenariosCrianza()">↓ Excel escenarios</button>
+    </div>`;
 }
 
 function recalcSensibCrianza() {
@@ -2864,6 +2868,284 @@ ${seccionCostosPDF(lote, proy)}
   const win = window.open('', '_blank', 'width=960,height=750');
   if (win) { win.document.write(html); win.document.close(); }
   else alert('Permite ventanas emergentes para generar el PDF.');
+}
+
+/* ════════════════════════════════════════════════════════════
+   CRIANZA — EXCEL (paridad con exportarExcel() de postura)
+   ════════════════════════════════════════════════════════════ */
+function exportarExcelCrianza() {
+  if (!proy) return;
+  const lote        = getLote(loteId);
+  const wb          = XLSX.utils.book_new();
+  const HOY_STR     = new Date().toLocaleDateString('es-CL');
+  const gen         = lote.genetica || 'Lohmann Brown';
+  const gastos      = lote.gastosEspeciales || [];
+  const nIni        = +lote.nAves;
+  const edadIng     = +(lote.edadIngresoSem ?? 0);
+  const semC        = Math.max(1, +(lote.semanasCrianza ?? 8));
+  const margenAve   = +(lote.margenAve ?? 1000);
+  const preciosPS   = lote.preciosPorSemana || {};
+  const factorMort  = lote.factorMortalidad ?? 1.0;
+  const grDieta     = lote.consumoGrDieta || {};
+  const curvas      = buildCurvas(gen);
+  const dFin        = proy[proy.length - 1];
+  const avesFin     = Math.round(dFin.aves);
+  const be          = calcBreakEven(proy);
+  const ingresos    = proy.reduce((a,d)=>a+d.ingreso,0);
+  const costAlimT   = proy.reduce((a,d)=>a+d.costoAlim,0);
+  const costFijosT  = proy.reduce((a,d)=>a+d.gastoDia,0);
+  const invTotal    = gastos.reduce((a,g)=>a+(+g.monto),0);
+
+  // ══ PARÁMETROS (hoja editable — alimenta "Curva Crianza") ══
+  const paramData = [
+    ['Parámetro', 'Valor', 'Descripción'],
+    ['Edad de ingreso al galpón (semanas)', edadIng, '0 = 1 día de vida (pollito BB)'],
+    ['Semanas de crianza hasta venta',       semC,    'Cambiar este valor no agrega filas a "Curva Crianza" — solo recalcula las existentes'],
+    ['Factor mortalidad',                    factorMort, '1.0 = oficial · 1.2 = 20% más mortalidad'],
+    ['Margen por ave ($)',                   margenAve, 'Precio de venta = costo/ave acumulado + este margen'],
+    ['Gastos fijos / mes ($)',               +lote.gastosMes, ''],
+    ['', '', ''],
+    ['Consumo g/ave/día por dieta', '0 = usar curva oficial', 'Modifica y recalcula "Curva Crianza"'],
+    ['Dieta 1 · sem 1–3',    grDieta[1] || 0, ''],
+    ['Dieta 2 · sem 4–6',    grDieta[2] || 0, ''],
+    ['Dieta 3 · sem 7–12',   grDieta[3] || 0, ''],
+    ['Dieta 4 · sem 13–15',  grDieta[4] || 0, ''],
+    ['Dieta 5 · sem 16–18',  grDieta[5] || 0, ''],
+  ];
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(paramData), 'Parametros');
+
+  // ══ RESUMEN ══
+  const resData = [
+    ['Crianza para Venta de Aves — Resumen', ''],
+    ['Lote / Cliente',        lote.nombre],
+    ['Genética',              gen],
+    ['Fecha de ingreso',      lote.fechaNacimiento],
+    ['N° aves iniciales',     nIni],
+    ['Edad de ingreso (sem)', edadIng],
+    ['Semanas de crianza',    semC],
+    ['Venta a las (sem de vida)', edadIng + semC],
+    ['Margen por ave ($)',    margenAve],
+    ['Gastos fijos / mes ($)', +lote.gastosMes],
+    ['Factor mortalidad',     factorMort],
+    ['Total gastos especiales ($)', invTotal],
+    ['', ''],
+    ['Aves a vender',         avesFin],
+    ['Mortalidad acumulada (%)', +(((nIni-avesFin)/nIni*100).toFixed(2))],
+    ['Precio de venta / ave ($)', dFin.precioVenta || 0],
+    ['Ingreso por venta ($)', ingresos],
+    ['Costo total alimento ($)', Math.round(costAlimT)],
+    ['Costo total fijos ($)', Math.round(costFijosT)],
+    ['Resultado neto ($)',    dFin.acum],
+    ['Break-even (semana)',  be ? be.semCiclo : 'Sin retorno'],
+    ['', ''],
+    ['→ Para modificar edad ingreso/mortalidad/consumo, edita la hoja "Parametros"',''],
+    ['→ "Curva Crianza" se recalcula automáticamente con esas celdas',''],
+    ['→ Ver hoja "Estructura Costos" para el desglose por tipo',''],
+    ['Generado', HOY_STR],
+  ];
+  const _detFij = getDetalleFijos(lote);
+  if (_detFij.detallado) {
+    resData.push(['', ''], ['DESGLOSE DEL GASTO FIJO MENSUAL', '']);
+    _detFij.items.forEach(i => resData.push([`  ${i.label} ($/mes)`, i.monto]));
+    resData.push(['  Suma del desglose ($/mes)', _detFij.suma]);
+  }
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(resData), 'Resumen');
+
+  // ══ ESTRUCTURA DE COSTOS ══
+  const EC = estructuraCostos(lote, proy);
+  const ecRows = [
+    ['ESTRUCTURA DE COSTOS DEL CICLO'],
+    [],
+    ['Grupo','Partida','Tipo','Total ciclo ($)','% del costo','$/ave','% del ingreso'],
+  ];
+  EC.items.forEach(i => ecRows.push([
+    i.grupo, i.label, i.tipo, i.monto,
+    EC.total > 0 ? i.monto / EC.total : 0,
+    EC.base  > 0 ? i.monto / EC.base  : 0,
+    ingresos > 0 ? i.monto / ingresos : 0,
+  ]));
+  ecRows.push([]);
+  ecRows.push(['', 'COSTO TOTAL', '', EC.total, 1,
+    EC.base > 0 ? EC.total / EC.base : 0,
+    ingresos > 0 ? EC.total / ingresos : 0]);
+  const sumTipo = t => EC.items.filter(i=>i.tipo===t).reduce((a,i)=>a+i.monto,0);
+  ecRows.push([]);
+  ecRows.push(['Resumen por naturaleza del costo']);
+  [['Variables','variable'],['Fijos','fijo'],['Inversión / únicos','inversion']].forEach(([lbl,t]) => {
+    const m = sumTipo(t);
+    ecRows.push(['', lbl, '', m, EC.total>0 ? m/EC.total : 0, EC.base>0 ? m/EC.base : 0, ingresos>0 ? m/ingresos : 0]);
+  });
+  ecRows.push([]);
+  ecRows.push(['Base de reparto', EC.base, 'aves vendidas']);
+  ecRows.push(['Ingreso total del ciclo', ingresos]);
+  if (!EC.detallado) ecRows.push(['Nota','El gasto fijo no está desglosado por categoría en este lote.']);
+  const wsEC = XLSX.utils.aoa_to_sheet(ecRows);
+  wsEC['!cols'] = [{wch:20},{wch:24},{wch:12},{wch:16},{wch:13},{wch:12},{wch:15}];
+  for (let r = 3; r < ecRows.length; r++) {
+    const fila = ecRows[r];
+    if (!fila || fila.length < 4) continue;
+    const cD = XLSX.utils.encode_cell({r, c:3}); if (wsEC[cD]) wsEC[cD].z = '#,##0';
+    const cE = XLSX.utils.encode_cell({r, c:4}); if (wsEC[cE]) wsEC[cE].z = '0.0%';
+    const cF = XLSX.utils.encode_cell({r, c:5}); if (wsEC[cF]) wsEC[cF].z = '#,##0';
+    const cG = XLSX.utils.encode_cell({r, c:6}); if (wsEC[cG]) wsEC[cG].z = '0.0%';
+  }
+  XLSX.utils.book_append_sheet(wb, wsEC, 'Estructura Costos');
+
+  // ══ GASTOS ESPECIALES ══
+  const geRows = [['Categoría','Descripción','Semana','Monto ($)']];
+  gastos.forEach(g => geRows.push([g.categoria, g.descripcion, g.semana, +g.monto]));
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(geRows), 'Gastos Especiales');
+
+  // ══ PRECIO POR SEMANA ══
+  const resumen = resumenSemanasCrianza(proy);
+  const psRows = [['Semana','Sem. vida','Aves','Costo acum. ($)','Costo/ave ($)','Precio personalizado ($)','Precio de venta ($)','Resultado si vende ($)']];
+  resumen.forEach(({semCiclo:s, aves, costoAcum, costoPorAve}) => {
+    const pvCustom = preciosPS[s] != null ? +preciosPS[s] : '';
+    const precioVenta = preciosPS[s] != null ? +preciosPS[s] : Math.round(costoPorAve + margenAve);
+    const resSiVende = Math.round(aves * precioVenta - costoAcum);
+    psRows.push([s, edadIng+s, aves, Math.round(costoAcum), costoPorAve, pvCustom, precioVenta, resSiVende]);
+  });
+  const wsPS = XLSX.utils.aoa_to_sheet(psRows);
+  XLSX.utils.book_append_sheet(wb, wsPS, 'Precio por Semana');
+
+  // ══ PROYECCIÓN SEMANAL ══
+  const semMap = {};
+  proy.forEach(d => {
+    const s = d.semCiclo;
+    if (!semMap[s]) semMap[s] = { s, semVida:d.semVida, fecha:d.fecha, consumo:0, costo:0, gasto:0, gastoEsp:0, aves:0, ingreso:0, res:0 };
+    semMap[s].consumo   += d.consumoKg;
+    semMap[s].costo     += d.costoAlim;
+    semMap[s].gasto     += d.gastoDia;
+    semMap[s].gastoEsp  += (d.gastoEsp || 0);
+    semMap[s].ingreso   += d.ingreso;
+    semMap[s].res       += d.resultado;
+    semMap[s].aves = d.aves; semMap[s].acum = d.acum; semMap[s].fecha = d.fecha; semMap[s].semVida = d.semVida;
+  });
+  const semRows = [['Semana','Sem. vida','Fecha','Aves','Mort. acum. %','Consumo kg','Costo alimento','Gastos fijos','Gasto especial','Ingresos','Resultado','Acumulado']];
+  Object.values(semMap).sort((a,b)=>a.s-b.s).forEach(s => {
+    const mortAcum = nIni > 0 ? (nIni - s.aves) / nIni : 0;
+    semRows.push([s.s, s.semVida, s.fecha, Math.round(s.aves), mortAcum, Math.round(s.consumo), Math.round(s.costo), Math.round(s.gasto), Math.round(s.gastoEsp), Math.round(s.ingreso), Math.round(s.res), Math.round(s.acum)]);
+  });
+  const wsSem = XLSX.utils.aoa_to_sheet(semRows);
+  for (let r=2;r<=semRows.length;r++) {
+    const cMort = wsSem[XLSX.utils.encode_cell({r:r-1,c:4})]; if(cMort) cMort.z = '0.0%';
+  }
+  XLSX.utils.book_append_sheet(wb, wsSem, 'Proyección Semanal');
+
+  // ══ PROYECCIÓN DIARIA ══
+  const dRows = [['Fecha','Día','Sem. ciclo','Sem. vida','Aves','Mort. acum. %','Consumo kg','Dieta','Costo alimento','Gastos fijos','Gasto especial','Costo/ave acum.','Precio venta','Ingreso','Resultado','Acumulado']];
+  proy.forEach(d => {
+    const mortAcum = nIni > 0 ? (nIni - d.aves) / nIni : 0;
+    dRows.push([d.fecha, d.n, d.semCiclo, d.semVida, Math.round(d.aves), mortAcum, d.consumoKg, d.dieta, d.costoAlim, d.gastoDia, d.gastoEsp||0, d.costoPorAve||0, d.precioVenta||0, d.ingreso, d.resultado, d.acum]);
+  });
+  const wsDia = XLSX.utils.aoa_to_sheet(dRows);
+  for (let r=2;r<=dRows.length;r++) {
+    const cMort = wsDia[XLSX.utils.encode_cell({r:r-1,c:5})]; if(cMort) cMort.z = '0.0%';
+  }
+  XLSX.utils.book_append_sheet(wb, wsDia, 'Proyección Diaria');
+
+  // ══ CURVA CRIANZA (con fórmulas vinculadas a hoja Parametros) ══
+  // A=SemCiclo B=SemVida C=%MortSemOfic D=%MortSemAjust* E=g/díaCurva F=g/díaReal* G=Dieta H=%PosturaRef I=MortAcum%* J=Aves/1000*
+  // (* = fórmula que referencia Parametros: B2=edadIng, B4=factorMort, B9-B13=grDieta 1-5)
+  const ccHead = ['Sem. ciclo','Sem. vida','% Mort. sem. oficial','% Mort. sem. ajustada','g/ave/día curva','g/ave/día real','Dieta','% Postura referencial','Mort. acum. %','Aves/1000'];
+  const ccRows = [ccHead];
+  const ccDietas = [];
+  let avesRef = 1000;
+  for (let s = 1; s <= semC; s++) {
+    const semVida = edadIng + s;
+    const mortSem = MORTALIDAD[semVida] ?? 0.0015;
+    const mortAdj = mortSem * factorMort;
+    avesRef = avesRef * (1 - mortAdj);
+    const cons = curvas.getConsumo(semVida);
+    const posRef = curvas.getPos(semVida);
+    const grReal = +grDieta[cons.dieta] > 0 ? +grDieta[cons.dieta] : cons.gr;
+    ccDietas.push(cons.dieta);
+    ccRows.push([
+      s, semVida,
+      mortSem, mortAdj,
+      cons.gr, grReal, `D${cons.dieta}`,
+      posRef / 100,
+      (1000 - avesRef) / 1000,
+      Math.round(avesRef),
+    ]);
+  }
+  const wsCC = XLSX.utils.aoa_to_sheet(ccRows);
+  for (let i = 0; i < ccDietas.length; i++) {
+    const r = i + 2, ridx = i + 1;
+    const paramRowGr = 8 + ccDietas[i]; // B9=D1 ... B13=D5 (dietas 6-7 no editables en crianza)
+
+    const cB = wsCC[XLSX.utils.encode_cell({r:ridx, c:1})];
+    if (cB) { cB.f = `A${r}+Parametros!$B$2`; cB.t = 'n'; }
+
+    const cC = wsCC[XLSX.utils.encode_cell({r:ridx, c:2})]; if (cC) cC.z = '0.00%';
+
+    const cD = wsCC[XLSX.utils.encode_cell({r:ridx, c:3})];
+    if (cD) { cD.f = `C${r}*Parametros!$B$4`; cD.t = 'n'; cD.z = '0.00%'; }
+
+    const cF = wsCC[XLSX.utils.encode_cell({r:ridx, c:5})];
+    if (cF && ccDietas[i] <= 5) { cF.f = `IF(Parametros!$B$${paramRowGr}>0,Parametros!$B$${paramRowGr},E${r})`; cF.t = 'n'; }
+
+    const cH = wsCC[XLSX.utils.encode_cell({r:ridx, c:7})]; if (cH) cH.z = '0.00%';
+
+    const cI = wsCC[XLSX.utils.encode_cell({r:ridx, c:8})];
+    if (cI) { cI.f = i === 0 ? `D${r}` : `1-(1-I${r-1})*(1-D${r})`; cI.t = 'n'; cI.z = '0.00%'; }
+
+    const cJ = wsCC[XLSX.utils.encode_cell({r:ridx, c:9})];
+    if (cJ) { cJ.f = i === 0 ? `ROUND(1000*(1-D${r}),0)` : `ROUND(J${r-1}*(1-D${r}),0)`; cJ.t = 'n'; }
+  }
+  XLSX.utils.book_append_sheet(wb, wsCC, 'Curva Crianza');
+
+  const nombre = lote.nombre.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]/g,'').replace(/\s+/g,'_');
+  XLSX.writeFile(wb, `Crianza_${gen.replace(/\s/g,'_')}_${nombre}_${new Date().toISOString().slice(0,10)}.xlsx`);
+}
+
+function exportarEscenariosCrianza() {
+  if (!proy) return;
+  const lote = getLote(loteId);
+  const wb   = XLSX.utils.book_new();
+
+  const pPes = proyectarEscenarioCrianza(lote, sensibEscCrianza.pes);
+  const pOpt = proyectarEscenarioCrianza(lote, sensibEscCrianza.opt);
+  const kP   = kpisEscCrianza(pPes, lote);
+  const kB   = kpisEscCrianza(proy, lote);
+  const kO   = kpisEscCrianza(pOpt, lote);
+
+  const pfx = v => (v > 0 ? '+' : '') + v;
+  const beS = be => be ? 'Sem ' + be.semCiclo : 'Sin retorno';
+
+  const rows = [
+    ['Análisis de Sensibilidad — ' + lote.nombre, '', '', ''],
+    ['', 'PESIMISTA', 'BASE (actual)', 'OPTIMISTA'],
+    [''],
+    ['── PARÁMETROS DE ESCENARIO ──', '', '', ''],
+    ['Precio de venta (Δ%)',   pfx(sensibEscCrianza.pes.precioPct)+'%', '$'+(kB.precioAve)+'/ave',        pfx(sensibEscCrianza.opt.precioPct)+'%'],
+    ['Factor mortalidad (×)',  sensibEscCrianza.pes.factorMort,          (lote.factorMortalidad??1.0)+'× oficial', sensibEscCrianza.opt.factorMort],
+    ['Costo alimento (Δ%)',    pfx(sensibEscCrianza.pes.alimentoPct)+'%', 'base',                          pfx(sensibEscCrianza.opt.alimentoPct)+'%'],
+    ['Gastos fijos (Δ%)',      pfx(sensibEscCrianza.pes.fijosPct)+'%',    'base',                          pfx(sensibEscCrianza.opt.fijosPct)+'%'],
+    [''],
+    ['── RESULTADOS PROYECTADOS ──', '', '', ''],
+    ['Resultado neto ($)',       kP.resultado, kB.resultado, kO.resultado],
+    ['Ingreso por venta ($)',   kP.ingresos,  kB.ingresos,  kO.ingresos],
+    ['Aves a vender',           kP.avesFin,   kB.avesFin,   kO.avesFin],
+    ['Precio de venta / ave ($)', kP.precioAve, kB.precioAve, kO.precioAve],
+    ['Costo / ave ($)',         kP.costoAve,  kB.costoAve,  kO.costoAve],
+    ['Margen / ave ($)',        kP.margenAve, kB.margenAve, kO.margenAve],
+    ['Break-even',              beS(kP.be),   beS(kB.be),   beS(kO.be)],
+    [''],
+    ['Generado', new Date().toLocaleDateString('es-CL'), '', ''],
+  ];
+
+  const ws = XLSX.utils.aoa_to_sheet(rows);
+  [9,10,11,13,14,15].forEach(r => {
+    ['B','C','D'].forEach(col => {
+      const cell = ws[col+(r+1)];
+      if (cell && typeof cell.v === 'number') cell.z = '#,##0';
+    });
+  });
+  XLSX.utils.book_append_sheet(wb, ws, 'Escenarios Crianza');
+
+  const nombre = lote.nombre.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]/g,'').replace(/\s+/g,'_');
+  XLSX.writeFile(wb, `Escenarios_Crianza_${nombre}_${new Date().toISOString().slice(0,10)}.xlsx`);
 }
 
 /* ── Tabs ── */
