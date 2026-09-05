@@ -13,7 +13,9 @@ Un solo archivo, sin build ni dependencias que instalar. Las fuentes externas so
 
 ## Escenarios
 
-Cada escenario (N° de galpones 1–7, sistema productivo, fechas de ingreso, horizonte de proyección) se guarda en `localStorage` del navegador (clave `avivet_galpones_v1`) y puede crearse, editarse, recalcularse o eliminarse de forma independiente desde el selector superior. No hay backend: todo vive en el navegador de quien lo usa.
+Cada escenario (N° de galpones 1–7, sistema productivo, semanas de postura, fechas de ingreso, horizonte de proyección) se guarda en `localStorage` del navegador (clave `avivet_galpones_v1`) y puede crearse, editarse, recalcularse o eliminarse de forma independiente desde el selector superior. No hay backend: todo vive en el navegador de quien lo usa.
+
+Los tres sistemas productivos (Jaulas, Libre de jaulas, Crianza libre / pastoreo) solo definen mortalidad, factor sobre la curva oficial de postura y una **duración de postura sugerida** — pero las semanas de postura son editables por escenario (20–82 semanas) porque en la práctica cada sistema sostiene un ciclo productivo de distinta duración (jaulas persiste más cerca del tope de la curva oficial; pastoreo/campo libre suele descartarse antes por estacionalidad, calidad de cáscara y depredación).
 
 Pestañas disponibles por escenario: Resumen, Cronograma (Gantt), Producción semanal, Infraestructura (eficiencia y brechas), Anual, Curva genética de referencia, Detalle semanal y Configuración rápida.
 
@@ -56,9 +58,9 @@ python3 -m http.server 8000
 
 ## Actualizar el modelo
 
-- **Curva genética:** editar la constante `CURVA_HYLINE_BROWN` en el `<script>` de `index.html` (objeto `{ semana: {pct, peso} }`).
-- **Sistemas productivos:** editar la constante `SISTEMAS` (mortalidad de crianza/postura y factor sobre la curva oficial por sistema).
-- **Ciclo del lote:** constantes `CICLO`/`CRIANZA`/`POSTURA` (semanas totales, crianza y postura).
+- **Curva genética:** editar la constante `CURVA_HYLINE_BROWN` en el `<script>` de `index.html` (objeto `{ semana: {pct, peso} }`, cubre semanas 19–100 — el tope `POSTURA_MAX` no puede superar ese rango sin extender la curva).
+- **Sistemas productivos:** editar la constante `SISTEMAS` (mortalidad de crianza/postura, factor sobre la curva oficial y `semanas_postura_sugerida` por sistema — solo es una sugerencia inicial, el usuario la ajusta libremente por escenario).
+- **Ciclo del lote:** `CRIANZA` (semanas fijas de recría, 18) + `semanas_postura` por escenario (20–82, ver `POSTURA_MIN`/`POSTURA_MAX`) + 2 semanas de limpieza fijas. El total se calcula con `cicloTotal(esc)`, no es una constante fija.
 
 ## Personalización
 

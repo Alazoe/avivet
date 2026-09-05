@@ -314,8 +314,8 @@ tbody td.total-celda { background: rgba(45, 74, 43, 0.05); font-weight: 600; col
     <h2>Metodología y supuestos</h2>
     <ul class="metodo-lista">
       <li><strong>Curva genética:</strong> Hy-Line Brown según Commercial Management Guide, ajustada según el sistema productivo seleccionado.</li>
-      <li><strong>Mortalidad:</strong> varía según sistema productivo. Jaula: ~3,5% crianza + ~6% postura. Piso convencional: ~5% + ~10%. Piso no convencional: ~7% + ~15% acumulada.</li>
-      <li><strong>Ciclo por lote:</strong> 18 sem. crianza (configurable: exterior + producción) → 82 sem. postura (sem 19–100) → 2 sem. limpieza. Total: 102 semanas por ciclo.</li>
+      <li><strong>Mortalidad:</strong> varía según sistema productivo. Jaulas: ~3,5% crianza + ~6% postura. Libre de jaulas: ~5% + ~10%. Crianza libre/pastoreo: ~7% + ~15% acumulada.</li>
+      <li id="metodo-ciclo"><strong>Ciclo por lote:</strong> 18 sem. crianza (configurable: exterior + producción) → semanas de postura configurables por escenario según sistema (20–82 sem., sugeridas: Jaulas 82 · Libre de jaulas 70 · Crianza libre/pastoreo 55) → 2 sem. limpieza.</li>
       <li><strong>Escenarios guardados:</strong> cada escenario (N° de galpones, sistema, fechas, horizonte) se guarda en este navegador y puede editarse, recalcularse o eliminarse de forma independiente.</li>
       <li><strong>Las cifras son proyecciones:</strong> el manejo real (sanidad, alimentación, fotoperiodo, estrés) puede modificar los resultados ±10–15%.</li>
     </ul>
@@ -386,28 +386,36 @@ function toast(msg) {
 /* ════════════════════════════════════════════════════════════
    CONSTANTES DEL MODELO
    ════════════════════════════════════════════════════════════ */
-const CICLO = 102, CRIANZA = 18, POSTURA = 82;
+const CRIANZA = 18;
+const POSTURA_MIN = 20, POSTURA_MAX = 82, POSTURA_FALLBACK = 82; // 82 = tope de la curva oficial (sem. 19-100)
 const PALETA = ['#f0a500','#4a90a4','#e05c5c','#5cae5c','#9b6bb5','#e08c3c','#5c7db5'];
 const COLOR_TOTAL = '#2d4a2b';
 const COLOR_ACENTO = '#f0a500';
 const tFont = { font:{ size:10, family:"'IBM Plex Mono', monospace" } };
 const gColor = '#e0ddd5';
 
+// Semanas de postura del escenario (configurable por el usuario, con sugerencia por sistema) y ciclo total resultante.
+function semanasPostura(esc) { return esc.semanas_postura || POSTURA_FALLBACK; }
+function cicloTotal(esc) { return CRIANZA + semanasPostura(esc) + 2; } // + 2 sem. de limpieza entre lotes
+
 const SISTEMAS = {
   jaula: {
-    label: 'Jaula enriquecida',
+    label: 'Jaulas',
     mort_c: 0.002, mort_p: 0.0008, factor_pos: 1.00,
-    desc: 'Menor mortalidad, máximo aprovechamiento de la curva.'
+    semanas_postura_sugerida: 82,
+    desc: 'Menor mortalidad, máximo aprovechamiento de la curva. Ciclo sugerido: hasta semana 100 de vida.'
   },
   piso_conv: {
-    label: 'Piso convencional',
+    label: 'Libre de jaulas',
     mort_c: 0.003, mort_p: 0.0013, factor_pos: 0.95,
-    desc: 'Sistema de piso con manejo tecnificado.'
+    semanas_postura_sugerida: 70,
+    desc: 'Piso techado, manejo tecnificado. Ciclo sugerido más corto que jaula por menor persistencia — ajústalo según tu experiencia.'
   },
   piso_ext: {
-    label: 'Piso no convencional (sur de Chile)',
+    label: 'Crianza libre / pastoreo',
     mort_c: 0.004, mort_p: 0.002, factor_pos: 0.88,
-    desc: 'Manejo extensivo o semi-intensivo, menor postura y mayor mortalidad.'
+    semanas_postura_sugerida: 55,
+    desc: 'Acceso a exterior, sin luz artificial. Ciclo sugerido más corto por estacionalidad y depredación — ajústalo según tu experiencia.'
   }
 };
 
@@ -482,6 +490,8 @@ function construirProyeccion(esc) {
   let semCal = 1;
   const sys = SISTEMAS[esc.sistema];
   const salida = esc.galpon_crianza?.activo ? esc.galpon_crianza.semana_salida : 0;
+  const semPostura = semanasPostura(esc);
+  const ciclo = cicloTotal(esc);
 
   while (cur <= fechaMax) {
     const isoLunes = cur.toISOString().slice(0, 10);
@@ -499,7 +509,7 @@ function construirProyeccion(esc) {
         return;
       }
 
-      const semCiclo = semVida % CICLO;
+      const semCiclo = semVida % ciclo;
       let estado, aves = 0, pct = 0, peso = 0, huevos_dia = 0;
 
       if (semCiclo < salida) {
@@ -508,7 +518,7 @@ function construirProyeccion(esc) {
       } else if (semCiclo < CRIANZA) {
         estado = 'crianza';
         aves = Math.round(g.aves * Math.pow(1 - sys.mort_c, semCiclo));
-      } else if (semCiclo < CRIANZA + POSTURA) {
+      } else if (semCiclo < CRIANZA + semPostura) {
         estado = 'postura';
         const avesCrianzaFin = Math.round(g.aves * Math.pow(1 - sys.mort_c, CRIANZA));
         aves = Math.round(avesCrianzaFin * Math.pow(1 - sys.mort_p, semCiclo - CRIANZA));
@@ -550,7 +560,7 @@ function recalcularProyeccion() {
       id: g.id, nombre: g.nombre, fecha_nacimiento: g.fecha_nacimiento, color: g.color, aves_iniciales: g.aves,
       fecha_inicio_postura_estimada: addWeeks(g.fecha_nacimiento, CRIANZA),
       fecha_pico_estimada: addWeeks(g.fecha_nacimiento, 28),
-      fecha_descarte_estimada: addWeeks(g.fecha_nacimiento, CRIANZA + POSTURA)
+      fecha_descarte_estimada: addWeeks(g.fecha_nacimiento, CRIANZA + semanasPostura(ESC))
     })),
     proyeccion_semanal: proyeccion
   };
@@ -568,6 +578,9 @@ function actualizarHeroKPIs() {
   const sys = SISTEMAS[ESC.sistema];
   document.getElementById('esc-meta-txt').textContent =
     `${ESC.galpones.length} ${ESC.galpones.length > 1 ? 'galpones' : 'galpón'} · ${sys.label} · ${NUM(ESC.galpones[0].aves)} aves c/u`;
+  const semPostura = semanasPostura(ESC);
+  document.getElementById('metodo-ciclo').innerHTML =
+    `<strong>Ciclo por lote:</strong> 18 sem. crianza (configurable: exterior + producción) → ${semPostura} sem. postura (sem 19–${18+semPostura}) → 2 sem. limpieza. Total: ${cicloTotal(ESC)} semanas por ciclo.`;
 }
 
 /* ════════════════════════════════════════════════════════════
@@ -624,10 +637,13 @@ function abrirModalEscenario(id) {
   modoEditar = id || null;
   if (id) {
     modalEsc = JSON.parse(JSON.stringify(getEscenario(id)));
+    // Compatibilidad con escenarios guardados antes de que las semanas de postura fueran configurables.
+    modalEsc.semanas_postura = modalEsc.semanas_postura || SISTEMAS[modalEsc.sistema]?.semanas_postura_sugerida || POSTURA_FALLBACK;
   } else {
     modalEsc = {
       id: null, nombre: '',
       horizonte_anios: 4, sistema: 'piso_conv',
+      semanas_postura: SISTEMAS.piso_conv.semanas_postura_sugerida,
       galpon_crianza: { activo: true, semana_salida: 16 },
       galpones: [{ id: 'G1', nombre: 'Galpón 1', fecha_nacimiento: '2025-07-17', aves: 2000, color: PALETA[0] }]
     };
@@ -665,13 +681,19 @@ function renderModalBody() {
     <div class="config-top-row" style="border-bottom:none;padding-bottom:0;margin-bottom:14px">
       <label class="config-field"><span>N° de galpones</span><div class="numb-btns">${botones}</div></label>
       <label class="config-field"><span>Sistema productivo</span>
-        <select style="width:230px" onchange="modalEsc.sistema=this.value; document.getElementById('modal-esc-sistema-desc').textContent=SISTEMAS[this.value].desc">
+        <select style="width:230px" onchange="cambiarSistemaModal(this.value)">
           ${Object.entries(SISTEMAS).map(([k,s]) => `<option value="${k}"${modalEsc.sistema===k?' selected':''}>${s.label}</option>`).join('')}
         </select>
         <small id="modal-esc-sistema-desc" style="font-size:11px;color:var(--color-tinta-tenue)">${SISTEMAS[modalEsc.sistema].desc}</small>
       </label>
       <label class="config-field"><span>Horizonte (años)</span>
         <input type="number" min="1" max="15" value="${modalEsc.horizonte_anios}" style="width:70px" oninput="modalEsc.horizonte_anios=Math.max(1,+this.value||4)">
+      </label>
+      <label class="config-field"><span>Semanas de postura</span>
+        <input type="number" min="${POSTURA_MIN}" max="${POSTURA_MAX}" value="${modalEsc.semanas_postura}" style="width:70px"
+          oninput="modalEsc.semanas_postura=Math.max(${POSTURA_MIN},Math.min(${POSTURA_MAX},+this.value||${POSTURA_FALLBACK}));
+                   document.getElementById('modal-esc-ciclo-hint').textContent='Ciclo total: '+cicloTotal(modalEsc)+' sem. (18 crianza + postura + 2 limpieza)';">
+        <small id="modal-esc-ciclo-hint" style="font-size:10px;color:var(--color-tinta-tenue)">Ciclo total: ${cicloTotal(modalEsc)} sem. (18 crianza + postura + 2 limpieza)</small>
       </label>
       <label class="config-field"><span>Galpón de crianza externo</span>
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
@@ -686,11 +708,17 @@ function renderModalBody() {
     <div id="modal-esc-galpones">${filas}</div>`;
 }
 
+function cambiarSistemaModal(valor) {
+  modalEsc.sistema = valor;
+  modalEsc.semanas_postura = SISTEMAS[valor].semanas_postura_sugerida;
+  renderModalBody();
+}
+
 function setNGalponesModal(n) {
   while (modalEsc.galpones.length < n) {
     const i = modalEsc.galpones.length;
     const prev = modalEsc.galpones[i-1].fecha_nacimiento;
-    const stagger = Math.round(CICLO / n);
+    const stagger = Math.round(cicloTotal(modalEsc) / n);
     modalEsc.galpones.push({
       id: `G${i+1}`, nombre: `Galpón ${i+1}`,
       fecha_nacimiento: addWeeks(prev, stagger),
@@ -948,9 +976,11 @@ function renderInfraestructura() {
   const nBrechas = brechas.length;
   const durMedia = nBrechas ? Math.round(semsVacio / nBrechas) : 0;
 
-  const galpNecesarios = Math.ceil(CICLO / POSTURA);
+  const ciclo = cicloTotal(ESC);
+  const semPostura = semanasPostura(ESC);
+  const galpNecesarios = Math.ceil(ciclo / semPostura);
   const galpFaltantes = Math.max(0, galpNecesarios - N);
-  const desfaseOpt = galpFaltantes > 0 ? Math.round(CICLO / (N + galpFaltantes)) : 0;
+  const desfaseOpt = galpFaltantes > 0 ? Math.round(ciclo / (N + galpFaltantes)) : 0;
   const fechaSig = galpFaltantes > 0 ? addWeeks(D.galpones[N-1].fecha_nacimiento, desfaseOpt) : null;
 
   const estadoEfic = nBrechas === 0 ? 'ok' : pctEfic >= 90 ? 'ok' : 'alerta';
@@ -1148,10 +1178,14 @@ function renderConfigTab() {
   el.innerHTML = `
     <div class="config-top-row" style="border-bottom:none;margin-bottom:16px;padding-bottom:0">
       <label class="config-field"><span>Sistema productivo</span>
-        <select id="tcfg-sistema" style="width:230px">${Object.entries(SISTEMAS).map(([k,s]) => `<option value="${k}"${ESC.sistema===k?' selected':''}>${s.label}</option>`).join('')}</select>
+        <select id="tcfg-sistema" style="width:230px" onchange="document.getElementById('tcfg-postura').value=SISTEMAS[this.value].semanas_postura_sugerida">${Object.entries(SISTEMAS).map(([k,s]) => `<option value="${k}"${ESC.sistema===k?' selected':''}>${s.label}</option>`).join('')}</select>
       </label>
       <label class="config-field"><span>Horizonte (años)</span>
         <input type="number" id="tcfg-horizonte" min="1" max="15" value="${ESC.horizonte_anios}" style="width:70px">
+      </label>
+      <label class="config-field"><span>Semanas de postura</span>
+        <input type="number" id="tcfg-postura" min="${POSTURA_MIN}" max="${POSTURA_MAX}" value="${semanasPostura(ESC)}" style="width:70px">
+        <small style="font-size:10px;color:var(--color-tinta-tenue)">Ciclo total: ${cicloTotal(ESC)} sem.</small>
       </label>
       <label class="config-field"><span>Galpón de crianza externo</span>
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
@@ -1179,6 +1213,7 @@ function renderConfigTab() {
 function aplicarConfigTab() {
   ESC.sistema = document.getElementById('tcfg-sistema').value;
   ESC.horizonte_anios = Math.max(1, +document.getElementById('tcfg-horizonte').value || 4);
+  ESC.semanas_postura = Math.max(POSTURA_MIN, Math.min(POSTURA_MAX, +document.getElementById('tcfg-postura').value || POSTURA_FALLBACK));
   ESC.galpon_crianza.activo = document.getElementById('tcfg-crianza-activo').checked;
   ESC.galpon_crianza.semana_salida = Math.max(1, Math.min(17, +document.getElementById('tcfg-crianza-salida').value || 16));
   document.querySelectorAll('#tcfg-galpones .config-galpon-row').forEach((row, i) => {
@@ -1288,7 +1323,7 @@ function generarPDF() {
     <h2>Metodología y supuestos</h2>
     <ul>
       <li>Curva genética: Hy-Line Brown, ajustada por el factor del sistema productivo seleccionado (${sys.label}: ${Math.round(sys.factor_pos*100)}% de la curva oficial).</li>
-      <li>Ciclo por lote: 18 sem. crianza → 82 sem. postura (sem 19–100) → 2 sem. limpieza. Total 102 semanas.</li>
+      <li>Ciclo por lote: 18 sem. crianza → ${semanasPostura(ESC)} sem. postura (sem 19–${18+semanasPostura(ESC)}) → 2 sem. limpieza. Total ${cicloTotal(ESC)} semanas.</li>
       <li>Mortalidad y aprovechamiento de curva según sistema: ${sys.desc}</li>
       <li>Las cifras son proyecciones: el manejo real puede modificar los resultados ±10–15%.</li>
     </ul>
@@ -1313,6 +1348,8 @@ function exportarExcel() {
     ['N° de galpones', ESC.galpones.length],
     ['Sistema productivo', sys.label],
     ['Horizonte (años)', ESC.horizonte_anios],
+    ['Semanas de postura', semanasPostura(ESC)],
+    ['Ciclo total por lote (semanas)', cicloTotal(ESC)],
     ['Galpón de crianza externo activo', ESC.galpon_crianza.activo ? 'Sí' : 'No'],
     ['Semana de salida crianza exterior', ESC.galpon_crianza.semana_salida],
     ['', ''],
