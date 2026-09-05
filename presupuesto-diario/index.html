@@ -98,6 +98,13 @@ body {
 .chip-edad { font-family: var(--fc); font-size: 11px; font-weight: 600; padding: 4px 11px; border: 1px solid var(--linea-f); border-radius: 20px; background: var(--fondo); color: var(--suave); cursor: pointer; transition: all .15s; }
 .chip-edad:hover { border-color: var(--prim); color: var(--prim); }
 .chip-edad.activo { background: var(--prim); border-color: var(--prim); color: #fff; }
+/* Selector de lotes en modal de comparativa */
+.comparar-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 1px solid var(--linea); border-radius: 5px; cursor: pointer; transition: border-color .15s, background .15s; }
+.comparar-item:hover { border-color: var(--prim); }
+.comparar-item.seleccionado { border-color: var(--prim); background: rgba(27,67,50,.05); }
+.comparar-item input { flex-shrink: 0; width: 16px; height: 16px; }
+.comparar-item-nombre { font-weight: 600; font-size: 13px; color: var(--tinta); }
+.comparar-item-meta { font-size: 11px; color: var(--tenue); margin-top: 1px; }
 
 /* ── Bloques ── */
 .bloque { margin-bottom: 72px; scroll-margin-top: 80px; }
@@ -352,7 +359,29 @@ td.real { background: rgba(27,94,32,.07) !important; font-weight: 600; }
       <div class="lote-meta-txt" id="lote-meta-txt"></div>
       <div id="lote-gen-badge"></div>
     </div>
+    <div style="margin-left:auto">
+      <button class="btn-cab" style="border-color:rgba(255,255,255,.4);color:rgba(255,255,255,.9)" onclick="abrirModalComparar()">⇄ Comparar lotes</button>
+    </div>
   </div>
+
+  <section class="bloque" id="comparativa-sec" style="display:none">
+    <h2>Comparativa de lotes</h2>
+    <p class="bloque-desc">
+      Comparando <strong id="comparativa-count"></strong> lotes lado a lado.
+      <button class="btn btn-linea btn-sm" style="margin-left:10px" onclick="cerrarComparativa()">✕ Cerrar comparativa</button>
+    </p>
+    <div id="comparativa-tabla"></div>
+    <div class="graficos-grid" style="margin-top:22px">
+      <div class="grafico-wrap">
+        <div class="grafico-titulo" id="comp-graf1-titulo"></div>
+        <div class="grafico-canvas"><canvas id="cComp1"></canvas></div>
+      </div>
+      <div class="grafico-wrap">
+        <div class="grafico-titulo" id="comp-graf2-titulo"></div>
+        <div class="grafico-canvas"><canvas id="cComp2"></canvas></div>
+      </div>
+    </div>
+  </section>
 
   <div id="contenido">
     <div class="vacio">
@@ -584,6 +613,23 @@ td.real { background: rgba(27,94,32,.07) !important; font-weight: 600; }
         </div>
       </div>
     </form>
+  </div>
+</div>
+
+<!-- MODAL COMPARAR LOTES -->
+<div class="modal-bg" id="modal-comparar">
+  <div class="modal" style="max-width:520px">
+    <button class="modal-close" onclick="cerrarModalComparar()">×</button>
+    <h2>Comparar lotes</h2>
+    <p style="font-size:13px;color:var(--suave);margin:-10px 0 16px">
+      Selecciona entre 2 y 4 lotes para ver sus resultados lado a lado. Puedes mezclar postura y crianza
+      — en ese caso solo se muestran los indicadores en común.
+    </p>
+    <div id="comparar-lista" style="display:flex;flex-direction:column;gap:8px;max-height:360px;overflow-y:auto"></div>
+    <div class="modal-acciones" style="margin-top:18px">
+      <button class="btn btn-acento" onclick="generarComparativa()">Comparar seleccionados</button>
+      <button class="btn btn-linea" onclick="cerrarModalComparar()">Cancelar</button>
+    </div>
   </div>
 </div>
 
@@ -1499,6 +1545,7 @@ function selLote(id) {
   loteId = id;
   const lote = getLote(id);
   if (!lote) return;
+  cerrarComparativa();
   const heroKpis  = document.getElementById('hero-kpis');
   const heroVacio = document.getElementById('hero-vacio');
   if (heroKpis)  heroKpis.style.display  = '';
@@ -1524,6 +1571,217 @@ function selLote(id) {
     proy = proyectar(lote);
     renderDashboard(lote);
   }
+}
+
+/* ════════════════════════════════════════════════════════════
+   COMPARATIVA MULTI-LOTE
+   ════════════════════════════════════════════════════════════ */
+let comparativaCharts = {};
+
+function abrirModalComparar() {
+  const lotes = getLotes();
+  if (lotes.length < 2) {
+    alert('Necesitas al menos 2 lotes guardados para poder comparar.');
+    return;
+  }
+  const cont = document.getElementById('comparar-lista');
+  cont.innerHTML = lotes.map(l => {
+    const tipoLbl = l.tipo === 'crianza' ? 'Crianza' : 'Postura';
+    const gen     = l.genetica || 'Lohmann Brown';
+    const meta    = l.tipo === 'crianza'
+      ? `${tipoLbl} · ${gen} · ${(+l.nAves).toLocaleString('es-CL')} aves · ${l.semanasCrianza ?? 8} sem crianza`
+      : `${tipoLbl} · ${gen} · ${(+l.nAves).toLocaleString('es-CL')} aves · ${l.semanasCiclo ?? 100} sem ciclo`;
+    return `<label class="comparar-item" id="comparar-item-${l.id}">
+      <input type="checkbox" value="${l.id}" onchange="marcarCompararItem(this)">
+      <div>
+        <div class="comparar-item-nombre">${l.nombre}</div>
+        <div class="comparar-item-meta">${meta}</div>
+      </div>
+    </label>`;
+  }).join('');
+  document.getElementById('modal-comparar').classList.add('abierto');
+}
+
+function cerrarModalComparar() {
+  document.getElementById('modal-comparar').classList.remove('abierto');
+}
+
+function marcarCompararItem(input) {
+  const cont = document.getElementById('comparar-lista');
+  const checked = [...cont.querySelectorAll('input[type=checkbox]:checked')];
+  if (checked.length > 4) {
+    input.checked = false;
+    toast('Máximo 4 lotes a la vez');
+  }
+  const item = document.getElementById(`comparar-item-${input.value}`);
+  if (item) item.classList.toggle('seleccionado', input.checked);
+}
+
+function kpisComparativa(lote) {
+  const esCrianza = lote.tipo === 'crianza';
+  const p     = esCrianza ? proyectarCrianza(lote) : proyectar(lote);
+  const dFin  = p[p.length - 1];
+  const nIni  = +lote.nAves;
+  const avesFin = Math.round(dFin.aves);
+  const be    = calcBreakEven(p);
+  const beSem = be ? (be.semCiclo ?? be.sem) : null;
+  const ingresos  = p.reduce((a,d) => a + d.ingreso, 0);
+  const costAlim  = p.reduce((a,d) => a + d.costoAlim, 0);
+  const costFijos = p.reduce((a,d) => a + d.gastoDia, 0);
+  const costEnv   = esCrianza ? 0 : p.reduce((a,d) => a + (d.costoEnvase || 0), 0);
+  const costDesp  = esCrianza ? 0 : p.reduce((a,d) => a + (d.costoDespacho || 0), 0);
+  const gastosEsp = (lote.gastosEspeciales || []).reduce((a,g) => a + (+g.monto), 0);
+  const costoTotal = costAlim + costFijos + costEnv + costDesp + gastosEsp;
+  const resultado  = dFin.acum;
+
+  const base = {
+    id: lote.id, nombre: lote.nombre, tipo: esCrianza ? 'crianza' : 'postura',
+    genetica: lote.genetica || 'Lohmann Brown',
+    nIni, avesFin, mortAcum: nIni > 0 ? (nIni - avesFin) / nIni * 100 : 0,
+    ingresos, costoTotal, resultado, beSem,
+  };
+
+  if (esCrianza) {
+    const edadIng = +(lote.edadIngresoSem ?? 0);
+    return {
+      ...base,
+      semanas: +(lote.semanasCrianza ?? 8),
+      edadIngreso: edadIng,
+      edadVenta: edadIng + +(lote.semanasCrianza ?? 8),
+      precioVenta: dFin.precioVenta || 0,
+      costoAve: avesFin > 0 ? Math.round(costoTotal / avesFin) : 0,
+      margenAve: avesFin > 0 ? Math.round(resultado / avesFin) : 0,
+    };
+  }
+  const huevosV = p.reduce((a,d) => a + d.huevosVendibles, 0);
+  const ebitda  = p.reduce((a,d) => a + d.ingreso - d.costoAlim - d.gastoDia - (d.costoDespacho||0) - d.costoEnvase, 0);
+  return {
+    ...base,
+    semanas: lote.semanasCiclo || 100,
+    huevosV, ebitda,
+    margenHuevo: huevosV > 0 ? resultado / huevosV : 0,
+  };
+}
+
+function generarComparativa() {
+  const cont = document.getElementById('comparar-lista');
+  const ids  = [...cont.querySelectorAll('input[type=checkbox]:checked')].map(el => el.value);
+  if (ids.length < 2) { toast('Selecciona al menos 2 lotes'); return; }
+  const lotes = ids.map(id => getLote(id)).filter(Boolean);
+  cerrarModalComparar();
+  renderComparativa(lotes);
+}
+
+function renderComparativa(lotes) {
+  const sec = document.getElementById('comparativa-sec');
+  const kpis = lotes.map(kpisComparativa);
+  const tiposUnicos = new Set(kpis.map(k => k.tipo));
+  const mixto = tiposUnicos.size > 1;
+  const beStr = s => s != null ? `Sem ${s}` : 'Sin retorno';
+
+  document.getElementById('comparativa-count').textContent = kpis.length;
+
+  const fila = (lbl, getVal, fmt = MN) => `<tr>
+    <td style="text-align:left;font-weight:600;color:var(--suave);padding:9px 14px;border-bottom:1px solid var(--linea);white-space:nowrap">${lbl}</td>
+    ${kpis.map(k => {
+      const v = getVal(k);
+      return `<td style="text-align:center;padding:9px 14px;border-bottom:1px solid var(--linea);font-family:var(--fm);font-size:12.5px">${fmt(v)}</td>`;
+    }).join('')}
+  </tr>`;
+
+  const headerRow = `<tr>
+    <th style="text-align:left;padding:11px 14px;background:var(--prim);color:#fff;font-size:11px;text-transform:uppercase;letter-spacing:.05em">Indicador</th>
+    ${kpis.map(k => `<th style="padding:11px 14px;background:var(--prim);color:#fff;text-align:center">
+      <div style="font-size:13px;font-weight:600">${k.nombre}</div>
+      <div style="font-size:10px;font-weight:400;opacity:.8;margin-top:2px">${k.tipo === 'crianza' ? 'Crianza' : 'Postura'} · ${k.genetica}</div>
+    </th>`).join('')}
+  </tr>`;
+
+  let filas = '';
+  filas += fila('Aves iniciales',        k => k.nIni,     NUM);
+  filas += fila('Aves al final',         k => k.avesFin,  NUM);
+  filas += fila('Mortalidad acum. (%)',  k => k.mortAcum, v => v.toFixed(2) + '%');
+  filas += fila('Ingreso total',         k => k.ingresos);
+  filas += fila('Costo total',           k => k.costoTotal);
+  filas += fila('Resultado neto',        k => k.resultado, v => `<span style="color:${v>=0?'var(--ok)':'var(--mal)'};font-weight:700">${MN(v)}</span>`);
+  filas += fila('Break-even',            k => k.beSem,    beStr);
+
+  if (!mixto && kpis[0].tipo === 'crianza') {
+    filas += fila('Edad ingreso → venta', k => `${k.edadIngreso===0?'1 día':k.edadIngreso+' sem'} → ${k.edadVenta} sem`, v => v);
+    filas += fila('Semanas de crianza',   k => k.semanas, v => v + ' sem');
+    filas += fila('Precio de venta / ave', k => k.precioVenta);
+    filas += fila('Costo / ave',          k => k.costoAve);
+    filas += fila('Margen / ave',         k => k.margenAve, v => `<span style="color:${v>=0?'var(--ok)':'var(--mal)'};font-weight:700">${MN(v)}</span>`);
+  } else if (!mixto && kpis[0].tipo === 'postura') {
+    filas += fila('Semanas de ciclo',     k => k.semanas, v => v + ' sem');
+    filas += fila('Huevos vendibles',     k => k.huevosV, NUM);
+    filas += fila('EBITDA',               k => k.ebitda);
+    filas += fila('Margen / huevo',       k => k.margenHuevo, v => `$${v.toFixed(1)}`);
+  }
+
+  document.getElementById('comparativa-tabla').innerHTML = `
+    ${mixto ? `<div style="background:#fff8e1;border-left:4px solid var(--acento);padding:11px 16px;margin-bottom:16px;font-size:12.5px;color:var(--suave)">
+      Estás comparando lotes de tipos distintos (postura y crianza) — solo se muestran los indicadores en común.
+      Compara lotes del mismo tipo para ver el detalle económico específico de cada uno.
+    </div>` : ''}
+    <div class="tabla-scroll">
+      <table style="width:100%;border-collapse:collapse">
+        <thead>${headerRow}</thead>
+        <tbody>${filas}</tbody>
+      </table>
+    </div>`;
+
+  // Gráficos
+  const dcC = id => { if (comparativaCharts[id]) { comparativaCharts[id].destroy(); delete comparativaCharts[id]; } };
+  const nombres = kpis.map(k => k.nombre);
+
+  dcC('cComp1');
+  document.getElementById('comp-graf1-titulo').textContent = 'Resultado neto por lote';
+  const c1 = document.getElementById('cComp1');
+  if (c1) comparativaCharts.cComp1 = new Chart(c1, { type:'bar', data:{
+    labels: nombres,
+    datasets:[{ label:'Resultado neto', data:kpis.map(k=>k.resultado),
+      backgroundColor: kpis.map(k => k.resultado >= 0 ? 'rgba(46,125,50,.75)' : 'rgba(183,28,28,.7)'), borderRadius:3 }]
+  }, options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false},
+      tooltip:{callbacks:{label:c=>' $'+Math.round(c.raw).toLocaleString('es-CL')}}},
+    scales:{ x:{ticks:tFont,grid:{color:gColor}}, y:{ticks:{...tFont,callback:v=>'$'+Math.round(v/1000)+'k'},grid:{color:gColor}} } } });
+
+  const paleta = ['#1b4332','#f0a500','#4a90a4','#e05c5c'];
+  dcC('cComp2');
+  const c2 = document.getElementById('cComp2');
+  if (!mixto && kpis[0].tipo === 'crianza') {
+    document.getElementById('comp-graf2-titulo').textContent = 'Margen por ave';
+    if (c2) comparativaCharts.cComp2 = new Chart(c2, { type:'bar', data:{
+      labels: nombres, datasets:[{ label:'Margen/ave', data:kpis.map(k=>k.margenAve), backgroundColor:paleta, borderRadius:3 }]
+    }, options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false},
+        tooltip:{callbacks:{label:c=>' $'+Math.round(c.raw).toLocaleString('es-CL')+'/ave'}}},
+      scales:{ x:{ticks:tFont,grid:{color:gColor}}, y:{ticks:{...tFont,callback:v=>'$'+v.toLocaleString('es-CL')},grid:{color:gColor}} } } });
+  } else if (!mixto && kpis[0].tipo === 'postura') {
+    document.getElementById('comp-graf2-titulo').textContent = 'Margen por huevo';
+    if (c2) comparativaCharts.cComp2 = new Chart(c2, { type:'bar', data:{
+      labels: nombres, datasets:[{ label:'Margen/huevo', data:kpis.map(k=>k.margenHuevo), backgroundColor:paleta, borderRadius:3 }]
+    }, options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false},
+        tooltip:{callbacks:{label:c=>' $'+c.raw.toFixed(1)+'/huevo'}}},
+      scales:{ x:{ticks:tFont,grid:{color:gColor}}, y:{ticks:{...tFont,callback:v=>'$'+v.toFixed(0)},grid:{color:gColor}} } } });
+  } else {
+    document.getElementById('comp-graf2-titulo').textContent = 'Ingreso vs costo total';
+    if (c2) comparativaCharts.cComp2 = new Chart(c2, { type:'bar', data:{
+      labels: nombres, datasets:[
+        { label:'Ingreso', data:kpis.map(k=>k.ingresos), backgroundColor:'rgba(27,67,50,.75)', borderRadius:3 },
+        { label:'Costo',   data:kpis.map(k=>k.costoTotal), backgroundColor:'rgba(183,28,28,.65)', borderRadius:3 },
+      ]
+    }, options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{labels:{...tFont}},
+        tooltip:{callbacks:{label:c=>` ${c.dataset.label}: $${Math.round(c.raw).toLocaleString('es-CL')}`}}},
+      scales:{ x:{ticks:tFont,grid:{color:gColor}}, y:{ticks:{...tFont,callback:v=>'$'+Math.round(v/1000)+'k'},grid:{color:gColor}} } } });
+  }
+
+  sec.style.display = 'block';
+  sec.scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+function cerrarComparativa() {
+  const sec = document.getElementById('comparativa-sec');
+  if (sec) sec.style.display = 'none';
 }
 
 /* ════════════════════════════════════════════════════════════
