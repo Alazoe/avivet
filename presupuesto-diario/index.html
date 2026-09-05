@@ -93,6 +93,11 @@ body {
 .modal-tipo-btn { flex: 1; padding: 10px 14px; font-family: var(--fc); font-size: 13px; font-weight: 600; border: none; background: var(--fondo); color: var(--tenue); cursor: pointer; transition: all .18s; text-align: center; }
 .modal-tipo-btn.activo { background: var(--prim); color: #fff; }
 .modal-tipo-btn:first-child { border-right: 1px solid var(--linea-f); }
+/* Chips de edad de ingreso (crianza) */
+.chips-edad { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+.chip-edad { font-family: var(--fc); font-size: 11px; font-weight: 600; padding: 4px 11px; border: 1px solid var(--linea-f); border-radius: 20px; background: var(--fondo); color: var(--suave); cursor: pointer; transition: all .15s; }
+.chip-edad:hover { border-color: var(--prim); color: var(--prim); }
+.chip-edad.activo { background: var(--prim); border-color: var(--prim); color: #fff; }
 
 /* ── Bloques ── */
 .bloque { margin-bottom: 72px; scroll-margin-top: 80px; }
@@ -442,19 +447,11 @@ td.real { background: rgba(27,94,32,.07) !important; font-weight: 600; }
         <div id="sec-crianza-only" style="display:none;grid-column:1/-1">
           <div class="modal-grid" style="padding:0">
             <div class="modal-field">
-              <label>Edad de ingreso al galpón</label>
-              <select name="edadIngresoSem" id="sel-edad-ingreso">
-                <option value="0">1 día de vida (pollito BB)</option>
-                <option value="1">1 semana</option>
-                <option value="2">2 semanas</option>
-                <option value="3">3 semanas</option>
-                <option value="4" selected>4 semanas</option>
-                <option value="5">5 semanas</option>
-                <option value="6">6 semanas</option>
-                <option value="8">8 semanas</option>
-                <option value="10">10 semanas</option>
-                <option value="12">12 semanas</option>
-              </select>
+              <label>Edad de ingreso al galpón (semanas de vida)</label>
+              <input type="number" name="edadIngresoSem" id="inp-edad-ingreso" value="4" min="0" max="30" step="1"
+                     oninput="syncChipEdad('inp-edad-ingreso')">
+              <div class="chips-edad" id="chips-edad-ingreso"></div>
+              <small style="font-size:10px;color:var(--tenue)">0 = 1 día de vida (pollito BB) · cualquier semana, no solo los atajos</small>
             </div>
             <div class="modal-field">
               <label>Semanas de crianza hasta venta</label>
@@ -1092,6 +1089,32 @@ function modalTipoChange(tipo) {
   // El campo precioHuevo no es required en crianza (está oculto)
   const phInput = document.querySelector('[name="precioHuevo"]');
   if (phInput) phInput.required = !esCrianza;
+
+  if (esCrianza) renderChipsEdad('chips-edad-ingreso', 'inp-edad-ingreso');
+}
+
+/* ── Chips de atajo para "edad de ingreso" — cualquier semana es válida,
+     los chips solo aceleran los valores típicos (1 día, 4/8/12/14 sem) ── */
+const EDAD_INGRESO_PRESETS = [[0,'1 día'],[4,'4 sem'],[8,'8 sem'],[12,'12 sem'],[14,'14 sem']];
+
+function renderChipsEdad(containerId, inputId) {
+  const cont = document.getElementById(containerId);
+  if (!cont) return;
+  const val = +(document.getElementById(inputId)?.value ?? -1);
+  cont.innerHTML = EDAD_INGRESO_PRESETS.map(([v,lbl]) =>
+    `<button type="button" class="chip-edad${val===v?' activo':''}" onclick="setEdadIngreso('${inputId}','${containerId}',${v})">${lbl}</button>`
+  ).join('');
+}
+
+function setEdadIngreso(inputId, containerId, v) {
+  const input = document.getElementById(inputId);
+  if (input) input.value = v;
+  renderChipsEdad(containerId, inputId);
+}
+
+function syncChipEdad(inputId) {
+  const containerId = inputId === 'inp-edad-ingreso' ? 'chips-edad-ingreso' : 'chips-edad-ccfg';
+  renderChipsEdad(containerId, inputId);
 }
 
 /* ════════════════════════════════════════════════════════════
@@ -2428,8 +2451,6 @@ function renderTablaCrianza(lote) {
 function renderConfigCrianza(lote) {
   const panel = document.getElementById('tc-config-panel');
   if (!panel) return;
-  const edadOpts = [[0,'1 día (pollito BB)'],[1,'1 semana'],[2,'2 semanas'],[3,'3 semanas'],[4,'4 semanas'],
-    [5,'5 semanas'],[6,'6 semanas'],[8,'8 semanas'],[10,'10 semanas'],[12,'12 semanas']];
   panel.innerHTML = `
     <div class="config-hdr" onclick="toggleCfg()">
       <span class="config-titulo">Parámetros de crianza</span>
@@ -2437,10 +2458,11 @@ function renderConfigCrianza(lote) {
     </div>
     <div class="config-body" id="cfg-body">
       <div class="config-grid">
-        <div class="cfg-field"><span>Edad de ingreso</span>
-          <select id="ccfg-edadIng">
-            ${edadOpts.map(([v,t])=>`<option value="${v}" ${+(lote.edadIngresoSem??0)===v?'selected':''}>${t}</option>`).join('')}
-          </select>
+        <div class="cfg-field"><span>Edad de ingreso (semanas de vida)</span>
+          <input type="number" id="ccfg-edadIng" value="${lote.edadIngresoSem??0}" min="0" max="30" step="1"
+                 oninput="syncChipEdad('ccfg-edadIng')">
+          <div class="chips-edad" id="chips-edad-ccfg"></div>
+          <small style="font-size:10px;color:var(--tenue)">0 = 1 día de vida</small>
         </div>
         <div class="cfg-field"><span>Semanas de crianza</span><input type="number" id="ccfg-semCrianza" value="${lote.semanasCrianza??8}" min="1" max="30"></div>
         <div class="cfg-field"><span>Margen por ave ($/ave sobre costo)</span><input type="number" id="ccfg-margenAve" value="${lote.margenAve??1000}" min="0" oninput="fmtNum(this)"><small class="fmt-hint">${(+(lote.margenAve??1000)).toLocaleString('es-CL')} · precio = costo/ave + margen</small></div>
@@ -2461,6 +2483,7 @@ function renderConfigCrianza(lote) {
         </div>
       </div>
     </div>`;
+  renderChipsEdad('chips-edad-ccfg', 'ccfg-edadIng');
 }
 
 function aplicarConfigCrianza() {
@@ -4139,8 +4162,9 @@ function abrirModal(id) {
     });
     [1,2,3,4,5,6,7].forEach(d => { if (form[`d${d}`]) form[`d${d}`].value = l.costoDieta?.[d] || ''; });
     if (tipol === 'crianza') {
-      const sel = document.getElementById('sel-edad-ingreso');
-      if (sel) sel.value = l.edadIngresoSem ?? 0;
+      const inpEdad = document.getElementById('inp-edad-ingreso');
+      if (inpEdad) inpEdad.value = l.edadIngresoSem ?? 0;
+      renderChipsEdad('chips-edad-ingreso', 'inp-edad-ingreso');
       if (form.semanasCrianza)  form.semanasCrianza.value  = l.semanasCrianza ?? 8;
       if (form.margenAve) form.margenAve.value = l.margenAve ?? 1000;
       if (form.factorMortalidadCrianza) form.factorMortalidadCrianza.value = l.factorMortalidad ?? 1.0;
