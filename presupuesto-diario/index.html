@@ -1205,6 +1205,12 @@ const GEN_COLORES = {
   'Hy-Line Brown':'#f0a500','Hy-Line W-80':'#4a90a4',
   'Lohmann Brown':'#e05c5c','Nick Brown':'#5cae5c','Dekalb Brown':'#b5651d',
 };
+const GENETICAS_DISPONIBLES = ['Lohmann Brown','Hy-Line Brown','Hy-Line W-80','Nick Brown','Dekalb Brown'];
+function optsGenetica(sel) {
+  return GENETICAS_DISPONIBLES.map(g =>
+    `<option value="${g}" ${g===sel?'selected':''}>${g}${g==='Hy-Line W-80'?' (huevo blanco)':''}</option>`
+  ).join('');
+}
 const CAT_INFO = {
   pollas:    { label:'Pollas',     cls:'cat-pollas' },
   inversion: { label:'Inversión',  cls:'cat-inversion' },
@@ -1540,6 +1546,27 @@ function cargarSelector() {
   if (!loteId && lotes.length === 1) { sel.value = lotes[0].id; selLote(lotes[0].id); }
 }
 
+/* Refresca nombre/genética/meta del lote en el panel "Lote activo" — usado
+   tanto al seleccionar un lote como al guardar cambios desde Configuración. */
+function actualizarPanelLoteActivo(lote) {
+  const gen = lote.genetica || 'Lohmann Brown';
+  const col = GEN_COLORES[gen] || '#1b4332';
+  document.getElementById('lote-nombre-txt').textContent = lote.nombre;
+  const fn = new Date(lote.fechaNacimiento + 'T12:00:00').toLocaleDateString('es-CL',{day:'numeric',month:'long',year:'numeric'});
+  if (lote.tipo === 'crianza') {
+    document.getElementById('lote-meta-txt').textContent =
+      `${(+lote.nAves).toLocaleString('es-CL')} aves · ingreso ${fn} · ${lote.semanasCrianza || 8} sem crianza`;
+    document.getElementById('lote-gen-badge').innerHTML =
+      `<span class="badge-genetica" style="color:${col}">${gen}</span>
+       <span class="badge-tipo-crianza">CRIANZA</span>`;
+  } else {
+    document.getElementById('lote-meta-txt').textContent =
+      `${(+lote.nAves).toLocaleString('es-CL')} aves · nacimiento ${fn}`;
+    document.getElementById('lote-gen-badge').innerHTML =
+      `<span class="badge-genetica" style="color:${col}">${gen}</span>`;
+  }
+}
+
 function selLote(id) {
   if (!id) return;
   loteId = id;
@@ -1550,24 +1577,12 @@ function selLote(id) {
   const heroVacio = document.getElementById('hero-vacio');
   if (heroKpis)  heroKpis.style.display  = '';
   if (heroVacio) heroVacio.style.display = 'none';
-  const gen = lote.genetica || 'Lohmann Brown';
-  const col = GEN_COLORES[gen] || '#1b4332';
-  document.getElementById('lote-nombre-txt').textContent = lote.nombre;
-  const fn = new Date(lote.fechaNacimiento + 'T12:00:00').toLocaleDateString('es-CL',{day:'numeric',month:'long',year:'numeric'});
+  actualizarPanelLoteActivo(lote);
 
   if (lote.tipo === 'crianza') {
-    document.getElementById('lote-meta-txt').textContent =
-      `${(+lote.nAves).toLocaleString('es-CL')} aves · ingreso ${fn} · ${lote.semanasCrianza || 8} sem crianza`;
-    document.getElementById('lote-gen-badge').innerHTML =
-      `<span class="badge-genetica" style="color:${col}">${gen}</span>
-       <span class="badge-tipo-crianza">CRIANZA</span>`;
     proy = proyectarCrianza(lote);
     renderDashboardCrianza(lote);
   } else {
-    document.getElementById('lote-meta-txt').textContent =
-      `${(+lote.nAves).toLocaleString('es-CL')} aves · nacimiento ${fn}`;
-    document.getElementById('lote-gen-badge').innerHTML =
-      `<span class="badge-genetica" style="color:${col}">${gen}</span>`;
     proy = proyectar(lote);
     renderDashboard(lote);
   }
@@ -2159,6 +2174,10 @@ function renderDashboard(lote) {
       </div>
       <div class="config-body" id="cfg-body">
         <div class="config-grid">
+          <div class="cfg-field"><span>Nombre / cliente</span><input type="text" id="cfg-nombre" value="${lote.nombre.replace(/"/g,'&quot;')}"></div>
+          <div class="cfg-field"><span>Genética</span><select id="cfg-genetica">${optsGenetica(lote.genetica||'Lohmann Brown')}</select></div>
+          <div class="cfg-field"><span>Fecha de nacimiento</span><input type="date" id="cfg-fechaNac" value="${lote.fechaNacimiento}"></div>
+          <hr class="cfg-sep">
           <div class="cfg-field"><span>Duración ciclo (semanas)</span><input type="number" id="cfg-semanas" value="${lote.semanasCiclo||100}" min="18" max="130"></div>
           <div class="cfg-field"><span>% postura (100 = curva oficial)</span><input type="number" id="cfg-factPost" value="${lote.factorPostura??100}" min="50" max="110" step="1"><small style="font-size:10px;color:var(--tenue)">85 = postura baja · 95 = bajo normal</small></div>
           <div class="cfg-field"><span>Factor mortalidad (1.0 = normal)</span><input type="number" id="cfg-factMort" value="${lote.factorMortalidad??1.0}" min="0.5" max="5.0" step="0.1"><small style="font-size:10px;color:var(--tenue)">1.5 = 50% más muertes · 2.0 = doble</small></div>
@@ -2716,6 +2735,10 @@ function renderConfigCrianza(lote) {
     </div>
     <div class="config-body" id="cfg-body">
       <div class="config-grid">
+        <div class="cfg-field"><span>Nombre / cliente</span><input type="text" id="ccfg-nombre" value="${lote.nombre.replace(/"/g,'&quot;')}"></div>
+        <div class="cfg-field"><span>Genética</span><select id="ccfg-genetica">${optsGenetica(lote.genetica||'Lohmann Brown')}</select></div>
+        <div class="cfg-field"><span>Fecha de ingreso al galpón</span><input type="date" id="ccfg-fechaNac" value="${lote.fechaNacimiento}"></div>
+        <hr class="cfg-sep">
         <div class="cfg-field"><span>Edad de ingreso (semanas de vida)</span>
           <input type="number" id="ccfg-edadIng" value="${lote.edadIngresoSem??0}" min="0" max="30" step="1"
                  oninput="syncChipEdad('ccfg-edadIng')">
@@ -2747,6 +2770,10 @@ function renderConfigCrianza(lote) {
 function aplicarConfigCrianza() {
   const lote = getLote(loteId);
   if (!lote) return;
+  const _nombre = document.getElementById('ccfg-nombre')?.value.trim();
+  if (_nombre) lote.nombre = _nombre;
+  lote.genetica         = document.getElementById('ccfg-genetica')?.value || lote.genetica || 'Lohmann Brown';
+  lote.fechaNacimiento  = document.getElementById('ccfg-fechaNac')?.value || lote.fechaNacimiento;
   lote.edadIngresoSem   = +(document.getElementById('ccfg-edadIng')?.value ?? 0);
   lote.semanasCrianza   = +(document.getElementById('ccfg-semCrianza')?.value ?? 8);
   lote.margenAve = +(document.getElementById('ccfg-margenAve')?.value ?? 1000);
@@ -2759,6 +2786,8 @@ function aplicarConfigCrianza() {
   });
   saveLote(lote);
   proy = proyectarCrianza(lote);
+  cargarSelector();
+  actualizarPanelLoteActivo(lote);
   renderDashboardCrianza(lote);
   const p = document.getElementById('tc-config');
   if (p) { p.classList.add('activo'); p.style.display = 'block'; }
@@ -4534,6 +4563,10 @@ function guardarLote(e) {
    ════════════════════════════════════════════════════════════ */
 function aplicarConfig() {
   const lote = getLote(loteId);
+  const _nombre = document.getElementById('cfg-nombre')?.value.trim();
+  if (_nombre) lote.nombre = _nombre;
+  lote.genetica        = document.getElementById('cfg-genetica')?.value || lote.genetica || 'Lohmann Brown';
+  lote.fechaNacimiento = document.getElementById('cfg-fechaNac')?.value || lote.fechaNacimiento;
   lote.semanasCiclo    = Math.min(+(document.getElementById('cfg-semanas').value) || 100, 130);
   lote.factorPostura   = Math.min(+(document.getElementById('cfg-factPost').value) || 100, 110);
   lote.factorMortalidad = +(document.getElementById('cfg-factMort').value) || 1.0;
@@ -4553,6 +4586,8 @@ function aplicarConfig() {
   lote.gastosFijosDetalle = leerDesglose('cfg');
   saveLote(lote);
   proy = proyectar(lote);
+  cargarSelector();
+  actualizarPanelLoteActivo(lote);
   renderDashboard(lote);
   toast('Configuración guardada y proyección recalculada');
 }
