@@ -5463,8 +5463,12 @@ function exportarExcel() {
   const grDieta      = lote.consumoGrDieta || {};
 
   // ══ PARÁMETROS (hoja editable — actúa como panel de control para Curvas Referencia) ══
+  // B2=nAves B3=fecha B4=factPost B5=factMort B6=precioHuevo B7=gastosMes ...
+  // B16-B22=grDieta 1-7 (ver fórmulas de "Curvas Referencia" más abajo)
   const paramData = [
     ['Parámetro', 'Valor', 'Descripción'],
+    ['N° aves iniciales', nIni, 'Cambiar recalcula Aves vivas, Huevos e Ingreso en "Curvas Referencia"'],
+    [`Fecha ${etiquetaFecha(lote).toLowerCase()}`, new Date(lote.fechaNacimiento + 'T00:00:00'), 'Cambiar recalcula la columna Fecha en "Curvas Referencia"'],
     ['Factor postura (%)', lote.factorPostura ?? 100, '100 = curva oficial · 95 = 5% menor'],
     ['Factor mortalidad',  lote.factorMortalidad ?? 1.0, '1.0 = oficial · 1.2 = 20% más mortalidad'],
     ['Precio huevo base ($/ud.)', +lote.precioHuevo, ''],
@@ -5484,8 +5488,13 @@ function exportarExcel() {
     ['Dieta 5 · sem 36–65',  grDieta[5] || 0, ''],
     ['Dieta 6 · sem 66–100', grDieta[6] || 0, ''],
     ['Dieta 7 · sem 101–130',grDieta[7] || 0, ''],
+    ['', '', ''],
+    ['→ Al cambiar N° aves, fecha, % postura o mortalidad, se recalcula toda la hoja "Curvas Referencia" (aves vivas, huevos, ingreso semanal).', '', ''],
+    ['→ Las demás hojas (Resumen, Proyección Semanal/Diaria, $ por Huevo) NO se recalculan solas: son la foto del momento de exportar. Para verlas actualizadas, cambia los valores en la app y vuelve a descargar.', '', ''],
   ];
-  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(paramData), 'Parametros');
+  const wsParam = XLSX.utils.aoa_to_sheet(paramData);
+  if (wsParam['B3']) wsParam['B3'].z = 'dd/mm/yyyy';
+  XLSX.utils.book_append_sheet(wb, wsParam, 'Parametros');
 
   // ══ RESUMEN ══
   const resData = [
@@ -5653,66 +5662,82 @@ function exportarExcel() {
   XLSX.utils.book_append_sheet(wb, wsDia, 'Proyección Diaria');
 
   // ══ CURVAS REFERENCIA (con fórmulas vinculadas a hoja Parametros) ══
-  // Columnas: A=Sem B=Etapa C=%PostOfic D=%PostAdj* E=g/díaCurva F=g/díaReal* G=Dieta H=%MortSemOfic I=%MortSemAdj* J=MortAcum%* K=Aves/1000*
-  // (* = fórmula que referencia Parametros: B2=factPost, B3=factMort, B11-B17=grDieta 1-7)
-  const cvHead = ['Semana','Etapa','% Postura oficial','% Postura ajustada','g/ave/día curva','g/ave/día real','Dieta','% Mort. sem. oficial','% Mort. sem. ajustada','Mort. acum. %','Aves/1000'];
+  // A=Sem B=Fecha* C=Etapa D=%PostOfic E=%PostAdj* F=g/díaCurva G=g/díaReal* H=Dieta
+  // I=%MortSemOfic J=%MortSemAdj* K=MortAcum%* L=AvesVivas* M=Huevos/sem* N=Ingreso/sem*
+  // (* = fórmula que referencia Parametros: B2=nAves, B3=fecha, B4=factPost, B5=factMort,
+  //  B6=precioHuevo, B16-B22=grDieta 1-7)
+  const cvHead = ['Semana','Fecha','Etapa','% Postura oficial','% Postura ajustada','g/ave/día curva','g/ave/día real','Dieta','% Mort. sem. oficial','% Mort. sem. ajustada','Mort. acum. %','Aves vivas','Huevos / semana','Ingreso / semana ($)'];
   const cvRows = [cvHead];
   const cvDietas = [];
-  let avesRef = 1000;
+  let avesRef = nIni;
   for (let s = 1; s <= semanasCiclo; s++) {
     const mortSem = MORTALIDAD[s] ?? 0.0015;
     const mortAdj = mortSem * factMort;
     avesRef = avesRef * (1 - mortAdj);
     const cons    = curvas.getConsumo(s);
     const posOfic = curvas.getPos(s);
+    const posAdj  = Math.min(posOfic * factPost, 100);
     const etapa   = posOfic === 0 ? 'Crianza' : 'Postura';
     const grReal  = +grDieta[cons.dieta] > 0 ? +grDieta[cons.dieta] : cons.gr;
+    const huevosSem = Math.round(avesRef * posAdj / 100 * 7);
     cvDietas.push(cons.dieta);
     cvRows.push([
-      s, etapa,
-      posOfic / 100, (Math.min(posOfic * factPost, 100)) / 100,
+      s, null, etapa,
+      posOfic / 100, posAdj / 100,
       cons.gr, grReal, `D${cons.dieta}`,
       mortSem, mortAdj,
-      (1000 - avesRef) / 1000,
+      (nIni - avesRef) / nIni,
       Math.round(avesRef),
+      huevosSem,
+      Math.round(huevosSem * (+lote.precioHuevo)),
     ]);
   }
   const wsCurvas = XLSX.utils.aoa_to_sheet(cvRows);
 
-  // Aplicar formatos y fórmulas por fila de datos
+  // Aplicar formatos y fórmulas por fila de datos.
+  // setCell crea la celda si aoa_to_sheet no la generó (ej. valor null/undefined
+  // en el array de origen), para no depender de ese detalle de implementación.
+  const setCell = (ws, r, c, props) => {
+    const addr = XLSX.utils.encode_cell({r, c});
+    ws[addr] = { ...(ws[addr] || {}), ...props };
+  };
   for (let i = 0; i < cvDietas.length; i++) {
     const r    = i + 2;           // fila Excel (1-indexed, 2=primera fila datos)
     const ridx = i + 1;           // fila SheetJS (0-indexed)
-    const paramRowGr = 10 + cvDietas[i]; // B11=D1, B12=D2, ..., B17=D7
+    const paramRowGr = 15 + cvDietas[i]; // B16=D1, B17=D2, ..., B22=D7
 
-    // C: % Postura oficial — solo formato
-    const cC = wsCurvas[XLSX.utils.encode_cell({r:ridx, c:2})];
-    if (cC) cC.z = '0.00%';
+    // B: Fecha = fecha base + (semana-1)*7 días
+    setCell(wsCurvas, ridx, 1, { f:`Parametros!$B$3+(A${r}-1)*7`, t:'n', z:'dd/mm/yyyy' });
 
-    // D: % Postura ajustada = C * factorPostura/100
-    const cD = wsCurvas[XLSX.utils.encode_cell({r:ridx, c:3})];
-    if (cD) { cD.f = `C${r}*Parametros!$B$2/100`; cD.t = 'n'; cD.z = '0.00%'; }
+    // D: % Postura oficial — solo formato
+    setCell(wsCurvas, ridx, 3, { z:'0.00%' });
 
-    // F: g/ave/día real = IF(override>0, override, curva)
-    const cF = wsCurvas[XLSX.utils.encode_cell({r:ridx, c:5})];
-    if (cF) { cF.f = `IF(Parametros!$B$${paramRowGr}>0,Parametros!$B$${paramRowGr},E${r})`; cF.t = 'n'; }
+    // E: % Postura ajustada = D * factorPostura/100
+    setCell(wsCurvas, ridx, 4, { f:`D${r}*Parametros!$B$4/100`, t:'n', z:'0.00%' });
 
-    // H: % Mort. sem. oficial — solo formato
-    const cH = wsCurvas[XLSX.utils.encode_cell({r:ridx, c:7})];
-    if (cH) cH.z = '0.00%';
+    // G: g/ave/día real = IF(override>0, override, curva)
+    setCell(wsCurvas, ridx, 6, { f:`IF(Parametros!$B$${paramRowGr}>0,Parametros!$B$${paramRowGr},F${r})`, t:'n' });
 
-    // I: % Mort. sem. ajustada = H * factorMortalidad
-    const cI = wsCurvas[XLSX.utils.encode_cell({r:ridx, c:8})];
-    if (cI) { cI.f = `H${r}*Parametros!$B$3`; cI.t = 'n'; cI.z = '0.00%'; }
+    // I: % Mort. sem. oficial — solo formato
+    setCell(wsCurvas, ridx, 8, { z:'0.00%' });
 
-    // J: Mortalidad acumulada (fórmula acumulativa)
-    const cJ = wsCurvas[XLSX.utils.encode_cell({r:ridx, c:9})];
-    if (cJ) { cJ.f = i === 0 ? `I${r}` : `1-(1-J${r-1})*(1-I${r})`; cJ.t = 'n'; cJ.z = '0.00%'; }
+    // J: % Mort. sem. ajustada = I * factorMortalidad
+    setCell(wsCurvas, ridx, 9, { f:`I${r}*Parametros!$B$5`, t:'n', z:'0.00%' });
 
-    // K: Aves/1000 (fórmula acumulativa)
-    const cK = wsCurvas[XLSX.utils.encode_cell({r:ridx, c:10})];
-    if (cK) { cK.f = i === 0 ? `ROUND(1000*(1-I${r}),0)` : `ROUND(K${r-1}*(1-I${r}),0)`; cK.t = 'n'; }
+    // K: Mortalidad acumulada (fórmula acumulativa, independiente de la base de aves)
+    setCell(wsCurvas, ridx, 10, { f: i === 0 ? `J${r}` : `1-(1-K${r-1})*(1-J${r})`, t:'n', z:'0.00%' });
+
+    // L: Aves vivas (fórmula acumulativa, base = N° aves iniciales real en Parametros!$B$2)
+    setCell(wsCurvas, ridx, 11, { f: i === 0 ? `ROUND(Parametros!$B$2*(1-J${r}),0)` : `ROUND(L${r-1}*(1-J${r}),0)`, t:'n' });
+
+    // M: Huevos producidos en la semana = aves vivas × % postura ajustada × 7 días
+    setCell(wsCurvas, ridx, 12, { f:`ROUND(L${r}*E${r}*7,0)`, t:'n' });
+
+    // N: Ingreso de la semana = huevos × precio huevo base
+    setCell(wsCurvas, ridx, 13, { f:`ROUND(M${r}*Parametros!$B$6,0)`, t:'n' });
   }
+  wsCurvas['!ref']  = XLSX.utils.encode_range({ s:{r:0,c:0}, e:{r:cvDietas.length, c:13} });
+  wsCurvas['!cols'] = [{wch:8},{wch:12},{wch:9},{wch:15},{wch:16},{wch:13},{wch:12},{wch:8},{wch:16},{wch:16},{wch:12},{wch:11},{wch:14},{wch:16}];
   XLSX.utils.book_append_sheet(wb, wsCurvas, 'Curvas Referencia');
 
   const nombre = lote.nombre.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]/g,'').replace(/\s+/g,'_');
