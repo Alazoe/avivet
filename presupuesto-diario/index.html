@@ -359,8 +359,9 @@ td.real { background: rgba(27,94,32,.07) !important; font-weight: 600; }
       <div class="lote-meta-txt" id="lote-meta-txt"></div>
       <div id="lote-gen-badge"></div>
     </div>
-    <div style="margin-left:auto">
+    <div style="margin-left:auto;display:flex;gap:8px">
       <button class="btn-cab" style="border-color:rgba(255,255,255,.4);color:rgba(255,255,255,.9)" onclick="abrirModalComparar()">⇄ Comparar lotes</button>
+      <button class="btn-cab" style="border-color:rgba(255,255,255,.4);color:rgba(255,255,255,.9)" onclick="abrirModalConsolidado()">📋 Presupuesto consolidado</button>
     </div>
   </div>
 
@@ -381,6 +382,30 @@ td.real { background: rgba(27,94,32,.07) !important; font-weight: 600; }
         <div class="grafico-canvas"><canvas id="cComp2"></canvas></div>
       </div>
     </div>
+  </section>
+
+  <section class="bloque" id="consolidado-sec" style="display:none">
+    <h2>Presupuesto consolidado de lotes activos</h2>
+    <p class="bloque-desc">
+      <strong id="consolidado-count"></strong> lotes combinados · alimento + gastos especiales recurrentes (vacunas, viruta, otros) + gastos fijos de la operación.
+      <button class="btn btn-linea btn-sm" style="margin-left:10px" onclick="cerrarConsolidado()">✕ Cerrar</button>
+    </p>
+    <div id="consolidado-tabla"></div>
+    <div class="cfg-field" style="max-width:360px;margin:18px 0">
+      <span>Gastos fijos de la operación completa ($/mes)</span>
+      <input type="number" id="consolidado-gastosFijos" oninput="recalcConsolidado()">
+      <small style="font-size:10px;color:var(--tenue)">Un solo valor para toda la operación (luz, agua, sueldos…) — no se suma por lote, ya que es un gasto compartido de la avícola.</small>
+    </div>
+    <div class="grafico-wrap">
+      <div class="grafico-titulo">Presupuesto mensual necesario (desde hoy hasta la última salida)</div>
+      <div class="leyenda">
+        <span class="leyenda-item"><span class="cuad" style="background:rgba(183,28,28,.72)"></span>Alimento</span>
+        <span class="leyenda-item"><span class="cuad" style="background:rgba(94,53,177,.65)"></span>Gastos especiales</span>
+        <span class="leyenda-item"><span class="cuad" style="background:rgba(240,165,0,.72)"></span>Gastos fijos</span>
+      </div>
+      <div class="grafico-canvas"><canvas id="cConsolMes"></canvas></div>
+    </div>
+    <div id="consolidado-totales" style="margin-top:16px"></div>
   </section>
 
   <div id="contenido">
@@ -642,6 +667,24 @@ td.real { background: rgba(27,94,32,.07) !important; font-weight: 600; }
     <div class="modal-acciones" style="margin-top:18px">
       <button class="btn btn-acento" onclick="generarComparativa()">Comparar seleccionados</button>
       <button class="btn btn-linea" onclick="cerrarModalComparar()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL PRESUPUESTO CONSOLIDADO -->
+<div class="modal-bg" id="modal-consolidado">
+  <div class="modal" style="max-width:520px">
+    <button class="modal-close" onclick="cerrarModalConsolidado()">×</button>
+    <h2>Presupuesto consolidado</h2>
+    <p style="font-size:13px;color:var(--suave);margin:-10px 0 16px">
+      Marca los lotes que tienes activos ahora mismo (ej. 3 lotes corriendo en paralelo) para ver
+      cuándo sale cada uno y cuánto necesitas en total mes a mes, combinando alimento, gastos
+      especiales recurrentes y los gastos fijos de la operación.
+    </p>
+    <div id="consolidado-lista" style="display:flex;flex-direction:column;gap:8px;max-height:360px;overflow-y:auto"></div>
+    <div class="modal-acciones" style="margin-top:18px">
+      <button class="btn btn-acento" onclick="generarConsolidado()">Generar presupuesto</button>
+      <button class="btn btn-linea" onclick="cerrarModalConsolidado()">Cancelar</button>
     </div>
   </div>
 </div>
@@ -1724,6 +1767,7 @@ function selLote(id) {
   const lote = getLote(id);
   if (!lote) return;
   cerrarComparativa();
+  cerrarConsolidado();
   const heroKpis  = document.getElementById('hero-kpis');
   const heroVacio = document.getElementById('hero-vacio');
   if (heroKpis)  heroKpis.style.display  = '';
@@ -1947,6 +1991,207 @@ function renderComparativa(lotes) {
 
 function cerrarComparativa() {
   const sec = document.getElementById('comparativa-sec');
+  if (sec) sec.style.display = 'none';
+}
+
+/* ════════════════════════════════════════════════════════════
+   PRESUPUESTO CONSOLIDADO — varios lotes activos a la vez
+   ════════════════════════════════════════════════════════════ */
+let consolidadoCharts = {};
+let lotesConsolidadoActual = [];
+
+function abrirModalConsolidado() {
+  const lotes = getLotes();
+  if (lotes.length < 1) {
+    alert('Necesitas al menos 1 lote guardado.');
+    return;
+  }
+  const cont = document.getElementById('consolidado-lista');
+  cont.innerHTML = lotes.map(l => {
+    const tipoLbl = l.tipo === 'crianza' ? 'Crianza' : 'Postura';
+    const gen     = l.genetica || 'Lohmann Brown';
+    return `<label class="comparar-item" id="consolidado-item-${l.id}">
+      <input type="checkbox" value="${l.id}" onchange="marcarConsolidadoItem(this)">
+      <div>
+        <div class="comparar-item-nombre">${l.nombre}</div>
+        <div class="comparar-item-meta">${tipoLbl} · ${gen} · ${(+l.nAves).toLocaleString('es-CL')} aves</div>
+      </div>
+    </label>`;
+  }).join('');
+  document.getElementById('modal-consolidado').classList.add('abierto');
+}
+
+function cerrarModalConsolidado() {
+  document.getElementById('modal-consolidado').classList.remove('abierto');
+}
+
+function marcarConsolidadoItem(input) {
+  const cont = document.getElementById('consolidado-lista');
+  const checked = [...cont.querySelectorAll('input[type=checkbox]:checked')];
+  if (checked.length > 12) {
+    input.checked = false;
+    toast('Máximo 12 lotes a la vez');
+  }
+  const item = document.getElementById(`consolidado-item-${input.value}`);
+  if (item) item.classList.toggle('seleccionado', input.checked);
+}
+
+// Secuencia continua de meses 'YYYY-MM' entre mesIni y mesFin (ambos inclusive).
+function mesesEntre(mesIni, mesFin) {
+  const out = [];
+  let [y, m] = mesIni.split('-').map(Number);
+  const [yF, mF] = mesFin.split('-').map(Number);
+  while (y < yF || (y === yF && m <= mF)) {
+    out.push(`${y}-${String(m).padStart(2,'0')}`);
+    m++; if (m > 12) { m = 1; y++; }
+  }
+  return out;
+}
+
+const CATS_ESP_RECURRENTES = ['vacuna', 'viruta', 'otro']; // excluye pollas/inversión (ya gastadas al iniciar)
+
+function kpisConsolidadoLote(lote) {
+  const esCrianza = lote.tipo === 'crianza';
+  const p = esCrianza ? proyectarCrianza(lote) : proyectar(lote);
+  const dFin = p[p.length - 1];
+  const fechaSalida = dFin.fecha;
+
+  let alimAcum = 0, alimRestante = 0;
+  const mesesMap = {};
+  p.forEach(d => {
+    if (!mesesMap[d.mes]) mesesMap[d.mes] = { alim: 0, gastoEsp: 0 };
+    mesesMap[d.mes].alim += d.costoAlim;
+    if (d.fecha > HOY) alimRestante += d.costoAlim; else alimAcum += d.costoAlim;
+  });
+
+  // Gastos especiales recurrentes (vacuna/viruta/otro), ubicados en su fecha real
+  // según la semana LOCAL del ciclo (misma referencia que usa el motor)
+  const fn = new Date(lote.fechaNacimiento + 'T12:00:00');
+  let gastoEspAcum = 0, gastoEspRestante = 0;
+  (lote.gastosEspeciales || [])
+    .filter(g => CATS_ESP_RECURRENTES.includes(g.categoria))
+    .forEach(g => {
+      const d = new Date(fn); d.setDate(d.getDate() + (+g.semana - 1) * 7);
+      const fechaG = d.toISOString().slice(0, 10);
+      const mesG = fechaG.slice(0, 7);
+      if (!mesesMap[mesG]) mesesMap[mesG] = { alim: 0, gastoEsp: 0 };
+      mesesMap[mesG].gastoEsp += +g.monto;
+      if (fechaG > HOY) gastoEspRestante += +g.monto; else gastoEspAcum += +g.monto;
+    });
+
+  return {
+    id: lote.id, nombre: lote.nombre, tipo: esCrianza ? 'crianza' : 'postura',
+    genetica: lote.genetica || 'Lohmann Brown',
+    fechaSalida, gastosMes: +lote.gastosMes || 0,
+    alimAcum: Math.round(alimAcum), alimRestante: Math.round(alimRestante),
+    alimTotal: Math.round(alimAcum + alimRestante),
+    gastoEspAcum: Math.round(gastoEspAcum), gastoEspRestante: Math.round(gastoEspRestante),
+    mesesMap,
+  };
+}
+
+function generarConsolidado() {
+  const cont = document.getElementById('consolidado-lista');
+  const ids  = [...cont.querySelectorAll('input[type=checkbox]:checked')].map(el => el.value);
+  if (ids.length < 1) { toast('Selecciona al menos 1 lote'); return; }
+  lotesConsolidadoActual = ids.map(id => getLote(id)).filter(Boolean);
+  cerrarModalConsolidado();
+  renderConsolidado(lotesConsolidadoActual);
+}
+
+function renderConsolidado(lotes) {
+  const sec = document.getElementById('consolidado-sec');
+  const kpis = lotes.map(kpisConsolidadoLote);
+  document.getElementById('consolidado-count').textContent = kpis.length;
+
+  // ── Tabla por lote ──
+  const filas = kpis.map(k => `<tr>
+    <td style="text-align:left;padding:9px 14px;border-bottom:1px solid var(--linea);font-weight:600">${k.nombre}</td>
+    <td style="text-align:center;padding:9px 14px;border-bottom:1px solid var(--linea);font-size:11px;color:var(--tenue);text-transform:uppercase">${k.tipo === 'crianza' ? 'Crianza' : 'Postura'}</td>
+    <td style="text-align:center;padding:9px 14px;border-bottom:1px solid var(--linea);font-family:var(--fm);font-size:12px">${new Date(k.fechaSalida+'T12:00:00').toLocaleDateString('es-CL',{day:'numeric',month:'short',year:'numeric'})}</td>
+    <td style="text-align:center;padding:9px 14px;border-bottom:1px solid var(--linea);font-family:var(--fm);font-size:12px;color:var(--suave)">${MN(k.alimAcum)}</td>
+    <td style="text-align:center;padding:9px 14px;border-bottom:1px solid var(--linea);font-family:var(--fm);font-size:12px;font-weight:700">${MN(k.alimRestante)}</td>
+    <td style="text-align:center;padding:9px 14px;border-bottom:1px solid var(--linea);font-family:var(--fm);font-size:12px">${MN(k.alimTotal)}</td>
+    <td style="text-align:center;padding:9px 14px;border-bottom:1px solid var(--linea);font-family:var(--fm);font-size:12px;font-weight:700">${k.gastoEspRestante > 0 ? MN(k.gastoEspRestante) : '—'}</td>
+  </tr>`).join('');
+
+  const TH = t => `<th style="padding:10px 14px;background:var(--prim);color:#fff;font-size:11px;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap">${t}</th>`;
+  document.getElementById('consolidado-tabla').innerHTML = `
+    <div class="tabla-scroll">
+      <table style="width:100%;border-collapse:collapse">
+        <thead><tr>${TH('Lote')}${TH('Tipo')}${TH('Fecha salida')}${TH('Alim. acum.')}${TH('Alim. restante')}${TH('Alim. total')}${TH('G. especiales pend.')}</tr></thead>
+        <tbody>${filas}</tbody>
+      </table>
+    </div>`;
+
+  // ── Gastos fijos: un solo valor para toda la operación ──
+  const inputFijos = document.getElementById('consolidado-gastosFijos');
+  if (inputFijos && inputFijos.value === '') {
+    inputFijos.value = Math.max(...kpis.map(k => k.gastosMes), 0);
+  }
+  const gastosFijosOp = +(inputFijos?.value) || 0;
+
+  // ── Meses futuros combinados (desde hoy hasta la última salida) ──
+  const mesHoy    = HOY.slice(0, 7);
+  const mesUltimo = kpis.reduce((max, k) => k.fechaSalida.slice(0,7) > max ? k.fechaSalida.slice(0,7) : max, mesHoy);
+  const meses     = mesesEntre(mesHoy, mesUltimo);
+
+  const filasMes = meses.map(m => {
+    let alim = 0, gastoEsp = 0;
+    kpis.forEach(k => { const md = k.mesesMap[m]; if (md) { alim += md.alim; gastoEsp += md.gastoEsp; } });
+    return { mes: m, alim: Math.round(alim), gastoEsp: Math.round(gastoEsp), fijos: gastosFijosOp,
+             total: Math.round(alim) + Math.round(gastoEsp) + gastosFijosOp };
+  });
+
+  const mesLbl = m => { const [y,mo] = m.split('-'); return new Date(+y, +mo-1, 1).toLocaleDateString('es-CL',{month:'short',year:'2-digit'}); };
+
+  // ── Gráfico mensual apilado ──
+  if (consolidadoCharts.cConsolMes) { consolidadoCharts.cConsolMes.destroy(); delete consolidadoCharts.cConsolMes; }
+  const cv = document.getElementById('cConsolMes');
+  if (cv) consolidadoCharts.cConsolMes = new Chart(cv, {
+    type: 'bar',
+    data: { labels: filasMes.map(f => mesLbl(f.mes)), datasets: [
+      { label: 'Alimento',          data: filasMes.map(f => f.alim),     backgroundColor: 'rgba(183,28,28,.72)', stack: 'c' },
+      { label: 'Gastos especiales', data: filasMes.map(f => f.gastoEsp), backgroundColor: 'rgba(94,53,177,.65)', stack: 'c' },
+      { label: 'Gastos fijos',      data: filasMes.map(f => f.fijos),    backgroundColor: 'rgba(240,165,0,.72)', stack: 'c' },
+    ]},
+    options: { responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { labels: { ...tFont } },
+        tooltip: { callbacks: { label: c => ` ${c.dataset.label}: $${Math.round(c.raw).toLocaleString('es-CL')}` } } },
+      scales: { x: { stacked: true, ticks: tFont, grid: { color: gColor } },
+                y: { stacked: true, ticks: { ...tFont, callback: v => '$'+Math.round(v/1000)+'k' }, grid: { color: gColor } } } }
+  });
+
+  // ── Totales combinados ──
+  const totAlimRestante = kpis.reduce((a,k)=>a+k.alimRestante, 0);
+  const totGastoEspRestante = kpis.reduce((a,k)=>a+k.gastoEspRestante, 0);
+  const totFijosProyectado = gastosFijosOp * meses.length;
+  const granTotal = totAlimRestante + totGastoEspRestante + totFijosProyectado;
+
+  const tarjeta = (lbl, val, color, sub) => `
+    <div style="flex:1;min-width:170px;background:var(--fondo);border:1px solid var(--linea);border-left:4px solid ${color};padding:13px 16px;border-radius:3px">
+      <div style="font-family:var(--ft);font-size:19px;font-weight:700;color:var(--prim);line-height:1">${MN(val)}</div>
+      <div style="font-size:10px;color:var(--tenue);text-transform:uppercase;letter-spacing:.06em;margin-top:4px">${lbl}</div>
+      <div style="font-size:11px;color:var(--suave);margin-top:2px">${sub}</div>
+    </div>`;
+  document.getElementById('consolidado-totales').innerHTML = `
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      ${tarjeta('Alimento restante', totAlimRestante, '#b71c1c', 'sumando todos los lotes seleccionados')}
+      ${tarjeta('G. especiales pendientes', totGastoEspRestante, '#5e35b1', 'vacunas, viruta, otros')}
+      ${tarjeta('Fijos proyectados', totFijosProyectado, '#f0a500', `${MN(gastosFijosOp)}/mes × ${meses.length} mes${meses.length!==1?'es':''}`)}
+      ${tarjeta('Total necesario', granTotal, '#1b4332', `hasta ${mesLbl(mesUltimo)}`)}
+    </div>`;
+
+  sec.style.display = 'block';
+  sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function recalcConsolidado() {
+  if (lotesConsolidadoActual.length) renderConsolidado(lotesConsolidadoActual);
+}
+
+function cerrarConsolidado() {
+  const sec = document.getElementById('consolidado-sec');
   if (sec) sec.style.display = 'none';
 }
 
