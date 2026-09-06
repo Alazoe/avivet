@@ -441,7 +441,7 @@ td.real { background: rgba(27,94,32,.07) !important; font-weight: 600; }
         </div>
         <div class="modal-field full">
           <label>Genética</label>
-          <select name="genetica" onchange="refrescarHintsConsumo('modal-gr',7,this.value)">
+          <select name="genetica" onchange="refrescarHintsConsumo('modal-gr',7,this.value);refrescarAhorroCompra('modal')">
             <option value="Lohmann Brown">Lohmann Brown</option>
             <option value="Hy-Line Brown">Hy-Line Brown</option>
             <option value="Hy-Line W-80">Hy-Line W-80 (huevo blanco)</option>
@@ -455,20 +455,33 @@ td.real { background: rgba(27,94,32,.07) !important; font-weight: 600; }
         </div>
         <div class="modal-field">
           <label>N° aves iniciales</label>
-          <input type="number" name="nAves" value="1500" min="1" required oninput="fmtNum(this)">
+          <input type="number" name="nAves" value="1500" min="1" required oninput="fmtNum(this);refrescarAhorroCompra('modal')">
           <small class="fmt-hint">1.500</small>
         </div>
 
         <!-- ═══ CAMPOS SOLO POSTURA ═══ -->
         <div id="sec-postura-only" style="display:contents">
           <div class="modal-field">
-            <label>Duración del ciclo (semanas)</label>
+            <label>Duración del ciclo (semanas de vida)</label>
             <input type="number" name="semanasCiclo" value="100" min="18" max="130">
+            <small style="font-size:10px;color:var(--tenue)">Edad total hasta el fin del ciclo, no semanas desde el ingreso</small>
           </div>
           <div class="modal-field">
             <label>Precio huevo base ($/ud.)</label>
             <input type="number" name="precioHuevo" value="130" min="1" oninput="fmtNum(this)">
             <small class="fmt-hint"></small>
+          </div>
+          <div class="modal-field full">
+            <label>Edad de ingreso al plantel (semanas de vida)</label>
+            <input type="number" name="edadIngresoSemPostura" id="inp-edad-ingreso-postura" value="0" min="0" max="30" step="1"
+                   oninput="syncChipEdad('inp-edad-ingreso-postura');refrescarAhorroCompra('modal')">
+            <div class="chips-edad" id="chips-edad-ingreso-postura"></div>
+            <small style="font-size:10px;color:var(--tenue)">0 = pollito de 1 día (crianza propia) · &gt;0 = compra de pollonas ya crecidas</small>
+          </div>
+          <div class="modal-field full" id="wrap-precio-compra-ave" style="display:none">
+            <label>Precio de compra por ave ($/ave)</label>
+            <input type="number" name="precioCompraAve" id="inp-precio-compra-ave" value="0" min="0" oninput="refrescarAhorroCompra('modal')">
+            <small class="fmt-hint" id="modal-ahorro-compra-hint"></small>
           </div>
         </div>
 
@@ -997,7 +1010,8 @@ function proyectar(lote) {
   });
 
   const semanasCiclo  = Math.min(+(lote.semanasCiclo || 100), 130);
-  const diasCiclo     = semanasCiclo * 7;
+  const edadIngreso   = +(lote.edadIngresoSem ?? 0); // semanas de vida al ingresar (0 = pollito día 1)
+  const diasCiclo     = Math.max(1, semanasCiclo - edadIngreso) * 7;
   const factorPost    = (lote.factorPostura    ?? 100) / 100;
   const factorMort    = lote.factorMortalidad  ?? 1.0;
 
@@ -1005,10 +1019,11 @@ function proyectar(lote) {
   const dias = [];
 
   for (let n = 0; n < diasCiclo; n++) {
-    const f     = new Date(fn); f.setDate(fn.getDate() + n);
-    const fecha = f.toISOString().slice(0, 10);
-    const mes   = fecha.slice(0, 7);
-    const sem   = Math.floor(n / 7) + 1;
+    const f       = new Date(fn); f.setDate(fn.getDate() + n);
+    const fecha   = f.toISOString().slice(0, 10);
+    const mes     = fecha.slice(0, 7);
+    const semLocal = Math.floor(n / 7) + 1;      // semana desde que se posee el lote (gastos especiales)
+    const sem      = edadIngreso + semLocal;      // semana de VIDA real (curvas/mortalidad) — = semLocal si edadIngreso=0
     const mort  = ((MORTALIDAD[sem] ?? 0.0015) / 7) * factorMort;
     const pos   = Math.min(curvas.getPos(sem) * factorPost, 100);
     const cons  = curvas.getConsumo(sem);
@@ -1030,7 +1045,7 @@ function proyectar(lote) {
     const gastoDia       = gastoMes / 30;
     const costoDespacho  = cDespachoMes / 30;
 
-    const gastoEsp       = (n % 7 === 0) ? (gastosXSem[sem] || 0) : 0;
+    const gastoEsp       = (n % 7 === 0) ? (gastosXSem[semLocal] || 0) : 0;
     const ingresoGallinas = n === diasCiclo - 1 ? Math.round(avesFin * precioGallina) : 0;
     const resultado      = ingreso - costoAlim - gastoDia - costoDespacho - gastoEsp - costoEnvase + ingresoGallinas;
 
@@ -1182,7 +1197,12 @@ function modalTipoChange(tipo) {
   const phInput = document.querySelector('[name="precioHuevo"]');
   if (phInput) phInput.required = !esCrianza;
 
-  if (esCrianza) renderChipsEdad('chips-edad-ingreso', 'inp-edad-ingreso');
+  if (esCrianza) {
+    renderChipsEdad('chips-edad-ingreso', 'inp-edad-ingreso');
+  } else {
+    renderChipsEdad('chips-edad-ingreso-postura', 'inp-edad-ingreso-postura');
+    refrescarAhorroCompra('modal');
+  }
 }
 
 /* ── Chips de atajo para "edad de ingreso" — cualquier semana es válida,
@@ -1204,9 +1224,15 @@ function setEdadIngreso(inputId, containerId, v) {
   renderChipsEdad(containerId, inputId);
 }
 
+const MAPA_CHIPS_EDAD = {
+  'inp-edad-ingreso':          'chips-edad-ingreso',          // crianza, modal
+  'ccfg-edadIng':              'chips-edad-ccfg',              // crianza, Configuración
+  'inp-edad-ingreso-postura':  'chips-edad-ingreso-postura',   // postura, modal
+  'cfg-edadIngresoPostura':    'chips-edad-cfg-postura',       // postura, Configuración
+};
 function syncChipEdad(inputId) {
-  const containerId = inputId === 'inp-edad-ingreso' ? 'chips-edad-ingreso' : 'chips-edad-ccfg';
-  renderChipsEdad(containerId, inputId);
+  const containerId = MAPA_CHIPS_EDAD[inputId];
+  if (containerId) renderChipsEdad(containerId, inputId);
 }
 
 /* ════════════════════════════════════════════════════════════
@@ -1246,6 +1272,12 @@ const gColor   = '#e0ddd5';
 const NUM = v => v == null ? '—' : Math.round(v).toLocaleString('es-CL');
 const MN  = v => v == null ? '—' : '$' + Math.round(v).toLocaleString('es-CL');
 const PCT = v => v == null ? '—' : (+v).toFixed(1) + '%';
+// Etiqueta para la fecha base del lote: "Nacimiento" si se crió desde
+// pollito día 1, o "Ingreso (Xsem)" si se compró ya crecido (postura).
+const etiquetaFecha = lote => {
+  const edad = +(lote?.edadIngresoSem ?? 0);
+  return edad > 0 ? `Ingreso (${edad}sem)` : 'Nacimiento';
+};
 
 const GEN_COLORES = {
   'Hy-Line Brown':'#f0a500','Hy-Line W-80':'#4a90a4',
@@ -1563,6 +1595,79 @@ function calcCostoReposicion(lote) {
     fijos:     Math.round(fijos),
     total:     Math.round(pollas + alim + fijos),
   };
+}
+
+/* Costo de alimento que se HABRÍA gastado en las semanas 1..edadIngresoSem
+   si el lote se hubiera criado desde pollito día 1 — el "ahorro" real de
+   comprar aves ya crecidas. Misma aproximación que calcCostoReposicion()
+   (mortalidad no descontada en ese tramo, ya la asumió el proveedor). */
+function calcAhorroAlimentoIngreso(lote) {
+  const edadIngreso = +(lote.edadIngresoSem ?? 0);
+  if (edadIngreso <= 0) return 0;
+  const curvas = buildCurvas(lote.genetica || 'Lohmann Brown');
+  const nA = +lote.nAves;
+  const dias = edadIngreso * 7;
+  let alim = 0;
+  for (let n = 0; n < dias; n++) {
+    const sem = Math.floor(n / 7) + 1;
+    const cons = curvas.getConsumo(sem);
+    alim += nA * cons.gr / 1000 * (+lote.costoDieta?.[cons.dieta] || 520);
+  }
+  return Math.round(alim);
+}
+
+/* Crea/actualiza/retira el gasto especial "Compra de aves" (categoría pollas)
+   generado automáticamente a partir de edadIngresoSem + precioCompraAve, sin
+   duplicar si ya existe (se identifica por id fijo, no por timestamp). */
+// Muestra/oculta el campo "Precio de compra por ave" según la edad de
+// ingreso, y calcula en vivo la inversión total + el ahorro estimado en
+// alimentación (comparado con criar desde pollito día 1).
+function refrescarAhorroCompra(prefix) {
+  const esModal = prefix === 'modal';
+  const edadInput   = document.getElementById(esModal ? 'inp-edad-ingreso-postura' : 'cfg-edadIngresoPostura');
+  const precioInput = document.getElementById(esModal ? 'inp-precio-compra-ave'    : 'cfg-precioCompraAve');
+  const wrap = document.getElementById(esModal ? 'wrap-precio-compra-ave' : 'wrap-precio-compra-ave-cfg');
+  const hint = document.getElementById(esModal ? 'modal-ahorro-compra-hint' : 'cfg-ahorro-compra-hint');
+  if (!edadInput) return;
+  const edad = +(edadInput.value || 0);
+  if (wrap) wrap.style.display = edad > 0 ? '' : 'none';
+  if (!precioInput || !hint) return;
+  const precio = +(precioInput.value || 0);
+
+  let nAves, genetica, costoDieta = {};
+  if (esModal) {
+    const form = document.getElementById('form-lote');
+    nAves    = +(form?.nAves?.value || 0);
+    genetica = form?.genetica?.value || 'Lohmann Brown';
+    [1,2,3,4,5,6,7].forEach(d => costoDieta[d] = +(form?.[`d${d}`]?.value) || 520);
+  } else {
+    const lote = getLote(loteId) || {};
+    nAves    = +lote.nAves || 0;
+    genetica = document.getElementById('cfg-genetica')?.value || lote.genetica || 'Lohmann Brown';
+    [1,2,3,4,5,6,7].forEach(d => costoDieta[d] = +(document.getElementById(`cfg-d${d}`)?.value) || lote.costoDieta?.[d] || 520);
+  }
+
+  const total  = Math.round(nAves * precio);
+  const ahorro = edad > 0 ? calcAhorroAlimentoIngreso({ nAves, genetica, edadIngresoSem: edad, costoDieta }) : 0;
+  hint.innerHTML = precio > 0
+    ? `Inversión total: ${MN(total)} (${NUM(nAves)} aves) · Ahorro estimado en alimentación sem 1–${edad}: ${MN(ahorro)}`
+    : `Ahorro estimado en alimentación si se cría desde día 1, sem 1–${edad}: ${MN(ahorro)}`;
+}
+
+function upsertGastoCompraAves(lote) {
+  const edadIngreso     = +(lote.edadIngresoSem ?? 0);
+  const precioCompraAve = +(lote.precioCompraAve ?? 0);
+  lote.gastosEspeciales = lote.gastosEspeciales || [];
+  const idx = lote.gastosEspeciales.findIndex(g => g.id === 'compra-aves-auto');
+  if (edadIngreso > 0 && precioCompraAve > 0) {
+    const monto = Math.round(+lote.nAves * precioCompraAve);
+    const entry = { id:'compra-aves-auto', categoria:'pollas',
+      descripcion:`Compra de aves (${edadIngreso} sem)`, semana:1, monto };
+    if (idx >= 0) lote.gastosEspeciales[idx] = entry;
+    else lote.gastosEspeciales.push(entry);
+  } else if (idx >= 0) {
+    lote.gastosEspeciales.splice(idx, 1);
+  }
 }
 
 /* ════════════════════════════════════════════════════════════
@@ -1884,6 +1989,8 @@ function kpisEsc(p) {
    ════════════════════════════════════════════════════════════ */
 function renderFlujoCiclo(lote) {
   const semMax  = lote.semanasCiclo || 100;
+  const edadIngreso   = +(lote.edadIngresoSem ?? 0);
+  const ahorroAlim    = calcAhorroAlimentoIngreso(lote);
   const gastos        = lote.gastosEspeciales || [];
   const inv           = gastos.reduce((a,g)=>a+(+g.monto),0);
   const repos         = calcCostoReposicion(lote);
@@ -1895,9 +2002,12 @@ function renderFlujoCiclo(lote) {
   const semIP   = proy.find(d=>d.pos>0)?.sem || 18;   // inicio postura
   const semPT   = Math.min(66, semMax);                // transición postura tardía
 
+  // fechaNacimiento es la fecha del primer día REALMENTE simulado (nacimiento
+  // si edadIngreso=0, o fecha de compra si se ingresó con aves ya crecidas):
+  // hay que restar edadIngreso semanas al convertir "semana de vida" a fecha.
   const semFecha = s => {
     const d = new Date(lote.fechaNacimiento+'T12:00:00');
-    d.setDate(d.getDate()+(s-1)*7);
+    d.setDate(d.getDate()+(s-1-edadIngreso)*7);
     return d.toLocaleDateString('es-CL',{day:'numeric',month:'short',year:'numeric'});
   };
 
@@ -1927,7 +2037,8 @@ function renderFlujoCiclo(lote) {
   // above: label→conector(13px)→punto  |  below: espacio(40px)→punto→conector(8px)→label
   // En ambos casos el CENTRO del punto queda en y=46px (coincide con flujo-tml-line)
   const hitos = [
-    { sem:1,       lbl:'Inicio',         sub:MN(inv)||'sin inversión', col:'#c62828', pin:'l', above:true  },
+    { sem:edadIngreso+1, lbl: edadIngreso>0 ? `Ingreso · ${edadIngreso}sem` : 'Inicio',
+      sub:MN(inv)||'sin inversión', col:'#c62828', pin: edadIngreso>0 ? undefined : 'l', above:true  },
     { sem:semIP,   lbl:'Inicia postura', sub:`Sem ${semIP}`,           col:'#2e7d32',          above:false },
     { sem:semPico, lbl:`Pico ${pico.toFixed(0)}%`, sub:`Sem ${semPico}`, col:'#1b4332',        above:true  },
     ...(be ? [{ sem:be.sem, lbl:'Break-even',
@@ -1966,6 +2077,7 @@ function renderFlujoCiclo(lote) {
     </div>
     <div class="flujo-cards">
       ${card('↑','Gasto inicial',         MN(inv)||'—',            'mal', gastos.length ? gastos.length+' gastos especiales' : '')}
+      ${edadIngreso>0 ? `<div class="flujo-arr">→</div>${card('🌾','Ahorro alimentación', MN(ahorroAlim), 'ok', `vs. criar desde día 1 (sem 1–${edadIngreso})`)}` : ''}
       <div class="flujo-arr">→</div>
       ${card('▲','Pico de postura',        pico.toFixed(1)+'%',     'ok',  `Sem ${semPico} · ${semFecha(semPico)}`)}
       <div class="flujo-arr">→</div>
@@ -2221,10 +2333,21 @@ function renderDashboard(lote) {
       <div class="config-body" id="cfg-body">
         <div class="config-grid">
           <div class="cfg-field"><span>Nombre / cliente</span><input type="text" id="cfg-nombre" value="${lote.nombre.replace(/"/g,'&quot;')}"></div>
-          <div class="cfg-field"><span>Genética</span><select id="cfg-genetica" onchange="refrescarHintsConsumo('cfg-gr',7,this.value)">${optsGenetica(lote.genetica||'Lohmann Brown')}</select></div>
+          <div class="cfg-field"><span>Genética</span><select id="cfg-genetica" onchange="refrescarHintsConsumo('cfg-gr',7,this.value);refrescarAhorroCompra('cfg')">${optsGenetica(lote.genetica||'Lohmann Brown')}</select></div>
           <div class="cfg-field"><span>Fecha de nacimiento</span><input type="date" id="cfg-fechaNac" value="${lote.fechaNacimiento}"></div>
           <hr class="cfg-sep">
-          <div class="cfg-field"><span>Duración ciclo (semanas)</span><input type="number" id="cfg-semanas" value="${lote.semanasCiclo||100}" min="18" max="130"></div>
+          <div class="cfg-field"><span>Duración ciclo (semanas de vida)</span><input type="number" id="cfg-semanas" value="${lote.semanasCiclo||100}" min="18" max="130"><small style="font-size:10px;color:var(--tenue)">Edad total al fin del ciclo, no semanas desde el ingreso</small></div>
+          <div class="cfg-field"><span>Edad de ingreso al plantel (sem. de vida)</span>
+            <input type="number" id="cfg-edadIngresoPostura" value="${lote.edadIngresoSem??0}" min="0" max="30" step="1"
+                   oninput="syncChipEdad('cfg-edadIngresoPostura');refrescarAhorroCompra('cfg')">
+            <div class="chips-edad" id="chips-edad-cfg-postura"></div>
+            <small style="font-size:10px;color:var(--tenue)">0 = pollito de 1 día · &gt;0 = compra de pollonas ya crecidas</small>
+          </div>
+          <div class="cfg-field" id="wrap-precio-compra-ave-cfg" style="display:none">
+            <span>Precio de compra por ave ($/ave)</span>
+            <input type="number" id="cfg-precioCompraAve" value="${lote.precioCompraAve??0}" min="0" oninput="refrescarAhorroCompra('cfg')">
+            <small class="fmt-hint" id="cfg-ahorro-compra-hint"></small>
+          </div>
           <div class="cfg-field"><span>% postura (100 = curva oficial)</span><input type="number" id="cfg-factPost" value="${lote.factorPostura??100}" min="50" max="110" step="1"><small style="font-size:10px;color:var(--tenue)">85 = postura baja · 95 = bajo normal</small></div>
           <div class="cfg-field"><span>Factor mortalidad (1.0 = normal)</span><input type="number" id="cfg-factMort" value="${lote.factorMortalidad??1.0}" min="0.5" max="5.0" step="0.1"><small style="font-size:10px;color:var(--tenue)">1.5 = 50% más muertes · 2.0 = doble</small></div>
           <div class="cfg-field"><span>Precio huevo base ($/ud.)</span><input type="number" id="cfg-precio" value="${lote.precioHuevo}" oninput="fmtNum(this)"><small class="fmt-hint"></small></div>
@@ -2316,6 +2439,8 @@ function renderDashboard(lote) {
   renderPreciosMes(lote);
   renderGastosEspeciales(lote);
   refrescarHintsConsumo('cfg-gr',7, lote.genetica || 'Lohmann Brown');
+  renderChipsEdad('chips-edad-cfg-postura', 'cfg-edadIngresoPostura');
+  refrescarAhorroCompra('cfg');
 }
 
 /* ════════════════════════════════════════════════════════════
@@ -3640,8 +3765,10 @@ function renderGastosEspeciales(lote) {
     </tr>`;
   }).join('') : `<tr><td colspan="5" style="text-align:center;color:var(--tenue);padding:20px">Sin gastos especiales registrados</td></tr>`;
 
-  // Calcular fecha fin para "siguiente ciclo"
-  const diasCicloLote = (lote.semanasCiclo || 100) * 7;
+  // Calcular fecha fin para "siguiente ciclo" (semanas REALMENTE simuladas
+  // desde fechaNacimiento, descontando la edad de ingreso si se compró
+  // el lote ya crecido)
+  const diasCicloLote = Math.max(1, (lote.semanasCiclo || 100) - (+(lote.edadIngresoSem ?? 0))) * 7;
   const fechaFin = new Date(lote.fechaNacimiento + 'T12:00:00');
   fechaFin.setDate(fechaFin.getDate() + diasCicloLote);
   const fechaFinStr = fechaFin.toISOString().slice(0, 10);
@@ -4159,7 +4286,7 @@ function renderEstructuraCostos(lote, panelId, canvasId) {
   const esCr     = E.esCrianza;
   const unidad   = esCr ? 'ave' : 'huevo';
   const ingresos = proy.reduce((a,d) => a + d.ingreso, 0);
-  const semTot   = esCr ? (+(lote.semanasCrianza ?? 8)) : (lote.semanasCiclo || 100);
+  const semTot   = esCr ? (+(lote.semanasCrianza ?? 8)) : Math.max(1, (lote.semanasCiclo || 100) - (+(lote.edadIngresoSem ?? 0)));
   const meses    = semTot * 7 / 30;
 
   // Agrupar por grupo para los subtotales
@@ -4524,6 +4651,12 @@ function abrirModal(id) {
       if (form.costoOtrosEnvase) form.costoOtrosEnvase.value = l.costoOtrosEnvase ?? 0;
       if (form.costoDespachoMes) form.costoDespachoMes.value = l.costoDespachoMes ?? 300000;
       if (form.precioGallinaDescarte) form.precioGallinaDescarte.value = l.precioGallinaDescarte ?? 600;
+      const inpEdadP = document.getElementById('inp-edad-ingreso-postura');
+      if (inpEdadP) inpEdadP.value = l.edadIngresoSem ?? 0;
+      const inpPrecioC = document.getElementById('inp-precio-compra-ave');
+      if (inpPrecioC) inpPrecioC.value = l.precioCompraAve ?? 0;
+      renderChipsEdad('chips-edad-ingreso-postura', 'inp-edad-ingreso-postura');
+      refrescarAhorroCompra('modal');
     }
   } else {
     form.reset();
@@ -4603,9 +4736,12 @@ function guardarLote(e) {
       costoOtrosEnvase:      +(f.costoOtrosEnvase?.value      ?? 0),
       costoDespachoMes:      +(f.costoDespachoMes?.value      ?? 300000),
       precioGallinaDescarte: +(f.precioGallinaDescarte?.value ?? 600),
+      edadIngresoSem:        +(f.edadIngresoSemPostura?.value ?? 0),
+      precioCompraAve:       +(f.precioCompraAve?.value       ?? 0),
       costoDieta,
       gastosEspeciales,
     };
+    upsertGastoCompraAves(lote);
   }
   saveLote(lote);
   loteId = lote.id;
@@ -4637,11 +4773,14 @@ function aplicarConfig() {
   lote.costoOtrosEnvase       = +(document.getElementById('cfg-otros-envase')?.value      || 0);
   lote.costoDespachoMes       = +(document.getElementById('cfg-despacho')?.value          || 300000);
   lote.precioGallinaDescarte  = +(document.getElementById('cfg-gallina')?.value           || 600);
+  lote.edadIngresoSem   = +(document.getElementById('cfg-edadIngresoPostura')?.value ?? 0);
+  lote.precioCompraAve  = +(document.getElementById('cfg-precioCompraAve')?.value    ?? 0);
   const _imp = +(document.getElementById('cfg-impuesto')?.value || 0);
   lote.tasaImpuesto = _imp > 0 ? _imp / 100 : 0;
   [1,2,3,4,5,6,7].forEach(d => lote.costoDieta[d] = +document.getElementById(`cfg-d${d}`).value || 520);
   lote.consumoGrDieta = Object.fromEntries([1,2,3,4,5,6,7].map(d => [d, +(document.getElementById(`cfg-gr${d}`)?.value) || 0]));
   lote.gastosFijosDetalle = leerDesglose('cfg');
+  upsertGastoCompraAves(lote);
   saveLote(lote);
   proy = proyectar(lote);
   cargarSelector();
@@ -5007,7 +5146,7 @@ th{font-size:8pt;text-transform:uppercase;letter-spacing:.04em;text-align:center
 <div style="font-family:'Crimson Pro',serif;font-size:14pt;font-weight:600;color:${col};margin-bottom:6px">${lote.nombre.replace(/</g,'&lt;')}</div>
 <div class="meta">
   <strong>avivet.cl</strong> · MV Andrés Lazo · ${new Date().toLocaleDateString('es-CL',{day:'numeric',month:'long',year:'numeric'})}<br>
-  Genética: <strong style="color:${col}">${gen}</strong> · Nacimiento: ${fn} · ${(+lote.nAves).toLocaleString('es-CL')} aves · ${lote.semanasCiclo||100} semanas proyectadas
+  Genética: <strong style="color:${col}">${gen}</strong> · ${etiquetaFecha(lote)}: ${fn} · ${(+lote.nAves).toLocaleString('es-CL')} aves · ${lote.semanasCiclo||100} semanas proyectadas
 </div>
 
 <h2>Indicadores clave</h2>
@@ -5108,9 +5247,13 @@ function exportarExcel() {
     ['Presupuesto Avícola — Resumen',''],
     ['Lote / Cliente',   lote.nombre],
     ['Genética',         gen],
-    ['Fecha nacimiento', lote.fechaNacimiento],
+    [`Fecha ${etiquetaFecha(lote).toLowerCase()}`, lote.fechaNacimiento],
     ['N° aves iniciales',nIni],
     ['Semanas proyectadas', semanasCiclo],
+    ...(+(lote.edadIngresoSem??0) > 0 ? [
+      ['Edad de ingreso (semanas)', +lote.edadIngresoSem],
+      ['Precio de compra por ave ($)', +(lote.precioCompraAve??0)],
+    ] : []),
     ['Precio huevo base ($/ud.)',+lote.precioHuevo],
     ['Gastos fijos / mes ($)',             +lote.gastosMes],
     ['Costo despacho / mes ($)',           lote.costoDespachoMes ?? 300000],
@@ -5491,7 +5634,7 @@ tr:nth-child(even) td{background:#f8f6f1}
 <div style="font-family:'Crimson Pro',serif;font-size:15pt;font-weight:600;color:${col};margin-bottom:8px">${lote.nombre.replace(/</g,'&lt;')}</div>
 <div class="meta">
   <strong>avivet.cl</strong> · MV Andrés Lazo · ${new Date().toLocaleDateString('es-CL',{day:'numeric',month:'long',year:'numeric'})}<br>
-  Genética: <strong style="color:${col}">${gen}</strong> · Nacimiento: ${fn} · ${nIni.toLocaleString('es-CL')} aves · ${semanasCiclo} semanas
+  Genética: <strong style="color:${col}">${gen}</strong> · ${etiquetaFecha(lote)}: ${fn} · ${nIni.toLocaleString('es-CL')} aves · ${semanasCiclo} semanas
 </div>
 ${ajustado ? `<div class="aviso"><strong>Escenario ajustado:</strong> ${factPost!==1?`Postura al ${lote.factorPostura}% de la curva oficial. `:''}${factMort!==1?`Mortalidad ×${factMort} respecto a la tabla de referencia.`:''}</div>` : ''}
 
