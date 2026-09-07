@@ -35,6 +35,9 @@ function doPost(e) {
     if (body.action === 'cancelarSaco')      return jsonResp(cancelarSaco(body));
     if (body.action === 'cerrarRecepcion')   return jsonResp(cerrarRecepcion(body));
     if (body.action === 'toggleUsado')       return jsonResp(toggleUsado(body));
+    if (body.action === 'editarRecepcion')   return jsonResp(editarRecepcion(body));
+    if (body.action === 'reabrirRecepcion')  return jsonResp(reabrirRecepcion(body));
+    if (body.action === 'agregarSacos')      return jsonResp(agregarSacos(body));
     return jsonResp({ ok: false, error: 'Acción desconocida: ' + body.action });
   } catch (err) {
     return jsonResp({ ok: false, error: err.toString() });
@@ -268,6 +271,163 @@ function cerrarRecepcion(body) {
     }
 
     return { ok: true, idRecepcion, ...resumen, diferenciaFinal: Math.round((resumen.pesoAcumulado - resumen.pesoTotalGuia) * 100) / 100 };
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+// ── EDITAR DATOS DE CABECERA DE UNA RECEPCIÓN YA CREADA ──────────
+// Corrige materia prima, camión/proveedor, peso total de la guía y/o fecha,
+// sin importar si la recepción está abierta o cerrada. El id_recepcion y los
+// correlativos de los maxisacos ya generados NO cambian (quedan como
+// identificador fijo, aunque ya se hayan impreso etiquetas con ellos) — solo
+// se corrige la información descriptiva, incluida su copia en MAXISACOS.
+function editarRecepcion(body) {
+  const { idRecepcion, materiaPrima, camion, pesoTotalGuia, fecha } = body;
+  if (!idRecepcion) return { ok: false, error: 'Falta el id de recepción' };
+
+  const lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try {
+    const ss = SpreadsheetApp.openById(SHEET_ID);
+    const wsRec = ss.getSheetByName('RECEPCIONES');
+    if (!wsRec) return { ok: false, error: 'No hay recepciones registradas aún' };
+
+    const filas = wsRec.getDataRange().getValues();
+    let fila = -1;
+    for (let i = 1; i < filas.length; i++) {
+      if (String(filas[i][0]).trim() === String(idRecepcion).trim()) { fila = i; break; }
+    }
+    if (fila === -1) return { ok: false, error: 'Recepción no encontrada: ' + idRecepcion };
+
+    let nuevaMateriaPrima = null, nuevoCamion = null, nuevaFecha = null;
+
+    if (materiaPrima) {
+      if (!PREFIJOS[materiaPrima]) return { ok: false, error: 'Materia prima no reconocida: ' + materiaPrima };
+      nuevaMateriaPrima = materiaPrima;
+      wsRec.getRange(fila + 1, 3).setValue(materiaPrima);
+    }
+    if (camion && camion.trim()) {
+      nuevoCamion = camion.trim();
+      wsRec.getRange(fila + 1, 4).setValue(nuevoCamion);
+    }
+    if (pesoTotalGuia) {
+      const peso = parseFloat(pesoTotalGuia);
+      if (isNaN(peso) || peso <= 0) return { ok: false, error: 'Peso total inválido' };
+      wsRec.getRange(fila + 1, 5).setValue(peso);
+      const nSacos = Number(filas[fila][5]) || 1;
+      wsRec.getRange(fila + 1, 7).setValue(Math.round((peso / nSacos) * 100) / 100);
+    }
+    if (fecha) {
+      nuevaFecha = new Date(fecha + 'T12:00:00');
+      wsRec.getRange(fila + 1, 2).setValue(nuevaFecha);
+    }
+
+    if (nuevaMateriaPrima || nuevoCamion || nuevaFecha) {
+      const wsBag = ss.getSheetByName('MAXISACOS');
+      if (wsBag) {
+        const filasBag = wsBag.getDataRange().getValues();
+        for (let i = 1; i < filasBag.length; i++) {
+          if (String(filasBag[i][1]).trim() === String(idRecepcion).trim()) {
+            if (nuevaMateriaPrima) wsBag.getRange(i + 1, 4).setValue(nuevaMateriaPrima);
+            if (nuevoCamion) wsBag.getRange(i + 1, 5).setValue(nuevoCamion);
+            if (nuevaFecha) wsBag.getRange(i + 1, 3).setValue(nuevaFecha);
+          }
+        }
+      }
+    }
+
+    return { ok: true, idRecepcion };
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+// ── REABRIR RECEPCIÓN CERRADA ────────────────────────────────────
+// Vuelve el estado a "abierta" para poder seguir registrando pesos o
+// agregar sacos. Los sacos que quedaron "cancelado" al cerrar (sobrantes
+// no usados) NO se reactivan automáticamente — usa "Agregar sacos" si
+// necesitas más correlativos.
+function reabrirRecepcion(body) {
+  const { idRecepcion } = body;
+  if (!idRecepcion) return { ok: false, error: 'Falta el id de recepción' };
+
+  const lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try {
+    const ss = SpreadsheetApp.openById(SHEET_ID);
+    const wsRec = ss.getSheetByName('RECEPCIONES');
+    if (!wsRec) return { ok: false, error: 'No hay recepciones registradas aún' };
+
+    const filas = wsRec.getDataRange().getValues();
+    let fila = -1;
+    for (let i = 1; i < filas.length; i++) {
+      if (String(filas[i][0]).trim() === String(idRecepcion).trim()) { fila = i; break; }
+    }
+    if (fila === -1) return { ok: false, error: 'Recepción no encontrada: ' + idRecepcion };
+
+    wsRec.getRange(fila + 1, 9).setValue('abierta');
+    return { ok: true, idRecepcion };
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+// ── AGREGAR MÁS MAXISACOS A UNA RECEPCIÓN EXISTENTE ──────────────
+// Útil si el camión traía más carga de la calculada al crear la recepción.
+// Continúa la numeración de correlativos donde quedó (sin reutilizar
+// números de sacos cancelados/registrados) y recalcula el promedio sugerido.
+function agregarSacos(body) {
+  const { idRecepcion, cantidad } = body;
+  if (!idRecepcion) return { ok: false, error: 'Falta el id de recepción' };
+  const nAgregar = parseInt(cantidad);
+  if (isNaN(nAgregar) || nAgregar < 1) return { ok: false, error: 'Cantidad inválida' };
+
+  const lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try {
+    const ss = SpreadsheetApp.openById(SHEET_ID);
+    const wsRec = ss.getSheetByName('RECEPCIONES');
+    if (!wsRec) return { ok: false, error: 'No hay recepciones registradas aún' };
+
+    const filasRec = wsRec.getDataRange().getValues();
+    let filaRec = -1;
+    for (let i = 1; i < filasRec.length; i++) {
+      if (String(filasRec[i][0]).trim() === String(idRecepcion).trim()) { filaRec = i; break; }
+    }
+    if (filaRec === -1) return { ok: false, error: 'Recepción no encontrada: ' + idRecepcion };
+
+    const materiaPrima = filasRec[filaRec][2];
+    const camion = filasRec[filaRec][3];
+    const pesoTotalGuia = Number(filasRec[filaRec][4]) || 0;
+    const fechaObj = filasRec[filaRec][1];
+    const nSacosActual = Number(filasRec[filaRec][5]) || 0;
+
+    const wsBag = ss.getSheetByName('MAXISACOS');
+    if (!wsBag) return { ok: false, error: 'No hay maxisacos registrados aún' };
+
+    const filasBag = wsBag.getDataRange().getValues().slice(1)
+      .filter(r => String(r[1]).trim() === String(idRecepcion).trim());
+    let maxNum = 0;
+    filasBag.forEach(r => {
+      const n = parseInt(String(r[0]).split('-').pop());
+      if (!isNaN(n) && n > maxNum) maxNum = n;
+    });
+
+    const nuevosCorrelativos = [];
+    const filasNuevas = [];
+    for (let i = 1; i <= nAgregar; i++) {
+      const correlativo = idRecepcion + '-' + String(maxNum + i).padStart(3, '0');
+      filasNuevas.push([correlativo, idRecepcion, fechaObj, materiaPrima, camion, '', 'pendiente', '', false]);
+      nuevosCorrelativos.push(correlativo);
+    }
+    wsBag.getRange(wsBag.getLastRow() + 1, 1, filasNuevas.length, 9).setValues(filasNuevas);
+
+    const nSacosNuevo = nSacosActual + nAgregar;
+    wsRec.getRange(filaRec + 1, 6).setValue(nSacosNuevo);
+    wsRec.getRange(filaRec + 1, 7).setValue(Math.round((pesoTotalGuia / nSacosNuevo) * 100) / 100);
+
+    return { ok: true, idRecepcion, correlativos: nuevosCorrelativos, nSacos: nSacosNuevo };
   } finally {
     lock.releaseLock();
   }

@@ -215,6 +215,31 @@
     <div id="panel-activa" style="display:none; margin-top:14px;">
       <div class="panel-header" id="panel-header"></div>
 
+      <div class="fila-botones" style="margin-top:0;">
+        <button type="button" class="secundario" id="btn-toggle-editar">✏️ Editar datos</button>
+        <button type="button" class="secundario" id="btn-reabrir" style="display:none;">🔓 Reabrir recepción</button>
+      </div>
+
+      <div id="form-editar-wrap" style="display:none; margin-top:4px; padding-top:10px; border-top:1px solid var(--borde);">
+        <label for="edit-materiaPrima">Materia prima</label>
+        <select id="edit-materiaPrima">
+          <option value="Maíz">Maíz</option>
+          <option value="Harina de Soya">Harina de Soya</option>
+          <option value="Conchuela">Conchuela</option>
+        </select>
+        <label for="edit-camion">Camión / Proveedor</label>
+        <input id="edit-camion" type="text">
+        <label for="edit-pesoTotalGuia">Peso total según guía (kg)</label>
+        <input id="edit-pesoTotalGuia" type="number" step="1" min="1">
+        <label for="edit-fecha">Fecha</label>
+        <input id="edit-fecha" type="date">
+        <p style="font-size:0.78rem; color:var(--gris); margin:10px 0 0;">
+          El correlativo ya generado (y las etiquetas ya impresas) no cambia aunque edites estos datos — solo corrige la información asociada.
+        </p>
+        <button class="bloque" id="btn-guardar-edicion">Guardar cambios</button>
+        <div class="msg" id="msg-editar"></div>
+      </div>
+
       <label id="label-grid">Toca el maxisaco que usaste</label>
       <div class="saco-grid" id="saco-grid"></div>
       <div class="saco-actual" id="saco-actual"></div>
@@ -232,6 +257,12 @@
           <tbody id="tabla-sacos"></tbody>
         </table>
       </div>
+
+      <div class="fila-botones">
+        <input id="cant-agregar" type="number" min="1" value="1" style="flex:0 0 70px;">
+        <button class="secundario" id="btn-agregar-sacos" style="flex:1;">➕ Agregar sacos</button>
+      </div>
+      <div class="msg" id="msg-agregar"></div>
 
       <div class="fila-botones">
         <button class="secundario" id="btn-imprimir">🖨️ Etiquetas en blanco</button>
@@ -466,6 +497,8 @@
     document.getElementById('form-peso-wrap').style.display = cerrada ? 'none' : '';
     document.getElementById('btn-imprimir').style.display = cerrada ? 'none' : '';
     document.getElementById('btn-cerrar').style.display = cerrada ? 'none' : '';
+    document.getElementById('btn-reabrir').style.display = cerrada ? '' : 'none';
+    document.getElementById('form-editar-wrap').style.display = 'none';
 
     if (!cerrada) {
       const siguientePendiente = bags.find(b => b.estado === 'pendiente');
@@ -546,6 +579,109 @@
       alert('Error de conexión: ' + err.message);
     }
   }
+
+  // ── EDITAR DATOS DE CABECERA ────────────────────────────────
+  document.getElementById('btn-toggle-editar').addEventListener('click', () => {
+    const wrap = document.getElementById('form-editar-wrap');
+    const visible = wrap.style.display !== 'none';
+    if (!visible) precargarFormEdicion();
+    wrap.style.display = visible ? 'none' : 'block';
+  });
+
+  function precargarFormEdicion() {
+    const { header } = recepcionData;
+    document.getElementById('edit-materiaPrima').value = header.materiaPrima;
+    document.getElementById('edit-camion').value = header.camion;
+    document.getElementById('edit-pesoTotalGuia').value = header.pesoTotalGuia;
+    document.getElementById('edit-fecha').value = header.fecha;
+    document.getElementById('msg-editar').className = 'msg';
+  }
+
+  document.getElementById('btn-guardar-edicion').addEventListener('click', async () => {
+    const msg = document.getElementById('msg-editar');
+    const payload = {
+      action: 'editarRecepcion',
+      idRecepcion: recepcionActivaId,
+      materiaPrima: document.getElementById('edit-materiaPrima').value,
+      camion: document.getElementById('edit-camion').value,
+      pesoTotalGuia: document.getElementById('edit-pesoTotalGuia').value,
+      fecha: document.getElementById('edit-fecha').value
+    };
+    try {
+      const resp = await fetch(APP_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      });
+      const data = await resp.json();
+      if (data.ok) {
+        msg.className = 'msg ok';
+        msg.textContent = '✅ Datos actualizados';
+        document.getElementById('form-editar-wrap').style.display = 'none';
+        await cargarRecepciones();
+        await cargarRecepcionActiva();
+      } else {
+        msg.className = 'msg error';
+        msg.textContent = '❌ ' + data.error;
+      }
+    } catch (err) {
+      msg.className = 'msg error';
+      msg.textContent = '❌ Error de conexión: ' + err.message;
+    }
+  });
+
+  // ── REABRIR RECEPCIÓN CERRADA ───────────────────────────────
+  document.getElementById('btn-reabrir').addEventListener('click', async () => {
+    if (!recepcionActivaId) return;
+    if (!confirm('¿Reabrir esta recepción? Podrás volver a registrar pesos y agregar sacos.')) return;
+    try {
+      const resp = await fetch(APP_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'reabrirRecepcion', idRecepcion: recepcionActivaId })
+      });
+      const data = await resp.json();
+      if (!data.ok) { alert('❌ ' + data.error); return; }
+      await cargarRecepciones();
+      await cargarRecepcionActiva();
+    } catch (err) {
+      alert('Error de conexión: ' + err.message);
+    }
+  });
+
+  // ── AGREGAR MÁS SACOS A LA RECEPCIÓN ────────────────────────
+  document.getElementById('btn-agregar-sacos').addEventListener('click', async () => {
+    const cantidad = document.getElementById('cant-agregar').value;
+    const msg = document.getElementById('msg-agregar');
+    msg.className = 'msg';
+
+    if (!recepcionActivaId || !cantidad || parseInt(cantidad) < 1) {
+      msg.className = 'msg error';
+      msg.textContent = '❌ Indica una cantidad válida';
+      return;
+    }
+
+    try {
+      const resp = await fetch(APP_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'agregarSacos', idRecepcion: recepcionActivaId, cantidad })
+      });
+      const data = await resp.json();
+      if (data.ok) {
+        msg.className = 'msg ok';
+        msg.textContent = `✅ ${data.correlativos.length} saco(s) agregado(s) — total ${data.nSacos}`;
+        document.getElementById('cant-agregar').value = 1;
+        await cargarRecepcionActiva();
+      } else {
+        msg.className = 'msg error';
+        msg.textContent = '❌ ' + data.error;
+      }
+    } catch (err) {
+      msg.className = 'msg error';
+      msg.textContent = '❌ Error de conexión: ' + err.message;
+    }
+  });
 
   document.getElementById('btn-cerrar').addEventListener('click', async () => {
     if (!recepcionActivaId) return;

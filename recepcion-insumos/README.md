@@ -26,6 +26,9 @@ Hoy el registro es en papel: el correlativo de cada maxisaco se anota a mano y e
 6. **Reimprimir con pesos** → reimprime las mismas etiquetas pero mostrando el peso real ya registrado de cada saco, útil como respaldo impreso una vez terminada la descarga.
 7. **Cerrar recepción** cuando termines de descargar el camión — muestra la diferencia final vs la guía.
 8. El selector de recepciones muestra **abiertas y cerradas**. Al elegir una **cerrada**, la cuadrícula cambia de función: ya no registra peso del camión, sino que sirve para ir **tachando cada maxisaco a medida que lo usas en tu producción diaria** (sin importar el día ni el orden). El stat "Stock real (sin usar en producción)" muestra cuántos maxisacos de esa descarga quedan disponibles todavía. Tocar un saco tachado lo destacha (por si te equivocaste).
+9. **✏️ Editar datos** corrige materia prima, camión/proveedor, peso total de la guía o fecha de una recepción ya creada (abierta o cerrada), por si hubo un error de tipeo. El correlativo (`id_recepcion` y los de cada maxisaco) queda fijo aunque cambies estos datos — no se regenera, para no invalidar etiquetas ya impresas ni la trazabilidad.
+10. **🔓 Reabrir recepción** vuelve una recepción cerrada por error a estado "abierta" para seguir registrando pesos o agregar sacos. Los sacos que se cancelaron automáticamente al cerrar no se reactivan solos.
+11. **➕ Agregar sacos** suma más maxisacos a una recepción existente si el camión traía más carga de la calculada — continúa la numeración de correlativos y recalcula el promedio sugerido.
 
 ## Formato de correlativo
 
