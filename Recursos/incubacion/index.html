@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>De la reproductora a la nacedora: dónde se decide la calidad — AviVet</title>
+<meta name="description" content="Guía técnica de preincubación e incubación: manejo y salud de reproductoras, calidad del huevo, almacenamiento y transporte, temperatura, humedad, giro, transferencia, ventana de eclosión y métodos de evaluación de la calidad del pollito. Por MV Andrés Lazo, AviVet.">
+<link rel="canonical" href="https://avivet.cl/avivet/Recursos/incubacion/">
+<meta name="author" content="MV Andrés Lazo Escobar">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="AviVet">
+<meta property="og:locale" content="es_CL">
+<meta property="og:title" content="Preincubación e incubación: dónde se decide la calidad del pollito">
+<meta property="og:description" content="De la granja de reproductoras a la nacedora: los factores que deciden la calidad del pollito antes de que llegue a la granja.">
+<meta property="og:url" content="https://avivet.cl/avivet/Recursos/incubacion/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Preincubación e incubación: dónde se decide la calidad del pollito">
+<meta name="twitter:description" content="De la granja de reproductoras a la nacedora: los factores que deciden la calidad del pollito antes de que llegue a la granja.">
+<link rel="icon" href="https://avivet.cl/assets/img/brand/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="https://avivet.cl/assets/img/brand/favicon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500;1,9..144,600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#fafaf8; --paper2:#f0faf3; --paper3:#e3f0e8;
+  --ink:#141414; --ink2:#3a3a3a; --ink3:#6b6b6b;
+  --line:#d4e6da; --line2:#bcd6c5;
+  --rust:#1b4332; --rust-d:#0d2b1e; --rust-l:#d8f3dc;
+  --olive:#2d6a4f; --olive-d:#1b4332;
+  --amber:#c0392b; --amber-d:#7a1c1c;
+  --gold:#c9a84c; --gold2:#e8c96e; --gold-d:#a8842e;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:"DM Sans",sans-serif;background:var(--paper);color:var(--ink);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;}
+body::before{content:"";position:fixed;inset:0;z-index:1;pointer-events:none;opacity:0.05;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+a{color:inherit;}
+
+.topbar{position:sticky;top:0;z-index:200;background:rgba(243,237,225,0.94);backdrop-filter:saturate(1.2) blur(6px);
+  border-bottom:1px solid var(--line);height:48px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;}
+.brand{font-family:"Fraunces",serif;font-weight:900;font-size:19px;letter-spacing:-0.02em;color:var(--ink);}
+.brand .dotrust{color:var(--olive);font-style:italic;}
+.topbar .meta{font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink3);}
+
+main{max-width:760px;margin:0 auto;padding:0 22px 90px;position:relative;z-index:2;animation:fadeIn .5s ease;}
+
+.masthead{padding:56px 0 34px;}
+.kicker{font-size:11.5px;letter-spacing:0.22em;text-transform:uppercase;color:var(--rust);font-weight:600;margin-bottom:22px;
+  display:flex;align-items:center;gap:12px;}
+.kicker::after{content:"";flex:1;height:1px;background:var(--line2);}
+.display{font-family:"Fraunces",serif;font-weight:600;font-size:clamp(38px,7.4vw,62px);line-height:1.02;letter-spacing:-0.02em;margin-bottom:24px;}
+.display em{font-style:italic;color:var(--rust);}
+.standfirst{font-family:"Fraunces",serif;font-size:clamp(18px,2.6vw,22px);line-height:1.45;color:var(--ink2);max-width:600px;font-weight:400;}
+.byline{margin-top:24px;font-size:12.5px;letter-spacing:0.04em;color:var(--ink3);text-transform:uppercase;}
+.byline b{color:var(--ink);font-weight:600;}
+
+.plate{margin:34px 0 6px;}
+.plate-frame{position:relative;border:1px solid var(--line2);padding:10px;background:var(--paper2);}
+.plate-frame img{width:100%;height:auto;display:block;filter:saturate(1.02) contrast(1.02);}
+.plate-cap{font-family:"Fraunces",serif;font-style:italic;font-size:13.5px;color:var(--ink2);margin-top:12px;text-align:center;}
+.plate-cap .credit{font-style:normal;color:var(--ink3);font-size:11px;}
+.plate-cap .credit a{color:var(--ink3);}
+.hint{text-align:center;font-size:12px;letter-spacing:0.04em;color:var(--ink3);margin-top:6px;}
+
+.index{position:sticky;top:48px;z-index:150;background:rgba(243,237,225,0.96);backdrop-filter:blur(6px);
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-top:30px;}
+.index-scroll{display:flex;overflow-x:auto;scrollbar-width:none;}
+.index-scroll::-webkit-scrollbar{display:none;}
+.idx{flex:0 0 auto;padding:11px 15px;font-size:12.5px;font-weight:600;color:var(--ink2);text-decoration:none;
+  white-space:nowrap;border-bottom:2px solid transparent;display:flex;align-items:baseline;gap:6px;transition:color .15s;}
+.idx .n{color:var(--ink3);font-variant-numeric:tabular-nums;font-size:11px;}
+.idx:hover{color:var(--rust);}
+.idx.active{color:var(--rust);border-bottom-color:var(--rust);}
+.idx.active .n{color:var(--rust);}
+
+.entry{display:grid;grid-template-columns:96px 1fr;gap:22px;padding:46px 0;border-top:1px solid var(--line);scroll-margin-top:104px;}
+.entry:first-of-type{border-top:none;}
+.entry-no{font-family:"Fraunces",serif;font-weight:500;font-size:54px;line-height:0.8;color:var(--rust);letter-spacing:-0.03em;}
+.entry-title{font-family:"Fraunces",serif;font-weight:600;font-size:29px;line-height:1.08;letter-spacing:-0.015em;margin-bottom:5px;}
+.entry-where{font-size:11.5px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink3);margin-bottom:16px;}
+.lead{font-family:"Fraunces",serif;font-size:18.5px;line-height:1.5;color:var(--ink2);max-width:560px;}
+.lead,.note,.disclaimer,.col li{text-align:justify;text-justify:inter-word;hyphens:auto;-webkit-hyphens:auto;}
+@media (max-width:520px){.lead,.note,.disclaimer,.col li{text-align:left;hyphens:manual;}}
+.entry:first-of-type .lead::first-letter{initial-letter:2;font-weight:600;color:var(--rust);margin-right:8px;}
+
+.cols{display:grid;grid-template-columns:1fr 1fr;margin-top:24px;border-top:1px solid var(--line);}
+.col{padding:18px 0;}
+.col + .col{border-left:1px solid var(--line);padding-left:26px;}
+.col:first-child{padding-right:26px;}
+@media(max-width:540px){.cols{grid-template-columns:1fr;}.col + .col{border-left:none;border-top:1px solid var(--line);padding-left:0;}.col:first-child{padding-right:0;}}
+.tag{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;font-weight:700;display:inline-flex;align-items:center;gap:7px;margin-bottom:13px;}
+.tag::before{content:"";width:9px;height:9px;display:inline-block;}
+.tag-ok{color:var(--olive);}
+.tag-ok::before{background:var(--olive);}
+.tag-warn{color:var(--amber);}
+.tag-warn::before{width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:9px solid var(--amber);}
+.col ul{list-style:none;display:flex;flex-direction:column;gap:9px;}
+.col li{font-size:14.5px;line-height:1.45;color:var(--ink);padding-left:16px;position:relative;}
+.col li::before{content:"";position:absolute;left:0;top:9px;width:6px;height:1.5px;background:var(--line2);}
+.col li em{font-style:italic;color:var(--ink2);}
+
+.note{margin-top:22px;padding:2px 0 2px 18px;border-left:2px solid var(--amber);
+  font-family:"Fraunces",serif;font-size:15px;font-style:italic;line-height:1.5;color:var(--amber-d);}
+.note.tip{border-left-color:var(--gold);color:#5a4720;}
+.note .lbl{font-style:normal;font-weight:700;font-size:10.5px;letter-spacing:0.16em;text-transform:uppercase;
+  display:block;margin-bottom:3px;color:var(--amber);}
+.note.tip .lbl{color:var(--gold-d);}
+
+.pull{font-family:"Fraunces",serif;font-style:italic;font-weight:500;font-size:clamp(24px,4vw,32px);line-height:1.25;
+  color:var(--rust);text-align:center;max-width:600px;margin:8px auto;padding:54px 10px;letter-spacing:-0.01em;position:relative;}
+.pull::before,.pull::after{content:"";display:block;width:46px;height:1px;background:var(--line2);margin:0 auto;}
+.pull::before{margin-bottom:30px;}
+.pull::after{margin-top:30px;}
+
+.outro{margin-top:30px;border-top:2px solid var(--ink);padding-top:30px;}
+.disclaimer{font-family:"Fraunces",serif;font-style:italic;font-size:15px;line-height:1.55;color:var(--ink2);max-width:560px;margin-bottom:38px;}
+.contact{background:var(--paper2);border:1px solid var(--line2);padding:30px 30px 28px;}
+.contact .kicker{margin-bottom:14px;}
+.contact h3{font-family:"Fraunces",serif;font-weight:600;font-size:26px;line-height:1.1;margin-bottom:8px;letter-spacing:-0.01em;}
+.contact p{font-size:14.5px;color:var(--ink2);margin-bottom:20px;max-width:440px;}
+.contact-links{display:flex;flex-direction:column;gap:11px;}
+.clink{font-size:15px;color:var(--ink);text-decoration:none;display:flex;align-items:baseline;gap:12px;border-top:1px solid var(--line);padding-top:11px;transition:color .15s;}
+.clink:hover{color:var(--rust);}
+.clink .ck{font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink3);width:90px;flex:0 0 90px;}
+.clink b{font-weight:600;}
+.clink .arr{margin-left:auto;color:var(--rust);}
+.foot{text-align:center;font-size:12px;letter-spacing:0.04em;color:var(--ink3);margin-top:40px;text-transform:uppercase;}
+.foot a{color:var(--rust);text-decoration:none;}
+
+@media(max-width:560px){
+  .entry{grid-template-columns:1fr;gap:6px;}
+  .entry-no{font-size:38px;}
+}
+.plate--wide{width:min(1140px,calc(100vw - 44px));margin-left:50%;transform:translateX(-50%);}
+.plate--wide .plate-frame{background:var(--paper2);}
+.plate-cap.wide-cap{max-width:760px;margin-left:auto;margin-right:auto;}
+
+.ph{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;
+  min-height:280px;padding:40px 26px;text-align:center;border:2px dashed var(--line2);
+  background:repeating-linear-gradient(45deg,transparent,transparent 11px,rgba(45,106,79,.035) 11px,rgba(45,106,79,.035) 22px);}
+.ph-name{font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:var(--rust);font-weight:700;
+  background:var(--paper);border:1px solid var(--line2);padding:6px 13px;}
+.ph p{font-family:"Fraunces",serif;font-style:italic;font-size:16px;color:var(--ink2);max-width:470px;line-height:1.5;margin:0;}
+.ph .ph-hint{font-family:"DM Sans",sans-serif;font-style:normal;font-size:12.5px;color:var(--ink3);letter-spacing:0.02em;}
+
+.steps{list-style:none;counter-reset:st;margin-top:24px;border-top:1px solid var(--line);}
+.steps li{counter-increment:st;display:grid;grid-template-columns:38px 1fr;gap:16px;
+  padding:15px 0;border-bottom:1px solid var(--line);align-items:baseline;}
+.steps li::before{content:counter(st);font-family:"Fraunces",serif;font-weight:600;font-size:22px;
+  color:var(--rust);line-height:1;}
+.steps b{font-weight:600;display:block;font-size:15.5px;margin-bottom:2px;}
+.steps span{grid-column:2;font-size:14.5px;color:var(--ink2);line-height:1.5;}
+.steps .when{grid-column:auto;display:inline-block;font-size:10.5px;letter-spacing:0.14em;text-transform:uppercase;
+  color:var(--gold-d);font-weight:700;margin-left:8px;}
+
+.stat-row{display:flex;gap:14px;margin-top:22px;flex-wrap:wrap;}
+.stat{flex:1 1 140px;border:1px solid var(--line2);background:var(--paper2);padding:16px 14px;text-align:center;}
+.stat b{display:block;font-family:"Fraunces",serif;font-size:26px;color:var(--rust);line-height:1.1;}
+.stat span{display:block;font-size:11.5px;color:var(--ink3);letter-spacing:0.03em;margin-top:4px;}
+
+/* Data tables */
+.tbl-wrap{overflow-x:auto;margin-top:22px;}
+.dtable{width:100%;border-collapse:collapse;font-size:13.5px;min-width:420px;}
+.dtable th,.dtable td{padding:9px 12px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap;}
+.dtable th{font-size:10.5px;letter-spacing:0.09em;text-transform:uppercase;color:var(--ink3);font-weight:700;border-bottom:1px solid var(--line2);}
+.dtable td{color:var(--ink2);}
+.dtable td.num,.dtable th.num{text-align:right;font-variant-numeric:tabular-nums;}
+.dtable td.num{color:var(--ink);font-weight:600;}
+.dtable tr:last-child td{border-bottom:none;}
+.dtable tr.hl td{color:var(--rust);font-weight:700;}
+.tbl-cap{font-size:12px;color:var(--ink3);margin-top:10px;}
+.tbl-cap a{color:var(--ink3);}
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Preincubación e incubación: dónde se decide la calidad del pollito",
+  "description": "Guía técnica de preincubación e incubación: manejo y salud de reproductoras, calidad del huevo, temperatura, humedad, giro, transferencia, ventana de eclosión y métodos de evaluación de la calidad del pollito.",
+  "inLanguage": "es-CL",
+  "datePublished": "2026-09-06",
+  "dateModified": "2026-09-06",
+  "author": {"@type": "Person", "name": "Andrés Lazo Escobar", "jobTitle": "Médico Veterinario", "url": "https://avivet.cl/"},
+  "publisher": {"@type": "Organization", "name": "AviVet", "url": "https://avivet.cl/",
+    "logo": {"@type": "ImageObject", "url": "https://avivet.cl/assets/img/brand/favicon-180.png"}},
+  "mainEntityOfPage": {"@type": "WebPage", "@id": "https://avivet.cl/avivet/Recursos/incubacion/"},
+  "about": ["Incubación aviar", "Preincubación", "Calidad del pollito BB", "Reproductoras pesadas", "Chick grading"]
+}
+</script>
+</head>
+<body>
+
+<div class="topbar">
+  <span class="brand">Avi<span class="dotrust">Vet</span></span>
+  <span class="meta">MV Andrés Lazo · Medicina aviar</span>
+</div>
+
+<main>
+
+  <!-- MASTHEAD -->
+  <header class="masthead">
+    <div class="kicker">Incubación · N.º 06</div>
+    <h1 class="display">Preincubación e incubación: <em>dónde se decide la calidad</em></h1>
+    <p class="standfirst">Esta guía recorre, en orden, los factores de preincubación e incubación que determinan la calidad del pollito antes de que llegue a la granja: manejo y salud de las reproductoras, calidad del huevo, y las variables de la máquina —temperatura, humedad, giro, transferencia y ventana de eclosión. Es la guía técnica del lado de la incubadora; la evaluación práctica al recibir el pollito en la granja está en la <a href="https://avivet.cl/avivet/Recursos/calidad-pollito/">guía de recepción</a>.</p>
+    <p class="byline"><b>MV Andrés Lazo Escobar</b> — Especialista en medicina aviar · Sur de Chile</p>
+  </header>
+
+  <!-- OPENING PLATE -->
+  <figure class="plate plate--wide">
+    <div class="plate-frame">
+      <img class="ph-img" data-base="apertura" src="apertura.jpg" hidden
+           alt="Bandejas de huevos incubables junto a la máquina de incubación">
+      <div class="ph">
+        <div class="ph-name">apertura.jpg</div>
+        <p>Lámina de apertura: bandejas de huevos incubables, de preferencia junto a la máquina.</p>
+        <p class="ph-hint">Formato apaisado, ~1600 × 840 px · .jpg, .png o .svg</p>
+      </div>
+    </div>
+    <figcaption class="plate-cap">
+      La temperatura de la cáscara del huevo es, de todos los factores de incubación, el que más pesa sobre la calidad final del pollito.
+      <span class="credit">Datos: H&amp;N International, 2026.</span>
+    </figcaption>
+  </figure>
+
+  <!-- INDEX -->
+  <nav class="index">
+    <div class="index-scroll" id="navScroll">
+      <a class="idx" href="#reproductoras"><span class="n">01</span>Las reproductoras</a>
+      <a class="idx" href="#huevo"><span class="n">02</span>El huevo</a>
+      <a class="idx" href="#cascara"><span class="n">03</span>Cáscara y limpieza</a>
+      <a class="idx" href="#alimento-agua"><span class="n">04</span>Alimento y agua</a>
+      <a class="idx" href="#almacenamiento"><span class="n">05</span>Almacenamiento y transporte</a>
+      <a class="idx" href="#temperatura"><span class="n">06</span>Temperatura</a>
+      <a class="idx" href="#humedad"><span class="n">07</span>Humedad</a>
+      <a class="idx" href="#giro"><span class="n">08</span>Giro y transferencia</a>
+      <a class="idx" href="#evaluacion"><span class="n">09</span>Evaluar la calidad</a>
+      <a class="idx" href="#puntuaciones"><span class="n">10</span>Puntuaciones y meconio</a>
+    </div>
+  </nav>
+
+  <!-- 01 -->
+  <article class="entry" id="reproductoras">
+    <div class="entry-no">01</div>
+    <div>
+      <h2 class="entry-title">Todo empieza en la granja de reproductoras</h2>
+      <p class="entry-where">Manejo, edad y salud del lote</p>
+      <p class="lead">La calidad del lote de reproductoras determina la calidad del huevo incubable. Un mal manejo —por ejemplo, de la alimentación— afecta el rendimiento del lote y la calidad de la cáscara antes de que el huevo llegue a la incubadora.</p>
+      <div class="cols">
+        <div class="col">
+          <span class="tag tag-ok">Edad del lote y su efecto</span>
+          <ul>
+            <li><b>&lt;30 semanas</b>: pollitos más inmaduros, que requieren mejores condiciones de crianza para su sistema termorregulador</li>
+            <li><b>&gt;67 semanas</b>: huevos de peor calidad de cáscara y de calidad interna</li>
+          </ul>
+        </div>
+        <div class="col">
+          <span class="tag tag-warn">Enfermedades a vigilar en la parvada</span>
+          <ul>
+            <li>Bronquitis infecciosa <em>→ afecta calidad de cáscara y calidad interna del huevo</em></li>
+            <li><i>Salmonella</i> spp., <i>Escherichia coli</i>, <i>Mycoplasma</i>, virus de la anemia del pollo, encefalomielitis aviar <em>→ afectan calidad y viabilidad del pollito</em></li>
+          </ul>
+        </div>
+      </div>
+      <p class="note">Cualquiera de estas enfermedades es un riesgo tanto para el rendimiento de la parvada como para la incubadora que reciba sus huevos. La revisión sanitaria del plantel de reproductoras es, en ese sentido, la primera línea de control de calidad del pollito.</p>
+    </div>
+  </article>
+
+  <!-- 02 -->
+  <article class="entry" id="huevo">
+    <div class="entry-no">02</div>
+    <div>
+      <h2 class="entry-title">El huevo que entra a la máquina</h2>
+      <p class="entry-where">Peso y forma</p>
+      <p class="lead">Incubar huevos de al menos 50 g y de lotes de al menos 22 semanas de edad. Lo óptimo es un peso promedio de 58 a 62 g, con buena uniformidad, y con forma normal —la incubabilidad cae fuerte con cualquier anomalía de forma.</p>
+      <div class="stat-row">
+        <div class="stat"><b>58–62 g</b><span>Peso promedio óptimo del huevo</span></div>
+        <div class="stat"><b>50–70 g</b><span>Rango aceptable</span></div>
+        <div class="stat"><b>&gt;90 %</b><span>Uniformidad de peso del lote</span></div>
+      </div>
+      <div class="tbl-wrap">
+        <table class="dtable">
+          <thead><tr><th>Anomalía de forma</th><th class="num">% incubabilidad</th></tr></thead>
+          <tbody>
+            <tr class="hl"><td>Normal</td><td class="num">74</td></tr>
+            <tr><td>Puntiagudo</td><td class="num">65</td></tr>
+            <tr><td>Redondo</td><td class="num">63</td></tr>
+            <tr><td>Pequeño</td><td class="num">62</td></tr>
+            <tr><td>Con gránulos</td><td class="num">19</td></tr>
+            <tr><td>Arrugado</td><td class="num">13</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="tbl-cap">Tabla 1. Adaptado de Banday y Bakat, 2014 (vía H&amp;N International, 2026). Incubar únicamente huevos con forma normal.</p>
+    </div>
+  </article>
+
+  <!-- 03 -->
+  <article class="entry" id="cascara">
+    <div class="entry-no">03</div>
+    <div>
+      <h2 class="entry-title">Cáscara y limpieza: la primera barrera</h2>
+      <p class="entry-where">Contaminación bacteriana antes de incubar</p>
+      <p class="lead">Una buena cáscara protege, es fuente de calcio y sostiene la homeostasis del desarrollo embrionario. La edad del lote, la nutrición, la estación y el manejo influyen en su calidad —y los huevos con peor cáscara son más susceptibles a la contaminación bacteriana.</p>
+      <div class="stat-row">
+        <div class="stat"><b>47,5 %</b><span>Con Salmonella viable 24 h tras desafío, gravedad específica 1.070</span></div>
+        <div class="stat"><b>21,4 %</b><span>Gravedad específica 1.080</span></div>
+        <div class="stat"><b>10,0 %</b><span>Gravedad específica 1.090</span></div>
+      </div>
+      <p class="tbl-cap">Adaptado de Sauter y Peterson, 1974 (vía H&amp;N International, 2026). Cuanto mayor la gravedad específica —mejor calidad de cáscara—, menor la contaminación.</p>
+      <div class="tbl-wrap">
+        <table class="dtable">
+          <thead><tr><th>Fuente de huevo</th><th class="num">Bacterias totales</th><th class="num">Coliformes</th><th class="num">Mortalidad 2.ª semana</th></tr></thead>
+          <tbody>
+            <tr class="hl"><td>Nido limpio</td><td class="num">600</td><td class="num">123</td><td class="num">0,9 %</td></tr>
+            <tr><td>Ligeramente sucio</td><td class="num">20.000</td><td class="num">94</td><td class="num">2,3 %</td></tr>
+            <tr><td>Sucio</td><td class="num">80.000</td><td class="num">1.307</td><td class="num">4,1 %</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="tbl-cap">Tabla 2. Adaptado de Mauldin, 2008 (engormix.com, vía H&amp;N International, 2026).</p>
+      <p class="note">Nunca usar huevos del suelo. Un buen entrenamiento de la crianza para prevenir huevos en el suelo, y una limpieza cuidada del nido y de las cintas de huevos, evitan que nazcan pollitos con alta mortalidad por enfermedades bacterianas.</p>
+    </div>
+  </article>
+
+  <!-- 04 -->
+  <article class="entry" id="alimento-agua">
+    <div class="entry-no">04</div>
+    <div>
+      <h2 class="entry-title">Alimento y agua de las reproductoras</h2>
+      <p class="entry-where">Insumos que sostienen el huevo</p>
+      <p class="lead">Es fundamental seguir los niveles recomendados de vitaminas y minerales de la guía de manejo del lote. No hacerlo puede dañar la calidad y fertilidad de los pollitos y/o la incubabilidad —y esto es aún más crítico en condiciones de calor o cuando baja la ingesta de alimento.</p>
+      <div class="cols">
+        <div class="col">
+          <span class="tag tag-warn">Riesgos a vigilar</span>
+          <ul>
+            <li>No seguir los niveles de vitaminas y minerales de la guía de manejo</li>
+            <li>Mal almacenamiento de la mezcla vitamínica/mineral, que reduce sus niveles con el tiempo</li>
+            <li>Agua subóptima, que puede transportar enfermedades, toxinas o altos niveles de minerales</li>
+          </ul>
+        </div>
+        <div class="col">
+          <span class="tag tag-ok">Buenas prácticas</span>
+          <ul>
+            <li>Verificar siempre la etiqueta de la mezcla de vitaminas/minerales y confirmar que esté dentro del rango óptimo</li>
+            <li>Almacenamiento óptimo de la mezcla, crítico para prevenir la caída de vitaminas</li>
+            <li>Desinfección constante del agua para prevenir bacterias o virus</li>
+            <li>Verificación periódica de la calidad microbiológica y mineral del agua</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <div class="pull">El huevo llega a la máquina con la calidad que trajo, no con la que uno quisiera que tuviera.</div>
+
+  <!-- 05 -->
+  <article class="entry" id="almacenamiento">
+    <div class="entry-no">05</div>
+    <div>
+      <h2 class="entry-title">Almacenamiento y transporte del huevo</h2>
+      <p class="entry-where">El reloj empieza a correr desde la puesta</p>
+      <p class="lead">La calidad del pollito disminuye con el aumento del tiempo de almacenamiento del huevo, y también baja el aumento de peso corporal 7 días después del alojamiento cuando el almacenamiento superó los 14 días.</p>
+      <div class="stat-row">
+        <div class="stat"><b>62,2 %</b><span>Pollitos de buena calidad con 3 días de almacenamiento</span></div>
+        <div class="stat"><b>48 %</b><span>Con 18 días de almacenamiento</span></div>
+      </div>
+      <p class="tbl-cap">Adaptado de Tona et al., 2003 (vía H&amp;N International, 2026). Un período corto de incubación durante el almacenamiento (SPIDES) puede mitigar el impacto del almacenamiento prolongado.</p>
+      <p class="lead" style="margin-top:22px">El transporte del huevo incubable exige camión limpio y desinfectado, exclusivo para este uso, con temperatura de 18 a 22 °C y humedad relativa entre 40 y 60 %. Se debe evitar a toda costa la condensación en la cáscara, porque la humedad ahí perjudica el mecanismo natural de defensa contra microorganismos.</p>
+      <div class="tbl-wrap">
+        <table class="dtable">
+          <thead><tr><th>Sala de almacenamiento</th><th class="num">15 °C fuera</th><th class="num">18 °C fuera</th><th class="num">21 °C fuera</th><th class="num">24 °C fuera</th></tr></thead>
+          <tbody>
+            <tr><td>21 °C</td><td class="num">–</td><td class="num">–</td><td class="num">–</td><td class="num">&gt;85 % HR</td></tr>
+            <tr><td>18 °C</td><td class="num">–</td><td class="num">–</td><td class="num">&gt;83 % HR</td><td class="num">&gt;71 % HR</td></tr>
+            <tr><td>16 °C</td><td class="num">–</td><td class="num">&gt;89 % HR</td><td class="num">&gt;74 % HR</td><td class="num">&gt;60 % HR</td></tr>
+            <tr><td>12 °C</td><td class="num">&gt;74 % HR</td><td class="num">&gt;64 % HR</td><td class="num">&gt;53 % HR</td><td class="num">&gt;44 % HR</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="tbl-cap">Tabla 3. Predicción de condensación si no se toman medidas adicionales. Adaptado de Gerd de Lange, 2011 (poultrysite.com, vía H&amp;N International, 2026). En general, evite mover los huevos de temperaturas frías a temperaturas mucho más cálidas, en especial con humedad relativa alta.</p>
+    </div>
+  </article>
+
+  <!-- 06 -->
+  <article class="entry" id="temperatura">
+    <div class="entry-no">06</div>
+    <div>
+      <h2 class="entry-title">Temperatura: el factor más importante</h2>
+      <p class="entry-where">37,8 a 38,3 °C de cáscara, hasta la eclosión</p>
+      <p class="lead">La temperatura de la cáscara del huevo debe mantenerse entre 37,8 y 38,3 °C hasta que eclosionen. Una temperatura superior o inferior a la óptima afecta la incubabilidad, el tiempo de incubación y la calidad de los pollitos —es, de todos los factores de incubación, el más importante.</p>
+      <div class="stat-row">
+        <div class="stat"><b>0,2 %</b><span>Pollitos de 2.º grado con TCH normal (37,8 °C)</span></div>
+        <div class="stat"><b>0,9 %</b><span>Con TCH alta (38,9 °C)</span></div>
+      </div>
+      <p class="tbl-cap">Adaptado de Molenaar et al., 2011 (vía H&amp;N International, 2026).</p>
+      <div class="cols">
+        <div class="col">
+          <span class="tag tag-ok">Cómo se controla</span>
+          <ul>
+            <li>Evaluar la temperatura de la cáscara con frecuencia, con un procedimiento escrito</li>
+            <li>Seguir una temperatura óptima después de la transferencia, para evitar sobrecalentamiento (deshidratación) o enfriamiento en las nacedoras</li>
+          </ul>
+        </div>
+        <div class="col">
+          <span class="tag tag-warn">Máquina de una etapa vs. multietapa</span>
+          <ul>
+            <li>La incubadora de una sola etapa puede dar mejor calidad al mantener la temperatura de cáscara óptima constante durante todo el período</li>
+            <li>Una incubadora multietapa bien gestionada también puede desarrollar pollitos de buena calidad</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- 07 -->
+  <article class="entry" id="humedad">
+    <div class="entry-no">07</div>
+    <div>
+      <h2 class="entry-title">Humedad: la pérdida de peso correcta</h2>
+      <p class="entry-where">11 a 13 % a la transferencia</p>
+      <p class="lead">La humedad de la incubadora debe ajustarse para lograr una pérdida de peso del huevo de entre 11 y 13 % al momento de la transferencia (18,5 días de incubación). Una pérdida subóptima impacta la incubabilidad —aumentan las muertes tardías—, la calidad de los pollitos y su viabilidad a los 7 días.</p>
+      <div class="tbl-wrap">
+        <table class="dtable">
+          <thead><tr><th>Variable</th><th class="num">HR 43</th><th class="num">HR 53</th><th class="num">HR 63</th></tr></thead>
+          <tbody>
+            <tr><td>Infértiles (%)</td><td class="num">7,4</td><td class="num">8,3</td><td class="num">7,3</td></tr>
+            <tr><td>Mortalidad temprana (%)</td><td class="num">8,2</td><td class="num">7,1</td><td class="num">8,5</td></tr>
+            <tr><td>Mortalidad tardía (%)</td><td class="num">3,0</td><td class="num">2,3</td><td class="num">4,5</td></tr>
+            <tr><td>Picado (%)</td><td class="num">0,9</td><td class="num">0,5</td><td class="num">0,8</td></tr>
+            <tr class="hl"><td>Incubabilidad fértil (%)</td><td class="num">86,6</td><td class="num">89,1</td><td class="num">86,3</td></tr>
+            <tr><td>Peso corporal al nacer (%)</td><td class="num">39,4</td><td class="num">40,2</td><td class="num">41,2</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="tbl-cap">Tabla 4. Adaptado de Bruzual et al., 2000 (vía H&amp;N International, 2026). En esta prueba, 53 % de humedad relativa fue lo óptimo.</p>
+      <p class="note">Una pérdida de peso baja produce pollitos con yema grande y retenida, lo que afecta la incubabilidad y aumenta el riesgo de contaminación bacteriana. Es fundamental contar con un procedimiento estándar para verificar la pérdida de peso del huevo de forma regular.</p>
+    </div>
+  </article>
+
+  <!-- 08 -->
+  <article class="entry" id="giro">
+    <div class="entry-no">08</div>
+    <div>
+      <h2 class="entry-title">Giro, transferencia y ventana de eclosión</h2>
+      <p class="entry-where">Lo que ocurre dentro de la máquina, en orden</p>
+      <p class="lead">Las fallas en el giro —frecuencia subóptima (más de 60 minutos por giro) o ángulo menor a 38 grados— tienen un gran impacto en la incubabilidad y la calidad del pollito, por un desarrollo deficiente de la membrana corioalantoidea, mala utilización de la yema y falta de uniformidad en la temperatura de la cáscara.</p>
+      <div class="stat-row">
+        <div class="stat"><b>~58 %</b><span>Eclosión fértil con ángulo de giro de 15°</span></div>
+        <div class="stat"><b>~84 %</b><span>Con 30°</span></div>
+        <div class="stat"><b>~92 %</b><span>Con 45°</span></div>
+      </div>
+      <p class="tbl-cap">Adaptado de Cutchin et al., 2009 (vía H&amp;N International, 2026). Verificar la frecuencia de giro todos los días y el ángulo de giro al menos cada 6 meses.</p>
+      <div class="cols">
+        <div class="col">
+          <span class="tag tag-ok">Transferencia</span>
+          <ul>
+            <li>Debe realizarse en el día correcto: lo mejor es entre los días 18 y 19 de incubación</li>
+            <li>La manipulación debe ser rápida y cuidadosa, para evitar grietas y que los huevos pasen demasiado tiempo a temperatura ambiente</li>
+          </ul>
+        </div>
+        <div class="col">
+          <span class="tag tag-warn">Ventana de eclosión</span>
+          <ul>
+            <li>Rango óptimo: 20 a 28 horas en máquinas multietapa, y menos de 18 horas en máquinas de una sola etapa</li>
+            <li>Una ventana larga refleja condiciones no uniformes: baja temperatura de cáscara, almacenamiento prolongado, tamaños de huevo dispares, distintas edades de lote parental</li>
+            <li>Afecta la calidad: los pollitos tempranos se deshidratan, los tardíos quedan muy húmedos, y el peso general es menos uniforme</li>
+          </ul>
+        </div>
+      </div>
+      <p class="note tip"><span class="lbl">Hora de salida</span>Los pollitos deben retirarse de la nacedora en el momento adecuado para evitar la deshidratación (tarde) o la inmadurez (temprano). Ambas condiciones impactan la viabilidad de los polluelos.</p>
+    </div>
+  </article>
+
+  <!-- 09 -->
+  <article class="entry" id="evaluacion">
+    <div class="entry-no">09</div>
+    <div>
+      <h2 class="entry-title">Cómo se mide la calidad del pollito</h2>
+      <p class="entry-where">Cualitativos y cuantitativos</p>
+      <p class="lead">Existen métodos cualitativos, cuantitativos, semicuantitativos y microbiológicos. Independientemente del método, es importante tener una muestra representativa, evaluada después del procesamiento y la selección.</p>
+      <div class="cols">
+        <div class="col">
+          <span class="tag tag-ok">Chick grading (cualitativo)</span>
+          <ul>
+            <li>Comportamiento: no se mueve, perezoso, parece dormido, etc.</li>
+            <li>Calidad del ombligo: botón negro, cordón, etc.</li>
+            <li>Calidad del pico: tratamiento del pico, punto rojo, etc.</li>
+            <li>Corvejones y calidad de las patas: lesiones rojas, por deshidratación, etc.</li>
+            <li>Características del abdomen: demasiado grande y blando, o pequeño y duro</li>
+          </ul>
+        </div>
+        <div class="col">
+          <span class="tag tag-warn">Métodos cuantitativos</span>
+          <ul>
+            <li><b>Peso corporal y uniformidad</b>: 100 pollitos por lote tras procesamiento; objetivo &gt;90 % uniformidad y &lt;8 % coeficiente de variación</li>
+            <li><b>Rendimiento de pollitos</b>: 3 bandejas por lote e incubadora (~150 × 3 huevos); óptimo 67–68 % del peso del huevo</li>
+            <li><b>Longitud del pollito</b>: del pico al dedo medio, muestra de 25; no destructivo, requiere estándar propio según edad del lote</li>
+            <li><b>Masa corporal libre de yema (YFBM)</b>: peso corporal menos yema residual; objetivo &gt;90 %, destructivo y demandante en tiempo</li>
+          </ul>
+        </div>
+      </div>
+      <p class="note">Cuanto más grande es la yema, más pesados son los pollitos —pero eso no siempre es bueno, porque una yema grande puede indicar mala utilización durante la incubación. A mayor temperatura de la cáscara del huevo, menor masa corporal libre de yema y menor calidad.</p>
+    </div>
+  </article>
+
+  <!-- 10 -->
+  <article class="entry" id="puntuaciones">
+    <div class="entry-no">10</div>
+    <div>
+      <h2 class="entry-title">Puntuaciones, meconio y revisión microbiológica</h2>
+      <p class="entry-where">Semicuantitativo y microbiológico</p>
+      <p class="lead">Las puntuaciones de Tona, Pasgar y Cervantes se basan en características morfológicas —actividad, postura, abdomen, ombligo, piernas, pico y ojos— y sus resultados pueden variar entre evaluadores. El método Cervantes incluye además la contaminación bacteriana; la puntuación de Pasgar es la más sencilla y práctica de usar.</p>
+      <div class="cols">
+        <div class="col">
+          <span class="tag tag-warn">Exceso de meconio</span>
+          <ul>
+            <li>Demasiado meconio en cáscaras y bandejas de nacedoras indica que los polluelos permanecieron demasiado tiempo dentro</li>
+            <li>Medidas correctivas: ajustar las horas de incubación, sacarlos antes, revisar si la temperatura de cáscara fue demasiado alta, y si la humedad de incubación fue demasiado baja</li>
+          </ul>
+        </div>
+        <div class="col">
+          <span class="tag tag-ok">Revisión microbiológica</span>
+          <ul>
+            <li>Muestreo de 10 pollitos sanos por lote, justo después de la salida de la nacedora</li>
+            <li>Hisopos de yema para cultivo en agar sangre (general), McConkey (gram negativos) y PEA (gram positivos)</li>
+            <li>Tejido pulmonar para moho (<i>Aspergillus</i> spp.) en agar SabDex</li>
+            <li>Pool de vísceras e intestinos para cultivo de <i>Salmonella</i></li>
+            <li>Evaluar calidad de pierna, ombligo y yema, y presencia de erosiones en la molleja</li>
+          </ul>
+        </div>
+      </div>
+      <p class="note tip"><span class="lbl">Una buena opción</span>Dejar los pollitos 48 horas en condiciones óptimas en el criadero y, transcurrido ese plazo, tomar las muestras. Este método ayuda a evaluar las condiciones sanitarias tanto de la granja como del criadero.</p>
+    </div>
+  </article>
+
+  <!-- OUTRO -->
+  <div class="outro">
+    <p class="disclaimer">Esta guía ordena los factores de preincubación e incubación descritos en el documento técnico <em>Calidad del Pollito</em> de H&amp;N International (2026), y no reemplaza el manual de manejo de la línea genética ni una auditoría en planta. La evaluación práctica al recibir el pollito en la granja —chick grading, condiciones de crianza y cuándo reclamar— está desarrollada en la <a href="https://avivet.cl/avivet/Recursos/calidad-pollito/">guía de recepción de pollitos</a>.</p>
+
+    <div class="contact">
+      <div class="kicker">Asesoría veterinaria</div>
+      <h3>¿Necesita revisar el proceso de incubación?</h3>
+      <p>Medicina aviar y avicultura para el sur de Chile — Los Ríos, La Araucanía y Los Lagos.</p>
+      <div class="contact-links">
+        <a class="clink" href="https://wa.me/56958956340" target="_blank" rel="noopener"><span class="ck">WhatsApp</span><b>+56 9 5895 6340</b><span class="arr">→</span></a>
+        <a class="clink" href="mailto:andreslazomv@outlook.com"><span class="ck">Email</span><b>andreslazomv@outlook.com</b><span class="arr">→</span></a>
+        <a class="clink" href="https://avivet.cl" target="_blank" rel="noopener"><span class="ck">Web</span><b>avivet.cl</b><span class="arr">→</span></a>
+      </div>
+    </div>
+
+    <p class="foot">MV Andrés Lazo Escobar · <a href="https://avivet.cl/">Volver a avivet.cl</a></p>
+  </div>
+
+</main>
+
+<script>
+(function(){
+  var exts = ['jpg','jpeg','png','svg','webp'];
+  document.querySelectorAll('.ph-img').forEach(function(img){
+    var base = img.dataset.base, i = 0;
+    function tryNext(){
+      if(i >= exts.length){ img.remove(); return; }
+      var probe = new Image();
+      probe.onload = function(){
+        img.src = probe.src; img.hidden = false;
+        var ph = img.closest('.plate-frame').querySelector('.ph');
+        if(ph) ph.remove();
+      };
+      probe.onerror = function(){ i++; tryNext(); };
+      probe.src = base + '.' + exts[i];
+    }
+    tryNext();
+  });
+})();
+
+(function(){
+  var navScroll = document.getElementById('navScroll');
+  var chips = {};
+  navScroll.querySelectorAll('.idx').forEach(function(c){
+    chips[c.getAttribute('href').slice(1)] = c;
+  });
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        var id = e.target.id;
+        Object.values(chips).forEach(function(c){c.classList.remove('active');});
+        var active = chips[id];
+        if(active){
+          active.classList.add('active');
+          var off = active.offsetLeft - navScroll.clientWidth/2 + active.clientWidth/2;
+          navScroll.scrollTo({left:off, behavior:'smooth'});
+        }
+      }
+    });
+  }, {rootMargin:'-45% 0px -50% 0px', threshold:0});
+  document.querySelectorAll('article.entry').forEach(function(s){io.observe(s);});
+})();
+</script>
+</body>
+</html>

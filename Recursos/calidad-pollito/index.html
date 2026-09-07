@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La calidad del pollito se lee en los primeros diez minutos — AviVet</title>
+<meta name="description" content="Guía práctica para evaluar la calidad del pollito BB al recibirlo en la granja: chick grading, ombligo, corvejones, peso, uniformidad, temperatura cloacal y buche, y cuándo reclamarle a la incubadora. Por MV Andrés Lazo, AviVet.">
+<link rel="canonical" href="https://avivet.cl/avivet/Recursos/calidad-pollito/">
+<meta name="author" content="MV Andrés Lazo Escobar">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="AviVet">
+<meta property="og:locale" content="es_CL">
+<meta property="og:title" content="El pollito no miente: se lee en los primeros diez minutos">
+<meta property="og:description" content="Qué mirar, qué medir y cuándo llamar a la incubadora cuando la caja de pollitos baja del camión.">
+<meta property="og:url" content="https://avivet.cl/avivet/Recursos/calidad-pollito/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="El pollito no miente: se lee en los primeros diez minutos">
+<meta name="twitter:description" content="Qué mirar, qué medir y cuándo llamar a la incubadora cuando la caja de pollitos baja del camión.">
+<link rel="icon" href="https://avivet.cl/assets/img/brand/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="https://avivet.cl/assets/img/brand/favicon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500;1,9..144,600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#fafaf8; --paper2:#f0faf3; --paper3:#e3f0e8;
+  --ink:#141414; --ink2:#3a3a3a; --ink3:#6b6b6b;
+  --line:#d4e6da; --line2:#bcd6c5;
+  --rust:#1b4332; --rust-d:#0d2b1e; --rust-l:#d8f3dc;
+  --olive:#2d6a4f; --olive-d:#1b4332;
+  --amber:#c0392b; --amber-d:#7a1c1c;
+  --gold:#c9a84c; --gold2:#e8c96e; --gold-d:#a8842e;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:"DM Sans",sans-serif;background:var(--paper);color:var(--ink);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;}
+body::before{content:"";position:fixed;inset:0;z-index:1;pointer-events:none;opacity:0.05;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+a{color:inherit;}
+
+.topbar{position:sticky;top:0;z-index:200;background:rgba(243,237,225,0.94);backdrop-filter:saturate(1.2) blur(6px);
+  border-bottom:1px solid var(--line);height:48px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;}
+.brand{font-family:"Fraunces",serif;font-weight:900;font-size:19px;letter-spacing:-0.02em;color:var(--ink);}
+.brand .dotrust{color:var(--olive);font-style:italic;}
+.topbar .meta{font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink3);}
+
+main{max-width:760px;margin:0 auto;padding:0 22px 90px;position:relative;z-index:2;animation:fadeIn .5s ease;}
+
+.masthead{padding:56px 0 34px;}
+.kicker{font-size:11.5px;letter-spacing:0.22em;text-transform:uppercase;color:var(--rust);font-weight:600;margin-bottom:22px;
+  display:flex;align-items:center;gap:12px;}
+.kicker::after{content:"";flex:1;height:1px;background:var(--line2);}
+.display{font-family:"Fraunces",serif;font-weight:600;font-size:clamp(40px,8vw,68px);line-height:0.98;letter-spacing:-0.02em;margin-bottom:24px;}
+.display em{font-style:italic;color:var(--rust);}
+.standfirst{font-family:"Fraunces",serif;font-size:clamp(18px,2.6vw,22px);line-height:1.45;color:var(--ink2);max-width:600px;font-weight:400;}
+.byline{margin-top:24px;font-size:12.5px;letter-spacing:0.04em;color:var(--ink3);text-transform:uppercase;}
+.byline b{color:var(--ink);font-weight:600;}
+
+.plate{margin:34px 0 6px;}
+.plate-frame{position:relative;border:1px solid var(--line2);padding:10px;background:var(--paper2);}
+.plate-frame img{width:100%;height:auto;display:block;filter:saturate(1.02) contrast(1.02);}
+.plate-cap{font-family:"Fraunces",serif;font-style:italic;font-size:13.5px;color:var(--ink2);margin-top:12px;text-align:center;}
+.plate-cap .credit{font-style:normal;color:var(--ink3);font-size:11px;}
+.plate-cap .credit a{color:var(--ink3);}
+.hint{text-align:center;font-size:12px;letter-spacing:0.04em;color:var(--ink3);margin-top:6px;}
+
+.index{position:sticky;top:48px;z-index:150;background:rgba(243,237,225,0.96);backdrop-filter:blur(6px);
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-top:30px;}
+.index-scroll{display:flex;overflow-x:auto;scrollbar-width:none;}
+.index-scroll::-webkit-scrollbar{display:none;}
+.idx{flex:0 0 auto;padding:11px 15px;font-size:12.5px;font-weight:600;color:var(--ink2);text-decoration:none;
+  white-space:nowrap;border-bottom:2px solid transparent;display:flex;align-items:baseline;gap:6px;transition:color .15s;}
+.idx .n{color:var(--ink3);font-variant-numeric:tabular-nums;font-size:11px;}
+.idx:hover{color:var(--rust);}
+.idx.active{color:var(--rust);border-bottom-color:var(--rust);}
+.idx.active .n{color:var(--rust);}
+
+.entry{display:grid;grid-template-columns:96px 1fr;gap:22px;padding:46px 0;border-top:1px solid var(--line);scroll-margin-top:104px;}
+.entry:first-of-type{border-top:none;}
+.entry-no{font-family:"Fraunces",serif;font-weight:500;font-size:54px;line-height:0.8;color:var(--rust);letter-spacing:-0.03em;}
+.entry-title{font-family:"Fraunces",serif;font-weight:600;font-size:30px;line-height:1.05;letter-spacing:-0.015em;margin-bottom:5px;}
+.entry-where{font-size:11.5px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink3);margin-bottom:16px;}
+.lead{font-family:"Fraunces",serif;font-size:18.5px;line-height:1.5;color:var(--ink2);max-width:560px;}
+.lead,.note,.disclaimer,.col li{text-align:justify;text-justify:inter-word;hyphens:auto;-webkit-hyphens:auto;}
+@media (max-width:520px){.lead,.note,.disclaimer,.col li{text-align:left;hyphens:manual;}}
+.entry:first-of-type .lead::first-letter{initial-letter:2;font-weight:600;color:var(--rust);margin-right:8px;}
+
+.cols{display:grid;grid-template-columns:1fr 1fr;margin-top:24px;border-top:1px solid var(--line);}
+.col{padding:18px 0;}
+.col + .col{border-left:1px solid var(--line);padding-left:26px;}
+.col:first-child{padding-right:26px;}
+@media(max-width:540px){.cols{grid-template-columns:1fr;}.col + .col{border-left:none;border-top:1px solid var(--line);padding-left:0;}.col:first-child{padding-right:0;}}
+.tag{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;font-weight:700;display:inline-flex;align-items:center;gap:7px;margin-bottom:13px;}
+.tag::before{content:"";width:9px;height:9px;display:inline-block;}
+.tag-ok{color:var(--olive);}
+.tag-ok::before{background:var(--olive);}
+.tag-warn{color:var(--amber);}
+.tag-warn::before{width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:9px solid var(--amber);}
+.col ul{list-style:none;display:flex;flex-direction:column;gap:9px;}
+.col li{font-size:14.5px;line-height:1.45;color:var(--ink);padding-left:16px;position:relative;}
+.col li::before{content:"";position:absolute;left:0;top:9px;width:6px;height:1.5px;background:var(--line2);}
+.col li em{font-style:italic;color:var(--ink2);}
+
+.note{margin-top:22px;padding:2px 0 2px 18px;border-left:2px solid var(--amber);
+  font-family:"Fraunces",serif;font-size:15px;font-style:italic;line-height:1.5;color:var(--amber-d);}
+.note.tip{border-left-color:var(--gold);color:#5a4720;}
+.note .lbl{font-style:normal;font-weight:700;font-size:10.5px;letter-spacing:0.16em;text-transform:uppercase;
+  display:block;margin-bottom:3px;color:var(--amber);}
+.note.tip .lbl{color:var(--gold-d);}
+
+.pull{font-family:"Fraunces",serif;font-style:italic;font-weight:500;font-size:clamp(24px,4vw,32px);line-height:1.25;
+  color:var(--rust);text-align:center;max-width:600px;margin:8px auto;padding:54px 10px;letter-spacing:-0.01em;position:relative;}
+.pull::before,.pull::after{content:"";display:block;width:46px;height:1px;background:var(--line2);margin:0 auto;}
+.pull::before{margin-bottom:30px;}
+.pull::after{margin-top:30px;}
+
+.outro{margin-top:30px;border-top:2px solid var(--ink);padding-top:30px;}
+.disclaimer{font-family:"Fraunces",serif;font-style:italic;font-size:15px;line-height:1.55;color:var(--ink2);max-width:560px;margin-bottom:38px;}
+.contact{background:var(--paper2);border:1px solid var(--line2);padding:30px 30px 28px;}
+.contact .kicker{margin-bottom:14px;}
+.contact h3{font-family:"Fraunces",serif;font-weight:600;font-size:26px;line-height:1.1;margin-bottom:8px;letter-spacing:-0.01em;}
+.contact p{font-size:14.5px;color:var(--ink2);margin-bottom:20px;max-width:440px;}
+.contact-links{display:flex;flex-direction:column;gap:11px;}
+.clink{font-size:15px;color:var(--ink);text-decoration:none;display:flex;align-items:baseline;gap:12px;border-top:1px solid var(--line);padding-top:11px;transition:color .15s;}
+.clink:hover{color:var(--rust);}
+.clink .ck{font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink3);width:90px;flex:0 0 90px;}
+.clink b{font-weight:600;}
+.clink .arr{margin-left:auto;color:var(--rust);}
+.foot{text-align:center;font-size:12px;letter-spacing:0.04em;color:var(--ink3);margin-top:40px;text-transform:uppercase;}
+.foot a{color:var(--rust);text-decoration:none;}
+
+@media(max-width:560px){
+  .entry{grid-template-columns:1fr;gap:6px;}
+  .entry-no{font-size:38px;}
+}
+.plate--wide{width:min(1140px,calc(100vw - 44px));margin-left:50%;transform:translateX(-50%);}
+.plate--wide .plate-frame{background:var(--paper2);}
+.plate-cap.wide-cap{max-width:760px;margin-left:auto;margin-right:auto;}
+
+.ph{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;
+  min-height:280px;padding:40px 26px;text-align:center;border:2px dashed var(--line2);
+  background:repeating-linear-gradient(45deg,transparent,transparent 11px,rgba(45,106,79,.035) 11px,rgba(45,106,79,.035) 22px);}
+.ph-name{font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:var(--rust);font-weight:700;
+  background:var(--paper);border:1px solid var(--line2);padding:6px 13px;}
+.ph p{font-family:"Fraunces",serif;font-style:italic;font-size:16px;color:var(--ink2);max-width:470px;line-height:1.5;margin:0;}
+.ph .ph-hint{font-family:"DM Sans",sans-serif;font-style:normal;font-size:12.5px;color:var(--ink3);letter-spacing:0.02em;}
+
+.steps{list-style:none;counter-reset:st;margin-top:24px;border-top:1px solid var(--line);}
+.steps li{counter-increment:st;display:grid;grid-template-columns:38px 1fr;gap:16px;
+  padding:15px 0;border-bottom:1px solid var(--line);align-items:baseline;}
+.steps li::before{content:counter(st);font-family:"Fraunces",serif;font-weight:600;font-size:22px;
+  color:var(--rust);line-height:1;}
+.steps b{font-weight:600;display:block;font-size:15.5px;margin-bottom:2px;}
+.steps span{grid-column:2;font-size:14.5px;color:var(--ink2);line-height:1.5;}
+.steps .when{grid-column:auto;display:inline-block;font-size:10.5px;letter-spacing:0.14em;text-transform:uppercase;
+  color:var(--gold-d);font-weight:700;margin-left:8px;}
+
+.stat-row{display:flex;gap:14px;margin-top:22px;flex-wrap:wrap;}
+.stat{flex:1 1 140px;border:1px solid var(--line2);background:var(--paper2);padding:16px 14px;text-align:center;}
+.stat b{display:block;font-family:"Fraunces",serif;font-size:26px;color:var(--rust);line-height:1.1;}
+.stat span{display:block;font-size:11.5px;color:var(--ink3);letter-spacing:0.03em;margin-top:4px;}
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "El pollito no miente: se lee en los primeros diez minutos",
+  "description": "Guía práctica para evaluar la calidad del pollito BB al recibirlo en la granja: chick grading, ombligo, corvejones, peso, uniformidad y condiciones de crianza.",
+  "inLanguage": "es-CL",
+  "datePublished": "2026-09-06",
+  "dateModified": "2026-09-06",
+  "author": {"@type": "Person", "name": "Andrés Lazo Escobar", "jobTitle": "Médico Veterinario", "url": "https://avivet.cl/"},
+  "publisher": {"@type": "Organization", "name": "AviVet", "url": "https://avivet.cl/",
+    "logo": {"@type": "ImageObject", "url": "https://avivet.cl/assets/img/brand/favicon-180.png"}},
+  "mainEntityOfPage": {"@type": "WebPage", "@id": "https://avivet.cl/avivet/Recursos/calidad-pollito/"},
+  "about": ["Calidad del pollito BB", "Recepción de pollitos", "Chick grading", "Incubación aviar", "Recría de pollitas"]
+}
+</script>
+</head>
+<body>
+
+<div class="topbar">
+  <span class="brand">Avi<span class="dotrust">Vet</span></span>
+  <span class="meta">MV Andrés Lazo · Medicina aviar</span>
+</div>
+
+<main>
+
+  <!-- MASTHEAD -->
+  <header class="masthead">
+    <div class="kicker">Recepción de pollitos · N.º 05</div>
+    <h1 class="display">El pollito no miente: se lee en los primeros <em>diez minutos</em></h1>
+    <p class="standfirst">La calidad de un lote se decide antes de nacer —en la granja de reproductoras y dentro de la incubadora— pero en su galpón es donde todavía se puede corregir algo, y donde hay que registrar lo que después se reclama. Esta guía es para el momento en que la caja baja del camión.</p>
+    <p class="byline"><b>MV Andrés Lazo Escobar</b> — Especialista en medicina aviar · Sur de Chile</p>
+  </header>
+
+  <!-- OPENING PLATE -->
+  <figure class="plate plate--wide">
+    <div class="plate-frame">
+      <img class="ph-img" data-base="apertura" src="apertura.jpg" hidden
+           alt="Pollitos BB recién retirados de la caja de transporte, siendo revisados en la granja">
+      <div class="ph">
+        <div class="ph-name">apertura.jpg</div>
+        <p>Lámina de apertura: manos revisando pollitos recién bajados de la caja, en el galpón.</p>
+        <p class="ph-hint">Formato apaisado, ~1600 × 840 px · .jpg, .png o .svg</p>
+      </div>
+    </div>
+    <figcaption class="plate-cap">
+      Un lote de buena calidad llega con un peso corporal de 67 a 68 % del peso del huevo fresco y más de 90 % de uniformidad.
+      <span class="credit">Datos: H&amp;N International, 2026.</span>
+    </figcaption>
+  </figure>
+
+  <!-- INDEX -->
+  <nav class="index">
+    <div class="index-scroll" id="navScroll">
+      <a class="idx" href="#buen-lote"><span class="n">01</span>Cómo es un buen lote</a>
+      <a class="idx" href="#antes"><span class="n">02</span>Antes del camión</a>
+      <a class="idx" href="#comportamiento"><span class="n">03</span>En la caja</a>
+      <a class="idx" href="#ombligo"><span class="n">04</span>Ombligo y abdomen</a>
+      <a class="idx" href="#corvejones"><span class="n">05</span>Corvejones y patas</a>
+      <a class="idx" href="#peso"><span class="n">06</span>Peso y uniformidad</a>
+      <a class="idx" href="#crianza"><span class="n">07</span>Las primeras 24 h</a>
+      <a class="idx" href="#mortalidad"><span class="n">08</span>Cuándo reclamar</a>
+      <a class="idx" href="#proveedor"><span class="n">09</span>Qué exigirle</a>
+    </div>
+  </nav>
+
+  <!-- 01 -->
+  <article class="entry" id="buen-lote">
+    <div class="entry-no">01</div>
+    <div>
+      <h2 class="entry-title">Cómo es un buen lote, antes de mirar el detalle</h2>
+      <p class="entry-where">El checklist de partida</p>
+      <p class="lead">Conviene tener esta lista en la cabeza antes de abrir la primera caja: es contra lo que se compara todo lo que sigue. Si el lote que bajó del camión no cumple varios de estos puntos, ya sabe que algo pasó antes de llegar a su galpón —en la granja de reproductoras o dentro de la incubadora.</p>
+      <div class="cols">
+        <div class="col">
+          <span class="tag tag-ok">Un buen lote</span>
+          <ul>
+            <li>Buena viabilidad</li>
+            <li>Peso corporal de <b>67 a 68 %</b> del peso del huevo fresco</li>
+            <li>Uniformidad mayor a <b>90 %</b></li>
+            <li>Libre de enfermedades</li>
+            <li>Buen nivel de anticuerpos maternos</li>
+            <li>Alerta y activo</li>
+            <li>Físicamente perfecto</li>
+            <li>Sin signos de deshidratación</li>
+          </ul>
+        </div>
+        <div class="col">
+          <span class="tag tag-warn">Señales de que algo falló</span>
+          <ul>
+            <li>Peso relativo <b>&lt;67 %</b>: pollitos deshidratados <em>→ ¿demasiado tiempo en la nacedora? ¿mortalidad alta a los 7 días?</em></li>
+            <li>Peso relativo <b>&gt;68 %</b>: pollitos demasiado inmaduros, letárgicos, más propensos a infecciones</li>
+            <li>Uniformidad baja o corvejones rojos</li>
+            <li>Abdomen anormal (muy grande y blando, o muy pequeño y duro)</li>
+          </ul>
+        </div>
+      </div>
+      <p class="note tip"><span class="lbl">La calidad empieza antes de la granja</span>Como es esperable, la calidad del pollito comienza en la granja de reproductoras: manejo, edad del lote, salud, alimento y agua determinan la calidad del huevo incubable antes de que la máquina haga nada. Si además trabaja o va a trabajar del lado de una incubadora, el detalle de preincubación e incubación está desarrollado en la <a href="https://avivet.cl/avivet/Recursos/incubacion/">guía técnica de incubación</a>.</p>
+    </div>
+  </article>
+
+  <!-- 02 -->
+  <article class="entry" id="antes">
+    <div class="entry-no">02</div>
+    <div>
+      <h2 class="entry-title">Antes de que llegue el camión</h2>
+      <p class="entry-where">Sala de espera y transporte de pollitos de un día</p>
+      <p class="lead">Lo que pasa entre que el pollito sale de la nacedora y llega a su galpón también es parte de la calidad. Usted no lo controla, pero sí puede preguntarlo —y si algo se ve raro al llegar, es lo primero que hay que revisar.</p>
+      <div class="cols">
+        <div class="col">
+          <span class="tag tag-ok">Lo que debe cumplir el transporte</span>
+          <ul>
+            <li>Temperatura de sala y vehículo entre <b>20 y 25 °C</b></li>
+            <li>Humedad relativa entre <b>50 y 60 %</b></li>
+            <li>Ventilación que distribuya la temperatura pareja, sin puntos fríos ni calientes</li>
+            <li>Viaje lo más corto y suave posible</li>
+            <li>Camión limpio, desinfectado y exclusivo para pollitos de un día</li>
+          </ul>
+        </div>
+        <div class="col">
+          <span class="tag tag-warn">Si el viaje fue largo</span>
+          <ul>
+            <li>¿Se usó suplementación (electrolitos, energía) para limitar la deshidratación?</li>
+            <li>¿Cuánto tiempo pasó entre el retiro de la nacedora y la llegada a su galpón?</li>
+            <li>¿El camión se desinfecta entre lotes o se comparte con otros usos?</li>
+          </ul>
+        </div>
+      </div>
+      <p class="note">Registre la hora de salida de la incubadora y la hora de llegada a su galpón. Esa diferencia explica después buena parte de una deshidratación o una mortalidad que, a simple vista, «no se explica».</p>
+    </div>
+  </article>
+
+  <!-- 03 -->
+  <article class="entry" id="comportamiento">
+    <div class="entry-no">03</div>
+    <div>
+      <h2 class="entry-title">Lo primero: mirar y escuchar la caja</h2>
+      <p class="entry-where">Antes de tocar un solo pollito</p>
+      <p class="lead">Antes de abrir cada caja para revisar el detalle, deténgase un momento. El comportamiento general dice mucho en los primeros segundos, y no requiere ningún instrumento.</p>
+      <div class="cols">
+        <div class="col">
+          <span class="tag tag-ok">Lo esperable</span>
+          <ul>
+            <li>Capaces de estar de pie y moverse con facilidad, aunque descansen si están relajados</li>
+            <li>Activos y alerta</li>
+            <li>Vocalización baja y pareja</li>
+          </ul>
+        </div>
+        <div class="col">
+          <span class="tag tag-warn">Señales de alerta</span>
+          <ul>
+            <li>Pollitos muy ruidosos <em>→ puede indicar estrés térmico, de frío o de calor, durante el transporte</em></li>
+            <li>Pollitos caídos o que no se paran en el fondo de la caja</li>
+            <li>Disparidad marcada de tamaño dentro de una misma caja</li>
+          </ul>
+        </div>
+      </div>
+      <p class="note tip"><span class="lbl">Muestra representativa, no la primera caja</span>Abra cajas de distintos puntos de la pila, no solo la de arriba —el frío o el calor no siempre se reparte igual dentro del camión.</p>
+    </div>
+  </article>
+
+  <!-- 04 -->
+  <article class="entry" id="ombligo">
+    <div class="entry-no">04</div>
+    <div>
+      <h2 class="entry-title">Ombligo y abdomen: la ventana rápida</h2>
+      <p class="entry-where">Dos segundos por pollito, sin instrumentos</p>
+      <p class="lead">El ombligo y el abdomen dicen mucho de cómo fue la incubación de ese lote —se ven en segundos, tomando al pollito con la palma hacia arriba.</p>
+
+      <figure class="plate">
+        <div class="plate-frame">
+          <img class="ph-img" data-base="ombligo" src="ombligo.jpg" hidden
+               alt="Comparación entre un ombligo de pollito bien cerrado y uno con botón negro y cordón remanente">
+          <div class="ph">
+            <div class="ph-name">ombligo.jpg</div>
+            <p>Dos pollitos lado a lado: ombligo bien cerrado versus ombligo con botón negro o cordón remanente.</p>
+            <p class="ph-hint">~1200 × 700 px · .jpg, .png o .svg</p>
+          </div>
+        </div>
+        <figcaption class="plate-cap">Cerrado y sin cordón a la izquierda; botón negro y restos de membrana a la derecha.</figcaption>
+      </figure>
+
+      <div class="cols">
+        <div class="col">
+          <span class="tag tag-ok">Ombligo bueno</span>
+          <ul>
+            <li>Cerrado, sin cordón ni botón negro visible</li>
+          </ul>
+        </div>
+        <div class="col">
+          <span class="tag tag-warn">Ombligo malo</span>
+          <ul>
+            <li>Botón negro, cordón remanente, restos de membrana</li>
+            <li>Se asocia principalmente al almacenamiento del huevo, la edad del lote de reproductoras y las condiciones de incubación</li>
+          </ul>
+        </div>
+      </div>
+      <div class="cols">
+        <div class="col">
+          <span class="tag tag-ok">Abdomen normal</span>
+          <ul>
+            <li>Firme, ni muy grande ni muy duro</li>
+          </ul>
+        </div>
+        <div class="col">
+          <span class="tag tag-warn">Abdomen anormal</span>
+          <ul>
+            <li>Demasiado grande y blando: yema no absorbida, más riesgo de contaminación bacteriana y peor arranque intestinal</li>
+            <li>Demasiado pequeño y duro: deshidratación</li>
+          </ul>
+        </div>
+      </div>
+      <p class="note">A mayor temperatura de la cáscara del huevo durante la incubación, menor utilización de la yema y peor calidad en este punto —otra pista de que el problema viene de la máquina, no de algo que usted pueda corregir en la granja.</p>
+    </div>
+  </article>
+
+  <!-- 05 -->
+  <article class="entry" id="corvejones">
+    <div class="entry-no">05</div>
+    <div>
+      <h2 class="entry-title">Corvejones y patas: la historia térmica</h2>
+      <p class="entry-where">Un segundo por pollito</p>
+      <p class="lead">Las patas cuentan cómo fue la temperatura y la humedad dentro de la incubadora. Se toma el pollito, se mira el corvejón, y se sigue.</p>
+      <div class="cols">
+        <div class="col">
+          <span class="tag tag-warn">Lo que se ve</span>
+          <ul>
+            <li>Lesiones o enrojecimiento en el corvejón</li>
+            <li>Lesiones asociadas a deshidratación en las patas</li>
+            <li>Abdomen abultado apareciendo junto con corvejones rojos</li>
+          </ul>
+        </div>
+        <div class="col">
+          <span class="tag tag-warn">Qué significa</span>
+          <ul>
+            <li>Corvejones rojos: en general, alta temperatura y/o alta humedad durante la incubación</li>
+            <li>Lesiones por deshidratación: tiempo prolongado en la nacedora, o transporte largo sin suplementación</li>
+          </ul>
+        </div>
+      </div>
+      <p class="note">El abdomen abultado y los corvejones rojos suelen aparecer juntos, y ambos apuntan al mismo origen: una temperatura de incubación subóptima y humedad alta —no a algo que haya pasado camino a la granja.</p>
+    </div>
+  </article>
+
+  <div class="pull">Un pollito no explica por qué llegó mal. Los números sí.</div>
+
+  <!-- 06 -->
+  <article class="entry" id="peso">
+    <div class="entry-no">06</div>
+    <div>
+      <h2 class="entry-title">Peso y uniformidad: el número que resume todo</h2>
+      <p class="entry-where">Rendimiento de pollitos</p>
+      <p class="lead">Un solo número resume gran parte de lo anterior: cuánto pesa el pollito comparado con el huevo del que salió.</p>
+      <div class="stat-row">
+        <div class="stat"><b>67–68 %</b><span>Peso corporal óptimo, sobre el peso del huevo fresco</span></div>
+        <div class="stat"><b>&gt;90 %</b><span>Uniformidad objetivo</span></div>
+        <div class="stat"><b>&lt;8 %</b><span>Coeficiente de variación objetivo</span></div>
+      </div>
+      <div class="cols">
+        <div class="col">
+          <span class="tag tag-ok">Cómo se mide</span>
+          <ul>
+            <li>Pesar todos los pollitos de 3 bandejas por lote (alrededor de 150 × 3 huevos), no uno por uno</li>
+            <li>Comparar contra el peso del huevo antes de incubar, con menos de 7 días de almacenamiento</li>
+            <li>Para uniformidad, pesar individualmente 100 pollitos por lote</li>
+          </ul>
+        </div>
+        <div class="col">
+          <span class="tag tag-warn">Cómo se interpreta</span>
+          <ul>
+            <li><b>&lt;67 %</b>: deshidratados <em>→ ¿mucho tiempo en la nacedora? ¿poca pérdida de peso del huevo en incubación?</em></li>
+            <li><b>&gt;68 %</b>: demasiado inmaduros, letárgicos, más propensos a infecciones</li>
+          </ul>
+        </div>
+      </div>
+      <p class="note tip"><span class="lbl">Más grande no es mejor</span>Cuanto más grande es la yema, más pesado el pollito —y eso no siempre es bueno: puede indicar mala utilización de la yema durante la incubación, en lugar de un pollito más fuerte.</p>
+    </div>
+  </article>
+
+  <!-- 07 -->
+  <article class="entry" id="crianza">
+    <div class="entry-no">07</div>
+    <div>
+      <h2 class="entry-title">Las primeras 24 horas deciden lo que queda</h2>
+      <p class="entry-where">Rutina de las primeras 24 horas de galpón</p>
+      <p class="lead">La calidad que trajo el pollito se sostiene o se pierde en las primeras 24 horas. Temperatura, alimento, agua y ventilación deciden la viabilidad a los 7 días.</p>
+      <ol class="steps">
+        <li><b>Medir temperatura cloacal<span class="when">Primeras 24 h</span></b><span>Revisar 15 a 20 pollitos en distintas áreas de la casa. Debe mantenerse entre 40 y 41 °C.</span></li>
+        <li><b>Corregir y volver a medir<span class="when">Si hay desvíos</span></b><span>Ajustar calefacción o ventilación si hay pollitos fuera de rango, y repetir la medición para confirmar que mejoró.</span></li>
+        <li><b>Puntuación de llenado del buche<span class="when">6, 12 y 24 h</span></b><span>Revisar 50 a 60 pollitos por muestra. El objetivo es ~75 % con buche lleno a las 6 h, 85 % a las 12 h y 100 % a las 24 h.</span></li>
+        <li><b>Registrar mortalidad<span class="when">7 días</span></b><span>Meta: muertos a la llegada menor a 0,2 % y mortalidad acumulada a los 7 días menor a 1 %.</span></li>
+      </ol>
+      <p class="note">Un buche vacío a las 12–24 h suele significar que ese pollito no encontró agua o alimento a tiempo —no necesariamente un problema del pollito en sí.</p>
+    </div>
+  </article>
+
+  <!-- 08 -->
+  <article class="entry" id="mortalidad">
+    <div class="entry-no">08</div>
+    <div>
+      <h2 class="entry-title">Cuándo es la granja y cuándo es la incubadora</h2>
+      <p class="entry-where">Rangos esperados y señales de reclamo</p>
+      <p class="lead">No toda mortalidad temprana es de manejo en su galpón. Estos números ayudan a distinguir un problema propio de uno que venía desde la incubadora.</p>
+      <div class="cols">
+        <div class="col">
+          <span class="tag tag-ok">Rangos esperados</span>
+          <ul>
+            <li>Muertos a la llegada <b>&lt;0,2 %</b></li>
+            <li>Mortalidad acumulada a 7 días <b>&lt;1 %</b></li>
+            <li>Pollitos de segundo grado (rechazo de clasificación): fracción mínima del lote</li>
+          </ul>
+        </div>
+        <div class="col">
+          <span class="tag tag-warn">Cuándo llamar a la incubadora</span>
+          <ul>
+            <li>Mortalidad a 7 días muy por sobre 1 %, sin causa de manejo evidente en su galpón</li>
+            <li>Alta proporción de ombligos malos, corvejones rojos o abdómenes anormales en la misma entrega</li>
+            <li>Peso relativo fuera de 67–68 % en varias cajas, no en una aislada</li>
+          </ul>
+        </div>
+      </div>
+      <p class="note tip"><span class="lbl">Un cuaderno vale más que la impresión</span>Anote fecha, hora de llegada y estos números por lote. Un registro comparado en el tiempo pesa más que la sensación de «este lote llegó más débil».</p>
+    </div>
+  </article>
+
+  <!-- 09 -->
+  <article class="entry" id="proveedor">
+    <div class="entry-no">09</div>
+    <div>
+      <h2 class="entry-title">Qué exigirle a la incubadora</h2>
+      <p class="entry-where">La lista corta cuando algo no cuadra</p>
+      <p class="lead">Todo lo que sigue depende de la granja de reproductoras y del manejo dentro de la incubadora —no de su galpón. Si compra pollitos con regularidad, esta es la lista que puede pedir cuando un lote llega fuera de rango.</p>
+      <div class="cols">
+        <div class="col">
+          <span class="tag tag-ok">Sobre el huevo y las reproductoras</span>
+          <ul>
+            <li>Edad del lote de reproductoras del que salió ese huevo</li>
+            <li>Días de almacenamiento del huevo antes de incubar</li>
+            <li>Resultado de incubabilidad de ese lote</li>
+          </ul>
+        </div>
+        <div class="col">
+          <span class="tag tag-ok">Sobre la incubación</span>
+          <ul>
+            <li>Temperatura de cáscara alcanzada, idealmente monitoreada y no solo la de la máquina</li>
+            <li>Pérdida de peso del huevo a la transferencia (lo esperado es 11–13 %)</li>
+            <li>Ventana de eclosión de ese lote</li>
+          </ul>
+        </div>
+      </div>
+      <p class="note">Si además va a trabajar del lado de la incubadora, o quiere entender estos números con más profundidad —temperatura, humedad, giro, transferencia—, la <a href="https://avivet.cl/avivet/Recursos/incubacion/">guía técnica de incubación</a> cubre paso a paso desde la granja de reproductoras hasta la nacedora.</p>
+    </div>
+  </article>
+
+  <!-- OUTRO -->
+  <div class="outro">
+    <p class="disclaimer">Esta guía ordena lo que hay que revisar al recibir un lote de pollitos en la granja, adaptado del documento técnico <em>Calidad del Pollito</em> de H&amp;N International (2026), y no reemplaza una visita a terreno. Si el problema se repite lote tras lote, conviene revisar junto con la incubadora los puntos de la <a href="https://avivet.cl/avivet/Recursos/incubacion/">guía de preincubación e incubación</a>, y si hay mortalidad o signos respiratorios de por medio, la guía de <a href="https://avivet.cl/Recursos/Enfermedades-respiratorias.html">enfermedades respiratorias en aves de postura</a>.</p>
+
+    <div class="contact">
+      <div class="kicker">Asesoría veterinaria</div>
+      <h3>¿Le llegó un lote que no cuadra?</h3>
+      <p>Medicina aviar y avicultura para el sur de Chile — Los Ríos, La Araucanía y Los Lagos.</p>
+      <div class="contact-links">
+        <a class="clink" href="https://wa.me/56958956340" target="_blank" rel="noopener"><span class="ck">WhatsApp</span><b>+56 9 5895 6340</b><span class="arr">→</span></a>
+        <a class="clink" href="mailto:andreslazomv@outlook.com"><span class="ck">Email</span><b>andreslazomv@outlook.com</b><span class="arr">→</span></a>
+        <a class="clink" href="https://avivet.cl" target="_blank" rel="noopener"><span class="ck">Web</span><b>avivet.cl</b><span class="arr">→</span></a>
+      </div>
+    </div>
+
+    <p class="foot">MV Andrés Lazo Escobar · <a href="https://avivet.cl/">Volver a avivet.cl</a></p>
+  </div>
+
+</main>
+
+<script>
+(function(){
+  var exts = ['jpg','jpeg','png','svg','webp'];
+  document.querySelectorAll('.ph-img').forEach(function(img){
+    var base = img.dataset.base, i = 0;
+    function tryNext(){
+      if(i >= exts.length){ img.remove(); return; }
+      var probe = new Image();
+      probe.onload = function(){
+        img.src = probe.src; img.hidden = false;
+        var ph = img.closest('.plate-frame').querySelector('.ph');
+        if(ph) ph.remove();
+      };
+      probe.onerror = function(){ i++; tryNext(); };
+      probe.src = base + '.' + exts[i];
+    }
+    tryNext();
+  });
+})();
+
+(function(){
+  var navScroll = document.getElementById('navScroll');
+  var chips = {};
+  navScroll.querySelectorAll('.idx').forEach(function(c){
+    chips[c.getAttribute('href').slice(1)] = c;
+  });
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        var id = e.target.id;
+        Object.values(chips).forEach(function(c){c.classList.remove('active');});
+        var active = chips[id];
+        if(active){
+          active.classList.add('active');
+          var off = active.offsetLeft - navScroll.clientWidth/2 + active.clientWidth/2;
+          navScroll.scrollTo({left:off, behavior:'smooth'});
+        }
+      }
+    });
+  }, {rootMargin:'-45% 0px -50% 0px', threshold:0});
+  document.querySelectorAll('article.entry').forEach(function(s){io.observe(s);});
+})();
+</script>
+</body>
+</html>

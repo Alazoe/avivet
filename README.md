@@ -28,6 +28,10 @@
 | **Recepción de Insumos** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/recepcion-insumos/) | Divide el camión (maíz, harina de soya, conchuela) en maxisacos de 800–1000 kg con correlativo automático para imprimir, y cuadra el peso real contra la guía |
 | **Cómo examinar una gallina** | [🔗 Abrir guía](https://alazoe.github.io/avivet/Recursos/examen-gallina/) | Guía técnica de revisión de salud de cabeza a cola (nivel productor) |
 | **Condensación y cama húmeda** | [🔗 Abrir guía](https://alazoe.github.io/avivet/Recursos/condensacion-galpon/) | Por qué se moja la cama del gallinero y cómo evitarlo: humedad, condensación y ventilación |
+| **Picaje y canibalismo** | [🔗 Abrir guía](https://alazoe.github.io/avivet/Recursos/picaje/) | Por qué se pican las gallinas y cómo controlarlo en sistemas a piso y a pastoreo |
+| **Bioseguridad avícola** | [🔗 Abrir guía](https://alazoe.github.io/avivet/Recursos/bioseguridad/) | Bioseguridad para planteles de aves, sur de Chile |
+| **Recepción y calidad del pollito** | [🔗 Abrir guía](https://alazoe.github.io/avivet/Recursos/calidad-pollito/) | Qué mirar, medir y cuándo reclamar al recibir un lote de pollitos BB en la granja |
+| **Preincubación e incubación** | [🔗 Abrir guía](https://alazoe.github.io/avivet/Recursos/incubacion/) | Guía técnica: manejo de reproductoras, calidad del huevo, temperatura, humedad, giro y evaluación de calidad del pollito |
 
 ---
 

@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Picaje en gallinas: por qué pasa y cómo pararlo — AviVet</title>
+<meta name="description" content="Guía práctica para controlar el picaje y el canibalismo en gallinas de postura a piso y a pastoreo: cómo distinguir los tipos, qué revisar en el galpón, el alimento, el parque, el ácaro rojo, y qué hacer el mismo día cuando el brote ya empezó. Por MV Andrés Lazo, AviVet.">
+<link rel="canonical" href="https://avivet.cl/avivet/Recursos/picaje/">
+<meta name="author" content="MV Andrés Lazo Escobar">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="AviVet">
+<meta property="og:locale" content="es_CL">
+<meta property="og:title" content="El picaje no es maldad: es hambre de escarbar">
+<meta property="og:description" content="Por qué las gallinas se pican entre ellas, qué revisar antes de bajar la luz, y qué hacer el mismo día cuando el brote ya empezó.">
+<meta property="og:url" content="https://avivet.cl/avivet/Recursos/picaje/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="El picaje no es maldad: es hambre de escarbar">
+<meta name="twitter:description" content="Por qué las gallinas se pican entre ellas, qué revisar antes de bajar la luz, y qué hacer el mismo día cuando el brote ya empezó.">
+<link rel="icon" href="https://avivet.cl/assets/img/brand/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="https://avivet.cl/assets/img/brand/favicon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500;1,9..144,600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#fafaf8; --paper2:#f0faf3; --paper3:#e3f0e8;
+  --ink:#141414; --ink2:#3a3a3a; --ink3:#6b6b6b;
+  --line:#d4e6da; --line2:#bcd6c5;
+  --rust:#1b4332; --rust-d:#0d2b1e; --rust-l:#d8f3dc;
+  --olive:#2d6a4f; --olive-d:#1b4332;
+  --amber:#c0392b; --amber-d:#7a1c1c;
+  --gold:#c9a84c; --gold2:#e8c96e; --gold-d:#a8842e;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:"DM Sans",sans-serif;background:var(--paper);color:var(--ink);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;}
+/* paper grain */
+body::before{content:"";position:fixed;inset:0;z-index:1;pointer-events:none;opacity:0.05;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+a{color:inherit;}
+
+/* Masthead bar */
+.topbar{position:sticky;top:0;z-index:200;background:rgba(243,237,225,0.94);backdrop-filter:saturate(1.2) blur(6px);
+  border-bottom:1px solid var(--line);height:48px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;}
+.brand{font-family:"Fraunces",serif;font-weight:900;font-size:19px;letter-spacing:-0.02em;color:var(--ink);}
+.brand .dotrust{color:var(--olive);font-style:italic;}
+.topbar .meta{font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink3);}
+
+main{max-width:760px;margin:0 auto;padding:0 22px 90px;position:relative;z-index:2;animation:fadeIn .5s ease;}
+
+/* Masthead / opening */
+.masthead{padding:56px 0 34px;}
+.kicker{font-size:11.5px;letter-spacing:0.22em;text-transform:uppercase;color:var(--rust);font-weight:600;margin-bottom:22px;
+  display:flex;align-items:center;gap:12px;}
+.kicker::after{content:"";flex:1;height:1px;background:var(--line2);}
+.display{font-family:"Fraunces",serif;font-weight:600;font-size:clamp(40px,8vw,68px);line-height:0.98;letter-spacing:-0.02em;margin-bottom:24px;}
+.display em{font-style:italic;color:var(--rust);}
+.standfirst{font-family:"Fraunces",serif;font-size:clamp(18px,2.6vw,22px);line-height:1.45;color:var(--ink2);max-width:600px;font-weight:400;}
+.byline{margin-top:24px;font-size:12.5px;letter-spacing:0.04em;color:var(--ink3);text-transform:uppercase;}
+.byline b{color:var(--ink);font-weight:600;}
+
+/* Opening plate (photo) */
+.plate{margin:34px 0 6px;}
+.plate-frame{position:relative;border:1px solid var(--line2);padding:10px;background:var(--paper2);}
+.plate-frame img{width:100%;height:auto;display:block;filter:saturate(1.02) contrast(1.02);}
+.plate-cap{font-family:"Fraunces",serif;font-style:italic;font-size:13.5px;color:var(--ink2);margin-top:12px;text-align:center;}
+.plate-cap .credit{font-style:normal;color:var(--ink3);font-size:11px;}
+.plate-cap .credit a{color:var(--ink3);}
+.hint{text-align:center;font-size:12px;letter-spacing:0.04em;color:var(--ink3);margin-top:6px;}
+.dot{position:absolute;width:30px;height:30px;border-radius:50%;background:var(--paper);color:var(--rust);
+  border:1.5px solid var(--rust);font-family:"Fraunces",serif;font-weight:600;font-size:14px;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;text-decoration:none;
+  transform:translate(-50%,-50%);box-shadow:0 1px 4px rgba(60,30,10,0.25);transition:all .15s;}
+.dot:hover{background:var(--rust);color:var(--paper);transform:translate(-50%,-50%) scale(1.15);}
+
+/* Index nav */
+.index{position:sticky;top:48px;z-index:150;background:rgba(243,237,225,0.96);backdrop-filter:blur(6px);
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-top:30px;}
+.index-scroll{display:flex;overflow-x:auto;scrollbar-width:none;}
+.index-scroll::-webkit-scrollbar{display:none;}
+.idx{flex:0 0 auto;padding:11px 15px;font-size:12.5px;font-weight:600;color:var(--ink2);text-decoration:none;
+  white-space:nowrap;border-bottom:2px solid transparent;display:flex;align-items:baseline;gap:6px;transition:color .15s;}
+.idx .n{color:var(--ink3);font-variant-numeric:tabular-nums;font-size:11px;}
+.idx:hover{color:var(--rust);}
+.idx.active{color:var(--rust);border-bottom-color:var(--rust);}
+.idx.active .n{color:var(--rust);}
+.idx-faq{color:var(--gold-d);margin-left:auto;}
+.idx-faq:hover{color:var(--gold-d);border-bottom-color:var(--gold);}
+
+/* Entries */
+.entry{display:grid;grid-template-columns:96px 1fr;gap:22px;padding:46px 0;border-top:1px solid var(--line);scroll-margin-top:104px;}
+.entry:first-of-type{border-top:none;}
+.entry-no{font-family:"Fraunces",serif;font-weight:500;font-size:54px;line-height:0.8;color:var(--rust);letter-spacing:-0.03em;}
+.entry-title{font-family:"Fraunces",serif;font-weight:600;font-size:30px;line-height:1.05;letter-spacing:-0.015em;margin-bottom:5px;}
+.entry-where{font-size:11.5px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink3);margin-bottom:16px;}
+.lead{font-family:"Fraunces",serif;font-size:18.5px;line-height:1.5;color:var(--ink2);max-width:560px;}
+.lead,.note,.disclaimer,.col li{text-align:justify;text-justify:inter-word;hyphens:auto;-webkit-hyphens:auto;}
+@media (max-width:520px){.lead,.note,.disclaimer,.col li{text-align:left;hyphens:manual;}}
+.entry:first-of-type .lead::first-letter{initial-letter:2;font-weight:600;color:var(--rust);margin-right:8px;}
+
+.cols{display:grid;grid-template-columns:1fr 1fr;margin-top:24px;border-top:1px solid var(--line);}
+.col{padding:18px 0;}
+.col + .col{border-left:1px solid var(--line);padding-left:26px;}
+.col:first-child{padding-right:26px;}
+@media(max-width:540px){.cols{grid-template-columns:1fr;}.col + .col{border-left:none;border-top:1px solid var(--line);padding-left:0;}.col:first-child{padding-right:0;}}
+.tag{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;font-weight:700;display:inline-flex;align-items:center;gap:7px;margin-bottom:13px;}
+.tag::before{content:"";width:9px;height:9px;display:inline-block;}
+.tag-ok{color:var(--olive);}
+.tag-ok::before{background:var(--olive);}
+.tag-warn{color:var(--amber);}
+.tag-warn::before{width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:9px solid var(--amber);}
+.col ul{list-style:none;display:flex;flex-direction:column;gap:9px;}
+.col li{font-size:14.5px;line-height:1.45;color:var(--ink);padding-left:16px;position:relative;}
+.col li::before{content:"";position:absolute;left:0;top:9px;width:6px;height:1.5px;background:var(--line2);}
+.col li em{font-style:italic;color:var(--ink2);}
+
+/* Margin notes */
+.note{margin-top:22px;padding:2px 0 2px 18px;border-left:2px solid var(--amber);
+  font-family:"Fraunces",serif;font-size:15px;font-style:italic;line-height:1.5;color:var(--amber-d);}
+.note.tip{border-left-color:var(--gold);color:#5a4720;}
+.note .lbl{font-style:normal;font-weight:700;font-size:10.5px;letter-spacing:0.16em;text-transform:uppercase;
+  display:block;margin-bottom:3px;color:var(--amber);}
+.note.tip .lbl{color:var(--gold-d);}
+
+/* Pull quote */
+.pull{font-family:"Fraunces",serif;font-style:italic;font-weight:500;font-size:clamp(24px,4vw,32px);line-height:1.25;
+  color:var(--rust);text-align:center;max-width:600px;margin:8px auto;padding:54px 10px;letter-spacing:-0.01em;position:relative;}
+.pull::before,.pull::after{content:"";display:block;width:46px;height:1px;background:var(--line2);margin:0 auto;}
+.pull::before{margin-bottom:30px;}
+.pull::after{margin-top:30px;}
+
+/* Outro */
+.outro{margin-top:30px;border-top:2px solid var(--ink);padding-top:30px;}
+.disclaimer{font-family:"Fraunces",serif;font-style:italic;font-size:15px;line-height:1.55;color:var(--ink2);max-width:560px;margin-bottom:38px;}
+.contact{background:var(--paper2);border:1px solid var(--line2);padding:30px 30px 28px;}
+.contact .kicker{margin-bottom:14px;}
+.contact h3{font-family:"Fraunces",serif;font-weight:600;font-size:26px;line-height:1.1;margin-bottom:8px;letter-spacing:-0.01em;}
+.contact p{font-size:14.5px;color:var(--ink2);margin-bottom:20px;max-width:440px;}
+.contact-links{display:flex;flex-direction:column;gap:11px;}
+.clink{font-size:15px;color:var(--ink);text-decoration:none;display:flex;align-items:baseline;gap:12px;border-top:1px solid var(--line);padding-top:11px;transition:color .15s;}
+.clink:hover{color:var(--rust);}
+.clink .ck{font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink3);width:90px;flex:0 0 90px;}
+.clink b{font-weight:600;}
+.clink .arr{margin-left:auto;color:var(--rust);}
+.foot{text-align:center;font-size:12px;letter-spacing:0.04em;color:var(--ink3);margin-top:40px;text-transform:uppercase;}
+.foot a{color:var(--rust);text-decoration:none;}
+
+@media(max-width:560px){
+  .entry{grid-template-columns:1fr;gap:6px;}
+  .entry-no{font-size:38px;}
+}
+/* Láminas que rompen el ancho de la columna y usan más pantalla */
+.plate--wide{width:min(1140px,calc(100vw - 44px));margin-left:50%;transform:translateX(-50%);}
+.plate--wide .plate-frame{background:var(--paper2);}
+.plate-cap.wide-cap{max-width:760px;margin-left:auto;margin-right:auto;}
+
+/* Marcos de imagen pendientes */
+.ph{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;
+  min-height:280px;padding:40px 26px;text-align:center;border:2px dashed var(--line2);
+  background:repeating-linear-gradient(45deg,transparent,transparent 11px,rgba(45,106,79,.035) 11px,rgba(45,106,79,.035) 22px);}
+.ph-name{font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:var(--rust);font-weight:700;
+  background:var(--paper);border:1px solid var(--line2);padding:6px 13px;}
+.ph p{font-family:"Fraunces",serif;font-style:italic;font-size:16px;color:var(--ink2);max-width:470px;line-height:1.5;margin:0;}
+.ph .ph-hint{font-family:"DM Sans",sans-serif;font-style:normal;font-size:12.5px;color:var(--ink3);letter-spacing:0.02em;}
+
+/* Pasos numerados (protocolo de emergencia) */
+.steps{list-style:none;counter-reset:st;margin-top:24px;border-top:1px solid var(--line);}
+.steps li{counter-increment:st;display:grid;grid-template-columns:38px 1fr;gap:16px;
+  padding:15px 0;border-bottom:1px solid var(--line);align-items:baseline;}
+.steps li::before{content:counter(st);font-family:"Fraunces",serif;font-weight:600;font-size:22px;
+  color:var(--rust);line-height:1;}
+.steps b{font-weight:600;display:block;font-size:15.5px;margin-bottom:2px;}
+.steps span{grid-column:2;font-size:14.5px;color:var(--ink2);line-height:1.5;}
+.steps .when{grid-column:auto;display:inline-block;font-size:10.5px;letter-spacing:0.14em;text-transform:uppercase;
+  color:var(--gold-d);font-weight:700;margin-left:8px;}
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "El picaje no es maldad: es hambre de escarbar",
+  "description": "Guía práctica para controlar el picaje y el canibalismo en gallinas de postura a piso y a pastoreo.",
+  "inLanguage": "es-CL",
+  "datePublished": "2026-09-02",
+  "dateModified": "2026-09-02",
+  "author": {"@type": "Person", "name": "Andrés Lazo Escobar", "jobTitle": "Médico Veterinario", "url": "https://avivet.cl/"},
+  "publisher": {"@type": "Organization", "name": "AviVet", "url": "https://avivet.cl/",
+    "logo": {"@type": "ImageObject", "url": "https://avivet.cl/assets/img/brand/favicon-180.png"}},
+  "mainEntityOfPage": {"@type": "WebPage", "@id": "https://avivet.cl/avivet/Recursos/picaje/"},
+  "about": ["Picaje de plumas", "Canibalismo aviar", "Bienestar animal", "Gallinas de postura", "Avicultura a pastoreo"]
+}
+</script>
+</head>
+<body>
+
+<div class="topbar">
+  <span class="brand">Avi<span class="dotrust">Vet</span></span>
+  <span class="meta">MV Andrés Lazo · Medicina aviar</span>
+</div>
+
+<main>
+
+  <!-- MASTHEAD -->
+  <header class="masthead">
+    <div class="kicker">Comportamiento · N.º 04</div>
+    <h1 class="display">El picaje no es maldad: es <em>hambre de escarbar</em></h1>
+    <p class="standfirst">Cuando un lote empieza a picarse, lo primero que se hace es bajar la luz. Sirve, pero no cura: mientras no se encuentre qué le falta a esas gallinas, el brote vuelve. Esta guía es para producción a piso y a pastoreo, y va en el orden en que conviene revisar.</p>
+    <p class="byline"><b>MV Andrés Lazo Escobar</b> — Especialista en medicina aviar · Sur de Chile</p>
+  </header>
+
+  <!-- OPENING PLATE -->
+  <figure class="plate plate--wide">
+    <div class="plate-frame">
+      <img class="ph-img" data-base="apertura" src="apertura.jpg" hidden
+           alt="Contraste entre una gallina que escarba sobre cama y una que pica las plumas de otra sobre piso sin sustrato">
+      <div class="ph">
+        <div class="ph-name">apertura.jpg</div>
+        <p>Lámina de apertura: el contraste entre la gallina que tiene dónde escarbar y la que termina picando a la compañera.</p>
+        <p class="ph-hint">Formato apaisado, ~1600 × 840 px · .jpg, .png o .svg</p>
+      </div>
+    </div>
+    <figcaption class="plate-cap">
+      La misma conducta, dos destinos. En pisos totalmente enrejillados o sin cama, el daño de plumas del lote sube un 37,6 % respecto de los que tienen sustrato para escarbar.
+      <span class="credit">Datos: Decina et al. 2019, 39 lotes comerciales sin jaula.</span>
+    </figcaption>
+  </figure>
+
+  <!-- INDEX -->
+  <nav class="index">
+    <div class="index-scroll" id="navScroll">
+      <a class="idx" href="#tipos"><span class="n">01</span>Qué tipo es</a>
+      <a class="idx" href="#por-que"><span class="n">02</span>Por qué pican</a>
+      <a class="idx" href="#galpon"><span class="n">03</span>El galpón</a>
+      <a class="idx" href="#alimento"><span class="n">04</span>El alimento</a>
+      <a class="idx" href="#parque"><span class="n">05</span>El parque</a>
+      <a class="idx" href="#bichos"><span class="n">06</span>Ácaros y parásitos</a>
+      <a class="idx" href="#crianza"><span class="n">07</span>La crianza</a>
+      <a class="idx" href="#brote"><span class="n">08</span>Ya empezó</a>
+      <a class="idx" href="#vigilar"><span class="n">09</span>Cómo vigilar</a>
+    </div>
+  </nav>
+
+  <!-- 01 -->
+  <article class="entry" id="tipos">
+    <div class="entry-no">01</div>
+    <div>
+      <h2 class="entry-title">Primero: qué tipo de picaje es</h2>
+      <p class="entry-where">No todos son el mismo problema</p>
+      <p class="lead">Bajo la palabra «picaje» caben cuatro conductas distintas, con causas distintas y soluciones distintas. Confundirlas es la razón más común de que una medida no funcione: se trata un problema de comida cuando era de jerarquía, o se cambia la luz cuando lo que había era un ácaro. Antes de intervenir, mire dónde está el daño y qué hace la que pica.</p>
+
+          <figure class="plate">
+        <div class="plate-frame">
+          <div class="diagram-wrap" style="position:relative">
+            <img class="ph-img" data-base="tipos-picaje" src="tipos-picaje.jpg" hidden
+                 alt="Gallina de perfil con las zonas donde aparece cada tipo de picaje">
+            <!-- Con la foto puesta, los puntos numerados van acá, posicionados en %:
+            <a class="dot" href="#tipos" style="left:30%;top:12%">1</a>  Cresta y barbillas · agresivo
+            <a class="dot" href="#tipos" style="left:48%;top:30%">2</a>  Espalda y alas · suave
+            <a class="dot" href="#tipos" style="left:70%;top:42%">3</a>  Espalda baja y cola · severo
+            <a class="dot" href="#tipos" style="left:76%;top:62%">4</a>  Cloaca -->
+          </div>
+          <div class="ph">
+            <div class="ph-name">tipos-picaje.jpg</div>
+            <p>Gallina de perfil, de preferencia con daño de plumas real, para marcar encima las cuatro zonas y que el productor reconozca lo que ve en su galpón.</p>
+            <p class="ph-hint">~1200 × 700 px · .jpg, .png o .svg — después le monto los puntos numerados</p>
+          </div>
+        </div>
+        <figcaption class="plate-cap">Dónde mira uno el daño para saber qué está pasando.</figcaption>
+      </figure>
+
+      <div class="cols">
+        <div class="col">
+          <span class="tag tag-ok">Lo que hay que mirar</span>
+          <ul>
+            <li>En qué zona del cuerpo está el daño</li>
+            <li>Si hay pluma sacada <em>sin</em> herida, o piel viva</li>
+            <li>Si la que pica insiste o se conforma</li>
+          </ul>
+        </div>
+        <div class="col">
+          <span class="tag tag-warn">Lo que confunde</span>
+          <ul>
+            <li>Pluma quebrada por roce de comedero o nido, que no es picaje</li>
+            <li>Muda, que también deja peladuras pero es pareja y sin herida</li>
+            <li>Suponer que un problema anticipa el otro: la que se pela de la espalda no es necesariamente la que va a terminar con canibalismo de cloaca</li>
+          </ul>
+        </div>
+      </div>
+      <p class="note tip"><span class="lbl">La pregunta que lo resuelve en el galpón</span>Quédese mirando un rato y responda una sola cosa: <strong>¿la que pica se detiene cuando la otra arranca?</strong> Si se detiene, es agresión por jerarquía y se maneja con espacio y con recursos repartidos. Si la persigue y sigue picando aunque la otra huya, es picaje de plumas — y ese es el que hay que atacar por la causa, porque solo, no para.</p>
+    </div>
+  </article>
+
+  <!-- 02 -->
+  <article class="entry" id="por-que">
+    <div class="entry-no">02</div>
+    <div>
+      <h2 class="entry-title">Por qué pican: la conducta se desvía</h2>
+      <p class="entry-where">El mecanismo, en una frase</p>
+      <p class="lead">Una gallina está armada para pasar la mayor parte del día buscando comida en el suelo: rascar, remover, picotear, separar. Esa necesidad no depende de si tiene el buche lleno — el comedero la alimenta, pero no la ocupa. Cuando no hay dónde ejercerla, el impulso no se apaga: se va al objeto más parecido que tiene a mano, que resulta ser la pluma de la compañera.</p>
+      <div class="cols">
+        <div class="col">
+          <span class="tag tag-ok">Lo que sí descarga la conducta</span>
+          <ul>
+            <li>Paja, heno, pasto seco, fardo suelto</li>
+            <li>Cama profunda y seca donde puedan remover</li>
+            <li>Grano o alimento tirado al suelo para que lo busquen</li>
+            <li>Larvas o restos vegetales esparcidos <em>→ hay que buscarlos, ahí está la gracia</em></li>
+          </ul>
+        </div>
+        <div class="col">
+          <span class="tag tag-warn">Lo que no la descarga</span>
+          <ul>
+            <li>Solo arena: sirve para el baño de polvo, no para escarbar en busca de comida</li>
+            <li>Colgantes de plástico o botellas: llaman la atención un día y se acaba</li>
+            <li>Piso enrejillado o cemento pelado, aunque esté limpio</li>
+            <li>Pellet en el comedero <em>→ comen rápido y les sobra el día</em></li>
+          </ul>
+        </div>
+      </div>
+      <p class="note"><span class="lbl">Casi nunca es una sola causa</span>Los lotes aguantan bastante. Lo que gatilla un brote suele ser la suma: un poco menos de fibra, un poco más de luz, el ácaro que apareció, el guano que se acumuló, un cambio de dieta. Ninguna de esas cosas sola habría hecho nada. Por eso dos galpones «iguales» se comportan distinto, y por eso la pregunta útil no es «cuál fue la causa» sino <em>«cuántas cosas chicas se juntaron esta vez»</em>.</p>
+    </div>
+  </article>
+
+  <div class="pull">La pluma tiene la misma textura que la paja. Si no hay paja, hay pluma.</div>
+
+  <!-- 03 -->
+  <article class="entry" id="galpon">
+    <div class="entry-no">03</div>
+    <div>
+      <h2 class="entry-title">Lo que hay que revisar en el galpón</h2>
+      <p class="entry-where">Cama, luz, aire y espacio</p>
+      <p class="lead">Antes de tocar la dieta o de salir a comprar nada, se camina el galpón. Cuatro cosas explican la mayoría de los casos, y las cuatro se ven a simple vista si uno sabe qué está mirando.</p>
+      <div class="cols">
+        <div class="col">
+          <span class="tag tag-ok">Cama y aire</span>
+          <ul>
+            <li>Que haya cama de verdad, no una capa dura y apelmazada</li>
+            <li>Paja o mezclas con turba antes que viruta sola: la viruta escarba mal</li>
+            <li>Sacar las plumas sueltas que se juntan en la cama — la pollita aprende ahí que la pluma es «comida»</li>
+            <li>Guano acumulado todo el ciclo se asocia a un 20 % más de daño de plumas <em>→ si al entrar pican los ojos, el amoníaco ya está alto</em></li>
+          </ul>
+        </div>
+        <div class="col">
+          <span class="tag tag-warn">Luz y espacio</span>
+          <ul>
+            <li>Sobre 10 lux en postura sube el riesgo; mídalo con una app de luxómetro a la altura del ave, no del techo</li>
+            <li>Entradas de sol directo que hacen manchas brillantes: ahí se concentra el picoteo</li>
+            <li>Nidos iluminados: es factor específico de picaje de cloaca — el nido debe quedar en penumbra</li>
+            <li>Comedero y bebedero que no alcanzan para todas al mismo tiempo</li>
+            <li>Perchas: sin dónde subirse, la que está siendo picada no tiene cómo escapar</li>
+          </ul>
+        </div>
+      </div>
+      <p class="note"><span class="lbl">Una advertencia sobre la luz</span>Bajarla mucho tampoco es gratis. Con luz muy baja de forma permanente aparece el otro picaje, el suave, y las aves comen menos. La luz se baja como medida de emergencia y se recupera cuando la causa está corregida — no es un modo de operar.</p>
+    </div>
+  </article>
+
+  <!-- 04 -->
+  <article class="entry" id="alimento">
+    <div class="entry-no">04</div>
+    <div>
+      <h2 class="entry-title">El alimento: lo que falta se busca en la pluma</h2>
+      <p class="entry-where">Mínimos que sostienen el plumaje</p>
+      <p class="lead">La pluma es proteína casi pura, y armarla cuesta más de lo que cuesta poner un huevo. Una dieta calculada solo para producción puede quedar corta justo ahí: alcanza para el huevo, no para mantener el plumaje. Cuando falta, el ave lo busca donde hay — y donde hay es en la compañera.</p>
+      <div class="cols">
+        <div class="col">
+          <span class="tag tag-ok">Piso mínimo para que la pluma aguante</span>
+          <ul>
+            <li>Proteína cruda <b>15 %</b> <em>→ bajo 12,5 % el riesgo sube claro</em></li>
+            <li>Lisina <b>0,82 %</b> <em>→ la postura sola pide 0,69 %: por eso queda corta</em></li>
+            <li>Metionina + cistina <b>0,58 %</b></li>
+            <li>Sal / sodio <b>0,15 %</b> <em>→ la falta de sal es de las más subestimadas</em></li>
+            <li>Zinc <b>40 ppm</b></li>
+            <li>Fibra insoluble: <b>16 g por gallina al día</b> en postura — paja, heno, cascarilla de avena</li>
+          </ul>
+        </div>
+        <div class="col">
+          <span class="tag tag-warn">Señales de que el alimento está detrás</span>
+          <ul>
+            <li>Alimento formulado «para postura» sin revisar aminoácidos</li>
+            <li>Ración casera diluida con granos: baja la proteína sin que se note</li>
+            <li>Varios cambios de dieta seguidos dentro del ciclo</li>
+            <li>Consumo que sube mientras aparece daño leve <em>→ se están tapando algo</em></li>
+            <li>El lote come en poco rato y queda dando vueltas</li>
+          </ul>
+        </div>
+      </div>
+      <p class="note tip"><span class="lbl">Harina gruesa antes que pellet</span>Con pellet las gallinas ocupan alrededor de 100 minutos al día en el comedero; con harina, unos 234. Ese tiempo extra es tiempo que no están picándose. Y en picaje de cloaca la diferencia es grande: el pellet se asoció a más de cinco veces el riesgo. En sistemas a piso y a pastoreo, harina gruesa. Con buena cama la diferencia se atenúa, porque la cama hace el mismo trabajo.</p>
+    </div>
+  </article>
+
+  <!-- 05 -->
+  <article class="entry" id="parque">
+    <div class="entry-no">05</div>
+    <div>
+      <h2 class="entry-title">El parque: que salgan de verdad</h2>
+      <p class="entry-where">Pastoreo y acceso exterior</p>
+      <p class="lead">El parque es la mejor herramienta que existe contra el picaje, porque entrega justo lo que falta: suelo, bichos, pasto, distancia entre aves. Pero solo cuenta el parque que se usa. Un potrero grande donde salen veinte gallinas de doscientas no está bajando la densidad de nadie: adentro quedan las mismas apretadas de siempre.</p>
+      <div class="cols">
+        <div class="col">
+          <span class="tag tag-ok">Para que salgan</span>
+          <ul>
+            <li>Sombra en puntos —árboles, arbustos, mallas— repartida, no en una sola esquina</li>
+            <li>Abrir temprano: la salida se aprende en las primeras semanas</li>
+            <li>Suficientes puertas de salida, y anchas: la que manda tapa la puerta angosta</li>
+            <li>Algo que buscar allá afuera: agua, sombra, un fardo, restos de cosecha</li>
+          </ul>
+        </div>
+        <div class="col">
+          <span class="tag tag-warn">La trampa del parque tupido</span>
+          <ul>
+            <li>Parques con más de la mitad cubierta de vegetación alta se asociaron a <em>más</em> picaje, no menos</li>
+            <li>No es que el pasto haga daño: la gallina lee el monte cerrado como sitio peligroso y no cruza</li>
+            <li>Salen menos → adentro queda más apretado → vuelve el picaje</li>
+            <li>Regla simple: si en un buen día de sol sale menos de la mitad del lote, el parque no está cumpliendo</li>
+          </ul>
+        </div>
+      </div>
+      <p class="note"><span class="lbl">Lo que hay que corregir es la densidad</span>Es la confusión más común de esta guía: la vegetación no es la causa, es la señal. Cortar el pasto por sí solo no baja el picaje. Lo que baja el picaje es que efectivamente haya menos aves por metro adentro — sea porque salen, sea porque hay menos.</p>
+    </div>
+  </article>
+
+  <!-- 06 -->
+  <article class="entry" id="bichos">
+    <div class="entry-no">06</div>
+    <div>
+      <h2 class="entry-title">Ácaro rojo y parásitos: el gatillo que no se ve</h2>
+      <p class="entry-where">Sanidad y conducta van juntas</p>
+      <p class="lead">El ácaro rojo trabaja de noche: sale de las junturas, chupa sangre y se esconde antes de que amanezca. Uno entra de día, ve las gallinas y no ve nada. Pero un lote picado toda la noche llega irritado a la mañana, y esa irritación despierta el picaje. Está documentado que tratar el ácaro revierte la conducta — o sea, a veces el problema conductual era, todo el tiempo, un problema de bichos.</p>
+      <div class="cols">
+        <div class="col">
+          <span class="tag tag-ok">Cómo buscarlo</span>
+          <ul>
+            <li>Entrar de noche con linterna y mirar bajo las perchas y en los nidos</li>
+            <li>Pasar el dedo por las junturas de madera: polvillo gris y grumos oscuros</li>
+            <li>Cintas o trampas bajo la percha, revisadas una vez al mes</li>
+            <li>Aves que no quieren subir a la percha o que abandonan el nido</li>
+          </ul>
+        </div>
+        <div class="col">
+          <span class="tag tag-warn">Y va en los dos sentidos</span>
+          <ul>
+            <li>Parásitos internos y cualquier infección activa también suben el picaje</li>
+            <li>Al revés, el picaje abre heridas y por ahí entra la infección</li>
+            <li>En lotes con picaje de cloaca activo, la mitad terminó con infección asociada</li>
+            <li>Por eso un brote que «no se explica» merece revisión sanitaria antes que otra vuelta de cambios de manejo</li>
+          </ul>
+        </div>
+      </div>
+      <p class="note tip"><span class="lbl">Regla de orden</span>Ante un brote, el ácaro rojo se descarta siempre — es barato de revisar, frecuente en el sur, y si está, ninguna otra medida va a rendir mientras siga ahí.</p>
+    </div>
+  </article>
+
+  <!-- 07 -->
+  <article class="entry" id="crianza">
+    <div class="entry-no">07</div>
+    <div>
+      <h2 class="entry-title">Donde de verdad se gana: la crianza</h2>
+      <p class="entry-where">Antes de la semana 10</p>
+      <p class="lead">Esta es la parte incómoda de la guía: casi todo lo que decide si un lote se pica o no ya ocurrió antes de que pusiera el primer huevo. El hábito de dónde picotear se arma en las primeras semanas y queda instalado alrededor de la semana 10. Después se administra, no se borra. Una pollita que aprendió a escarbar paja llega a postura buscando paja; una que aprendió a picar plumas, llega buscando plumas.</p>
+      <div class="cols">
+        <div class="col">
+          <span class="tag tag-ok">En las primeras 16 semanas</span>
+          <ul>
+            <li>Paja o heno desde el primer día — unos 10 g por pollita al día</li>
+            <li>Perchas antes de la semana 4: bajó a la mitad el picaje de cloaca y a un tercio los huevos en el piso</li>
+            <li>Luz a 10 lux o menos: con 30 lux en crianza la mortalidad por canibalismo en postura llegó al 30 %</li>
+            <li>Cama de paja mejor que viruta sola</li>
+            <li>Sacar las plumas sueltas de la cama</li>
+          </ul>
+        </div>
+        <div class="col">
+          <span class="tag tag-ok">Qué preguntar al que le vende las pollitas</span>
+          <ul>
+            <li>¿Tuvieron cama y material para escarbar, o piso pelado?</li>
+            <li>¿Perchas antes de la semana 4?</li>
+            <li>¿Con cuánta luz se criaron?</li>
+            <li>¿Pico intacto o despicadas?</li>
+            <li>¿Cómo venía el plumaje a la semana 16?</li>
+          </ul>
+        </div>
+      </div>
+      <p class="note"><span class="lbl">La trampa del fardo que llega tarde</span>Poner enriquecimiento recién cuando el problema apareció rinde poco, y en lotes que nunca lo tuvieron en crianza llegó a asociarse a <em>más</em> daño, no menos. El fardo no es un remedio: es una costumbre que se instala desde chica. Y un dato para anotar en el calendario: si a la semana 16 el 20 % o más de las aves ya muestra daño, ese lote llega pelado a la semana 30 si nadie interviene.</p>
+    </div>
+  </article>
+
+  <!-- 08 -->
+  <article class="entry" id="brote">
+    <div class="entry-no">08</div>
+    <div>
+      <h2 class="entry-title">Ya empezó: qué hacer hoy, en este orden</h2>
+      <p class="entry-where">Protocolo de emergencia</p>
+      <p class="lead">Con heridas abiertas y sangre a la vista, la prioridad cambia: primero se corta el brote, después se busca la causa. El orden importa, porque las primeras medidas actúan en horas y las últimas en días. Y hay que hacerlas todas: parar el brote sin corregir lo de fondo solo aplaza el problema hasta que se suba la luz de nuevo.</p>
+      <ol class="steps">
+        <li><b>Bajar la intensidad de luz<span class="when">Horas</span></b><span>Es lo más rápido y lo que más se usa en terreno. Baja el estímulo visual que dispara el picoteo.</span></li>
+        <li><b>Luz roja<span class="when">Horas</span></b><span>Ampolletas o filtros rojos: bajo esa luz la sangre y la cloaca dejan de contrastar y de llamar la atención.</span></li>
+        <li><b>Sal en el agua<span class="when">24 a 48 horas</span></b><span>0,5 a 1 kg por cada 1.000 litros, uno o dos días. Cubre una posible falta de sodio. Siempre con agua disponible a voluntad, y no se prolonga más allá de eso.</span></li>
+        <li><b>Vitaminas, minerales y aminoácidos en el agua<span class="when">Días</span></b><span>Cubre deficiencias agudas mientras se revisa la dieta de fondo.</span></li>
+        <li><b>Fibra a mano<span class="when">Días</span></b><span>Un fardo de paja o alfalfa dentro del galpón, accesible. Le devuelve a la conducta un destino que no sea la compañera.</span></li>
+        <li><b>Más cosas que hacer<span class="when">Días</span></b><span>Colgantes, bloques de picoteo, cajas, cuerdas. Rotarlos, porque pierden gracia. Complementan la fibra, no la reemplazan.</span></li>
+      </ol>
+      <p class="note"><span class="lbl">Aparte y de inmediato</span>Saque del grupo a las aves con heridas abiertas. Una herida sangrando atrae picotazos de forma desproporcionada por el puro contraste del rojo: mientras esté ahí, mantiene el brote encendido aunque todo lo demás esté corregido.</p>
+      <p class="note tip"><span class="lbl">Y después, lo importante</span>Bajar la luz no cura nada: es ganar tiempo. Ese tiempo se ocupa en recorrer los puntos 03 a 06 —cama, luz, alimento, parque, ácaros— y encontrar qué se juntó esta vez. Si no se encuentra, el brote vuelve apenas se recupere la luz.</p>
+    </div>
+  </article>
+
+  <!-- 09 -->
+  <article class="entry" id="vigilar">
+    <div class="entry-no">09</div>
+    <div>
+      <h2 class="entry-title">Cómo saber si va ganando</h2>
+      <p class="entry-where">Una revisión semanal que toma diez minutos</p>
+      <p class="lead">El picaje avanza despacio y de a poco, que es exactamente la forma en que el ojo deja de notarlo. Cuando el lote «se ve pelado» ya pasaron semanas. Por eso conviene un número, aunque sea uno solo, anotado todas las semanas: sirve para saber si lo que se hizo funcionó y para pedir ayuda a tiempo.</p>
+      <div class="cols">
+        <div class="col">
+          <span class="tag tag-ok">La revisión</span>
+          <ul>
+            <li>Tome 50 aves al azar, en distintos puntos del galpón</li>
+            <li>Mire tres zonas en cada una: espalda, cola y cloaca</li>
+            <li>Cuente cuántas están perfectas en las tres</li>
+            <li>Anote ese número, con fecha, todas las semanas</li>
+            <li>Alarma: menos del 40 % del lote sin ningún daño</li>
+          </ul>
+        </div>
+        <div class="col">
+          <span class="tag tag-warn">Señales que llegan antes</span>
+          <ul>
+            <li>Rayas de sangre <em>por fuera</em> de la cáscara: es picaje de cloaca activo, y se ve antes que las heridas</li>
+            <li>Daño leve entre las semanas 17 y 20 junto con más consumo de alimento: anticipa un brote grave más adelante</li>
+            <li>Aves que se quedan en un rincón o no bajan de la percha</li>
+            <li>Menos de la mitad del lote saliendo al parque en un buen día</li>
+          </ul>
+        </div>
+      </div>
+      <p class="note tip"><span class="lbl">Un cuaderno vale más que la impresión</span>«Andan peleadoras» no se puede comparar con la semana pasada. «32 de 50 sin daño» sí. Cuando ese número empieza a bajar dos semanas seguidas, es el momento de intervenir — no cuando se ven las primeras heridas.</p>
+    </div>
+  </article>
+
+  <!-- OUTRO -->
+  <div class="outro">
+    <p class="disclaimer">Esta guía ordena lo que se sabe hoy sobre el control del picaje en sistemas a piso y a pastoreo, y no reemplaza una visita a terreno. Cada lote llega al brote por una combinación distinta de factores, y encontrar cuál es la de este galpón requiere recorrerlo. Si además hay mortalidad o caída de postura de por medio, revise la guía de <a href="https://avivet.cl/avivet/Recursos/bioseguridad/">bioseguridad avícola</a> y la de <a href="https://avivet.cl/Recursos/Enfermedades-respiratorias.html">enfermedades respiratorias en aves de postura</a>.</p>
+
+    <div class="contact">
+      <div class="kicker">Asesoría veterinaria</div>
+      <h3>¿Tiene un lote picándose ahora?</h3>
+      <p>Medicina aviar y avicultura para el sur de Chile — Los Ríos, La Araucanía y Los Lagos.</p>
+      <div class="contact-links">
+        <a class="clink" href="https://wa.me/56958956340" target="_blank" rel="noopener"><span class="ck">WhatsApp</span><b>+56 9 5895 6340</b><span class="arr">→</span></a>
+        <a class="clink" href="mailto:andreslazomv@outlook.com"><span class="ck">Email</span><b>andreslazomv@outlook.com</b><span class="arr">→</span></a>
+        <a class="clink" href="https://avivet.cl" target="_blank" rel="noopener"><span class="ck">Web</span><b>avivet.cl</b><span class="arr">→</span></a>
+      </div>
+    </div>
+
+    <p class="foot">MV Andrés Lazo Escobar · <a href="https://avivet.cl/">Volver a avivet.cl</a></p>
+  </div>
+
+</main>
+
+<script>
+// Marcos de imagen: muestra la foto apenas exista en la carpeta, en cualquiera de estas extensiones.
+(function(){
+  var exts = ['jpg','jpeg','png','svg','webp'];
+  document.querySelectorAll('.ph-img').forEach(function(img){
+    var base = img.dataset.base, i = 0;
+    function tryNext(){
+      if(i >= exts.length){ img.remove(); return; }
+      var probe = new Image();
+      probe.onload = function(){
+        img.src = probe.src; img.hidden = false;
+        var ph = img.closest('.plate-frame').querySelector('.ph');
+        if(ph) ph.remove();
+      };
+      probe.onerror = function(){ i++; tryNext(); };
+      probe.src = base + '.' + exts[i];
+    }
+    tryNext();
+  });
+})();
+
+(function(){
+  var navScroll = document.getElementById('navScroll');
+  var chips = {};
+  navScroll.querySelectorAll('.idx').forEach(function(c){
+    chips[c.getAttribute('href').slice(1)] = c;
+  });
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        var id = e.target.id;
+        Object.values(chips).forEach(function(c){c.classList.remove('active');});
+        var active = chips[id];
+        if(active){
+          active.classList.add('active');
+          var off = active.offsetLeft - navScroll.clientWidth/2 + active.clientWidth/2;
+          navScroll.scrollTo({left:off, behavior:'smooth'});
+        }
+      }
+    });
+  }, {rootMargin:'-45% 0px -50% 0px', threshold:0});
+  document.querySelectorAll('article.entry').forEach(function(s){io.observe(s);});
+})();
+</script>
+</body>
+</html>
