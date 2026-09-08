@@ -15,9 +15,17 @@ Google Sheets). Este módulo es la otra mitad: lo que tú, como MV, dictaminas.
    medicamentos**) toca un **chip** para insertar el nombre y completar dosis/vía a
    mano, o **dicta por voz** (🎤) — funciona igual que la
    [Bitácora de Terreno](../informe-visita/bitacora.html) de Informe de Visita.
-4. Agrega observaciones generales y próximos pasos.
+4. En **Pabellones**, registra las **observaciones y hallazgos** por galpón y, si
+   corresponde, **indicaciones/acciones específicas** de ese pabellón. Con un solo
+   pabellón el informe se ve como siempre; con **"+ Agregar pabellón"** puedes cubrir
+   varios galpones del mismo productor, cada uno con su bloque. Añade los próximos pasos.
 5. Presiona **Generar informe Word** — descarga un `.docx` editable, listo para
    enviar al productor.
+
+> Las indicaciones generales (vacunación, antiparasitarios, otros medicamentos) van a
+> nivel de la sesión; lo que se registra por pabellón son las observaciones y las
+> acciones específicas de cada galpón. Las sesiones antiguas (con observaciones únicas)
+> se migran solas al Pabellón 1.
 
 Todo se guarda solo en este dispositivo (localStorage): mantiene una lista de
 sesiones para retomar o volver a descargar, con export/import JSON de respaldo.

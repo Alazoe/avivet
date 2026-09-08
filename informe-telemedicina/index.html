@@ -81,6 +81,18 @@ body{font-family:var(--fuente-c);font-size:16px;line-height:1.6;color:var(--tint
 .tm-chip-link:hover{background:var(--acento);border-color:var(--acento)}
 .tm-blk-head + .tm-chips{margin-top:-2px}
 .tarjeta textarea{width:100%}
+.tm-sub-hint{font-family:var(--fuente-c);font-size:12px;font-weight:400;color:var(--tenue)}
+.tm-pab-bloque{background:var(--fondo);border:1px solid var(--linea);border-left:4px solid var(--acento);
+  border-radius:6px;padding:14px 16px;margin-bottom:14px}
+.tm-pab-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.tm-pab-titulo{font-family:var(--fuente-c);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--prim)}
+.tm-pab-del{font-family:var(--fuente-c);font-size:12px;font-weight:600;padding:4px 10px;border:1px solid #e05c5c;
+  border-radius:5px;background:transparent;color:#b71c1c;cursor:pointer}
+.tm-pab-campo{margin-bottom:10px}
+.tm-pab-campo label{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:600;color:var(--suave,#555);margin-bottom:5px}
+.tm-btn-agregar{font-family:var(--fuente-c);font-size:14px;font-weight:600;padding:9px 18px;border:2px dashed var(--linea-f,#c4c0b6);
+  border-radius:6px;background:transparent;color:var(--prim);cursor:pointer}
+.tm-btn-agregar:hover{border-color:var(--prim);background:#f3f7f4}
 
 .tm-calendario{margin:2px 0 16px;font-size:13px}
 .tm-calendario summary{cursor:pointer;color:var(--prim);font-weight:600;padding:4px 0}
@@ -184,10 +196,10 @@ body{font-family:var(--fuente-c);font-size:16px;line-height:1.6;color:var(--tint
 
     <div class="tarjeta">
       <div class="tm-blk-head">
-        <h2>Observaciones generales</h2>
-        <button type="button" class="tm-mic" onclick="tmToggleDictado('tm-observaciones',this)" title="Dictar por voz">🎤 Dictar</button>
+        <h2>Pabellones <span class="tm-sub-hint">(observaciones por galpón)</span></h2>
       </div>
-      <textarea id="tm-observaciones" placeholder="Estado general del plantel, hallazgos comentados en la sesión…"></textarea>
+      <div id="tm-pabellones"></div>
+      <button type="button" class="tm-btn-agregar" onclick="tmAgregarPabellon()">+ Agregar pabellón</button>
     </div>
 
     <div class="tarjeta">

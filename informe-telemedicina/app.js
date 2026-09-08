@@ -174,7 +174,7 @@ function tmNuevaSesion() {
     fechaSesion: new Date().toISOString().slice(0, 10),
     modalidad: 'videollamada',
     temas: {}, vacunacion: '', antiparasitarios: '', otrosMed: '',
-    observaciones: '', seguimiento: '',
+    pabellones: [{ nombre: '', obs: '', reco: '' }], seguimiento: '',
     creado: Date.now(), modificado: Date.now(),
   };
   tmSesiones.unshift(s);
@@ -191,7 +191,7 @@ function tmLeerFormularioA(s) {
   s.aves       = g('tm-aves').value;
   s.fechaSesion= g('tm-fecha').value;
   s.modalidad  = g('tm-modalidad').value;
-  s.observaciones = g('tm-observaciones').value.trim();
+  s.pabellones = tmLeerPabs();
   s.seguimiento   = g('tm-seguimiento').value.trim();
   s.temas = {};
   TM_TEMAS.forEach(t => { s.temas[t.id] = !!g('tm-tema-' + t.id).checked; });
@@ -207,11 +207,55 @@ function tmPintarFormularioDe(s) {
   g('tm-aves').value       = s.aves || '';
   g('tm-fecha').value      = s.fechaSesion || '';
   g('tm-modalidad').value  = s.modalidad || 'videollamada';
-  g('tm-observaciones').value = s.observaciones || '';
   g('tm-seguimiento').value   = s.seguimiento || '';
   TM_TEMAS.forEach(t => { g('tm-tema-' + t.id).checked = !!(s.temas && s.temas[t.id]); });
   TM_BLOQUES.forEach(b => { g('tm-blk-' + b.id).value = s[b.id] || ''; });
+  // migración: sesiones antiguas traían s.observaciones (a nivel de sesión) → pabellón 1
+  const pabs = (s.pabellones && s.pabellones.length) ? s.pabellones : [{ nombre: '', obs: s.observaciones || '', reco: '' }];
+  tmRenderPabs(pabs);
 }
+
+// ── PABELLONES (observaciones por galpón) ─────────────────────────────────
+const tmEsc = t => (t == null ? '' : String(t)).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+const tmPabVacio = () => ({ nombre: '', obs: '', reco: '' });
+function tmPabBloqueHTML(p, i, total) {
+  const sinVoz = !TM_SR;
+  const mic = id => sinVoz ? '' : `<button type="button" class="tm-mic" onclick="tmToggleDictado('${id}',this)" title="Dictar por voz">🎤 Dictar</button>`;
+  return `<div class="tm-pab-bloque" data-pab="${i}">
+    <div class="tm-pab-head">
+      <span class="tm-pab-titulo">Pabellón ${i + 1}</span>
+      ${total > 1 ? `<button type="button" class="tm-pab-del" onclick="tmEliminarPabellon(${i})">Eliminar</button>` : ''}
+    </div>
+    <div class="tm-pab-campo">
+      <label>Nombre / etiqueta (opcional)</label>
+      <input type="text" data-f="nombre" value="${tmEsc(p.nombre)}" placeholder="Ej: Galpón 1">
+    </div>
+    <div class="tm-pab-campo">
+      <label>Observaciones y hallazgos ${mic('tm-pab-' + i + '-obs')}</label>
+      <textarea id="tm-pab-${i}-obs" data-f="obs" placeholder="Estado del galpón, hallazgos comentados en la sesión…">${tmEsc(p.obs)}</textarea>
+    </div>
+    <div class="tm-pab-campo">
+      <label>Indicaciones y acciones específicas ${mic('tm-pab-' + i + '-reco')}</label>
+      <textarea id="tm-pab-${i}-reco" data-f="reco" placeholder="Qué hacer en este galpón en particular (opcional)…">${tmEsc(p.reco)}</textarea>
+    </div>
+  </div>`;
+}
+function tmLeerPabs() {
+  return [...document.querySelectorAll('#tm-pabellones .tm-pab-bloque')].map(bl => {
+    const g = f => bl.querySelector(`[data-f="${f}"]`);
+    return { nombre: g('nombre').value.trim(), obs: g('obs').value.trim(), reco: g('reco').value.trim() };
+  });
+}
+function tmRenderPabs(pabs) {
+  const cont = document.getElementById('tm-pabellones');
+  if (cont) cont.innerHTML = pabs.map((p, i) => tmPabBloqueHTML(p, i, pabs.length)).join('');
+}
+window.tmAgregarPabellon = function () {
+  const pabs = tmLeerPabs(); pabs.push(tmPabVacio()); tmRenderPabs(pabs); tmAutoguardar();
+};
+window.tmEliminarPabellon = function (i) {
+  const pabs = tmLeerPabs(); pabs.splice(i, 1); if (!pabs.length) pabs.push(tmPabVacio()); tmRenderPabs(pabs); tmAutoguardar();
+};
 
 // ── AUTOSAVE ────────────────────────────────────────────────────────────
 function tmAutoguardar() {
@@ -569,10 +613,22 @@ function tmConstruirDoc(s, D, logo) {
     else hijos.push(...lineasVacias(2));
   });
 
-  // ── observaciones y seguimiento ──
-  hijos.push(H('Observaciones generales'));
-  if (s.observaciones) hijos.push(...caja(s.observaciones));
-  else hijos.push(...lineasVacias(3));
+  // ── observaciones por pabellón ──
+  const pabs = (s.pabellones && s.pabellones.length) ? s.pabellones : [{ nombre: '', obs: s.observaciones || '', reco: '' }];
+  if (pabs.length > 1) {
+    pabs.forEach((pb, i) => {
+      const et = (pb.nombre && pb.nombre.trim()) ? pb.nombre.trim() : ('Pabellón ' + (i + 1));
+      hijos.push(H(et));
+      hijos.push(p('Observaciones y hallazgos', { bold: true, after: 40 }));
+      if (pb.obs) hijos.push(...caja(pb.obs)); else hijos.push(...lineasVacias(2));
+      if (pb.reco) { hijos.push(p('Indicaciones y acciones específicas', { bold: true, before: 100, after: 40 })); hijos.push(...caja(pb.reco)); }
+    });
+  } else {
+    const pb = pabs[0];
+    hijos.push(H('Observaciones y hallazgos'));
+    if (pb.obs) hijos.push(...caja(pb.obs)); else hijos.push(...lineasVacias(3));
+    if (pb.reco) { hijos.push(H('Indicaciones y acciones específicas')); hijos.push(...caja(pb.reco)); }
+  }
 
   hijos.push(H('Próximos pasos y seguimiento'));
   if (s.seguimiento) hijos.push(...caja(s.seguimiento));
