@@ -79,6 +79,24 @@ body{
 #iv-error{display:none;background:#ffebee;border:1px solid #e05c5c;color:#b71c1c;
   padding:10px 16px;border-radius:5px;font-size:13px;font-weight:500}
 
+/* ── Propuesta y pabellones ─────────────────────────────────────────── */
+.sub-panel,.pab-seccion{margin-top:26px;padding-top:22px;border-top:1px solid var(--linea)}
+.sub-titulo{font-family:var(--fuente-t);font-size:18px;font-weight:600;color:var(--prim);margin-bottom:14px}
+.sub-hint{font-family:var(--fuente-c);font-size:12px;font-weight:400;color:var(--tenue)}
+.sub-panel .form-grid,.sub-panel .campo{margin:0}
+.pab-bloque{background:var(--fondo);border:1px solid var(--linea);border-left:4px solid var(--acento);
+  border-radius:6px;padding:16px 18px;margin-bottom:16px}
+.pab-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.pab-titulo{font-family:var(--fuente-c);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--prim)}
+.pab-del{font-family:var(--fuente-c);font-size:12px;font-weight:600;padding:5px 12px;border:1px solid #e05c5c;
+  border-radius:5px;background:transparent;color:#b71c1c;cursor:pointer}
+.pab-del:hover{background:#ffebee}
+.btn-agregar{font-family:var(--fuente-c);font-size:14px;font-weight:600;padding:10px 20px;
+  border:2px dashed var(--linea-f);border-radius:6px;background:transparent;color:var(--prim);cursor:pointer;transition:all .18s}
+.btn-agregar:hover{border-color:var(--prim);background:#f3f7f4}
+.iv-prev-pab{font-family:var(--fuente-t);font-size:20px;font-weight:700;color:var(--prim);
+  margin:26px 0 14px;padding:8px 12px;background:#f3f7f4;border-left:4px solid var(--acento);border-radius:0 4px 4px 0}
+
 /* ── Resultado / preview ────────────────────────────────────────────── */
 #iv-resultado{display:none;margin-bottom:64px}
 .prev-cabecera{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;
@@ -148,7 +166,7 @@ tbody tr:hover{background:var(--acento-cl)}
     <div class="form-grid">
       <div class="campo">
         <label for="iv-tipo">Tipo de visita</label>
-        <select id="iv-tipo">
+        <select id="iv-tipo" onchange="ivToggleTipo()">
           <option value="primera">Primera visita (completa)</option>
           <option value="seguimiento">Seguimiento (liviana)</option>
         </select>
@@ -165,50 +183,26 @@ tbody tr:hover{background:var(--acento-cl)}
         <label for="iv-fecha-visita">Fecha de visita</label>
         <input id="iv-fecha-visita" type="date">
       </div>
-      <div class="campo">
-        <label for="iv-linea">Línea genética</label>
-        <select id="iv-linea"></select>
-      </div>
-      <div class="campo">
-        <label for="iv-nacimiento">Fecha de nacimiento del lote</label>
-        <input id="iv-nacimiento" type="date">
-      </div>
-      <div class="campo">
-        <label for="iv-aves">Número de aves</label>
-        <input id="iv-aves" type="number" min="1" placeholder="Ej: 2000">
-      </div>
-      <div class="campo">
-        <label for="iv-sistema">Sistema</label>
-        <select id="iv-sistema">
-          <option value="piso">Piso</option>
-          <option value="jaula">Jaula</option>
-        </select>
-      </div>
-      <div class="campo">
-        <label for="iv-largo">Galpón — largo (m)</label>
-        <input id="iv-largo" type="number" min="0" step="0.1" oninput="ivDimensiones()" placeholder="Ej: 30">
-      </div>
-      <div class="campo">
-        <label for="iv-ancho">Galpón — ancho (m)</label>
-        <input id="iv-ancho" type="number" min="0" step="0.1" oninput="ivDimensiones()" placeholder="Ej: 10">
-      </div>
-      <div class="campo">
-        <label for="iv-superficie">Superficie (m²)</label>
-        <input id="iv-superficie" type="number" min="0" step="0.1" placeholder="Se calcula sola">
-      </div>
-      <div class="campo campo-check">
-        <input id="iv-exterior" type="checkbox">
-        <label for="iv-exterior">Sistema con acceso exterior (pastoreo)</label>
+    </div>
+
+    <div id="iv-propuesta-card" class="sub-panel">
+      <h3 class="sub-titulo">Propuesta de trabajo <span class="sub-hint">(solo primera visita)</span></h3>
+      <div class="campo campo-full">
+        <label for="iv-prop-obj">Objetivos de la asesoría</label>
+        <textarea id="iv-prop-obj" placeholder="Qué se busca lograr: metas productivas, sanitarias, de bioseguridad…"></textarea>
       </div>
       <div class="campo campo-full">
-        <label for="iv-obs">Observaciones de la visita (opcional — puedes completarlas después en Word)</label>
-        <textarea id="iv-obs" placeholder="Estado sanitario, cama, plumaje, hallazgos…"></textarea>
-      </div>
-      <div class="campo campo-full">
-        <label for="iv-reco">Recomendaciones (opcional)</label>
-        <textarea id="iv-reco" placeholder="Ajustes de manejo, equipamiento faltante, próximos pasos…"></textarea>
+        <label for="iv-prop-alc">Alcance y honorarios</label>
+        <textarea id="iv-prop-alc" placeholder="Qué cubre la asesoría, modalidad, valor y condiciones del servicio…"></textarea>
       </div>
     </div>
+
+    <div class="pab-seccion">
+      <h3 class="sub-titulo">Pabellones <span class="sub-hint">(cada uno con su propio lote)</span></h3>
+      <div id="iv-pabellones"></div>
+      <button type="button" class="btn-agregar" onclick="ivAgregarPabellon()">+ Agregar pabellón</button>
+    </div>
+
     <div class="form-acciones">
       <button class="btn-prim" onclick="ivGenerar()">Generar informe</button>
       <div id="iv-error"></div>

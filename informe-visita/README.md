@@ -19,6 +19,28 @@ se ingresan las características del galpón y del lote, y se descarga un docume
 3. Presiona **Descargar Word (.docx)** — el archivo queda listo para editar
    (agregar observaciones, fotos, firma) y entregar al productor.
 
+## Pabellones (varios lotes por informe)
+
+Un informe puede cubrir **varios pabellones**, cada uno con su **propio lote**
+(línea, edad/nacimiento, nº de aves, dimensiones y observaciones/recomendaciones).
+En el formulario se agrega con **"+ Agregar pabellón"**. En el documento:
+
+- Los datos del **predio** (productor, ubicación, fecha) y la **propuesta de trabajo**
+  van una sola vez.
+- Con **un** pabellón, el informe se ve como siempre (Datos generales + secciones).
+- Con **varios**, aparece "Datos generales del predio" y luego un bloque por pabellón
+  (Título 2 "Pabellón N / nombre — línea · semana"), cada uno con sus cifras, datos del
+  lote, diagnóstico (primera visita), observaciones y recomendaciones.
+
+## Propuesta de trabajo (primera visita)
+
+Solo en la **primera visita**, el informe incluye una sección **Propuesta de trabajo** con:
+
+- **Objetivos de la asesoría**
+- **Alcance y honorarios**
+
+Se completan en el formulario (se ocultan en seguimiento).
+
 ## Tipos de visita
 
 Un selector define qué contiene el informe:

@@ -177,7 +177,7 @@ function ivCalcular(inp) {
 // D = librería docx (global en navegador, require('docx') en node)
 // Diseño de informe técnico: membrete + pie corridos, banner de portada,
 // franja-resumen, secciones con franja de color y tablas con cebra.
-function ivConstruirDoc(inf, D, logo) {
+function ivConstruirDoc(report, D, logo) {
   const VERDE = '1B4332', VERDE2 = '2D6A4F', AMBAR = 'F0A500', AMBAR_CL = 'FBEFCF',
         GRIS = '6B6B6B', TINTA = '1A1A1A', BLANCO = 'FFFFFF',
         BANDA = 'EDF1EE', ZEBRA = 'F6F3ED', CAJA = 'FAF7F0', LINEA = 'D9D4C8',
@@ -260,11 +260,21 @@ function ivConstruirDoc(inf, D, logo) {
   const lineasVacias = n => Array.from({ length: n }, () =>
     p('', { border: { bottom: { color: LINEA, size: 4, style: SB, space: 8 } }, after: 260 }));
 
-  const m = inf.meta, e = inf.edad, o = inf.objetivo;
-  const seguimiento = m.tipoVisita === 'seguimiento';   // seguimiento = documento liviano (sin objetivo/equipamiento/densidad/ambiente)
-  const visita = new Date((m.fechaVisita || new Date().toISOString().slice(0, 10)) + 'T00:00:00');
-  const nac = new Date(m.nacimiento + 'T00:00:00');
+  // ── reporte: {productor, ubicacion, fechaVisita, tipoVisita, propuesta, pabellones:[inf...]} ──
+  // compat: si llega un `inf` suelto (un solo pabellón, shape antiguo), envolverlo
+  if (report && report.pabellones == null && report.edad) {
+    const im = report.meta || {};
+    report = { productor: im.productor, ubicacion: im.ubicacion, fechaVisita: im.fechaVisita,
+      tipoVisita: im.tipoVisita, propuesta: im.propuesta, pabellones: [report] };
+  }
+  const seguimiento = report.tipoVisita === 'seguimiento';
+  const propuesta = report.propuesta || {};
+  const pabs = report.pabellones;
+  const multi = pabs.length > 1;
+  const visita = new Date((report.fechaVisita || new Date().toISOString().slice(0, 10)) + 'T00:00:00');
   const hijos = [];
+
+  const h3 = titulo => new D.Paragraph({ heading: D.HeadingLevel.HEADING_3, spacing: { before: 200, after: 80 }, children: [new D.TextRun({ text: titulo })] });
 
   // ── membrete: logo AviVet + tipo de documento ──
   const NONE = D.BorderStyle.NONE;
@@ -285,8 +295,8 @@ function ivConstruirDoc(inf, D, logo) {
   const docInfoCell = new D.TableCell({
     children: [
       new D.Paragraph({ alignment: AL.RIGHT, spacing: { after: 0 }, children: [run(seguimiento ? 'INFORME DE SEGUIMIENTO' : 'INFORME DE VISITA TÉCNICA', { bold: true, color: VERDE, size: 20, caps: true })] }),
-      new D.Paragraph({ alignment: AL.RIGHT, spacing: { before: 50 }, children: [run(m.productor || 'Productor', { color: TINTA, size: 18 })] }),
-      new D.Paragraph({ alignment: AL.RIGHT, spacing: { before: 4 }, children: [run(ivFecha(visita) + (m.ubicacion ? '  ·  ' + m.ubicacion : ''), { color: GRIS, size: 16 })] }),
+      new D.Paragraph({ alignment: AL.RIGHT, spacing: { before: 50 }, children: [run(report.productor || 'Productor', { color: TINTA, size: 18 })] }),
+      new D.Paragraph({ alignment: AL.RIGHT, spacing: { before: 4 }, children: [run(ivFecha(visita) + (report.ubicacion ? '  ·  ' + report.ubicacion : ''), { color: GRIS, size: 16 })] }),
     ],
     verticalAlign: VA.CENTER, width: { size: 50, type: D.WidthType.PERCENTAGE },
     margins: { top: 120, bottom: 120, left: 60, right: 120 },
@@ -297,126 +307,164 @@ function ivConstruirDoc(inf, D, logo) {
     rows: [new D.TableRow({ children: [brandCell, docInfoCell] })],
   }));
 
-  // ── franja-resumen (cifras clave) ──
-  const fichas = [
-    { num: String(e.semana), lbl: 'Semana', sub: e.meses + ' meses' },
-    { num: e.etapa, lbl: 'Etapa', sub: e.enCrianza ? e.fase : 'en producción', size: 20 },
-    { num: ivFmt(m.aves), lbl: 'Aves', sub: (m.sistema === 'jaula' ? 'Jaula' : 'Piso') + (m.exterior ? ' + exterior' : '') },
-  ];
-  // la ficha de objetivo (postura/peso esperado) solo en primera visita
-  if (!seguimiento) fichas.push(o.pct != null
-    ? { num: ivFmt1(o.pct) + '%', lbl: 'Postura esperada', sub: '≈ ' + ivFmt(o.huevosDia) + ' huevos/día' }
-    : { num: ivFmt(o.pesoMin * 1000) + '–' + ivFmt(o.pesoMax * 1000), lbl: 'Peso objetivo (g)', sub: 'semana ' + e.semana, size: 18 });
-  const ficha = f => new D.TableCell({
-    children: [
-      new D.Paragraph({ alignment: AL.CENTER, spacing: { before: 60, after: 20 }, children: [run(f.num, { bold: true, color: VERDE, size: f.size || 30 })] }),
-      new D.Paragraph({ alignment: AL.CENTER, spacing: { after: 8 }, children: [run(f.lbl, { bold: true, size: 15, caps: true, color: TINTA })] }),
-      new D.Paragraph({ alignment: AL.CENTER, spacing: { after: 60 }, children: [run(f.sub, { size: 14, color: GRIS })] }),
-    ],
-    shading: { type: SH, color: 'auto', fill: CAJA },
-    borders: { top: { color: AMBAR, size: 20, style: SB } },
-    margins: { top: 40, bottom: 40, left: 80, right: 80 },
-    width: { size: Math.round(100 / fichas.length), type: D.WidthType.PERCENTAGE },
-    verticalAlign: VA.CENTER,
-  });
-  hijos.push(new D.Paragraph({ spacing: { after: 60 }, children: [] }));
-  hijos.push(new D.Table({
-    width: { size: 100, type: D.WidthType.PERCENTAGE },
-    borders: { top: { style: D.BorderStyle.NONE }, bottom: { style: D.BorderStyle.NONE }, left: { style: D.BorderStyle.NONE }, right: { style: D.BorderStyle.NONE }, insideVertical: { color: BLANCO, size: 8, style: SB }, insideHorizontal: { style: D.BorderStyle.NONE } },
-    rows: [new D.TableRow({ children: fichas.map(ficha) })],
-  }));
-  hijos.push(new D.Paragraph({ spacing: { after: 120 }, children: [] }));
-
-  // numeración de secciones automática (según qué bloques se incluyan)
+  // numeración de secciones (Heading 2)
   let nSec = 0;
   const H = titulo => h2(String(++nSec), titulo);
 
-  // ── datos generales (siempre) ──
-  hijos.push(H('Datos generales'));
-  const datos = [
-    ['Productor / Predio', m.productor || '—'],
-    ['Ubicación', m.ubicacion || '—'],
-    ['Fecha de visita', ivFecha(visita)],
-    ['Línea genética', m.linea],
-    ['Nacimiento del lote', ivFecha(nac)],
-    ['Edad del lote', `Semana ${e.semana} · día ${e.diaVida} de vida (${e.meses} meses)`],
-    ['Etapa', e.etapa + (e.enCrianza ? ` — fase ${e.fase}` : '')],
-    ['Número de aves', ivFmt(m.aves)],
-  ];
-  if (m.largo > 0 && m.ancho > 0) datos.push(['Dimensiones del galpón', `${ivFmt1(m.largo)} × ${ivFmt1(m.ancho)} m`]);
-  if (m.superficie > 0) {
-    datos.push(['Superficie del galpón', ivFmt1(m.superficie) + ' m²']);
-    datos.push(['Densidad actual', ivFmt1(m.aves / m.superficie) + ' aves/m²']);
-  }
-  datos.push(['Sistema', (m.sistema === 'jaula' ? 'Jaula' : 'Piso') + (m.exterior ? ' con acceso exterior' : '')]);
-  hijos.push(tablaDatos(datos));
-
-  // ── bloques diagnósticos: SOLO en primera visita ──
-  if (!seguimiento) {
-    // parámetros objetivo
-    hijos.push(H(`Parámetros objetivo — semana ${e.semana}`));
-    if (e.notaClamp) hijos.push(nota(e.notaClamp));
-    const par = [
-      ['Parámetro', 'Por ave', 'Total lote'],
-      ['Peso corporal', `${ivFmt(o.pesoMin * 1000)}–${ivFmt(o.pesoMax * 1000)} g`, `Biomasa ≈ ${ivFmt(Math.round(o.biomasa))} kg`],
-      ['Consumo de alimento', `${o.alMin}–${o.alMax} g/día`, `${ivFmt1(o.alimentoLoteMin)}–${ivFmt1(o.alimentoLoteMax)} kg/día`],
-      ['Consumo de agua', `${o.aguaMin}–${o.aguaMax} ml/día`, `${ivFmt1(o.aguaLoteMin)}–${ivFmt1(o.aguaLoteMax)} L/día`],
+  // ── helper: franja-resumen (cifras clave) de un pabellón ──
+  const pushFichas = inf => {
+    const e = inf.edad, o = inf.objetivo, m = inf.meta;
+    const fichas = [
+      { num: String(e.semana), lbl: 'Semana', sub: e.meses + ' meses' },
+      { num: e.etapa, lbl: 'Etapa', sub: e.enCrianza ? e.fase : 'en producción', size: 20 },
+      { num: ivFmt(m.aves), lbl: 'Aves', sub: (m.sistema === 'jaula' ? 'Jaula' : 'Piso') + (m.exterior ? ' + exterior' : '') },
     ];
-    if (o.pct != null) {
-      par.push(['Postura esperada', ivFmt1(o.pct) + ' %', `≈ ${ivFmt(o.huevosDia)} huevos/día (${ivFmt(o.bandejasDia)} bandejas de 30)`]);
-      par.push(['Peso del huevo', ivFmt1(o.pesoHuevo) + ' g', `≈ ${ivFmt1(o.huevosDia * o.pesoHuevo / 1000)} kg/día`]);
-    }
-    if (o.mortEsp != null) par.push(['Mortalidad acumulada esperada', ivFmt1(o.mortEsp) + ' %', `≈ ${ivFmt(o.avesEsperadas)} aves vivas esperadas`]);
-    hijos.push(tabla(par, [34, 28, 38]));
-    hijos.push(nota('Fuente: ' + m.fuente));
+    if (m.superficie > 0) fichas.push({ num: ivFmt1(m.aves / m.superficie), lbl: 'Densidad', sub: 'aves/m²', size: 26 });
+    if (!seguimiento) fichas.push(o.pct != null
+      ? { num: ivFmt1(o.pct) + '%', lbl: 'Postura esperada', sub: '≈ ' + ivFmt(o.huevosDia) + ' huevos/día' }
+      : { num: ivFmt(o.pesoMin * 1000) + '–' + ivFmt(o.pesoMax * 1000), lbl: 'Peso objetivo (g)', sub: 'semana ' + e.semana, size: 18 });
+    const ficha = f => new D.TableCell({
+      children: [
+        new D.Paragraph({ alignment: AL.CENTER, spacing: { before: 60, after: 20 }, children: [run(f.num, { bold: true, color: VERDE, size: f.size || 30 })] }),
+        new D.Paragraph({ alignment: AL.CENTER, spacing: { after: 8 }, children: [run(f.lbl, { bold: true, size: 15, caps: true, color: TINTA })] }),
+        new D.Paragraph({ alignment: AL.CENTER, spacing: { after: 60 }, children: [run(f.sub, { size: 14, color: GRIS })] }),
+      ],
+      shading: { type: SH, color: 'auto', fill: CAJA },
+      borders: { top: { color: AMBAR, size: 20, style: SB } },
+      margins: { top: 40, bottom: 40, left: 80, right: 80 },
+      width: { size: Math.round(100 / fichas.length), type: D.WidthType.PERCENTAGE },
+      verticalAlign: VA.CENTER,
+    });
+    hijos.push(new D.Paragraph({ spacing: { after: 60 }, children: [] }));
+    hijos.push(new D.Table({
+      width: { size: 100, type: D.WidthType.PERCENTAGE },
+      borders: { top: { style: NONE }, bottom: { style: NONE }, left: { style: NONE }, right: { style: NONE }, insideVertical: { color: BLANCO, size: 8, style: SB }, insideHorizontal: { style: NONE } },
+      rows: [new D.TableRow({ children: fichas.map(ficha) })],
+    }));
+    hijos.push(new D.Paragraph({ spacing: { after: 120 }, children: [] }));
+  };
 
-    // equipamiento requerido
-    hijos.push(H(`Equipamiento requerido — ${ivFmt(m.aves)} aves (${e.enCrianza ? 'crianza ' + e.fase : 'postura'})`));
-    hijos.push(tabla([['Equipamiento', 'Requerido', 'Estándar'], ...inf.equip], [34, 26, 40]));
-    if (e.enCrianza) {
-      hijos.push(nota('Comederos redondos según diámetro: ' + IV_COMEDERO_DIAM.map(d => `Ø${d[0]} cm → ${ivFmt(Math.ceil(m.aves / d[1]))} unid. (${d[1]} aves c/u)`).join(' · ')));
+  // ── helper: filas de datos del lote ──
+  const filasLote = inf => {
+    const e = inf.edad, m = inf.meta;
+    const nac = new Date(m.nacimiento + 'T00:00:00');
+    const f = [
+      ['Línea genética', m.linea],
+      ['Nacimiento del lote', ivFecha(nac)],
+      ['Edad del lote', `Semana ${e.semana} · día ${e.diaVida} de vida (${e.meses} meses)`],
+      ['Etapa', e.etapa + (e.enCrianza ? ` — fase ${e.fase}` : '')],
+      ['Número de aves', ivFmt(m.aves)],
+    ];
+    if (m.largo > 0 && m.ancho > 0) f.push(['Dimensiones del galpón', `${ivFmt1(m.largo)} × ${ivFmt1(m.ancho)} m`]);
+    if (m.superficie > 0) {
+      f.push(['Superficie del galpón', ivFmt1(m.superficie) + ' m²']);
+      f.push(['Densidad actual', ivFmt1(m.aves / m.superficie) + ' aves/m²']);
     }
+    f.push(['Sistema', (m.sistema === 'jaula' ? 'Jaula' : 'Piso') + (m.exterior ? ' con acceso exterior' : '')]);
+    return f;
+  };
 
-    // densidad
-    if (inf.densidad) {
-      const d = inf.densidad;
-      hijos.push(H('Densidad'));
-      hijos.push(p([run('Densidad actual del galpón:  ', { bold: true }), run(ivFmt1(d.real) + ' aves/m²', { bold: true })], { after: 100 }));
-      hijos.push(tabla([
-        ['Referencia', 'Densidad máx.', 'Superficie mínima', 'Evaluación'],
-        ...d.refs.map(r => [
-          r.nombre, ivFmt1(r.densidad) + ' aves/m²', ivFmt1(r.superficieMin) + ' m²',
-          r.ok ? '✔ Cumple' : `✘ Sobrecarga +${r.exceso}%`,
-        ]),
-      ], [34, 20, 22, 24]));
-    }
-
-    // ambiente de crianza
-    if (inf.ambiente) {
-      const a = inf.ambiente;
-      hijos.push(H('Temperatura e iluminación de crianza'));
-      let cab, filas;
-      if (a.columnas) {
-        cab = a.columnas; filas = a.periodos;
-      } else {
-        const esJaula = a.periodos.some(x => x[1] != null);
-        cab = esJaula ? ['Edad', 'T. jaula (°C)', 'T. piso (°C)', 'Intensidad (lux)', 'Horas de luz'] : ['Edad', 'T. piso (°C)', 'Intensidad (lux)', 'Horas de luz'];
-        filas = a.periodos.map(x => esJaula ? x : [x[0], x[2], x[3], x[4]]);
+  // ── helper: secciones diagnósticas (primera) + observaciones + recomendaciones ──
+  const pushDiagnostico = (inf, Hx) => {
+    const e = inf.edad, o = inf.objetivo, m = inf.meta;
+    if (!seguimiento) {
+      hijos.push(Hx(`Parámetros objetivo — semana ${e.semana}`));
+      if (e.notaClamp) hijos.push(nota(e.notaClamp));
+      const par = [
+        ['Parámetro', 'Por ave', 'Total lote'],
+        ['Peso corporal', `${ivFmt(o.pesoMin * 1000)}–${ivFmt(o.pesoMax * 1000)} g`, `Biomasa ≈ ${ivFmt(Math.round(o.biomasa))} kg`],
+        ['Consumo de alimento', `${o.alMin}–${o.alMax} g/día`, `${ivFmt1(o.alimentoLoteMin)}–${ivFmt1(o.alimentoLoteMax)} kg/día`],
+        ['Consumo de agua', `${o.aguaMin}–${o.aguaMax} ml/día`, `${ivFmt1(o.aguaLoteMin)}–${ivFmt1(o.aguaLoteMax)} L/día`],
+      ];
+      if (o.pct != null) {
+        par.push(['Postura esperada', ivFmt1(o.pct) + ' %', `≈ ${ivFmt(o.huevosDia)} huevos/día (${ivFmt(o.bandejasDia)} bandejas de 30)`]);
+        par.push(['Peso del huevo', ivFmt1(o.pesoHuevo) + ' g', `≈ ${ivFmt1(o.huevosDia * o.pesoHuevo / 1000)} kg/día`]);
       }
-      hijos.push(tabla([cab, ...filas.map(f => f.map(v => v == null ? '—' : v))]));
-      hijos.push(nota('Fuente: ' + a.fuente + (a.referencial ? ' (referencial — la línea seleccionada no publica tabla propia)' : '')));
+      if (o.mortEsp != null) par.push(['Mortalidad acumulada esperada', ivFmt1(o.mortEsp) + ' %', `≈ ${ivFmt(o.avesEsperadas)} aves vivas esperadas`]);
+      hijos.push(tabla(par, [34, 28, 38]));
+      hijos.push(nota('Fuente: ' + m.fuente));
+
+      hijos.push(Hx(`Equipamiento requerido — ${ivFmt(m.aves)} aves (${e.enCrianza ? 'crianza ' + e.fase : 'postura'})`));
+      hijos.push(tabla([['Equipamiento', 'Requerido', 'Estándar'], ...inf.equip], [34, 26, 40]));
+      if (e.enCrianza) {
+        hijos.push(nota('Comederos redondos según diámetro: ' + IV_COMEDERO_DIAM.map(d => `Ø${d[0]} cm → ${ivFmt(Math.ceil(m.aves / d[1]))} unid. (${d[1]} aves c/u)`).join(' · ')));
+      }
+
+      if (inf.densidad) {
+        const d = inf.densidad;
+        hijos.push(Hx('Densidad'));
+        hijos.push(p([run('Densidad actual del galpón:  ', { bold: true }), run(ivFmt1(d.real) + ' aves/m²', { bold: true })], { after: 100 }));
+        hijos.push(tabla([
+          ['Referencia', 'Densidad máx.', 'Superficie mínima', 'Evaluación'],
+          ...d.refs.map(r => [r.nombre, ivFmt1(r.densidad) + ' aves/m²', ivFmt1(r.superficieMin) + ' m²', r.ok ? '✔ Cumple' : `✘ Sobrecarga +${r.exceso}%`]),
+        ], [34, 20, 22, 24]));
+      }
+
+      if (inf.ambiente) {
+        const a = inf.ambiente;
+        hijos.push(Hx('Temperatura e iluminación de crianza'));
+        let cab, filas;
+        if (a.columnas) { cab = a.columnas; filas = a.periodos; }
+        else {
+          const esJaula = a.periodos.some(x => x[1] != null);
+          cab = esJaula ? ['Edad', 'T. jaula (°C)', 'T. piso (°C)', 'Intensidad (lux)', 'Horas de luz'] : ['Edad', 'T. piso (°C)', 'Intensidad (lux)', 'Horas de luz'];
+          filas = a.periodos.map(x => esJaula ? x : [x[0], x[2], x[3], x[4]]);
+        }
+        hijos.push(tabla([cab, ...filas.map(f => f.map(v => v == null ? '—' : v))]));
+        hijos.push(nota('Fuente: ' + a.fuente + (a.referencial ? ' (referencial — la línea seleccionada no publica tabla propia)' : '')));
+      }
     }
+    hijos.push(Hx('Observaciones de la visita'));
+    if (m.obs) hijos.push(caja(m.obs)); else hijos.push(...lineasVacias(3));
+    hijos.push(Hx('Recomendaciones y acciones a seguir'));
+    if (m.reco) hijos.push(caja(m.reco)); else hijos.push(...lineasVacias(3));
+  };
+
+  // ── helper: propuesta de trabajo (solo primera visita) ──
+  const pushPropuesta = Hx => {
+    if (seguimiento) return;
+    const obj = (propuesta.objetivos || '').trim(), alc = (propuesta.alcance || '').trim();
+    if (!obj && !alc) return;
+    hijos.push(Hx('Propuesta de trabajo'));
+    hijos.push(p('Objetivos de la asesoría', { bold: true, after: 40 }));
+    if (obj) hijos.push(caja(obj)); else hijos.push(...lineasVacias(2));
+    hijos.push(p('Alcance y honorarios', { bold: true, before: 120, after: 40 }));
+    if (alc) hijos.push(caja(alc)); else hijos.push(...lineasVacias(2));
+  };
+
+  // ── cuerpo ──
+  if (!multi) {
+    const inf = pabs[0];
+    pushFichas(inf);
+    hijos.push(H('Datos generales'));
+    hijos.push(tablaDatos([
+      ['Productor / Predio', report.productor || '—'],
+      ['Ubicación', report.ubicacion || '—'],
+      ['Fecha de visita', ivFecha(visita)],
+      ...filasLote(inf),
+    ]));
+    pushPropuesta(H);
+    pushDiagnostico(inf, H);
+  } else {
+    hijos.push(H('Datos generales del predio'));
+    hijos.push(tablaDatos([
+      ['Productor / Predio', report.productor || '—'],
+      ['Ubicación', report.ubicacion || '—'],
+      ['Fecha de visita', ivFecha(visita)],
+      ['Tipo de visita', seguimiento ? 'Seguimiento' : 'Primera visita'],
+      ['N.º de pabellones', String(pabs.length)],
+    ]));
+    pushPropuesta(H);
+    pabs.forEach((inf, i) => {
+      const m = inf.meta, e = inf.edad;
+      const etiqueta = (m.nombre && m.nombre.trim()) ? m.nombre.trim() : ('Pabellón ' + (i + 1));
+      hijos.push(H(`${etiqueta} — ${m.linea} · Semana ${e.semana} (${e.etapa})`));
+      pushFichas(inf);
+      hijos.push(h3('Datos del lote'));
+      hijos.push(tablaDatos(filasLote(inf)));
+      pushDiagnostico(inf, h3);
+    });
   }
-
-  // ── observaciones (siempre) ──
-  hijos.push(H('Observaciones de la visita'));
-  if (m.obs) hijos.push(caja(m.obs));
-  else hijos.push(...lineasVacias(3));
-
-  // ── recomendaciones y acciones a seguir (siempre) ──
-  hijos.push(H('Recomendaciones y acciones a seguir'));
-  if (m.reco) hijos.push(caja(m.reco));
-  else hijos.push(...lineasVacias(3));
 
   // ── firma ──
   hijos.push(new D.Paragraph({ children: [], spacing: { before: 700 } }));
@@ -460,9 +508,12 @@ function ivConstruirDoc(inf, D, logo) {
   });
 }
 
-function ivNombreArchivo(inf) {
-  const prod = (inf.meta.productor || 'productor').trim().replace(/[^\wáéíóúñÁÉÍÓÚÑ-]+/g, '_');
-  return `Informe_Visita_${prod}_${inf.meta.fechaVisita || new Date().toISOString().slice(0, 10)}.docx`;
+function ivNombreArchivo(r) {
+  // acepta un reporte {productor, fechaVisita, tipoVisita} o un inf suelto {meta:{...}}
+  const meta = r.pabellones ? r : (r.meta || r);
+  const prod = (meta.productor || 'productor').trim().replace(/[^\wáéíóúñÁÉÍÓÚÑ-]+/g, '_');
+  const tipo = meta.tipoVisita === 'seguimiento' ? 'Seguimiento' : 'PrimeraVisita';
+  return `Informe_${tipo}_${prod}_${meta.fechaVisita || new Date().toISOString().slice(0, 10)}.docx`;
 }
 
 // Carga el logo AviVet (assets/avivet_logo.png) como bytes para incrustarlo en el .docx.
@@ -485,91 +536,143 @@ if (typeof module !== 'undefined' && module.exports) {
 // ── UI (solo navegador) ─────────────────────────────────────────────────
 if (typeof document !== 'undefined' && typeof window !== 'undefined') {
 
-  let ivInforme = null;
+  let ivReporte = null;
+  const ivEsc = t => (t == null ? '' : String(t)).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  const ivPabVacio = () => ({ nombre: '', linea: Object.keys(LINEAS)[0], nacimiento: '', aves: '', largo: '', ancho: '', superficie: '', sistema: 'piso', exterior: false, obs: '', reco: '' });
 
-  window.addEventListener('DOMContentLoaded', () => {
-    const selLinea = document.getElementById('iv-linea');
-    if (!selLinea) return;
-    selLinea.innerHTML = Object.keys(LINEAS).map(k => `<option value="${k}">${k}</option>`).join('');
-    document.getElementById('iv-fecha-visita').value = new Date().toISOString().slice(0, 10);
-    document.getElementById('iv-fecha-hoy').textContent = new Date().toLocaleDateString('es-CL');
-  });
+  // ── bloque de pabellón en el formulario ──
+  function ivPabBloqueHTML(p, i, total) {
+    const lineaOpts = Object.keys(LINEAS).map(k => `<option value="${k}"${k === p.linea ? ' selected' : ''}>${k}</option>`).join('');
+    const sisOpts = `<option value="piso"${p.sistema === 'piso' ? ' selected' : ''}>Piso</option><option value="jaula"${p.sistema === 'jaula' ? ' selected' : ''}>Jaula</option>`;
+    return `<div class="pab-bloque" data-pab="${i}">
+      <div class="pab-head">
+        <span class="pab-titulo">Pabellón ${i + 1}</span>
+        ${total > 1 ? `<button type="button" class="pab-del" onclick="ivEliminarPabellon(${i})">Eliminar</button>` : ''}
+      </div>
+      <div class="form-grid">
+        <div class="campo"><label>Nombre / etiqueta (opcional)</label><input type="text" data-f="nombre" value="${ivEsc(p.nombre)}" placeholder="Ej: Galpón 1"></div>
+        <div class="campo"><label>Línea genética</label><select data-f="linea">${lineaOpts}</select></div>
+        <div class="campo"><label>Nacimiento del lote</label><input type="date" data-f="nacimiento" value="${ivEsc(p.nacimiento)}"></div>
+        <div class="campo"><label>Número de aves</label><input type="number" inputmode="numeric" min="1" data-f="aves" value="${ivEsc(p.aves)}" placeholder="Ej: 2000"></div>
+        <div class="campo"><label>Sistema</label><select data-f="sistema">${sisOpts}</select></div>
+        <div class="campo"><label>Galpón — largo (m)</label><input type="number" inputmode="decimal" min="0" step="0.1" data-f="largo" value="${ivEsc(p.largo)}" oninput="ivDimensiones(${i})"></div>
+        <div class="campo"><label>Galpón — ancho (m)</label><input type="number" inputmode="decimal" min="0" step="0.1" data-f="ancho" value="${ivEsc(p.ancho)}" oninput="ivDimensiones(${i})"></div>
+        <div class="campo"><label>Superficie (m²)</label><input type="number" inputmode="decimal" min="0" step="0.1" data-f="superficie" value="${ivEsc(p.superficie)}" placeholder="se calcula sola"></div>
+        <div class="campo campo-check"><input type="checkbox" data-f="exterior" ${p.exterior ? 'checked' : ''}><label>Con acceso exterior</label></div>
+        <div class="campo campo-full"><label>Observaciones de este pabellón</label><textarea data-f="obs" placeholder="Estado sanitario, cama, plumaje, hallazgos…">${ivEsc(p.obs)}</textarea></div>
+        <div class="campo campo-full"><label>Recomendaciones y acciones</label><textarea data-f="reco" placeholder="Ajustes de manejo, equipamiento faltante, próximos pasos…">${ivEsc(p.reco)}</textarea></div>
+      </div>
+    </div>`;
+  }
 
-  window.ivDimensiones = function () {
-    const largo = parseFloat(document.getElementById('iv-largo').value);
-    const ancho = parseFloat(document.getElementById('iv-ancho').value);
-    if (largo > 0 && ancho > 0) document.getElementById('iv-superficie').value = (largo * ancho).toFixed(1);
+  function ivLeerPabs() {
+    return [...document.querySelectorAll('#iv-pabellones .pab-bloque')].map(bl => {
+      const g = f => bl.querySelector(`[data-f="${f}"]`);
+      return {
+        nombre: g('nombre').value.trim(), linea: g('linea').value, nacimiento: g('nacimiento').value,
+        aves: g('aves').value, largo: g('largo').value, ancho: g('ancho').value, superficie: g('superficie').value,
+        sistema: g('sistema').value, exterior: g('exterior').checked,
+        obs: g('obs').value.trim(), reco: g('reco').value.trim(),
+      };
+    });
+  }
+  function ivRenderPabs(pabs) {
+    document.getElementById('iv-pabellones').innerHTML = pabs.map((p, i) => ivPabBloqueHTML(p, i, pabs.length)).join('');
+  }
+
+  window.ivAgregarPabellon = function () {
+    const pabs = ivLeerPabs(); pabs.push(ivPabVacio()); ivRenderPabs(pabs);
+    const ult = document.querySelector(`#iv-pabellones .pab-bloque[data-pab="${pabs.length - 1}"]`);
+    if (ult) ult.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  };
+  window.ivEliminarPabellon = function (i) {
+    const pabs = ivLeerPabs(); pabs.splice(i, 1); if (!pabs.length) pabs.push(ivPabVacio()); ivRenderPabs(pabs);
+  };
+  window.ivDimensiones = function (i) {
+    const bl = document.querySelector(`#iv-pabellones .pab-bloque[data-pab="${i}"]`); if (!bl) return;
+    const l = parseFloat(bl.querySelector('[data-f="largo"]').value), a = parseFloat(bl.querySelector('[data-f="ancho"]').value);
+    if (l > 0 && a > 0) bl.querySelector('[data-f="superficie"]').value = (l * a).toFixed(1);
+  };
+  window.ivToggleTipo = function () {
+    const seg = document.getElementById('iv-tipo').value === 'seguimiento';
+    const card = document.getElementById('iv-propuesta-card');
+    if (card) card.style.display = seg ? 'none' : '';
   };
 
-  function ivLeerFormulario() {
+  window.addEventListener('DOMContentLoaded', () => {
+    if (!document.getElementById('iv-pabellones')) return;
+    ivRenderPabs([ivPabVacio()]);
+    document.getElementById('iv-fecha-visita').value = new Date().toISOString().slice(0, 10);
+    document.getElementById('iv-fecha-hoy').textContent = new Date().toLocaleDateString('es-CL');
+    window.ivToggleTipo();
+  });
+
+  function ivLeerReporte() {
     return {
-      tipoVisita:  document.getElementById('iv-tipo').value,
-      productor:   document.getElementById('iv-productor').value.trim(),
-      ubicacion:   document.getElementById('iv-ubicacion').value.trim(),
+      tipoVisita: document.getElementById('iv-tipo').value,
+      productor: document.getElementById('iv-productor').value.trim(),
+      ubicacion: document.getElementById('iv-ubicacion').value.trim(),
       fechaVisita: document.getElementById('iv-fecha-visita').value,
-      linea:       document.getElementById('iv-linea').value,
-      nacimiento:  document.getElementById('iv-nacimiento').value,
-      aves:        parseInt(document.getElementById('iv-aves').value) || 0,
-      largo:       parseFloat(document.getElementById('iv-largo').value) || 0,
-      ancho:       parseFloat(document.getElementById('iv-ancho').value) || 0,
-      superficie:  parseFloat(document.getElementById('iv-superficie').value) || 0,
-      sistema:     document.getElementById('iv-sistema').value,
-      exterior:    document.getElementById('iv-exterior').checked,
-      obs:         document.getElementById('iv-obs').value.trim(),
-      reco:        document.getElementById('iv-reco').value.trim(),
+      propuesta: {
+        objetivos: document.getElementById('iv-prop-obj').value.trim(),
+        alcance: document.getElementById('iv-prop-alc').value.trim(),
+      },
+      pabs: ivLeerPabs(),
     };
   }
 
   window.ivGenerar = function () {
     const err = document.getElementById('iv-error');
     err.style.display = 'none';
-    const inf = ivCalcular(ivLeerFormulario());
-    if (inf.error) {
-      err.textContent = inf.error;
-      err.style.display = 'block';
-      document.getElementById('iv-resultado').style.display = 'none';
-      return;
+    const r = ivLeerReporte();
+    const pabInfs = [];
+    for (let i = 0; i < r.pabs.length; i++) {
+      const pin = r.pabs[i];
+      const inf = ivCalcular({
+        ...pin, tipoVisita: r.tipoVisita, productor: r.productor, ubicacion: r.ubicacion, fechaVisita: r.fechaVisita,
+        aves: parseInt(pin.aves) || 0, largo: parseFloat(pin.largo) || 0, ancho: parseFloat(pin.ancho) || 0, superficie: parseFloat(pin.superficie) || 0,
+      });
+      if (inf.error) {
+        err.textContent = (r.pabs.length > 1 ? `Pabellón ${i + 1}: ` : '') + inf.error;
+        err.style.display = 'block';
+        document.getElementById('iv-resultado').style.display = 'none';
+        return;
+      }
+      pabInfs.push(inf);
     }
-    ivInforme = inf;
-    ivRenderPreview(inf);
+    ivReporte = { productor: r.productor, ubicacion: r.ubicacion, fechaVisita: r.fechaVisita, tipoVisita: r.tipoVisita, propuesta: r.propuesta, pabellones: pabInfs };
+    ivRenderPreview(ivReporte);
     document.getElementById('iv-resultado').style.display = 'block';
     document.getElementById('iv-resultado').scrollIntoView({ behavior: 'smooth' });
   };
 
   window.ivDescargarWord = async function () {
-    if (!ivInforme) return;
+    if (!ivReporte) return;
     const logo = await ivCargarLogo();
-    const doc = ivConstruirDoc(ivInforme, docx, logo);
+    const doc = ivConstruirDoc(ivReporte, docx, logo);
     const blob = await docx.Packer.toBlob(doc);
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = ivNombreArchivo(ivInforme);
+    a.download = ivNombreArchivo(ivReporte);
     a.click();
     URL.revokeObjectURL(a.href);
   };
 
-  function ivRenderPreview(inf) {
+  // preview de un pabellón (devuelve HTML)
+  function ivPreviewPabellon(inf, seguimiento, titulo) {
     const e = inf.edad, o = inf.objetivo, m = inf.meta;
-    const seguimiento = m.tipoVisita === 'seguimiento';
     const fila = (a, b) => `<tr><td style="text-align:left;font-weight:500">${a}</td><td style="text-align:left">${b}</td></tr>`;
-    const esc = t => (t || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-
-    document.getElementById('iv-prev-titulo').textContent =
-      `${m.productor || 'Productor'} · ${m.linea} · Semana ${e.semana} (${e.etapa})` + (seguimiento ? ' · Seguimiento' : '');
-
+    let html = titulo ? `<h3 class="iv-prev-pab">${ivEsc(titulo)} — ${m.linea} · Semana ${e.semana} (${e.etapa})</h3>` : '';
     let fichas = `
       <div class="eq-ficha"><div class="eq-num">${e.semana}</div><div class="eq-lbl">Semana de vida</div><div class="eq-unit">día ${e.diaVida} · ${e.meses} meses</div></div>
       <div class="eq-ficha"><div class="eq-num" style="font-size:20px;padding-top:8px">${e.etapa}</div><div class="eq-lbl">Etapa</div><div class="eq-unit">${e.enCrianza ? 'fase ' + e.fase : 'en producción'}</div></div>
       <div class="eq-ficha"><div class="eq-num">${ivFmt(m.aves)}</div><div class="eq-lbl">Aves</div><div class="eq-unit">${m.sistema === 'jaula' ? 'Jaula' : 'Piso'}</div></div>`;
-    if (m.superficie > 0) fichas += `
-      <div class="eq-ficha"><div class="eq-num">${ivFmt1(m.aves / m.superficie)}</div><div class="eq-lbl">Densidad actual</div><div class="eq-unit">aves/m²</div></div>`;
+    if (m.superficie > 0) fichas += `<div class="eq-ficha"><div class="eq-num">${ivFmt1(m.aves / m.superficie)}</div><div class="eq-lbl">Densidad actual</div><div class="eq-unit">aves/m²</div></div>`;
     if (!seguimiento) fichas += `
       <div class="eq-ficha"><div class="eq-num">${ivFmt1(o.alimentoLoteMin)}–${ivFmt1(o.alimentoLoteMax)}</div><div class="eq-lbl">Alimento lote</div><div class="eq-unit">kg/día</div></div>
       <div class="eq-ficha"><div class="eq-num">${ivFmt1(o.aguaLoteMin)}–${ivFmt1(o.aguaLoteMax)}</div><div class="eq-lbl">Agua lote</div><div class="eq-unit">L/día</div></div>
       ${o.huevosDia != null ? `<div class="eq-ficha"><div class="eq-num">${ivFmt(o.huevosDia)}</div><div class="eq-lbl">Huevos/día esperados</div><div class="eq-unit">${ivFmt(o.bandejasDia)} bandejas de 30</div></div>` : ''}`;
-    let html = `<div class="eq-grid" style="margin-bottom:24px">${fichas}</div>`;
-
-    if (seguimiento) html += `<p class="iv-nota" style="margin-bottom:22px">Informe de <strong>seguimiento</strong>: datos generales, observaciones y recomendaciones/acciones. Los parámetros objetivo y el equipamiento se omiten (van en la primera visita).</p>`;
+    html += `<div class="eq-grid" style="margin-bottom:20px">${fichas}</div>`;
 
     if (!seguimiento) {
       html += `<h4 class="iv-prev-h">Parámetros objetivo — semana ${e.semana}${e.notaClamp ? ' <span class="iv-nota">(' + e.notaClamp + ')</span>' : ''}</h4>
@@ -580,26 +683,15 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
         ${o.pct != null ? fila('% Postura esperada', ivFmt1(o.pct) + ' %') + fila('Peso huevo', ivFmt1(o.pesoHuevo) + ' g') : ''}
         ${o.mortEsp != null ? fila('Mortalidad acumulada esperada', ivFmt1(o.mortEsp) + ' % → ≈ ' + ivFmt(o.avesEsperadas) + ' aves vivas') : ''}
         </tbody></table></div>`;
-
       html += `<h4 class="iv-prev-h">Equipamiento requerido (${ivFmt(m.aves)} aves)</h4>
         <div class="tabla-wrap" style="max-height:none"><table><thead><tr><th>Equipamiento</th><th>Requerido</th><th>Estándar</th></tr></thead>
         <tbody>${inf.equip.map(f => `<tr><td style="text-align:left;font-weight:500">${f[0]}</td><td>${f[1]}</td><td style="text-align:left;color:var(--tenue)">${f[2]}</td></tr>`).join('')}</tbody></table></div>`;
-
       if (inf.densidad) {
-        const d = inf.densidad;
-        const todasOk = d.refs.every(r => r.ok);
-        html += `<div class="iv-densidad ${todasOk ? 'ok' : 'alerta'}">
-          Densidad actual del galpón: <strong>${ivFmt1(d.real)} aves/m²</strong>
-        </div>
+        const d = inf.densidad, todasOk = d.refs.every(r => r.ok);
+        html += `<div class="iv-densidad ${todasOk ? 'ok' : 'alerta'}">Densidad actual del galpón: <strong>${ivFmt1(d.real)} aves/m²</strong></div>
         <div class="tabla-wrap" style="max-height:none"><table><thead><tr><th>Referencia</th><th>Densidad máx.</th><th>Superficie mínima</th><th>Evaluación</th></tr></thead>
-        <tbody>${d.refs.map(r => `<tr>
-          <td style="text-align:left;font-weight:500">${r.nombre}</td>
-          <td>${ivFmt1(r.densidad)} aves/m²</td>
-          <td>${ivFmt1(r.superficieMin)} m²</td>
-          <td style="font-weight:600;color:${r.ok ? '#1b4332' : '#b71c1c'}">${r.ok ? '✔ Cumple' : '✘ Sobrecarga +' + r.exceso + '%'}</td>
-        </tr>`).join('')}</tbody></table></div>`;
+        <tbody>${d.refs.map(r => `<tr><td style="text-align:left;font-weight:500">${r.nombre}</td><td>${ivFmt1(r.densidad)} aves/m²</td><td>${ivFmt1(r.superficieMin)} m²</td><td style="font-weight:600;color:${r.ok ? '#1b4332' : '#b71c1c'}">${r.ok ? '✔ Cumple' : '✘ Sobrecarga +' + r.exceso + '%'}</td></tr>`).join('')}</tbody></table></div>`;
       }
-
       if (inf.ambiente) {
         const a = inf.ambiente;
         let cab, filas;
@@ -615,12 +707,30 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
           <p class="iv-nota">Fuente: ${a.fuente}${a.referencial ? ' (referencial)' : ''}</p>`;
       }
     }
-
-    html += `<h4 class="iv-prev-h">Observaciones de la visita</h4>
-      <p style="white-space:pre-wrap;color:${m.obs ? 'var(--tinta)' : 'var(--tenue)'}">${m.obs ? esc(m.obs) : '(se completará en el documento)'}</p>`;
+    html += `<h4 class="iv-prev-h">Observaciones</h4>
+      <p style="white-space:pre-wrap;color:${m.obs ? 'var(--tinta)' : 'var(--tenue)'}">${m.obs ? ivEsc(m.obs) : '(se completará en el documento)'}</p>`;
     html += `<h4 class="iv-prev-h">Recomendaciones y acciones a seguir</h4>
-      <p style="white-space:pre-wrap;color:${m.reco ? 'var(--tinta)' : 'var(--tenue)'}">${m.reco ? esc(m.reco) : '(se completará en el documento)'}</p>`;
+      <p style="white-space:pre-wrap;color:${m.reco ? 'var(--tinta)' : 'var(--tenue)'}">${m.reco ? ivEsc(m.reco) : '(se completará en el documento)'}</p>`;
+    return html;
+  }
 
+  function ivRenderPreview(report) {
+    const seguimiento = report.tipoVisita === 'seguimiento';
+    const multi = report.pabellones.length > 1;
+    document.getElementById('iv-prev-titulo').textContent =
+      `${report.productor || 'Productor'} · ${report.pabellones.length} pabellón${report.pabellones.length > 1 ? 'es' : ''}` + (seguimiento ? ' · Seguimiento' : '');
+
+    let html = '';
+    if (seguimiento) html += `<p class="iv-nota" style="margin-bottom:22px">Informe de <strong>seguimiento</strong>: datos, observaciones y recomendaciones/acciones. Se omiten objetivo y equipamiento (van en la primera visita).</p>`;
+    if (!seguimiento && (report.propuesta.objetivos || report.propuesta.alcance)) {
+      html += `<h4 class="iv-prev-h">Propuesta de trabajo</h4>`;
+      html += `<p style="white-space:pre-wrap"><strong>Objetivos:</strong> ${report.propuesta.objetivos ? ivEsc(report.propuesta.objetivos) : '—'}</p>`;
+      html += `<p style="white-space:pre-wrap"><strong>Alcance y honorarios:</strong> ${report.propuesta.alcance ? ivEsc(report.propuesta.alcance) : '—'}</p>`;
+    }
+    report.pabellones.forEach((inf, i) => {
+      html += ivPreviewPabellon(inf, seguimiento, multi ? ((inf.meta.nombre && inf.meta.nombre.trim()) || 'Pabellón ' + (i + 1)) : null);
+      if (multi && i < report.pabellones.length - 1) html += '<hr style="border:0;border-top:1px solid var(--linea);margin:28px 0">';
+    });
     document.getElementById('iv-prev-cuerpo').innerHTML = html;
   }
 }
