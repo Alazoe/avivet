@@ -713,6 +713,11 @@ td.real { background: rgba(27,94,32,.07) !important; font-weight: 600; }
         <input type="number" id="calc-sem-ini" value="1" min="1" max="130">
       </div>
       <div class="modal-field">
+        <label>Fecha de nacimiento (opcional)</label>
+        <input type="date" id="calc-fecha-nac">
+        <small style="font-size:10px;color:var(--tenue)">Si la ingresas, cada semana muestra su rango exacto de fechas</small>
+      </div>
+      <div class="modal-field">
         <label>N° de aves</label>
         <input type="number" id="calc-naves" value="1000" min="1" oninput="fmtNum(this)">
         <small class="fmt-hint">1.000</small>
@@ -5987,11 +5992,12 @@ function cerrarCalcAlimento() {
 }
 
 function calcularConsumoAlimento() {
-  const gen    = document.getElementById('calc-genetica').value;
-  const semIni = +document.getElementById('calc-sem-ini').value;
-  const nAves  = +document.getElementById('calc-naves').value;
-  const nSems  = +document.getElementById('calc-semanas').value;
-  const costo  = +document.getElementById('calc-costo').value || 0;
+  const gen       = document.getElementById('calc-genetica').value;
+  const semIni    = +document.getElementById('calc-sem-ini').value;
+  const fechaNac  = document.getElementById('calc-fecha-nac').value; // opcional, 'YYYY-MM-DD' o ''
+  const nAves     = +document.getElementById('calc-naves').value;
+  const nSems     = +document.getElementById('calc-semanas').value;
+  const costo     = +document.getElementById('calc-costo').value || 0;
 
   if (!nAves || nAves < 1 || !nSems || nSems < 1 || semIni < 1 || semIni > 130) {
     alert('Ingresa valores válidos: aves ≥ 1, semana inicial 1–130, semanas a proyectar ≥ 1.'); return;
@@ -6001,6 +6007,8 @@ function calcularConsumoAlimento() {
   const rows = [];
   let totalKg = 0, totalCosto = 0;
   const semFin = Math.min(semIni + nSems - 1, 130);
+  const conFechas = !!fechaNac;
+  const fn = conFechas ? new Date(fechaNac + 'T12:00:00') : null;
 
   for (let s = semIni; s <= semFin; s++) {
     const cons    = curvas.getConsumo(s);
@@ -6010,22 +6018,33 @@ function calcularConsumoAlimento() {
     const costSem = costo > 0 ? kgSem * costo : null;
     totalKg      += kgSem;
     if (costSem != null) totalCosto += costSem;
-    rows.push({ s, pos, grAve: cons.gr, grOrig: cons.gr, dieta: cons.dieta, kgDia, kgSem, costSem });
+    let fechaIni = null, fechaFin = null;
+    if (conFechas) {
+      const di = new Date(fn); di.setDate(di.getDate() + (s - 1) * 7);
+      const df = new Date(di); df.setDate(df.getDate() + 6);
+      fechaIni = di.toISOString().slice(0, 10);
+      fechaFin = df.toISOString().slice(0, 10);
+    }
+    rows.push({ s, pos, grAve: cons.gr, grOrig: cons.gr, dieta: cons.dieta, kgDia, kgSem, costSem, fechaIni, fechaFin });
   }
 
   const conCosto = costo > 0;
+  const fmtPeriodo = f => new Date(f + 'T12:00:00').toLocaleDateString('es-CL', { day:'2-digit', month:'short' });
   const thCosto  = conCosto ? '<th>Costo sem ($)</th>' : '';
-  const cols = `<th style="text-align:left;padding-left:10px">Sem</th><th>Dieta</th><th title="Editable: haz clic para modificar el consumo real de tu lote">g/ave/día ✎</th><th>kg/día total</th><th>kg/sem total</th>${thCosto}<th>% Postura</th>`;
+  const thFechas = conFechas ? '<th>Período (inicio – fin)</th>' : '';
+  const cols = `<th style="text-align:left;padding-left:10px">Sem</th>${thFechas}<th>Dieta</th><th title="Editable: haz clic para modificar el consumo real de tu lote">g/ave/día ✎</th><th>kg/día total</th><th>kg/sem total</th>${thCosto}<th>% Postura</th>`;
 
   const filas = rows.map((r, i) => {
     const grInput = `<input type="number" id="calc-gr-${i}" value="${r.grAve.toFixed(0)}" min="1" max="500" step="1"
       style="width:56px;font-family:var(--fm);font-size:12px;text-align:center;border:1px solid var(--linea-f);border-radius:3px;padding:2px 5px;background:var(--fondo);color:var(--tinta)"
       oninput="actualizarConsumoFila(${i},this.value)"
       title="Valor curva oficial: ${r.grAve.toFixed(0)} g — editable">`;
-    const tdCosto = conCosto ? `<td id="calc-costo-${i}" style="font-family:var(--fm);font-size:11px;color:var(--mal)">${MN(r.costSem)}</td>` : '';
-    const posStr  = r.pos > 0 ? `<td style="color:var(--prim);font-weight:600">${r.pos.toFixed(1)}%</td>` : '<td style="color:var(--tenue)">—</td>';
+    const tdCosto  = conCosto ? `<td id="calc-costo-${i}" style="font-family:var(--fm);font-size:11px;color:var(--mal)">${MN(r.costSem)}</td>` : '';
+    const tdFechas = conFechas ? `<td style="font-family:var(--fm);font-size:11px;color:var(--suave);white-space:nowrap">${fmtPeriodo(r.fechaIni)} – ${fmtPeriodo(r.fechaFin)}</td>` : '';
+    const posStr   = r.pos > 0 ? `<td style="color:var(--prim);font-weight:600">${r.pos.toFixed(1)}%</td>` : '<td style="color:var(--tenue)">—</td>';
     return `<tr>
       <td style="text-align:left;padding-left:10px;font-weight:600">${r.s}</td>
+      ${tdFechas}
       <td><span style="font-size:10px;font-weight:600;padding:2px 6px;border-radius:3px;background:var(--acento-cl);color:#7a5700">D${r.dieta}</span></td>
       <td style="padding:4px 8px">${grInput}</td>
       <td id="calc-kgdia-${i}" style="font-family:var(--fm)">${r.kgDia.toFixed(1)}</td>
@@ -6037,7 +6056,7 @@ function calcularConsumoAlimento() {
 
   const tdTotCosto = conCosto ? `<td id="calc-total-costo" style="font-family:var(--fm);font-weight:700;color:var(--mal)">${MN(totalCosto)}</td>` : '';
   const totalRow = `<tr style="background:var(--acento-cl)">
-    <td colspan="4" style="text-align:left;padding-left:10px;font-weight:700;color:var(--prim)">TOTAL — ${rows.length} sem</td>
+    <td colspan="${4 + (conFechas?1:0)}" style="text-align:left;padding-left:10px;font-weight:700;color:var(--prim)">TOTAL — ${rows.length} sem</td>
     <td id="calc-total-kg" style="font-family:var(--fm);font-weight:700;color:var(--prim)">${totalKg.toFixed(1)} kg</td>
     ${tdTotCosto}
     <td>—</td>
@@ -6050,9 +6069,10 @@ function calcularConsumoAlimento() {
       <div id="calc-resumen-costopx" style="font-size:11px;color:var(--tenue);margin-top:2px">${(totalCosto/totalKg).toFixed(0)} $/kg prom.</div>
     </div>` : '';
 
+  const rangoFechasStr = conFechas ? ` · ${fmtPeriodo(rows[0].fechaIni)} – ${fmtPeriodo(rows[rows.length-1].fechaFin)}` : '';
   document.getElementById('calc-resultado').innerHTML = `
     <div style="margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
-      <span style="font-size:12px;font-weight:600;color:var(--prim);text-transform:uppercase;letter-spacing:.05em">${gen} · Sem ${semIni}–${semFin} · ${NUM(nAves)} aves</span>
+      <span style="font-size:12px;font-weight:600;color:var(--prim);text-transform:uppercase;letter-spacing:.05em">${gen} · Sem ${semIni}–${semFin} · ${NUM(nAves)} aves${rangoFechasStr}</span>
       <button class="btn btn-ok btn-sm" onclick="exportarCalcAlimento()">↓ Exportar Excel</button>
     </div>
     <p style="font-size:11px;color:var(--tenue);margin-bottom:10px">
@@ -6070,7 +6090,7 @@ function calcularConsumoAlimento() {
       ${resumenExtra}
     </div>`;
 
-  window._calcData = { gen, semIni, semFin, nAves, costo, rows, totalKg, totalCosto };
+  window._calcData = { gen, semIni, semFin, fechaNac, conFechas, nAves, costo, rows, totalKg, totalCosto };
 }
 
 function actualizarConsumoFila(idx, val) {
@@ -6114,33 +6134,51 @@ function exportarCalcAlimento() {
   const d = window._calcData;
   if (!d) return;
   const wb = XLSX.utils.book_new();
-  const headers = ['Semana','Dieta','g/ave/día','kg/día total','kg/semana total'];
+  const headers = ['Semana'];
+  if (d.conFechas) headers.push('Inicio semana', 'Fin semana');
+  headers.push('Dieta','g/ave/día','kg/día total','kg/semana total');
   if (d.costo > 0) headers.push('Costo sem ($)');
   headers.push('% Postura');
   const rows = [headers];
   d.rows.forEach(r => {
-    const row = [r.s, `D${r.dieta}`, +r.grAve.toFixed(0), +r.kgDia.toFixed(1), +r.kgSem.toFixed(1)];
+    const row = [r.s];
+    if (d.conFechas) row.push(new Date(r.fechaIni+'T00:00:00'), new Date(r.fechaFin+'T00:00:00'));
+    row.push(`D${r.dieta}`, +r.grAve.toFixed(0), +r.kgDia.toFixed(1), +r.kgSem.toFixed(1));
     if (d.costo > 0) row.push(Math.round(r.costSem));
     row.push(r.pos > 0 ? r.pos : '—');
     rows.push(row);
   });
-  const tot = ['TOTAL','','','', +d.totalKg.toFixed(1)];
+  const tot = ['TOTAL'];
+  if (d.conFechas) tot.push('', '');
+  tot.push('', '', '', +d.totalKg.toFixed(1));
   if (d.costo > 0) tot.push(Math.round(d.totalCosto));
   tot.push('—');
   rows.push(tot);
   const ws = XLSX.utils.aoa_to_sheet(rows);
+  if (d.conFechas) {
+    for (let r = 1; r < rows.length - 1; r++) {
+      const cB = ws[XLSX.utils.encode_cell({r, c:1})]; if (cB) cB.z = 'dd/mm/yyyy';
+      const cC = ws[XLSX.utils.encode_cell({r, c:2})]; if (cC) cC.z = 'dd/mm/yyyy';
+    }
+  }
   const resumen = [
     ['Parámetros',''],
     ['Genética', d.gen],
     ['Semana inicial', d.semIni],
     ['Semana final', d.semFin],
+    ...(d.conFechas ? [
+      ['Fecha de nacimiento', new Date(d.fechaNac+'T00:00:00')],
+      ['Período proyectado', `${d.rows[0].fechaIni} → ${d.rows[d.rows.length-1].fechaFin}`],
+    ] : []),
     ['N° aves', d.nAves],
     ['Costo $/kg', d.costo || 'No ingresado'],
     ['Consumo total kg', +d.totalKg.toFixed(1)],
     ['Costo total ($)', d.costo > 0 ? Math.round(d.totalCosto) : 'N/A'],
     ['Generado', new Date().toLocaleDateString('es-CL')],
   ];
-  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(resumen), 'Resumen');
+  const wsResumen = XLSX.utils.aoa_to_sheet(resumen);
+  if (d.conFechas && wsResumen['B5']) wsResumen['B5'].z = 'dd/mm/yyyy';
+  XLSX.utils.book_append_sheet(wb, wsResumen, 'Resumen');
   XLSX.utils.book_append_sheet(wb, ws, 'Consumo Semanal');
   XLSX.writeFile(wb, `Consumo_${d.gen.replace(/\s/g,'_')}_S${d.semIni}-${d.semFin}_${new Date().toISOString().slice(0,10)}.xlsx`);
 }
