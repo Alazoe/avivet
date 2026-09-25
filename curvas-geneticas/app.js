@@ -1258,6 +1258,40 @@ function renderFuentes() {
     <p class="fuente-pie">Cobertura: crianza semanas 1–${L.crianzaSem} · postura semanas ${L.postura[0][0]}–${L.postura[L.postura.length - 1][0]}. Las filas marcadas con (*) son estimaciones, no valores de tabla oficial.</p>`;
 }
 
+// ── HELPER FECHAS DE CALENDARIO ───────────────────────────────────────
+// Convención de la app: el día 1 es el día de nacimiento, así que la semana N
+// va del día (N-1)*7+1 al día N*7. Con la fecha de nacimiento del lote se
+// puede traducir cada semana de vida a fechas reales de calendario.
+
+// Lee la fecha del campo "Iniciar lote". Devuelve null si no está cargada.
+function fechaNacimientoLote() {
+  const campo = document.getElementById('inp-nacimiento');
+  const val = campo && campo.value;
+  if (!val) return null;
+  const d = new Date(val + 'T00:00:00');
+  return isNaN(d) ? null : d;
+}
+
+function fechasSemana(nac, sem) {
+  const inicio = new Date(nac);
+  inicio.setDate(nac.getDate() + (sem - 1) * 7);
+  const fin = new Date(nac);
+  fin.setDate(nac.getDate() + sem * 7 - 1);
+  return { inicio, fin };
+}
+
+function fmtFecha(d) {
+  return d.toLocaleDateString('es-CL', { day: '2-digit', month: '2-digit', year: '2-digit' });
+}
+
+// Fechas de una semana listas para una fila de tabla: ['dd-mm-aa', 'dd-mm-aa'].
+// Sin fecha de nacimiento devuelve [] y las columnas simplemente no se agregan.
+function celdasFecha(nac, sem) {
+  if (!nac) return [];
+  const { inicio, fin } = fechasSemana(nac, sem);
+  return [fmtFecha(inicio), fmtFecha(fin)];
+}
+
 // ── HELPER FORMATO CONSUMO ────────────────────────────────────────────
 // Algunos manuales publican alimento y agua con un decimal (W-80) y otros con
 // enteros. Devuelve un formateador uniforme para toda la columna, para no
@@ -1607,11 +1641,14 @@ function exportarExcel() {
 
   // ── Hoja 1: Crianza ──────────────────────────────────────────────────
   const mortNotaC = mC && lineaSel !== 'Hy-Line W-80' ? ' (*) Mortalidad estimada basada en perfil W-80.' : '';
+  const nac = fechaNacimientoLote();
+  const colFecha = nac ? ['Desde', 'Hasta'] : [];
   const crianzaData = [
     ['Línea genética:', lineaSel],
     ['Fuente:', L.fuente + mortNotaC],
+    ...(nac ? [['Nacimiento del lote:', fmtFecha(nac)]] : []),
     [],
-    ['Semana', 'Peso mín (kg)', 'Peso máx (kg)',
+    ['Semana', ...colFecha, 'Peso mín (kg)', 'Peso máx (kg)',
      'Alimento mín (g/ave/día)', 'Alimento máx (g/ave/día)',
      'Agua mín (ml/ave/día)', 'Agua máx (ml/ave/día)',
      ...(mC ? ['Mort. semanal (%)', 'Mort. acumulada (%)'] : [])],
@@ -1619,7 +1656,8 @@ function exportarExcel() {
   L.crianza.forEach((r, i) => {
     const mA = mC ? mC[i] : null;
     const mS = mC ? mortSem(mC, i) : null;
-    crianzaData.push([r[0], r[1], r[2], r[3], r[4], r[5], r[6], ...(mC ? [mS, mA] : [])]);
+    crianzaData.push([r[0], ...celdasFecha(nac, r[0]), r[1], r[2], r[3], r[4], r[5], r[6],
+                      ...(mC ? [mS, mA] : [])]);
   });
   // Tabla ambiental al final de la hoja Crianza
   if (L.crianzaAmb) {
@@ -1636,7 +1674,7 @@ function exportarExcel() {
     });
   }
   const wsCrianza = XLSX.utils.aoa_to_sheet(crianzaData);
-  wsCrianza['!cols'] = [8,14,14,22,22,22,22,...(mC ? [18,18] : [])].map(w => ({ wch: w }));
+  wsCrianza['!cols'] = [8,...(nac ? [10,10] : []),14,14,22,22,22,22,...(mC ? [18,18] : [])].map(w => ({ wch: w }));
   XLSX.utils.book_append_sheet(wb, wsCrianza, 'Crianza');
 
   // ── Hoja 2: Postura ──────────────────────────────────────────────────
@@ -1644,8 +1682,9 @@ function exportarExcel() {
   const posturaData = [
     ['Línea genética:', lineaSel],
     ['Fuente:', L.fuente + mortNotaP],
+    ...(nac ? [['Nacimiento del lote:', fmtFecha(nac)]] : []),
     [],
-    ['Semana', 'Peso mín (kg)', 'Peso máx (kg)', '% Postura', 'Peso huevo (g)',
+    ['Semana', ...colFecha, 'Peso mín (kg)', 'Peso máx (kg)', '% Postura', 'Peso huevo (g)',
      'Alimento mín (g/ave/día)', 'Alimento máx (g/ave/día)',
      'Agua mín (ml/ave/día)', 'Agua máx (ml/ave/día)',
      ...(mP ? ['Mort. semanal (%)', 'Mort. acumulada (%)'] : [])],
@@ -1653,10 +1692,11 @@ function exportarExcel() {
   L.postura.forEach((r, i) => {
     const mA = mP ? mP[i] : null;
     const mS = mP ? mortSem(mP, i) : null;
-    posturaData.push([r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8], ...(mP ? [mS, mA] : [])]);
+    posturaData.push([r[0], ...celdasFecha(nac, r[0]), r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8],
+                      ...(mP ? [mS, mA] : [])]);
   });
   const wsPostura = XLSX.utils.aoa_to_sheet(posturaData);
-  wsPostura['!cols'] = [8,14,14,12,15,22,22,22,22,...(mP ? [18,18] : [])].map(w => ({ wch: w }));
+  wsPostura['!cols'] = [8,...(nac ? [10,10] : []),14,14,12,15,22,22,22,22,...(mP ? [18,18] : [])].map(w => ({ wch: w }));
   XLSX.utils.book_append_sheet(wb, wsPostura, 'Postura');
 
   // ── Hoja 3: Equipamiento ─────────────────────────────────────────────
@@ -1730,9 +1770,11 @@ function pdfEncabezado(doc, titulo) {
   doc.setFont('helvetica', 'normal').setFontSize(9);
   doc.text(`${lineaSel} · ${L.produccion}`, 14, 19.5);
 
+  const nac = fechaNacimientoLote();
   doc.setFontSize(8);
   doc.text('avivet.cl · Curvas Genéticas', w - 14, 12, { align: 'right' });
-  doc.text(new Date().toLocaleDateString('es-CL'), w - 14, 19.5, { align: 'right' });
+  doc.text(nac ? `Nacimiento del lote: ${fmtFecha(nac)}` : new Date().toLocaleDateString('es-CL'),
+           w - 14, 19.5, { align: 'right' });
 
   doc.setTextColor(0, 0, 0);
   return 38;
@@ -1844,16 +1886,20 @@ function pdfPie(doc) {
 
 // ── Contenido de cada sección ─────────────────────────────────────────
 function pdfSeccionCrianza(doc, y) {
-  const L  = LINEAS[lineaSel];
-  const mC = L.mortCrianza || null;
-  const fc = fmtConsumo(L.crianza, [3, 4, 5, 6]);
+  const L   = LINEAS[lineaSel];
+  const mC  = L.mortCrianza || null;
+  const fc  = fmtConsumo(L.crianza, [3, 4, 5, 6]);
+  const nac = fechaNacimientoLote();
 
-  const head = ['Sem', 'Peso mín\n(kg)', 'Peso máx\n(kg)', 'Alim mín\n(g/día)', 'Alim máx\n(g/día)',
-                'Agua mín\n(ml/día)', 'Agua máx\n(ml/día)'];
+  const head = ['Sem'];
+  if (nac) head.push('Desde', 'Hasta');
+  head.push('Peso mín\n(kg)', 'Peso máx\n(kg)', 'Alim mín\n(g/día)', 'Alim máx\n(g/día)',
+            'Agua mín\n(ml/día)', 'Agua máx\n(ml/día)');
   if (mC) head.push('Mort. sem\n(%)', 'Mort. acum\n(%)');
 
   const body = L.crianza.map((r, i) => {
-    const fila = [r[0], r[1].toFixed(3), r[2].toFixed(3), fc(r[3]), fc(r[4]), fc(r[5]), fc(r[6])];
+    const fila = [r[0], ...celdasFecha(nac, r[0]),
+                  r[1].toFixed(3), r[2].toFixed(3), fc(r[3]), fc(r[4]), fc(r[5]), fc(r[6])];
     if (mC) fila.push(mortSem(mC, i).toFixed(2), mC[i].toFixed(2));
     return fila;
   });
@@ -1875,16 +1921,20 @@ function pdfSeccionCrianza(doc, y) {
 }
 
 function pdfSeccionPostura(doc, y) {
-  const L  = LINEAS[lineaSel];
-  const mP = L.mortPostura || null;
-  const fc = fmtConsumo(L.postura, [5, 6, 7, 8]);
+  const L   = LINEAS[lineaSel];
+  const mP  = L.mortPostura || null;
+  const fc  = fmtConsumo(L.postura, [5, 6, 7, 8]);
+  const nac = fechaNacimientoLote();
 
-  const head = ['Sem', 'Peso mín\n(kg)', 'Peso máx\n(kg)', '% Postura', 'Peso huevo\n(g)',
-                'Alim mín\n(g/día)', 'Alim máx\n(g/día)', 'Agua mín\n(ml/día)', 'Agua máx\n(ml/día)'];
+  const head = ['Sem'];
+  if (nac) head.push('Desde', 'Hasta');
+  head.push('Peso mín\n(kg)', 'Peso máx\n(kg)', '% Postura', 'Peso huevo\n(g)',
+            'Alim mín\n(g/día)', 'Alim máx\n(g/día)', 'Agua mín\n(ml/día)', 'Agua máx\n(ml/día)');
   if (mP) head.push('Mort. acum\n(%)');
 
   const body = L.postura.map((r, i) => {
-    const fila = [r[0], r[1].toFixed(3), r[2].toFixed(3), r[3].toFixed(1), r[4].toFixed(1),
+    const fila = [r[0], ...celdasFecha(nac, r[0]),
+                  r[1].toFixed(3), r[2].toFixed(3), r[3].toFixed(1), r[4].toFixed(1),
                   fc(r[5]), fc(r[6]), fc(r[7]), fc(r[8])];
     if (mP) fila.push(mP[i].toFixed(2));
     return fila;
@@ -1922,11 +1972,35 @@ function pdfSeccionEquipamiento(doc, y) {
 }
 
 function pdfSeccionIluminacion(doc, y) {
-  y = pdfTabla(doc, y, 'Programa de iluminación semanal',
-    ['Semana', 'Horas de luz', 'Fase'],
-    LUZ_PROGRAMA.map(r => [r.sem, `${r.horas} h`, FASE_COLORES[r.fase].texto]),
-    { 2: { halign: 'left' } });
+  const nac = fechaNacimientoLote();
+  const head = ['Semana'];
+  if (nac) head.push('Desde', 'Hasta');
+  head.push('Horas de luz', 'Fase');
+
+  y = pdfTabla(doc, y, 'Programa de iluminación semanal', head,
+    LUZ_PROGRAMA.map(r => [r.sem, ...celdasFecha(nac, r.sem), `${r.horas} h`, FASE_COLORES[r.fase].texto]),
+    { [head.length - 1]: { halign: 'left' } });
   return pdfTextoPanel(doc, y, 'panel-iluminacion');
+}
+
+// Dibuja el cuerpo de una sección. La usan tanto el PDF de una sección como
+// el informe completo, para no repetir la cadena de decisiones en los dos.
+function pdfRenderSeccion(doc, y, sec) {
+  if (sec === 'crianza')            return pdfSeccionCrianza(doc, y);
+  if (sec === 'postura')            return pdfSeccionPostura(doc, y);
+  if (sec === 'equipamiento')       return pdfSeccionEquipamiento(doc, y);
+  if (sec === 'iluminacion')        return pdfSeccionIluminacion(doc, y);
+  return pdfTextoPanel(doc, y, 'panel-' + sec);
+}
+
+// Las columnas de calendario dependen de la fecha de nacimiento del lote. Si
+// no está cargada se explica en el PDF, para que no parezca que faltan datos.
+function pdfAvisoSinFecha(doc, y, sec, titulo) {
+  const conSemanas = ['crianza', 'postura', 'iluminacion'];
+  if (fechaNacimientoLote() || !conSemanas.includes(sec)) return;
+  pdfNota(doc, y,
+    'Para incluir las fechas de calendario de cada semana, carga la fecha de nacimiento del lote en "Iniciar lote" y vuelve a descargar.',
+    titulo);
 }
 
 function exportarPDF(seccion) {
@@ -1942,12 +2016,8 @@ function exportarPDF(seccion) {
   let y = pdfEncabezado(doc, titulo);
   y = pdfFuente(doc, y);
 
-  if (sec === 'crianza')            pdfSeccionCrianza(doc, y);
-  else if (sec === 'postura')       pdfSeccionPostura(doc, y);
-  else if (sec === 'equipamiento')  pdfSeccionEquipamiento(doc, y);
-  else if (sec === 'iluminacion')   pdfSeccionIluminacion(doc, y);
-  else                              pdfTextoPanel(doc, y, 'panel-' + sec);
-
+  y = pdfRenderSeccion(doc, y, sec);
+  pdfAvisoSinFecha(doc, y, sec, titulo);
   pdfPie(doc);
 
   const limpio = t => t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -1970,11 +2040,8 @@ function exportarPDFCompleto() {
     let y = pdfEncabezado(doc, PDF_SECCIONES[sec]);
     if (primera) { y = pdfFuente(doc, y); primera = false; }
 
-    if (sec === 'crianza')            pdfSeccionCrianza(doc, y);
-    else if (sec === 'postura')       pdfSeccionPostura(doc, y);
-    else if (sec === 'equipamiento')  pdfSeccionEquipamiento(doc, y);
-    else if (sec === 'iluminacion')   pdfSeccionIluminacion(doc, y);
-    else                              pdfTextoPanel(doc, y, 'panel-' + sec);
+    y = pdfRenderSeccion(doc, y, sec);
+    pdfAvisoSinFecha(doc, y, sec, PDF_SECCIONES[sec]);
   });
 
   tabActual = tabPrevio;

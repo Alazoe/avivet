@@ -28,6 +28,15 @@ Fuente de los números: `app.js` — cada línea tiene indicada su fuente origin
 - **Tab Postura** — % postura, peso de huevo, peso corporal, alimento, agua + tabla con mortalidad + distribución tamaño de huevo (biweekly)
 - **Tab Equipamiento** — calculadora automática para el N° de aves configurado
 - **Iniciar lote** — calcula semana actual y etapa productiva desde la fecha de nacimiento
+- **Fechas de calendario en las descargas** — si la fecha de nacimiento del lote está cargada en
+  *Iniciar lote*, el PDF y el Excel agregan las columnas **Desde** y **Hasta** con la fecha real de
+  inicio y término de cada semana, en Crianza, Postura y el programa de iluminación. El encabezado
+  del PDF pasa a mostrar la fecha de nacimiento en lugar de la del día. Sin esa fecha las columnas
+  no aparecen y el PDF explica en una nota cómo obtenerlas, para que no parezca que faltan datos.
+
+  La convención es la misma que usa el cálculo de edad: el día 1 es el día de nacimiento, así que
+  la semana N va del día `(N-1)*7+1` al día `N*7`. Los helpers son `fechaNacimientoLote()`,
+  `fechasSemana()` y `celdasFecha()` en `app.js`.
 - **Ficha de fuente** — al pie de la página, cambia con la línea seleccionada: manual, editor, edición, código de documento, sistema de alojamiento y, dato por dato, de dónde sale cada valor. Las filas marcadas con (*) son estimaciones, no tabla oficial. Cuando el PDF es público, el título enlaza al manual.
 - **Menú de la cabecera** — cada enlace abre su pestaña y baja a la sección. Antes apuntaban a secciones
   que viven dentro de paneles ocultos, así que el navegador no tenía a dónde saltar y el clic no hacía nada.
