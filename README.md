@@ -232,6 +232,9 @@ No existe un volumen de tabla para spray: depende del equipo, del galpón y del 
 
 ### ➡️ [https://alazoe.github.io/avivet/vacunacion-agua/](https://alazoe.github.io/avivet/vacunacion-agua/)
 
+- 🎬 **Video (71 s)** en la pestaña Protocolo: agua sin cloro, leche 2 g/L, carga de líneas, caminar el lote y lenguas azules. Animación 3D propia de AviVet (`vacunacion-agua/video/`).
+- **Guantes y trabajo de a dos** destacados en el protocolo.
+
 Módulo de recomendaciones para que el productor realice correctamente la vacunación masiva por agua de bebida, con cálculo automático y control de calidad.
 
 ### ¿Qué incluye?
