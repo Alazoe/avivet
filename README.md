@@ -164,6 +164,9 @@ Instructivos de la industria avícola y porcina chilena:
 
 ### ➡️ [https://alazoe.github.io/avivet/vacunacion-spray/](https://alazoe.github.io/avivet/vacunacion-spray/)
 
+- 🎬 **Video de aplicación correcta (74 s)** en la pestaña Protocolo: preparación, reconstitución, arreo acompañado sin arrinconar, gota gruesa, reposo y validación. Animación 3D propia de AviVet (`vacunacion-spray/video/`).
+- **Arreo y leche en polvo**: mínimo dos personas, aves guiadas con calma y sin apilar; leche descremada 2–3 g/L como alternativa al estabilizador comercial.
+
 Módulo hermano del de agua de bebida, para la aplicación masiva de vacunas vivas por aspersión.
 
 ### ¿Qué incluye?
@@ -218,6 +221,8 @@ No existe un volumen de tabla para spray: depende del equipo, del galpón y del 
 - **Zoetis (2025)** — [Field Spray Vaccination of Layer Pullets Guide](https://www.zoetisus.com/content/_assets/docs/Poultry/Vaccine-Administration/Guide-For-Field-Spray-Vaccination.pdf)
 - **The Poultry Site (2026)** — [Spray vaccination in poultry](https://www.thepoultrysite.com/articles/spray-vaccination-in-poultry-best-practice-for-uniform-flock-protection), por Aviagen
 - **HIPRA** — [Spray vaccines for poultry](https://www.hipra.com/en/animal-health/knowledge/8-spray-vaccines-poultry) y documentación de Hipraspray®
+- **Boehringer Ingelheim** — [Best Practices for Spray Vaccination](https://www.youtube.com/watch?v=LELIJGR8F1U) (video)
+- **Dr. Fong** — [Live vaccine protocol: coarse spray](https://www.youtube.com/watch?v=sy161oRv2Tg) (video)
 
 > El sitio de HIPRA bloquea el acceso automatizado (HTTP 403); sus datos se tomaron de documentación pública sobre Hipraspray®. Las ilustraciones son SVG originales de AviVet.
 
