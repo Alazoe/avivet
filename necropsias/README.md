@@ -1,20 +1,36 @@
 # Registro de Necropsias 🔒
 
-Herramienta **privada** del MV para ir guardando las necropsias de campo, con
-fotos y un atlas de imágenes de referencia para comparar.
+Herramienta **privada y 100 % local** del MV para ir guardando las necropsias de
+campo, con fotos y un atlas de imágenes de referencia para comparar.
 
 - URL: https://avivet.cl/avivet/necropsias/ (`noindex`, no enlazada desde el sitio público)
-- Stack: HTML/JS vanilla + Supabase (mismo proyecto `xewujmpycclqjhlmiica`)
+- Stack: HTML/JS vanilla, IndexedDB, JSZip (cdnjs), PWA instalable con service worker
 
-## Privacidad
+## Privacidad: los datos no salen del dispositivo
 
-- Hay que iniciar sesión (cuenta Supabase del asesor).
-- Tablas `necropsias` y `necropsia_referencias` con RLS `user_id = auth.uid()`:
-  cada usuario ve solo lo suyo — los productores que tienen cuenta en el mismo
-  proyecto (registro productivo) **no** ven nada.
-- Fotos en el bucket **privado** `necropsias`, carpeta `{user_id}/…`; se muestran
-  con URLs firmadas de 1 hora. Se comprimen a 1600 px / JPEG antes de subir.
-- El código es público (repo GitHub), los datos no.
+- Fichas, fotos y referencias se guardan en **IndexedDB del navegador** del
+  celular o notebook. No hay servidor, login ni base de datos en la nube.
+- La página es pública (código en GitHub), pero quien la abra —un productor, por
+  ejemplo— ve una app vacía: solo aparece lo que se registró en *ese* dispositivo.
+- Funciona sin señal: el service worker (`sw.js`) guarda la app en caché la
+  primera vez que se abre con internet.
+- Se pide `navigator.storage.persist()` para que el navegador no borre los datos.
+  En iPhone conviene **instalarla en la pantalla de inicio** (Safari → Compartir →
+  «Agregar a inicio»): Safari puede borrar datos de sitios que no se abren en
+  varias semanas, pero no los de apps instaladas.
+
+## Respaldo y traspaso celular ↔ notebook (Google Drive / OneDrive)
+
+Pestaña **💾 Respaldo**:
+
+- **Exportar** genera `necropsias-respaldo-AAAA-MM-DD.zip` (`necropsias.json`,
+  `referencias.json`, `fotos/…`, `referencias/…`). En el celular «Compartir» abre
+  el menú del sistema → Drive u OneDrive; en el notebook se descarga y se sube a
+  la carpeta privada.
+- **Importar** abre ese .zip en el otro dispositivo y **fusiona**: agrega lo nuevo
+  y, si una necropsia existe en ambos lados, gana la de `updated_at` más reciente.
+  No borra nada (una necropsia eliminada en un equipo sigue en el otro).
+- El historial avisa cuando hay necropsias sin respaldar (≥3, o más de 7 días).
 
 ## Qué registra
 
@@ -24,7 +40,7 @@ fotos y un atlas de imágenes de referencia para comparar.
 3. **Hallazgos por sistema** (externo, respiratorio, digestivo, hígado,
    corazón y linfoides, reproductor, urinario, locomotor): estado *sin
    alteraciones / alterado / no evaluado*, chips de lesiones por órgano, notas
-   (con dictado por voz) y fotos por sistema.
+   (con dictado por voz) y fotos por sistema (se reducen a 1600 px / JPEG).
 4. **Score de color hepático** (Royal GD, 7 colores): normal / grupo de riesgo
    (→ pedir TG) / FLHS (→ tratar).
 5. **Conclusión**: diagnóstico presuntivo, diferenciales, muestras enviadas,
@@ -39,15 +55,10 @@ Mientras se edita queda un borrador en `localStorage` (`avivet_necropsia_borrado
   Las mismas miniaturas aparecen dentro de cada sistema del formulario.
 - **Paquete inicial**: 25 recortes de *Layer Signals Checkbook* (Roodbont, cap. 7
   Salud) + lámina de hígado graso de Royal GD. Por derechos de autor **no están en
-  este repo**: viven en `~/AviVet_Necropsias/referencias/` y se suben una vez al
-  bucket privado con «Importar paquete inicial» (se clasifican por nombre de
-  archivo según `REF_CATALOGO` en `app.js`).
+  este repo**: viven en `~/AviVet_Necropsias/paquete-referencias.zip` (y las fotos
+  sueltas en `~/AviVet_Necropsias/referencias/`). Se importan una vez por
+  dispositivo desde Referencias → «Importar paquete inicial»; se clasifican por
+  nombre de archivo según `REF_CATALOGO` en `app.js`. También viajan dentro de
+  los respaldos.
 - Se pueden agregar referencias propias, o marcar ⭐ cualquier foto de una
   necropsia como referencia desde el visor.
-
-## Instalación (una sola vez)
-
-1. Supabase → SQL Editor → ejecutar [`supabase-schema.sql`](supabase-schema.sql)
-   (crea tablas, políticas RLS y el bucket privado).
-2. Ingresar a la herramienta → Referencias → «Importar paquete inicial» →
-   seleccionar todos los `.jpg` de `~/AviVet_Necropsias/referencias/`.

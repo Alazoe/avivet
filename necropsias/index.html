@@ -8,7 +8,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#1b4332">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Necropsias">
+<link rel="apple-touch-icon" href="icon-192.png">
 <style>
 :root{
   --bg:#f5f4f0; --surface:#fff; --surface2:#f0ede8;
@@ -27,14 +32,6 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(-
 button,input,select,textarea{font:inherit;color:inherit}
 .oculto{display:none!important}
 .cont{max-width:880px;margin:0 auto;padding:0 16px}
-
-/* ── Login ── */
-#pantalla-login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px 16px}
-.login-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);padding:32px 28px;max-width:380px;width:100%}
-.login-card h1{font-family:var(--serif);font-size:26px;color:var(--accent);line-height:1.1;margin-bottom:6px}
-.login-card p{color:var(--text2);font-size:14px;margin-bottom:20px}
-.candado{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--gold);background:var(--gold-l);border:1px solid #e8d5a8;border-radius:99px;padding:3px 10px;margin-bottom:14px}
-.login-err{color:var(--red);font-size:13px;margin-top:10px;min-height:1em}
 
 /* ── Cabecera ── */
 .cab{background:var(--accent);color:#fff;position:sticky;top:0;z-index:60;border-bottom:3px solid var(--gold)}
@@ -209,33 +206,19 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--accent2);outline
 </head>
 <body>
 
-<!-- ═══ LOGIN ═══ -->
-<section id="pantalla-login" class="oculto">
-  <form class="login-card" id="form-login">
-    <span class="candado">🔒 Uso interno</span>
-    <h1>Registro de Necropsias</h1>
-    <p>Herramienta privada del MV. Ingresa con tu cuenta AviVet.</p>
-    <div style="display:grid;gap:12px">
-      <label class="campo">Correo<input type="email" id="login-email" autocomplete="username" required></label>
-      <label class="campo">Contraseña<input type="password" id="login-pass" autocomplete="current-password" required></label>
-      <button class="btn prim full" type="submit" id="login-btn">Ingresar</button>
-    </div>
-    <div class="login-err" id="login-err"></div>
-  </form>
-</section>
-
 <!-- ═══ APP ═══ -->
-<div id="app" class="oculto">
+<div id="app">
   <header class="cab">
     <div class="cont">
       <div class="marca">Necropsias<small>AviVet · uso interno</small></div>
-      <div class="cab-user"><span id="user-email"></span><br><button id="btn-salir">Cerrar sesión</button></div>
+      <div class="cab-user">🔒 Solo en este<br>dispositivo</div>
     </div>
   </header>
   <nav class="tabs"><div class="cont">
     <button class="tab" data-vista="historial">📋 Historial</button>
-    <button class="tab" data-vista="form">＋ Nueva necropsia</button>
+    <button class="tab" data-vista="form">＋ Nueva</button>
     <button class="tab" data-vista="refs">🖼 Referencias</button>
+    <button class="tab" data-vista="respaldo">💾 Respaldo</button>
   </div></nav>
 
   <main><div class="cont">
@@ -243,6 +226,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--accent2);outline
     <section id="v-form" class="vista"></section>
     <section id="v-refs" class="vista"></section>
     <section id="v-ver" class="vista"></section>
+    <section id="v-respaldo" class="vista"></section>
   </div></main>
 </div>
 

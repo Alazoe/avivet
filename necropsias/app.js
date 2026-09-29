@@ -1,11 +1,40 @@
 // ══ REGISTRO DE NECROPSIAS — AviVet (uso interno) ══════════════════
-// Mismo proyecto Supabase que el resto de las herramientas AviVet.
-// Todo es privado por usuario (RLS + bucket privado) — ver supabase-schema.sql.
-var SUPABASE_URL = 'https://xewujmpycclqjhlmiica.supabase.co';
-var SUPABASE_KEY = 'sb_publishable_v5_FU1w-7P7oeNrW6FYRBQ_cuX-pa9_';
-var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-var BUCKET = 'necropsias';
+// 100 % local: los datos y las fotos viven en IndexedDB del dispositivo y
+// nunca se envían a ningún servidor. Para pasar datos entre celular y
+// notebook (o respaldar) se exporta/importa un .zip que el usuario guarda
+// en su Google Drive / OneDrive — ver pestaña Respaldo.
 var BORRADOR_KEY = 'avivet_necropsia_borrador';
+var RESPALDO_KEY = 'avivet_necropsias_ultimo_respaldo';
+
+// ── IndexedDB ────────────────────────────────────────────────────
+// necropsias {id,…} · referencias {id,path,…} · fotos {path, blob}
+var dbPromesa = null;
+function idb(){
+  if (!dbPromesa) dbPromesa = new Promise(function(res, rej){
+    var r = indexedDB.open('avivet_necropsias', 1);
+    r.onupgradeneeded = function(){
+      var d = r.result;
+      d.createObjectStore('necropsias', { keyPath:'id' });
+      d.createObjectStore('referencias', { keyPath:'id' });
+      d.createObjectStore('fotos', { keyPath:'path' });
+    };
+    r.onsuccess = function(){ res(r.result); };
+    r.onerror = function(){ rej(r.error); };
+  });
+  return dbPromesa;
+}
+function dbOp(store, modo, fn){
+  return idb().then(function(d){ return new Promise(function(res, rej){
+    var t = d.transaction(store, modo), req = fn(t.objectStore(store));
+    t.oncomplete = function(){ res(req ? req.result : undefined); };
+    t.onerror = function(){ rej(t.error); };
+    t.onabort = function(){ rej(t.error || new Error('Operación cancelada (¿sin espacio?)')); };
+  }); });
+}
+function dbTodos(store){ return dbOp(store, 'readonly', function(s){ return s.getAll(); }); }
+function dbUno(store, k){ return dbOp(store, 'readonly', function(s){ return s.get(k); }); }
+function dbPut(store, v){ return dbOp(store, 'readwrite', function(s){ return s.put(v); }); }
+function dbBorrar(store, k){ return dbOp(store, 'readwrite', function(s){ return s.delete(k); }); }
 
 // ── Sistemas y hallazgos ─────────────────────────────────────────
 var SISTEMAS = [
@@ -108,10 +137,9 @@ var REF_CATALOGO = {
 };
 
 // ── Estado ───────────────────────────────────────────────────────
-var usuario = null;
 var necropsias = [];
 var referencias = [];
-var urlCache = {};            // path → {url, exp}
+var urlCache = {};            // path → objectURL
 var actual = null;            // necropsia en edición
 var actualPersistida = false;
 var fotosSesion = [];         // paths subidos en esta edición y aún no guardados
@@ -126,13 +154,20 @@ function fechaLarga(f){ if(!f) return ''; var p=f.split('-'); return new Date(+p
 function uuid(){ return crypto.randomUUID ? crypto.randomUUID() : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,function(c){var r=Math.random()*16|0;return (c=='x'?r:(r&3|8)).toString(16);}); }
 function toast(msg){ var t=document.createElement('div'); t.className='toast'; t.textContent=msg; document.body.appendChild(t); setTimeout(function(){ t.remove(); }, 2600); }
 
+// Devuelve {path: objectURL} para mostrar fotos guardadas en IndexedDB.
 async function firmar(paths){
-  var ahora = Date.now(), faltan = paths.filter(function(p){ return p && !(urlCache[p] && urlCache[p].exp > ahora); });
-  if (faltan.length){
-    var r = await sb.storage.from(BUCKET).createSignedUrls(faltan, 3600);
-    (r.data || []).forEach(function(d){ if (d.signedUrl) urlCache[d.path] = { url:d.signedUrl, exp: ahora + 3300*1000 }; });
+  var faltan = paths.filter(function(p){ return p && !urlCache[p]; });
+  for (var i = 0; i < faltan.length; i++){
+    var f = await dbUno('fotos', faltan[i]);
+    if (f && f.blob) urlCache[faltan[i]] = URL.createObjectURL(f.blob);
   }
-  var out = {}; paths.forEach(function(p){ out[p] = urlCache[p] ? urlCache[p].url : ''; }); return out;
+  var out = {}; paths.forEach(function(p){ out[p] = urlCache[p] || ''; }); return out;
+}
+async function borrarFotos(paths){
+  for (var i = 0; i < paths.length; i++){
+    await dbBorrar('fotos', paths[i]);
+    if (urlCache[paths[i]]){ URL.revokeObjectURL(urlCache[paths[i]]); delete urlCache[paths[i]]; }
+  }
 }
 
 // Reduce la foto a 1600 px por lado (JPEG) antes de subirla.
@@ -147,35 +182,18 @@ async function comprimir(file){
 }
 async function subir(path, file, comprimirla){
   var blob = comprimirla === false ? file : await comprimir(file);
-  var r = await sb.storage.from(BUCKET).upload(path, blob, { contentType: blob.type || 'image/jpeg', upsert: true });
-  if (r.error) throw r.error;
+  await dbPut('fotos', { path: path, blob: blob });
+  if (urlCache[path]){ URL.revokeObjectURL(urlCache[path]); delete urlCache[path]; }
   return path;
 }
 
-// ── Sesión ───────────────────────────────────────────────────────
+// ── Arranque ─────────────────────────────────────────────────────
 async function iniciar(){
-  var s = await sb.auth.getSession();
-  if (s.data.session) entrar(s.data.session.user); else $('#pantalla-login').classList.remove('oculto');
-  sb.auth.onAuthStateChange(function(ev, ses){ if (ev === 'SIGNED_OUT') location.reload(); });
-}
-$('#form-login').addEventListener('submit', async function(e){
-  e.preventDefault();
-  $('#login-btn').disabled = true; $('#login-err').textContent = '';
-  var r = await sb.auth.signInWithPassword({ email: $('#login-email').value.trim(), password: $('#login-pass').value });
-  $('#login-btn').disabled = false;
-  if (r.error){ $('#login-err').textContent = 'No se pudo ingresar: ' + r.error.message; return; }
-  entrar(r.data.user);
-});
-$('#btn-salir').addEventListener('click', function(){ sb.auth.signOut(); });
-
-async function entrar(user){
-  usuario = user;
-  $('#pantalla-login').classList.add('oculto');
-  $('#app').classList.remove('oculto');
-  $('#user-email').textContent = user.email;
+  if (navigator.storage && navigator.storage.persist) navigator.storage.persist();   // que el navegador no borre los datos
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function(){});
   await Promise.all([cargarNecropsias(), cargarReferencias()]);
   var h = location.hash.slice(1);
-  if (h.indexOf('ver/') === 0) verNecropsia(h.slice(4)); else irA(h === 'refs' || h === 'form' ? h : 'historial');
+  if (h.indexOf('ver/') === 0) verNecropsia(h.slice(4)); else irA(['refs','form','respaldo'].indexOf(h) >= 0 ? h : 'historial');
 }
 
 // ── Navegación ───────────────────────────────────────────────────
@@ -185,6 +203,7 @@ function irA(vista){
   $$('.tab').forEach(function(t){ t.classList.toggle('activa', t.dataset.vista === vista); });
   if (vista === 'historial') renderHistorial();
   if (vista === 'refs') renderReferencias();
+  if (vista === 'respaldo') renderRespaldo();
   if (vista === 'form' && !actual) abrirFormulario(null);
   if (vista !== 'ver') history.replaceState(null, '', '#' + vista);
   window.scrollTo(0, 0);
@@ -196,14 +215,12 @@ $$('.tab').forEach(function(t){ t.addEventListener('click', function(){
 
 // ── Datos ────────────────────────────────────────────────────────
 async function cargarNecropsias(){
-  var r = await sb.from('necropsias').select('*').order('fecha', { ascending:false }).order('created_at', { ascending:false });
-  if (r.error){ toast('Error al cargar necropsias: ' + r.error.message); return; }
-  necropsias = r.data || [];
+  necropsias = (await dbTodos('necropsias')).sort(function(a, b){
+    return (b.fecha||'').localeCompare(a.fecha||'') || (b.created_at||'').localeCompare(a.created_at||'');
+  });
 }
 async function cargarReferencias(){
-  var r = await sb.from('necropsia_referencias').select('*').order('created_at');
-  if (r.error){ toast('Error al cargar referencias: ' + r.error.message); return; }
-  referencias = r.data || [];
+  referencias = (await dbTodos('referencias')).sort(function(a, b){ return (a.created_at||'').localeCompare(b.created_at||''); });
 }
 
 function sistemasAlterados(n){
@@ -218,7 +235,7 @@ async function renderHistorial(){
   var años = {}; necropsias.forEach(function(n){ años[n.fecha.slice(0,4)] = 1; });
   v.innerHTML =
     '<h2 class="titulo">Historial de necropsias</h2>' +
-    '<p class="sub">' + necropsias.length + ' registro' + (necropsias.length===1?'':'s') + ' · solo visibles para tu cuenta.</p>' +
+    '<p class="sub">' + necropsias.length + ' registro' + (necropsias.length===1?'':'s') + ' · guardados solo en este dispositivo.</p>' + avisoRespaldo() +
     '<div class="hist-barra"><input type="text" id="hist-buscar" placeholder="Buscar productor, lote, diagnóstico, hallazgo…" value="' + esc(filtroHist) + '">' +
     '<button class="btn prim" id="hist-nueva">＋ Nueva</button></div><div id="hist-lista"></div>';
   $('#hist-buscar').addEventListener('input', function(e){ filtroHist = e.target.value; pintarLista(); });
@@ -432,7 +449,7 @@ async function agregarFotos(sis, files){
   for (var i = 0; i < files.length; i++){
     var ph = document.createElement('div'); ph.className = 'foto subiendo'; ph.textContent = 'Subiendo…'; cont.appendChild(ph);
     try {
-      var path = usuario.id + '/' + actual.id + '/' + uuid() + '.jpg';
+      var path = 'fotos/' + actual.id + '/' + uuid() + '.jpg';
       await subir(path, files[i]);
       actual.fotos.push({ path: path, sistema: sis, nota: '' });
       fotosSesion.push(path);
@@ -458,7 +475,7 @@ async function pintarFotosForm(){
         var p = el.dataset.path;
         actual.fotos = actual.fotos.filter(function(f){ return f.path !== p; });
         // Solo se borra del bucket si se subió en esta edición; si ya estaba guardada, se borra al guardar.
-        if (fotosSesion.indexOf(p) >= 0){ sb.storage.from(BUCKET).remove([p]); fotosSesion.splice(fotosSesion.indexOf(p), 1); }
+        if (fotosSesion.indexOf(p) >= 0){ borrarFotos([p]); fotosSesion.splice(fotosSesion.indexOf(p), 1); }
         guardarBorrador(); pintarFotosForm();
         var s = $('.sis[data-sis="' + sis + '"]'); if (s) resumenSis(s);
       });
@@ -516,13 +533,15 @@ async function guardar(){
   var previa = necropsias.find(function(n){ return n.id === actual.id; });
   var quitadas = previa ? (previa.fotos||[]).map(function(f){ return f.path; }).filter(function(p){ return !actual.fotos.some(function(f){ return f.path === p; }); }) : [];
 
-  var r = actualPersistida
-    ? await sb.from('necropsias').update(fila).eq('id', actual.id)
-    : await sb.from('necropsias').insert(Object.assign({ id: actual.id }, fila));
+  try {
+    await dbPut('necropsias', Object.assign({ id: actual.id, created_at: previa ? previa.created_at : new Date().toISOString() }, fila));
+  } catch(e){
+    guardando = false; $('#f-guardar').disabled = false; $('#f-guardar').textContent = '💾 Guardar necropsia';
+    toast('Error al guardar: ' + (e.message || e)); return;
+  }
   guardando = false;
-  if (r.error){ $('#f-guardar').disabled = false; $('#f-guardar').textContent = '💾 Guardar necropsia'; toast('Error al guardar: ' + r.error.message); return; }
   quitadas = quitadas.filter(function(p){ return !referencias.some(function(x){ return x.path === p; }); });
-  if (quitadas.length) sb.storage.from(BUCKET).remove(quitadas);
+  if (quitadas.length) await borrarFotos(quitadas);
   limpiarBorrador(); fotosSesion = [];
   var id = actual.id; actual = null;
   await cargarNecropsias();
@@ -532,7 +551,7 @@ async function guardar(){
 
 function cancelar(){
   if (!confirm(actualPersistida ? '¿Descartar los cambios?' : '¿Descartar esta necropsia? Se borrarán las fotos que subiste.')) return;
-  if (fotosSesion.length) sb.storage.from(BUCKET).remove(fotosSesion);
+  if (fotosSesion.length) borrarFotos(fotosSesion);
   fotosSesion = []; limpiarBorrador();
   var id = actualPersistida ? actual.id : null; actual = null;
   if (id) verNecropsia(id); else irA('historial');
@@ -614,11 +633,10 @@ function copiarResumen(n){
 
 async function borrarNecropsia(n){
   if (!confirm('¿Eliminar definitivamente la necropsia de ' + n.productor + ' (' + fechaLarga(n.fecha) + ') y sus fotos?')) return;
-  var r = await sb.from('necropsias').delete().eq('id', n.id);
-  if (r.error){ toast('Error al eliminar: ' + r.error.message); return; }
+  await dbBorrar('necropsias', n.id);
   // No borrar fotos que se marcaron como referencia
   var paths = (n.fotos||[]).map(function(f){ return f.path; }).filter(function(p){ return !referencias.some(function(x){ return x.path === p; }); });
-  if (paths.length) await sb.storage.from(BUCKET).remove(paths);
+  if (paths.length) await borrarFotos(paths);
   await cargarNecropsias(); toast('Necropsia eliminada'); irA('historial');
 }
 
@@ -626,12 +644,12 @@ async function borrarNecropsia(n){
 var filtroRef = 'todos';
 async function renderReferencias(){
   var v = $('#v-refs');
-  var faltan = Object.keys(REF_CATALOGO).filter(function(k){ return !referencias.some(function(r){ return r.path === usuario.id + '/referencias/' + k + '.jpg'; }); });
+  var faltan = Object.keys(REF_CATALOGO).filter(function(k){ return !referencias.some(function(r){ return r.path === 'referencias/' + k + '.jpg'; }); });
   v.innerHTML =
     '<h2 class="titulo">Imágenes de referencia</h2>' +
     '<p class="sub">Atlas para comparar durante la necropsia. <span style="color:#4caf50;font-weight:600">Verde</span> = normal, <span style="color:#e53935;font-weight:600">rojo</span> = alterado. También aparecen dentro de cada sistema del formulario.</p>' +
     (faltan.length ? '<div class="aviso">📦 Faltan ' + faltan.length + ' de ' + Object.keys(REF_CATALOGO).length + ' imágenes del paquete inicial (Layer Signals Checkbook). ' +
-      'Selecciona todos los archivos de la carpeta <b>~/AviVet_Necropsias/referencias/</b> y se clasificarán solos.<br><label class="btn chico btn-foto" style="margin-top:8px">Importar paquete inicial<input type="file" accept="image/*" multiple id="ref-importar"></label></div>' : '') +
+      'Importa el archivo <b>paquete-referencias.zip</b> (o las fotos sueltas de la carpeta <b>referencias</b>) y se clasificarán solas.<br><label class="btn chico btn-foto" style="margin-top:8px">Importar paquete inicial<input type="file" accept=".zip,application/zip,image/*" multiple id="ref-importar"></label></div>' : '') +
     '<div class="tarjeta"><h3>Agregar referencia propia</h3><div class="grid">' +
       '<label class="campo">Sistema<select id="nr-sis">' + SISTEMAS.map(function(s){ return '<option value="' + s.k + '">' + s.t + '</option>'; }).join('') + '</select></label>' +
       '<label class="campo">Estado<select id="nr-est"><option value="alterado">Alterado</option><option value="normal">Normal</option><option value="referencia">Referencia / anatomía</option></select></label>' +
@@ -642,7 +660,7 @@ async function renderReferencias(){
     '<div class="ref-filtros">' + [['todos','Todos'],['normal','Normal'],['alterado','Alterado'],['referencia','Anatomía']].map(function(f){ return '<button class="chip muestra' + (filtroRef===f[0]?' on':'') + '" data-fr="' + f[0] + '">' + f[1] + '</button>'; }).join('') + '</div>' +
     '<div id="ref-galeria"></div>';
 
-  var imp = $('#ref-importar'); if (imp) imp.addEventListener('change', function(){ importarPaquete(imp.files); });
+  var imp = $('#ref-importar'); if (imp) imp.addEventListener('change', function(){ var f = Array.prototype.slice.call(imp.files); if (f.length === 1 && /\.zip$/i.test(f[0].name)) importarRespaldo(f[0]); else importarPaquete(f); });
   $('#nr-file').addEventListener('change', function(e){ agregarReferencia(e.target.files[0]); e.target.value=''; });
   $$('[data-fr]', v).forEach(function(b){ b.addEventListener('click', function(){ filtroRef = b.dataset.fr; renderReferencias(); }); });
   pintarGaleria();
@@ -674,13 +692,10 @@ async function importarPaquete(files){
   for (var i = 0; i < files.length; i++){
     var base = files[i].name.replace(/\.[^.]+$/, ''), c = REF_CATALOGO[base];
     if (!c){ ignorados.push(files[i].name); continue; }
-    var path = usuario.id + '/referencias/' + base + '.jpg';
+    var path = 'referencias/' + base + '.jpg';
     try {
       await subir(path, files[i], false);
-      if (!referencias.some(function(r){ return r.path === path; })){
-        var r = await sb.from('necropsia_referencias').insert({ path:path, sistema:c[0], estado:c[1], titulo:c[2], descripcion:c[3], fuente:FUENTE_LSC });
-        if (r.error) throw r.error;
-      }
+      if (!referencias.some(function(r){ return r.path === path; })) await dbPut('referencias', refDeCatalogo(base));
       ok++;
     } catch(e){ toast('Error con ' + files[i].name + ': ' + (e.message||e)); }
   }
@@ -694,10 +709,9 @@ async function agregarReferencia(file){
   var tit = $('#nr-tit').value.trim();
   if (!tit){ toast('Ponle un título a la referencia'); return; }
   try {
-    var path = usuario.id + '/referencias/' + uuid() + '.jpg';
+    var path = 'referencias/' + uuid() + '.jpg';
     await subir(path, file);
-    var r = await sb.from('necropsia_referencias').insert({ path:path, sistema:$('#nr-sis').value, estado:$('#nr-est').value, titulo:tit, descripcion:$('#nr-desc').value.trim(), fuente:$('#nr-fuente').value.trim() || 'Caso propio' });
-    if (r.error) throw r.error;
+    await dbPut('referencias', { id:uuid(), created_at:new Date().toISOString(), path:path, sistema:$('#nr-sis').value, estado:$('#nr-est').value, titulo:tit, descripcion:$('#nr-desc').value.trim(), fuente:$('#nr-fuente').value.trim() || 'Caso propio' });
     await cargarReferencias(); toast('Referencia agregada'); renderReferencias();
   } catch(e){ toast('Error: ' + (e.message||e)); }
 }
@@ -707,20 +721,142 @@ async function fotoComoReferencia(item){
   var tit = prompt('Título para esta referencia:', item.titulo);
   if (!tit) return;
   var estado = confirm('¿Es un hallazgo ALTERADO?\n(Aceptar = alterado · Cancelar = normal)') ? 'alterado' : 'normal';
-  var r = await sb.from('necropsia_referencias').insert({ path:item.path, sistema:item.sistema === 'general' ? 'externo' : item.sistema, estado:estado, titulo:tit, fuente:'Caso propio' });
-  if (r.error){ toast('Error: ' + r.error.message); return; }
+  await dbPut('referencias', { id:uuid(), created_at:new Date().toISOString(), path:item.path, sistema:item.sistema === 'general' ? 'externo' : item.sistema, estado:estado, titulo:tit, fuente:'Caso propio' });
   await cargarReferencias(); toast('Guardada en Referencias');
 }
 
 async function borrarReferencia(id){
   var r = referencias.find(function(x){ return x.id === id; });
   if (!r || !confirm('¿Quitar «' + r.titulo + '» de las referencias?')) return;
-  var d = await sb.from('necropsia_referencias').delete().eq('id', id);
-  if (d.error){ toast('Error: ' + d.error.message); return; }
+  await dbBorrar('referencias', id);
   // Borrar el archivo solo si no es foto de una necropsia
   var usada = necropsias.some(function(n){ return (n.fotos||[]).some(function(f){ return f.path === r.path; }); });
-  if (!usada) await sb.storage.from(BUCKET).remove([r.path]);
+  if (!usada) await borrarFotos([r.path]);
   await cargarReferencias(); cerrarVisor(); renderReferencias();
+}
+
+function refDeCatalogo(base){
+  var c = REF_CATALOGO[base];
+  return { id:'cat-' + base, created_at:new Date().toISOString(), path:'referencias/' + base + '.jpg',
+    sistema:c[0], estado:c[1], titulo:c[2], descripcion:c[3], fuente:FUENTE_LSC };
+}
+
+// ══ RESPALDO / TRASPASO ENTRE DISPOSITIVOS ═══════════════════════
+// Formato del .zip: necropsias.json · referencias.json · fotos/… · referencias/…
+// Importar FUSIONA (no reemplaza): gana la versión más reciente de cada necropsia.
+function ultimoRespaldo(){ try { return localStorage.getItem(RESPALDO_KEY); } catch(e){ return null; } }
+function avisoRespaldo(){
+  if (!necropsias.length) return '';
+  var u = ultimoRespaldo(), dias = u ? Math.floor((Date.now() - new Date(u)) / 864e5) : null;
+  var pendientes = necropsias.filter(function(n){ return !u || (n.updated_at || n.created_at) > u; }).length;
+  if (!pendientes || (dias !== null && dias < 7 && pendientes < 3)) return '';
+  return '<div class="aviso">💾 ' + pendientes + ' necropsia' + (pendientes===1?'':'s') + ' sin respaldar' +
+    (u ? ' (último respaldo hace ' + dias + ' día' + (dias===1?'':'s') + ')' : '') +
+    '. Si pierdes o cambias el celular, se pierden. <a href="#respaldo" onclick="irA(\'respaldo\');return false" style="color:inherit;font-weight:600">Respaldar ahora →</a></div>';
+}
+
+async function renderRespaldo(){
+  var v = $('#v-respaldo'), u = ultimoRespaldo();
+  var nFotos = (await dbTodos('fotos')).length;
+  var est = navigator.storage && navigator.storage.estimate ? await navigator.storage.estimate() : null;
+  var persist = navigator.storage && navigator.storage.persisted ? await navigator.storage.persisted() : null;
+  v.innerHTML =
+    '<h2 class="titulo">Respaldo y traspaso</h2>' +
+    '<p class="sub">Todo se guarda <b>solo en este dispositivo</b>; nada pasa por internet ni por avivet.cl. Para respaldar o pasar tus necropsias entre el celular y el notebook, exporta un archivo y guárdalo en tu Google Drive o OneDrive.</p>' +
+    '<div class="tarjeta"><h3>En este dispositivo</h3><div class="inf-meta">' +
+      '<div><span>Necropsias</span>' + necropsias.length + '</div>' +
+      '<div><span>Referencias</span>' + referencias.length + '</div>' +
+      '<div><span>Fotos</span>' + nFotos + '</div>' +
+      (est ? '<div><span>Espacio usado</span>' + (est.usage/1048576).toFixed(1) + ' MB</div>' : '') +
+      '<div><span>Último respaldo</span>' + (u ? new Date(u).toLocaleString('es-CL', { dateStyle:'medium', timeStyle:'short' }) : 'Nunca') + '</div>' +
+    '</div>' + (persist === false ? '<p style="font-size:13px;color:var(--text2)">⚠️ El navegador no marcó el almacenamiento como permanente. En iPhone, instala la app en la pantalla de inicio (Compartir → «Agregar a inicio») para que Safari no la borre si no la usas por varias semanas.</p>' : '') + '</div>' +
+
+    '<div class="tarjeta"><h3>1 · Exportar respaldo</h3>' +
+      '<p style="font-size:14px;color:var(--text2);margin-bottom:12px">Genera <b>necropsias-respaldo-FECHA.zip</b> con todas las fichas, fotos y referencias. En el celular, «Compartir» abre el menú del sistema: elige <b>Drive</b> u <b>OneDrive</b> y guárdalo en una carpeta privada (ej. «AviVet Necropsias»).</p>' +
+      '<div style="display:flex;gap:8px;flex-wrap:wrap">' +
+        (navigator.canShare ? '<button class="btn prim" id="r-compartir">📤 Compartir a Drive / OneDrive</button>' : '') +
+        '<button class="btn' + (navigator.canShare ? '' : ' prim') + '" id="r-descargar">⬇ Descargar archivo</button>' +
+        '<label class="btn"><input type="checkbox" id="r-sinrefs" checked style="margin-right:4px"> Incluir referencias</label>' +
+      '</div><div id="r-estado" style="font-size:13px;color:var(--text2);margin-top:8px"></div></div>' +
+
+    '<div class="tarjeta"><h3>2 · Importar en otro dispositivo</h3>' +
+      '<p style="font-size:14px;color:var(--text2);margin-bottom:12px">Abre el .zip desde Drive / OneDrive (en el celular: «Examinar» → Drive). Se <b>fusiona</b> con lo que ya hay: agrega lo nuevo y, si una necropsia existe en ambos lados, conserva la versión editada más recientemente. No borra nada.</p>' +
+      '<label class="btn prim btn-foto">📥 Importar respaldo (.zip)<input type="file" accept=".zip,application/zip" id="r-importar"></label></div>';
+
+  var c = $('#r-compartir'); if (c) c.addEventListener('click', function(){ exportar(true); });
+  $('#r-descargar').addEventListener('click', function(){ exportar(false); });
+  $('#r-importar').addEventListener('change', function(e){ if (e.target.files[0]) importarRespaldo(e.target.files[0]); e.target.value = ''; });
+}
+
+async function exportar(compartir){
+  if (!window.JSZip){ toast('No se cargó el compresor (JSZip). Abre la app una vez con internet.'); return; }
+  var est = $('#r-estado'); est.textContent = 'Preparando respaldo…';
+  var conRefs = $('#r-sinrefs').checked;
+  var zip = new JSZip();
+  var ns = await dbTodos('necropsias'), rs = await dbTodos('referencias'), fs = await dbTodos('fotos');
+  zip.file('necropsias.json', JSON.stringify(ns, null, 1));
+  zip.file('referencias.json', JSON.stringify(conRefs ? rs : [], null, 1));
+  var usadas = {}; ns.forEach(function(n){ (n.fotos||[]).forEach(function(f){ usadas[f.path] = 1; }); });
+  if (conRefs) rs.forEach(function(r){ usadas[r.path] = 1; });
+  fs.forEach(function(f){ if (usadas[f.path]) zip.file(f.path, f.blob); });
+  // Las fotos ya vienen en JPEG: no se recomprimen (STORE), el zip se genera rápido.
+  var blob = await zip.generateAsync({ type:'blob', compression:'STORE' });
+  var nombre = 'necropsias-respaldo-' + hoy() + '.zip';
+  var mb = (blob.size/1048576).toFixed(1) + ' MB';
+  var file = new File([blob], nombre, { type:'application/zip' });
+  if (compartir && navigator.canShare && navigator.canShare({ files:[file] })){
+    try { await navigator.share({ files:[file], title:nombre }); marcarRespaldo(); est.textContent = 'Respaldo compartido (' + mb + ').'; }
+    catch(e){ est.textContent = e.name === 'AbortError' ? 'Cancelado.' : 'No se pudo compartir: ' + e.message + '. Usa «Descargar archivo».'; }
+    return;
+  }
+  var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = nombre;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(function(){ URL.revokeObjectURL(a.href); }, 5000);
+  marcarRespaldo();
+  est.textContent = 'Descargado ' + nombre + ' (' + mb + '). Súbelo a tu carpeta de Drive / OneDrive.';
+}
+function marcarRespaldo(){ try { localStorage.setItem(RESPALDO_KEY, new Date().toISOString()); } catch(e){} }
+
+async function importarRespaldo(file){
+  if (!window.JSZip){ toast('No se cargó el compresor (JSZip). Abre la app una vez con internet.'); return; }
+  toast('Importando…');
+  try {
+    var zip = await JSZip.loadAsync(file);
+    var nsIn = zip.file('necropsias.json') ? JSON.parse(await zip.file('necropsias.json').async('string')) : [];
+    var rsIn = zip.file('referencias.json') ? JSON.parse(await zip.file('referencias.json').async('string')) : [];
+    var nuevas = 0, actualizadas = 0, refsNuevas = 0, fotosNuevas = 0;
+
+    // Fotos (fotos/… y referencias/…); solo las que no están
+    var archivos = Object.keys(zip.files).filter(function(k){ return !zip.files[k].dir && /\.(jpe?g|png|webp)$/i.test(k); });
+    for (var i = 0; i < archivos.length; i++){
+      if (await dbUno('fotos', archivos[i])) continue;
+      var b = await zip.file(archivos[i]).async('blob');
+      await dbPut('fotos', { path: archivos[i], blob: new Blob([b], { type: /\.png$/i.test(archivos[i]) ? 'image/png' : 'image/jpeg' }) });
+      fotosNuevas++;
+    }
+    // Necropsias: gana la edición más reciente
+    for (var j = 0; j < nsIn.length; j++){
+      var n = nsIn[j], ya = necropsias.find(function(x){ return x.id === n.id; });
+      if (!ya){ await dbPut('necropsias', n); nuevas++; }
+      else if ((n.updated_at||'') > (ya.updated_at||'')){ await dbPut('necropsias', n); actualizadas++; }
+    }
+    // Referencias: una por archivo
+    for (var k = 0; k < rsIn.length; k++){
+      if (!referencias.some(function(r){ return r.path === rsIn[k].path || r.id === rsIn[k].id; })){ await dbPut('referencias', rsIn[k]); refsNuevas++; }
+    }
+    // Paquete inicial sin referencias.json: clasificar por nombre de archivo
+    await cargarReferencias();
+    for (var m = 0; m < archivos.length; m++){
+      var base = archivos[m].replace(/^.*\//, '').replace(/\.[^.]+$/, '');
+      if (/^referencias\//.test(archivos[m]) && REF_CATALOGO[base] && !referencias.some(function(r){ return r.path === archivos[m]; })){
+        await dbPut('referencias', refDeCatalogo(base)); refsNuevas++;
+      }
+    }
+    await Promise.all([cargarNecropsias(), cargarReferencias()]);
+    toast(nuevas + ' nuevas · ' + actualizadas + ' actualizadas · ' + refsNuevas + ' referencias · ' + fotosNuevas + ' fotos');
+    var vis = $$('.vista').find(function(v){ return !v.classList.contains('oculto'); });
+    irA(vis && vis.id === 'v-refs' ? 'refs' : vis && vis.id === 'v-respaldo' ? 'respaldo' : 'historial');
+  } catch(e){ toast('No se pudo importar: ' + (e.message || e)); }
 }
 
 // ══ VISOR ════════════════════════════════════════════════════════
