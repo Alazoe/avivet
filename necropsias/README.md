@@ -38,7 +38,7 @@ Pestaña **💾 Respaldo**:
    n° de aves, condición (muertas / sacrificadas).
 2. **Historia clínica**: motivo, mortalidad, signos, vacunaciones/tratamientos.
 3. **Hallazgos por sistema** (externo, respiratorio, digestivo, hígado,
-   corazón y linfoides, reproductor, urinario, locomotor): estado *sin
+   corazón y linfoides, reproductor, urinario, nervioso, locomotor): estado *sin
    alteraciones / alterado / no evaluado*, chips de lesiones por órgano, notas
    (con dictado por voz) y fotos por sistema (se reducen a 1600 px / JPEG).
 4. **Hígado** (sección abierta por defecto):
@@ -56,11 +56,30 @@ Pestaña **💾 Respaldo**:
 Vista de informe con impresión a PDF y botón «Copiar resumen» (para WhatsApp).
 Mientras se edita queda un borrador en `localStorage` (`avivet_necropsia_borrador`).
 
+## Guía paso a paso (pestaña 📖 Guía)
+
+`guia.js` define `GUIA` (secciones en orden de trabajo, cada paso con foto y texto
+traducido al español) y `GUIA_CONSEJOS` (muestras asépticas antes que sépticas,
+autólisis, formalina). Secciones actuales: pechuga, cuello, hígado, molleja,
+corazón, siringe, extracción del digestivo, bolsa de Fabricio, gónadas y
+adrenales, riñones, serosa intestinal, proventrículo/molleja, mucosa digestiva y
+raspado para coccidias, encéfalo, limpieza y eliminación de cadáveres.
+
+- Cada sistema del formulario tiene un enlace «📖 Cómo examinarlo» a su sección.
+- Los pasos marcados `normal`/`alterado` también se registran como referencias
+  del sistema; los de técnica (`tecnica`) solo aparecen en la guía y con el
+  filtro «Técnica» de Referencias.
+- Para agregar láminas nuevas: recortar a `~/AviVet_Necropsias/referencias/guia-*.jpg`,
+  agregar el paso en `GUIA` y regenerar `paquete-referencias.zip`. Al importar el
+  zip de nuevo solo se suman las fotos que faltan.
+- Falta cubrir: examen externo, eutanasia y apertura de la cavidad (no venían en
+  las láminas recibidas).
+
 ## Referencias
 
 - Pestaña **Referencias**: atlas por sistema (borde verde = normal, rojo = alterado).
   Las mismas miniaturas aparecen dentro de cada sistema del formulario.
-- **Paquete inicial**: 25 recortes de *Layer Signals Checkbook* (Roodbont, cap. 7
+- **Paquete inicial** (99 imágenes): las 74 fotos de la guía más 25 recortes de *Layer Signals Checkbook* (Roodbont, cap. 7
   Salud) + lámina de hígado graso de Royal GD. Por derechos de autor **no están en
   este repo**: viven en `~/AviVet_Necropsias/paquete-referencias.zip` (y las fotos
   sueltas en `~/AviVet_Necropsias/referencias/`). Se importan una vez por

@@ -138,6 +138,19 @@ details.ficha summary{cursor:pointer;list-style-position:outside}
 .sw.grande{width:56px;height:56px;aspect-ratio:auto;cursor:default;display:flex;align-items:flex-end;justify-content:flex-end;padding:3px 5px}
 .sw.grande span{color:#fff;font-size:11px;font-weight:700;text-shadow:0 1px 2px rgba(0,0,0,.6)}
 @media (max-width:520px){ .ficha-sw{width:auto} .sw.grande{width:44px;height:44px} .ficha-grupo{align-items:flex-start;flex-direction:column;gap:4px} }
+.guia-indice{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.guia-indice a{font-size:12.5px;background:var(--surface);border:1px solid var(--border);border-radius:99px;padding:4px 10px;color:var(--accent);text-decoration:none}
+.guia-sec{margin:22px 0}
+.guia-sec h3{font-family:var(--serif);font-size:20px;color:var(--accent);display:flex;align-items:center;gap:10px;margin-bottom:4px}
+.guia-sec h3 span{flex:none;width:30px;height:30px;border-radius:50%;background:var(--accent);color:#fff;font-size:14px;display:flex;align-items:center;justify-content:center;font-family:'DM Sans'}
+.guia-intro{font-size:14px;color:var(--text2);margin-bottom:10px}
+.guia-pasos{list-style:none;counter-reset:paso;display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.guia-pasos li{counter-increment:paso;background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;border-top:4px solid var(--border)}
+.guia-pasos li.normal{border-top-color:#4caf50} .guia-pasos li.alterado{border-top-color:#e53935}
+.guia-pasos img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;cursor:pointer;background:var(--surface2)}
+.guia-pasos p{padding:8px 10px;font-size:13.5px;line-height:1.4}
+.guia-pasos p::before{content:counter(paso) ". ";font-weight:700;color:var(--accent)}
+.link-guia{font-size:13px;color:var(--accent2);font-weight:600}
 .score-msg{font-size:13px;margin-top:8px;padding:8px 10px;border-radius:8px;background:var(--surface2);color:var(--text2)}
 
 /* Referencias dentro de cada sistema */
@@ -235,6 +248,7 @@ details.ficha summary{cursor:pointer;list-style-position:outside}
   <nav class="tabs"><div class="cont">
     <button class="tab" data-vista="historial">📋 Historial</button>
     <button class="tab" data-vista="form">＋ Nueva</button>
+    <button class="tab" data-vista="guia">📖 Guía</button>
     <button class="tab" data-vista="refs">🖼 Referencias</button>
     <button class="tab" data-vista="respaldo">💾 Respaldo</button>
   </div></nav>
@@ -245,6 +259,7 @@ details.ficha summary{cursor:pointer;list-style-position:outside}
     <section id="v-refs" class="vista"></section>
     <section id="v-ver" class="vista"></section>
     <section id="v-respaldo" class="vista"></section>
+    <section id="v-guia" class="vista"></section>
   </div></main>
 </div>
 
@@ -257,6 +272,7 @@ details.ficha summary{cursor:pointer;list-style-position:outside}
   <button class="nav sig" aria-label="Siguiente">›</button>
 </div>
 
+<script src="guia.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 // Service worker: permite abrir la app sin señal (en terreno).
 // Red primero para tener siempre la última versión; si no hay red, caché.
-var CACHE = 'necropsias-v1';
-var BASE = ['./', 'index.html', 'app.js', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png',
+var CACHE = 'necropsias-v2';
+var BASE = ['./', 'index.html', 'guia.js', 'app.js', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png',
   'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js'];
 
 self.addEventListener('install', function(e){

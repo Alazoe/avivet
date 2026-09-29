@@ -77,6 +77,10 @@ var SISTEMAS = [
   { k:'renal', ico:'🫘', t:'Aparato urinario', organos:[
     ['Riñones', ['Aumentados / pálidos','Uratos en túbulos','Gota visceral','Urolitos en uréteres','Hemorragias']]
   ]},
+  { k:'nervioso', ico:'🧠', t:'Sistema nervioso', organos:[
+    ['Signos previos', ['Tortícolis','Parálisis de patas / alas','Incoordinación','Temblores','Postura de estrella / opistótonos']],
+    ['Encéfalo y meninges', ['Congestión / hemorragias','Áreas blandas (encefalomalacia)','Focos necróticos / abscesos','Exudado en meninges']]
+  ]},
   { k:'locomotor', ico:'🦴', t:'Músculo, huesos y nervios', organos:[
     ['Esqueleto', ['Quilla desviada','Fracturas de quilla','Huesos frágiles (osteoporosis)','Rosario raquítico']],
     ['Articulaciones y tendones', ['Artritis','Sinovitis / tenosinovitis','Ruptura de tendón']],
@@ -157,6 +161,15 @@ var REF_CATALOGO = {
   'dig-eimeria-necatrix':          ['digestivo','alterado','Eimeria necatrix','Problema común en ponedoras: balonamiento del intestino.'],
   'dig-eimeria-brunetti':          ['digestivo','alterado','Eimeria brunetti','Pared intestinal engrosada y tapones mucosos.']
 };
+// Fotos de la guía paso a paso (guia.js) → también quedan como referencias.
+if (typeof GUIA !== 'undefined') GUIA.forEach(function(sec){
+  sec.pasos.forEach(function(p, i){
+    REF_CATALOGO[p[0]] = [sec.sis, p[2] || 'tecnica', p[3] || (sec.t + ' · paso ' + (i+1)), p[1], FUENTE_GUIA];
+  });
+});
+var GUIA_POR_SIS = {};
+if (typeof GUIA !== 'undefined') GUIA.forEach(function(sec){ if (!GUIA_POR_SIS[sec.sis]) GUIA_POR_SIS[sec.sis] = sec.id; });
+
 
 // ── Estado ───────────────────────────────────────────────────────
 var necropsias = [];
@@ -215,7 +228,7 @@ async function iniciar(){
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function(){});
   await Promise.all([cargarNecropsias(), cargarReferencias()]);
   var h = location.hash.slice(1);
-  if (h.indexOf('ver/') === 0) verNecropsia(h.slice(4)); else irA(['refs','form','respaldo'].indexOf(h) >= 0 ? h : 'historial');
+  if (h.indexOf('ver/') === 0) verNecropsia(h.slice(4)); else irA(['refs','form','respaldo','guia'].indexOf(h) >= 0 ? h : 'historial');
 }
 
 // ── Navegación ───────────────────────────────────────────────────
@@ -226,6 +239,7 @@ function irA(vista){
   if (vista === 'historial') renderHistorial();
   if (vista === 'refs') renderReferencias();
   if (vista === 'respaldo') renderRespaldo();
+  if (vista === 'guia') renderGuia();
   if (vista === 'form' && !actual) abrirFormulario(null);
   if (vista !== 'ver') history.replaceState(null, '', '#' + vista);
   window.scrollTo(0, 0);
@@ -398,6 +412,7 @@ function htmlSistema(s){
       o[1].map(function(c){ var key = o[0] + ': ' + c; return '<button type="button" class="chip' + (d.chips.indexOf(key)>=0?' on':'') + '" data-chip="' + esc(key) + '">' + esc(c) + '</button>'; }).join('') +
     '</div></div>';
   }).join('');
+  if (GUIA_POR_SIS[s.k]) html += '<p style="margin:-2px 0 10px"><a href="#guia" class="link-guia" data-guia="' + GUIA_POR_SIS[s.k] + '">📖 Cómo examinarlo (guía paso a paso)</a></p>';
   html += campoNotas('Descripción / otras lesiones', 's:' + s.k, d.notas);
   html += '<div class="fotos" data-fotos="' + s.k + '"></div>' + btnFoto(s.k);
   html += '<div class="ref-tira-wrap" data-refs="' + s.k + '"></div>';
@@ -478,6 +493,7 @@ function conectarSistema(el){
     if (d.hemo > 0 && d.estado !== 'alt'){ $('.seg button[data-v=alt]', el).click(); }
     resumenSis(el); guardarBorrador();
   }); });
+  $$('.link-guia', el).forEach(function(a){ a.addEventListener('click', function(e){ e.preventDefault(); irGuia(a.dataset.guia); }); });
   $('[data-snotas]', el).addEventListener('input', function(e){ d.notas = e.target.value; guardarBorrador(); });
   resumenSis(el);
 }
@@ -545,7 +561,7 @@ async function pintarRefsForm(){
   var paths = referencias.map(function(r){ return r.path; });
   var u = paths.length ? await firmar(paths) : {};
   $$('[data-refs]').forEach(function(w){
-    var lista = referencias.filter(function(r){ return r.sistema === w.dataset.refs; });
+    var lista = referencias.filter(function(r){ return r.sistema === w.dataset.refs && r.estado !== 'tecnica'; });
     if (!lista.length){ w.innerHTML = ''; return; }
     w.innerHTML = '<div class="ref-tira-t">🖼 Referencias para comparar</div><div class="ref-tira">' +
       lista.map(function(r, i){ return '<div class="ref-mini ' + r.estado + '" data-i="' + i + '"><div class="im" style="background-image:url(&quot;' + esc(u[r.path]) + '&quot;)"></div><span>' + esc(r.titulo) + '</span></div>'; }).join('') + '</div>';
@@ -716,7 +732,7 @@ async function renderReferencias(){
     '</div><div class="grid dos" style="margin-top:12px"><label class="campo">Descripción<textarea id="nr-desc"></textarea></label>' +
       '<label class="campo">Fuente<input type="text" id="nr-fuente" placeholder="Caso propio, libro, laboratorio…"></label></div>' +
     '<label class="btn prim btn-foto" style="margin-top:12px">📷 Elegir imagen y guardar<input type="file" accept="image/*" id="nr-file"></label></div>' +
-    '<div class="ref-filtros">' + [['todos','Todos'],['normal','Normal'],['alterado','Alterado'],['referencia','Anatomía']].map(function(f){ return '<button class="chip muestra' + (filtroRef===f[0]?' on':'') + '" data-fr="' + f[0] + '">' + f[1] + '</button>'; }).join('') + '</div>' +
+    '<div class="ref-filtros">' + [['todos','Todos'],['normal','Normal'],['alterado','Alterado'],['referencia','Anatomía'],['tecnica','Técnica']].map(function(f){ return '<button class="chip muestra' + (filtroRef===f[0]?' on':'') + '" data-fr="' + f[0] + '">' + f[1] + '</button>'; }).join('') + '</div>' +
     '<div id="ref-galeria"></div>';
 
   var imp = $('#ref-importar'); if (imp) imp.addEventListener('change', function(){ var f = Array.prototype.slice.call(imp.files); if (f.length === 1 && /\.zip$/i.test(f[0].name)) importarRespaldo(f[0]); else importarPaquete(f); });
@@ -727,7 +743,7 @@ async function renderReferencias(){
 
 async function pintarGaleria(){
   var g = $('#ref-galeria');
-  var lista = referencias.filter(function(r){ return filtroRef === 'todos' || r.estado === filtroRef; });
+  var lista = referencias.filter(function(r){ return filtroRef === 'todos' ? r.estado !== 'tecnica' : r.estado === filtroRef; });
   if (!lista.length){ g.innerHTML = '<div class="vacio">Sin imágenes de referencia todavía.</div>'; return; }
   var u = await firmar(lista.map(function(r){ return r.path; }));
   g.innerHTML = SISTEMAS.map(function(s){
@@ -797,7 +813,7 @@ async function borrarReferencia(id){
 function refDeCatalogo(base){
   var c = REF_CATALOGO[base];
   return { id:'cat-' + base, created_at:new Date().toISOString(), path:'referencias/' + base + '.jpg',
-    sistema:c[0], estado:c[1], titulo:c[2], descripcion:c[3], fuente:FUENTE_LSC };
+    sistema:c[0], estado:c[1], titulo:c[2], descripcion:c[3], fuente:c[4] || FUENTE_LSC };
 }
 
 // ══ RESPALDO / TRASPASO ENTRE DISPOSITIVOS ═══════════════════════
@@ -916,6 +932,45 @@ async function importarRespaldo(file){
     var vis = $$('.vista').find(function(v){ return !v.classList.contains('oculto'); });
     irA(vis && vis.id === 'v-refs' ? 'refs' : vis && vis.id === 'v-respaldo' ? 'respaldo' : 'historial');
   } catch(e){ toast('No se pudo importar: ' + (e.message || e)); }
+}
+
+// ══ GUÍA PASO A PASO ═════════════════════════════════════════════
+function irGuia(id){
+  irA('guia');
+  setTimeout(function(){ var el = document.getElementById('guia-' + id); if (el) window.scrollTo(0, el.getBoundingClientRect().top + window.scrollY - 110); }, 60);
+}
+async function renderGuia(){
+  var v = $('#v-guia');
+  if (typeof GUIA === 'undefined'){ v.innerHTML = '<div class="vacio">No se cargó la guía.</div>'; return; }
+  var paths = []; GUIA.forEach(function(sec){ sec.pasos.forEach(function(p){ paths.push('referencias/' + p[0] + '.jpg'); }); });
+  var u = await firmar(paths);
+  var faltan = paths.filter(function(p){ return !u[p]; }).length;
+  v.innerHTML =
+    '<h2 class="titulo">Guía de necropsia paso a paso</h2>' +
+    '<p class="sub">Orden de trabajo en ponedoras, con foto de cada paso. Toca una foto para verla en grande. Los pasos que muestran el aspecto normal o alterado también aparecen como referencia dentro de cada sistema del formulario.</p>' +
+    (faltan ? '<div class="aviso">📦 Faltan ' + faltan + ' fotos de la guía. Importa <b>paquete-referencias.zip</b> en la pestaña Referencias; mientras tanto se muestran solo los textos.</div>' : '') +
+    '<div class="guia-indice">' + GUIA.map(function(sec, i){ return '<a href="#guia" data-ir="' + sec.id + '">' + (i+1) + '. ' + sec.t + '</a>'; }).join('') + '</div>' +
+    '<div class="tarjeta guia-consejos"><h3>Antes de empezar: muestras de buena calidad</h3><ul class="dif-lista">' +
+      GUIA_CONSEJOS.map(function(c){ return '<li>' + c + '</li>'; }).join('') + '</ul></div>' +
+    GUIA.map(function(sec, i){
+      return '<section class="guia-sec" id="guia-' + sec.id + '"><h3><span>' + (i+1) + '</span>' + sec.t + '</h3><p class="guia-intro">' + sec.intro + '</p>' +
+        '<ol class="guia-pasos">' + sec.pasos.map(function(p, j){
+          var path = 'referencias/' + p[0] + '.jpg';
+          return '<li class="' + (p[2] && p[2] !== 'referencia' ? p[2] : '') + '">' +
+            (u[path] ? '<img src="' + esc(u[path]) + '" data-sec="' + sec.id + '" data-j="' + j + '" alt="" loading="lazy">' : '') +
+            '<p>' + esc(p[1]) + (p[2] === 'normal' ? ' <span class="pill ok">normal</span>' : p[2] === 'alterado' ? ' <span class="pill alt">alterado</span>' : '') + '</p></li>';
+        }).join('') + '</ol></section>';
+    }).join('') +
+    '<p style="font-size:11px;color:var(--text3);margin-top:16px">Fuente: ' + esc(FUENTE_GUIA) + '.</p>';
+  $$('[data-ir]', v).forEach(function(a){ a.addEventListener('click', function(e){ e.preventDefault(); irGuia(a.dataset.ir); }); });
+  $$('.guia-pasos img', v).forEach(function(img){ img.addEventListener('click', function(){
+    var sec = GUIA.find(function(x){ return x.id === img.dataset.sec; });
+    var lista = sec.pasos.filter(function(p){ return u['referencias/' + p[0] + '.jpg']; }).map(function(p){
+      return { path:'referencias/' + p[0] + '.jpg', titulo:sec.t, desc:p[1], estado:p[2] };
+    });
+    var path = 'referencias/' + sec.pasos[+img.dataset.j][0] + '.jpg';
+    abrirVisor(lista, lista.findIndex(function(x){ return x.path === path; }));
+  }); });
 }
 
 // ══ VISOR ════════════════════════════════════════════════════════
