@@ -7,22 +7,22 @@
 <meta name="description" content="Guía técnica de AviVet: principales enfermedades respiratorias en gallinas de postura. Anatomía, diagnóstico, prevención y vacunación. Por Dr. Andrés Lazo Escobar, médico veterinario aviar.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500;1,9..144,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
-  --g1: #0d2b1e; --g2: #1b4332; --g3: #2d6a4f; --g4: #52b788; --g5: #d8f3dc; --g6: #f0faf3;
-  --gold: #c9a84c; --gold2: #e8c96e; --gold-bg: #fef9ef;
+  --g1: #111510; --g2: #2a5430; --g3: #3d7a42; --g4: #5c9e61; --g5: #e4ede5; --g6: #e4ede5;
+  --gold: #b8860b; --gold2: #d4a52a; --gold-bg: #fef9ef;
   --ink: #111; --ink2: #3a3a3a; --ink3: #666; --rule: #d4e6da; --bg: #fafaf8;
-  --serif: 'Playfair Display', Georgia, serif;
+  --serif: 'Fraunces', Georgia, serif;
   --sans: 'DM Sans', sans-serif;
-  --mono: 'DM Mono', monospace;
+  --mono: 'DM Sans', sans-serif;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{font-family:var(--sans);font-size:16px;line-height:1.75;color:var(--ink2);background:var(--bg);overflow-x:hidden}
 
 /* NAV */
-.nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:64px;background:rgba(13,43,30,0.97);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.07)}
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:64px;background:rgba(17,21,16,0.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.07)}
 .nav-logo img{height:38px;width:auto}
 .nav-links{display:flex;gap:24px;list-style:none}
 .nav-links a{color:#a8d5b5;text-decoration:none;font-size:13px;font-weight:500;letter-spacing:.04em;transition:color .2s}
@@ -32,7 +32,7 @@ body{font-family:var(--sans);font-size:16px;line-height:1.75;color:var(--ink2);b
 
 /* HERO */
 .hero{min-height:100vh;display:grid;grid-template-rows:1fr auto;background:var(--g1);position:relative;overflow:hidden;padding-top:64px}
-.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 70% 40%,rgba(45,106,79,.35) 0%,transparent 70%),radial-gradient(ellipse 50% 40% at 10% 80%,rgba(201,168,76,.10) 0%,transparent 60%);pointer-events:none}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 70% 40%,rgba(61,122,66,.35) 0%,transparent 70%),radial-gradient(ellipse 50% 40% at 10% 80%,rgba(184,134,11,.10) 0%,transparent 60%);pointer-events:none}
 .hero-inner{display:flex;flex-direction:column;justify-content:center;padding:80px 64px 40px;max-width:900px;position:relative;z-index:2}
 .hero-tag{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;color:var(--gold);letter-spacing:.14em;text-transform:uppercase;margin-bottom:28px;opacity:0;animation:fadeUp .8s .2s ease forwards}
 .hero-tag::before{content:'';display:block;width:28px;height:1px;background:var(--gold)}
@@ -54,17 +54,17 @@ body{font-family:var(--sans);font-size:16px;line-height:1.75;color:var(--ink2);b
 
 /* INTRO BAND */
 .intro-band{background:var(--g2);padding:80px 64px;position:relative;overflow:hidden}
-.intro-band::before{content:'';position:absolute;top:-60px;right:-60px;width:320px;height:320px;border-radius:50%;background:rgba(82,183,136,.08)}
+.intro-band::before{content:'';position:absolute;top:-60px;right:-60px;width:320px;height:320px;border-radius:50%;background:rgba(92,158,97,.08)}
 .intro-band-inner{max-width:1140px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
 .intro-band h2{font-family:var(--serif);font-size:clamp(24px,3vw,38px);color:#fff;font-weight:400;line-height:1.25;margin-bottom:20px}
 .intro-band h2 em{color:var(--gold2)}
 .intro-band p{color:#8dc8a3;font-size:16px;line-height:1.75;margin-bottom:16px}
-.intro-alert{background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.3);border-radius:8px;padding:16px 20px;margin-top:24px}
+.intro-alert{background:rgba(184,134,11,.12);border:1px solid rgba(184,134,11,.3);border-radius:8px;padding:16px 20px;margin-top:24px}
 .intro-alert p{color:var(--gold2)!important;font-size:14px!important;margin:0;font-style:italic}
 .intro-checklist{list-style:none}
 .intro-checklist li{display:flex;align-items:flex-start;gap:14px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.07);color:#a8d5b5;font-size:15px;line-height:1.5}
 .intro-checklist li:last-child{border-bottom:none}
-.ic-mark{width:22px;height:22px;border-radius:50%;background:rgba(82,183,136,.2);border:1px solid rgba(82,183,136,.4);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;color:var(--g4);margin-top:1px}
+.ic-mark{width:22px;height:22px;border-radius:50%;background:rgba(92,158,97,.2);border:1px solid rgba(92,158,97,.4);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;color:var(--g4);margin-top:1px}
 .ic-body strong{color:#d4ead9}
 
 /* LAYOUT */
@@ -81,7 +81,7 @@ body{font-family:var(--sans);font-size:16px;line-height:1.75;color:var(--ink2);b
 .section.visible{opacity:1;transform:translateY(0)}
 .sec-head{display:flex;align-items:flex-start;gap:20px;margin-bottom:32px;padding-bottom:24px;border-bottom:1px solid var(--rule)}
 .sec-num{font-family:var(--mono);font-size:11px;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
-.sec-icon{width:52px;height:52px;border-radius:14px;background:var(--g2);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;box-shadow:0 4px 16px rgba(27,67,50,.25)}
+.sec-icon{width:52px;height:52px;border-radius:14px;background:var(--g2);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;box-shadow:0 4px 16px rgba(42,84,48,.25)}
 .sec-title h2{font-family:var(--serif);font-size:clamp(22px,2.5vw,30px);color:var(--g1);font-weight:700;line-height:1.2}
 .lead{font-family:var(--serif);font-size:18px;line-height:1.65;color:var(--g2);font-style:italic;border-left:3px solid var(--g4);padding:12px 20px;margin-bottom:28px;background:var(--g6);border-radius:0 8px 8px 0}
 p{margin-bottom:18px;line-height:1.8;color:var(--ink2)}
@@ -117,7 +117,7 @@ p:last-child{margin-bottom:0}
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:14px;margin:28px 0}
 .kpi{background:#fff;border:1px solid var(--rule);border-radius:10px;padding:20px 16px;text-align:center;transition:transform .2s,box-shadow .2s;position:relative;overflow:hidden}
 .kpi::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(to right,var(--g3),var(--g4))}
-.kpi:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(27,67,50,.12)}
+.kpi:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(42,84,48,.12)}
 .kpi-val{font-family:var(--serif);font-size:32px;font-weight:700;color:var(--g2);line-height:1;margin-bottom:8px}
 .kpi-desc{font-size:12px;color:var(--ink3);line-height:1.4}
 
@@ -129,7 +129,7 @@ p:last-child{margin-bottom:0}
 .disease-card.bacterial::before{background:linear-gradient(to right,#3b82f6,#93c5fd)}
 .disease-card.parasit::before{background:linear-gradient(to right,var(--g3),var(--g4))}
 .disease-card.env::before{background:linear-gradient(to right,var(--gold),var(--gold2))}
-.disease-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(27,67,50,.12)}
+.disease-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(42,84,48,.12)}
 .dc-type{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px;font-weight:600}
 .viral .dc-type{color:#c0392b}
 .bacterial .dc-type{color:#2563eb}
@@ -157,7 +157,7 @@ h3::after{content:'';flex:1;height:1px;background:var(--rule)}
 
 /* CTA */
 .cta-section{background:var(--g1);position:relative;overflow:hidden;padding:100px 64px;text-align:center}
-.cta-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 60% at 50% 0%,rgba(201,168,76,.12) 0%,transparent 60%),radial-gradient(ellipse 40% 40% at 80% 100%,rgba(45,106,79,.25) 0%,transparent 60%)}
+.cta-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 60% at 50% 0%,rgba(184,134,11,.12) 0%,transparent 60%),radial-gradient(ellipse 40% 40% at 80% 100%,rgba(61,122,66,.25) 0%,transparent 60%)}
 .cta-inner{position:relative;z-index:1;max-width:620px;margin:0 auto}
 .cta-eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:20px}
 .cta-inner h2{font-family:var(--serif);font-size:clamp(26px,4vw,44px);color:#fff;font-weight:400;line-height:1.2;margin-bottom:16px}
@@ -171,7 +171,7 @@ h3::after{content:'';flex:1;height:1px;background:var(--rule)}
 .cta-row{display:flex;justify-content:center;align-items:center;gap:24px;flex-wrap:wrap;padding-top:28px;border-top:1px solid rgba(255,255,255,.08)}
 .cta-row a{font-family:var(--mono);font-size:12px;color:#5a9e72;text-decoration:none;transition:color .2s}
 .cta-row a:hover{color:var(--gold2)}
-.cta-sep{color:#1b4332}
+.cta-sep{color:#2a5430}
 
 /* FOOTER */
 .footer{background:#080f0b;padding:28px 48px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
@@ -211,7 +211,7 @@ h3::after{content:'';flex:1;height:1px;background:var(--rule)}
 <nav class="nav">
   <a class="nav-logo" href="https://avivet.cl">
     <img src="../assets/img/Bioseguridad/avivet_invertido.png" alt="AviVet" onerror="this.style.display='none';this.nextSibling.style.display='block'">
-    <span style="display:none;color:#a8d5b5;font-weight:700;font-size:18px;font-family:'Playfair Display',serif;">AviVet</span>
+    <span style="display:none;color:#a8d5b5;font-weight:700;font-size:18px;font-family:'Fraunces',serif;">AviVet</span>
   </a>
   <ul class="nav-links">
     <li><a href="#anatomia">Anatomía</a></li>
