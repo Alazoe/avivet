@@ -41,8 +41,15 @@ Pestaña **💾 Respaldo**:
    corazón y linfoides, reproductor, urinario, locomotor): estado *sin
    alteraciones / alterado / no evaluado*, chips de lesiones por órgano, notas
    (con dictado por voz) y fotos por sistema (se reducen a 1600 px / JPEG).
-4. **Score de color hepático** (Royal GD, 7 colores): normal / grupo de riesgo
-   (→ pedir TG) / FLHS (→ tratar).
+4. **Hígado** (sección abierta por defecto):
+   - Score de color (Royal GD, 7 colores): normal / grupo de riesgo (→ pedir TG) / FLHS (→ tratar).
+   - Score de hemorragias 0 · 1 · 2 · ≥3 (Shini et al. 2019; Diaz, Squires y Julian 1999;
+     ≥3 = hematomas / ruptura de cápsula, muy indicativo de FLHS).
+   - Diferenciales del hígado amarillo (pollitos con saco vitelino, xantofilas,
+     grasas rancias/micotoxinas, Marek, hepatitis) y criterio de confirmación
+     (≥40 % grasa en MS / triglicéridos) — Merck Veterinary Manual.
+   - La misma información está como **ficha de terreno** al inicio de la pestaña
+     Referencias, sin necesidad de importar imágenes.
 5. **Conclusión**: diagnóstico presuntivo, diferenciales, muestras enviadas,
    laboratorio, recomendaciones.
 

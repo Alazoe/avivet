@@ -100,6 +100,28 @@ var SCORE_TXT = {
 };
 var SCORE_ETQ = { normal:'Normal', riesgo:'Riesgo', flhs:'FLHS' };
 
+// Score de hemorragias hepáticas (Shini et al. / Diaz et al. 1999, escala 0–5;
+// ≥3 es muy indicativo de FLHS). Se agrupa 3–5 porque en terreno se distinguen igual.
+var HEMO = [
+  { v:0, t:'0', d:'Sin hemorragias' },
+  { v:1, t:'1', d:'1–10 petequias o equimosis subcapsulares' },
+  { v:2, t:'2', d:'Más de 10 petequias o equimosis' },
+  { v:3, t:'≥3', d:'Hematomas grandes, hemorragia masiva o cápsula rota con coágulo en cavidad' }
+];
+var HEMO_TXT = ['Sin hemorragias hepáticas.', '1–10 hemorragias subcapsulares: lesión leve, vigilar el lote.',
+  'Más de 10 hemorragias subcapsulares: FLHS en desarrollo si además el hígado es graso.',
+  'Hematomas / ruptura de cápsula: cuadro típico de FLHS si el hígado es amarillo y friable con mucha grasa abdominal.'];
+
+// Ficha de terreno: diferenciales del hígado amarillo o hemorrágico
+var HIGADO_DIFERENCIALES = [
+  ['Pollitos de pocos días', 'El hígado amarillo es normal mientras absorben el saco vitelino; no aplicar el score.'],
+  ['Pigmentos de la dieta (xantofilas)', 'Hígado amarillento pero firme, bordes agudos y sin hemorragias.'],
+  ['Grasas rancias / micotoxinas', 'Pueden dar hemorragias y daño hepático sin gran acumulación de grasa.'],
+  ['Marek / leucosis', 'Hígado aumentado y moteado, con nódulos o focos blancos (ver bazo y nervios).'],
+  ['Hepatitis bacteriana / manchas', 'Focos necróticos blancos o perihepatitis fibrinosa, no color difuso.'],
+  ['Confirmar FLHS', 'Hígado ≥40 % de grasa en materia seca o triglicéridos altos; sumar peso corporal, grasa abdominal y cresta pálida.']
+];
+
 var MUESTRAS = ['Histopatología','Bacteriología','Antibiograma','PCR','Serología','Coproparasitario','Micotoxinas en alimento','Triglicéridos (TG)','Raspado / ectoparásitos'];
 var TIPOS_AVE = ['Ponedora comercial','Polla de recría','Reproductora','Pollo broiler','Traspatio / criolla','Otra'];
 
@@ -365,12 +387,12 @@ function btnFoto(sis){
 
 function htmlSistema(s){
   var d = actual.hallazgos[s.k];
-  var html = '<div class="sis" data-sis="' + s.k + '" data-estado="' + d.estado + '">' +
+  var html = '<div class="sis' + (s.score ? ' abierto' : '') + '" data-sis="' + s.k + '" data-estado="' + d.estado + '">' +
     '<div class="sis-cab"><span class="ico">' + s.ico + '</span><h3>' + s.t + '</h3><span class="sis-resumen"></span></div>' +
     '<div class="sis-cuerpo"><div class="seg">' +
       [['sin','Sin alteraciones'],['alt','Alterado'],['ne','No evaluado']].map(function(o){ return '<button type="button" data-v="' + o[0] + '"' + (d.estado===o[0]?' class="on"':'') + '>' + o[1] + '</button>'; }).join('') +
     '</div>';
-  if (s.score) html += htmlScore(d.score);
+  if (s.score) html += htmlScore(d.score) + htmlHemo(d.hemo) + '<details class="dif"><summary>¿Hígado amarillo = hígado graso? Diferenciales</summary>' + htmlDiferenciales() + '</details>';
   html += s.organos.map(function(o){
     return '<div class="organo"><div class="organo-t">' + o[0] + '</div><div class="chips">' +
       o[1].map(function(c){ var key = o[0] + ': ' + c; return '<button type="button" class="chip' + (d.chips.indexOf(key)>=0?' on':'') + '" data-chip="' + esc(key) + '">' + esc(c) + '</button>'; }).join('') +
@@ -389,10 +411,38 @@ function htmlScore(sel){
     '<div class="score-msg"' + (sel ? '' : ' style="display:none"') + '>' + (sel ? SCORE_TXT[SCORE_HIGADO[sel-1].g] : '') + '</div></div>';
 }
 
+function htmlHemo(sel){
+  return '<div class="organo"><div class="organo-t">Hemorragias hepáticas (score 0–5)</div><div class="hemo">' +
+    HEMO.map(function(h){ return '<button type="button" data-hemo="' + h.v + '"' + (sel===h.v?' class="on"':'') + '><b>' + h.t + '</b><span>' + h.d + '</span></button>'; }).join('') +
+    '</div><div class="score-msg hemo-msg"' + (sel == null ? ' style="display:none"' : '') + '>' + (sel == null ? '' : HEMO_TXT[sel]) + '</div></div>';
+}
+function htmlDiferenciales(){
+  return '<ul class="dif-lista">' + HIGADO_DIFERENCIALES.map(function(x){ return '<li><b>' + x[0] + ':</b> ' + x[1] + '</li>'; }).join('') + '</ul>';
+}
+// Ficha de terreno siempre disponible (pestaña Referencias), no depende de importar imágenes.
+function htmlFichaHigado(){
+  var grupos = [['normal','Normal','No se justifica tratamiento preventivo.'],['riesgo','Grupo de riesgo','Pedir triglicéridos (TG) antes de tratar.'],['flhs','FLHS','Tratar el lote y corregir la causa.']];
+  return '<details class="tarjeta ficha" open><summary><h3 style="display:inline">🟤 Ficha de terreno: hígado graso (FLHS)</h3></summary>' +
+    '<p style="font-size:14px;color:var(--text2);margin:6px 0 12px">Compara el hígado con luz natural, sobre fondo blanco y recién abierta el ave. Usar en gallinas en postura, no en pollitos. Sube el brillo de la pantalla al máximo: el color en pantalla es orientativo.</p>' +
+    '<div class="organo-t">1 · Color (Royal GD)</div>' +
+    grupos.map(function(g){
+      return '<div class="ficha-grupo"><div class="ficha-sw">' + SCORE_HIGADO.map(function(x, i){ return x.g === g[0] ? '<div class="sw grande" style="background:' + x.c + '"><span>' + (i+1) + '</span></div>' : ''; }).join('') + '</div>' +
+        '<div><b class="' + g[0] + '">' + g[1] + '</b><br><span>' + g[2] + '</span></div></div>';
+    }).join('') +
+    '<div class="organo-t" style="margin-top:14px">2 · Hemorragias (Shini / Diaz, 0–5)</div><ul class="dif-lista">' +
+      HEMO.map(function(h){ return '<li><b>' + h.t + ':</b> ' + h.d + '</li>'; }).join('') + '</ul>' +
+    '<div class="organo-t" style="margin-top:14px">3 · Forma y consistencia</div><ul class="dif-lista">' +
+      '<li><b>Normal:</b> bordes agudos, firme, rojo oscuro.</li><li><b>Graso:</b> aumentado, bordes redondeados e hinchados, friable (se rompe al tomarlo), amarillo a color masilla.</li>' +
+      '<li><b>Acompañan:</b> almohadilla de grasa abdominal gruesa, peso corporal alto, cresta pálida, muerte súbita de aves en buena condición.</li></ul>' +
+    '<div class="organo-t" style="margin-top:14px">4 · Diferenciales</div>' + htmlDiferenciales() +
+    '<p style="font-size:11px;color:var(--text3);margin-top:10px">Fuentes: Royal GD / Layer Signals Checkbook; Shini et al. 2019 (Avian Pathology); Diaz, Squires y Julian 1999 (Avian Diseases); Merck Veterinary Manual — FLHS.</p></details>';
+}
+
 function resumenSis(el){
   var d = actual.hallazgos[el.dataset.sis], nf = actual.fotos.filter(function(f){ return f.sistema === el.dataset.sis; }).length;
   var t = d.estado === 'alt' ? d.chips.length + ' hallazgo' + (d.chips.length===1?'':'s') : d.estado === 'sin' ? 'sin alteraciones' : '';
-  if (d.score) t += (t?' · ':'') + 'score ' + d.score;
+  if (d.score) t += (t?' · ':'') + 'color ' + d.score;
+  if (d.hemo != null) t += (t?' · ':'') + 'hemorragias ' + HEMO[d.hemo].t;
   if (nf) t += (t?' · ':'') + '📷' + nf;
   $('.sis-resumen', el).textContent = t;
 }
@@ -418,6 +468,14 @@ function conectarSistema(el){
     var m = $('.score-msg', el);
     if (d.score){ m.style.display = ''; m.textContent = SCORE_TXT[SCORE_HIGADO[d.score-1].g]; } else m.style.display = 'none';
     if (d.score && d.estado === 'ne'){ $('.seg button[data-v=' + (d.score <= 2 ? 'sin' : 'alt') + ']', el).click(); }
+    resumenSis(el); guardarBorrador();
+  }); });
+  $$('[data-hemo]', el).forEach(function(b){ b.addEventListener('click', function(){
+    var v = +b.dataset.hemo; d.hemo = d.hemo === v ? null : v;
+    $$('[data-hemo]', el).forEach(function(x){ x.classList.toggle('on', +x.dataset.hemo === d.hemo); });
+    var m = $('.hemo-msg', el);
+    if (d.hemo != null){ m.style.display = ''; m.textContent = HEMO_TXT[d.hemo]; } else m.style.display = 'none';
+    if (d.hemo > 0 && d.estado !== 'alt'){ $('.seg button[data-v=alt]', el).click(); }
     resumenSis(el); guardarBorrador();
   }); });
   $('[data-snotas]', el).addEventListener('input', function(e){ d.notas = e.target.value; guardarBorrador(); });
@@ -581,7 +639,8 @@ async function verNecropsia(id){
     var d = hz[s.k] || { estado:'ne', chips:[] };
     if (d.estado === 'ne' && !d.notas && !fotos.some(function(f){ return f.sistema === s.k; })) return '';
     var tx = d.estado === 'sin' ? 'Sin alteraciones macroscópicas.' : (d.chips||[]).join(' · ');
-    if (d.score){ var g = SCORE_HIGADO[d.score-1]; tx = '<span style="display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:-2px;background:' + g.c + '"></span> Score de color ' + d.score + '/7 (' + SCORE_ETQ[g.g] + ')' + (tx ? ' · ' + esc(tx) : ''); }
+    if (d.score){ var g = SCORE_HIGADO[d.score-1]; tx = '<span style="display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:-2px;background:' + g.c + '"></span> Score de color ' + d.score + '/7 (' + SCORE_ETQ[g.g] + ')' + (d.hemo != null ? ' · Hemorragias ' + HEMO[d.hemo].t + ' (' + HEMO[d.hemo].d.toLowerCase() + ')' : '') + (tx ? ' · ' + esc(tx) : ''); }
+    else if (d.hemo != null) tx = 'Hemorragias ' + HEMO[d.hemo].t + ' (' + HEMO[d.hemo].d.toLowerCase() + ')' + (tx ? ' · ' + esc(tx) : '');
     else tx = esc(tx);
     return '<div class="inf-sis ' + d.estado + '"><h4>' + s.ico + ' ' + s.t + '</h4><p>' + tx + '</p>' +
       (d.notas ? '<p style="white-space:pre-wrap">' + esc(d.notas) + '</p>' : '') + fotosDe(s.k) + '</div>';
@@ -624,7 +683,7 @@ function copiarResumen(n){
   var alt = sistemasAlterados(n);
   L.push('', '*Hallazgos*');
   if (!alt.length) L.push('Sin lesiones macroscópicas relevantes.');
-  alt.forEach(function(s){ var d = n.hallazgos[s.k]; L.push('• ' + s.t + ': ' + (d.chips||[]).join('; ') + (d.score ? ' (score hepático ' + d.score + '/7)' : '') + (d.notas ? '. ' + d.notas : '')); });
+  alt.forEach(function(s){ var d = n.hallazgos[s.k]; L.push('• ' + s.t + ': ' + (d.chips||[]).join('; ') + (d.score ? ' (color hepático ' + d.score + '/7, ' + SCORE_ETQ[SCORE_HIGADO[d.score-1].g] + ')' : '') + (d.hemo != null ? ' (hemorragias ' + HEMO[d.hemo].t + ')' : '') + (d.notas ? '. ' + d.notas : '')); });
   if (n.dx_presuntivo) L.push('', '*Diagnóstico presuntivo:* ' + n.dx_presuntivo);
   if ((n.muestras||[]).length) L.push('Muestras: ' + n.muestras.join(', '));
   if (n.recomendaciones) L.push('', '*Recomendaciones*', n.recomendaciones);
@@ -646,7 +705,7 @@ async function renderReferencias(){
   var v = $('#v-refs');
   var faltan = Object.keys(REF_CATALOGO).filter(function(k){ return !referencias.some(function(r){ return r.path === 'referencias/' + k + '.jpg'; }); });
   v.innerHTML =
-    '<h2 class="titulo">Imágenes de referencia</h2>' +
+    '<h2 class="titulo">Referencias para terreno</h2>' + htmlFichaHigado() +
     '<p class="sub">Atlas para comparar durante la necropsia. <span style="color:#4caf50;font-weight:600">Verde</span> = normal, <span style="color:#e53935;font-weight:600">rojo</span> = alterado. También aparecen dentro de cada sistema del formulario.</p>' +
     (faltan.length ? '<div class="aviso">📦 Faltan ' + faltan.length + ' de ' + Object.keys(REF_CATALOGO).length + ' imágenes del paquete inicial (Layer Signals Checkbook). ' +
       'Importa el archivo <b>paquete-referencias.zip</b> (o las fotos sueltas de la carpeta <b>referencias</b>) y se clasificarán solas.<br><label class="btn chico btn-foto" style="margin-top:8px">Importar paquete inicial<input type="file" accept=".zip,application/zip,image/*" multiple id="ref-importar"></label></div>' : '') +
