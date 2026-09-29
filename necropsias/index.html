@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Registro de Necropsias · AviVet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#1b4332">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Necropsias">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+:root{
+  --bg:#f5f4f0; --surface:#fff; --surface2:#f0ede8;
+  --border:#ddd9d0; --border2:#e8e4de;
+  --text:#1a1916; --text2:#5a5650; --text3:#9a948c;
+  --accent:#1b4332; --accent2:#2d6a4f; --accent-l:#d8f3dc;
+  --gold:#b5813a; --gold-l:#fdf3e0;
+  --red:#c0392b; --red-l:#fde8e6;
+  --ok:#1b7a4a; --ok-l:#e8f7ee;
+  --radius:12px;
+  --shadow:0 1px 3px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.04);
+  --serif:'Fraunces',Georgia,serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.5;min-height:100vh}
+button,input,select,textarea{font:inherit;color:inherit}
+.oculto{display:none!important}
+.cont{max-width:880px;margin:0 auto;padding:0 16px}
+
+/* ── Cabecera ── */
+.cab{background:var(--accent);color:#fff;position:sticky;top:0;z-index:60;border-bottom:3px solid var(--gold)}
+.cab .cont{display:flex;align-items:center;gap:12px;padding-top:10px;padding-bottom:10px}
+.marca{font-family:var(--serif);font-size:19px;font-weight:700;line-height:1.1}
+.marca small{display:block;font-family:'DM Sans';font-size:10px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:#e8c98a}
+.cab-user{margin-left:auto;font-size:12px;color:rgba(255,255,255,.75);text-align:right;line-height:1.3}
+.cab-user button{background:none;border:none;color:#e8c98a;cursor:pointer;font-size:12px;text-decoration:underline;padding:0}
+.tabs{display:flex;gap:4px;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:57px;z-index:55}
+.tabs .cont{display:flex;gap:2px;overflow-x:auto;width:100%}
+.tab{background:none;border:none;border-bottom:3px solid transparent;padding:12px 14px;font-weight:600;font-size:14px;color:var(--text2);cursor:pointer;white-space:nowrap}
+.tab.activa{color:var(--accent);border-bottom-color:var(--accent)}
+
+main{padding:20px 0 80px}
+h2.titulo{font-family:var(--serif);font-size:24px;color:var(--accent);margin-bottom:4px}
+.sub{color:var(--text2);font-size:14px;margin-bottom:16px}
+
+/* ── Controles ── */
+label.campo{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.03em}
+input[type=text],input[type=email],input[type=password],input[type=number],input[type=date],select,textarea{
+  width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:15px;text-transform:none;letter-spacing:0;font-weight:400;color:var(--text)}
+textarea{min-height:70px;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--accent2);outline-offset:-1px;border-color:transparent}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+.grid.dos{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid var(--border);background:var(--surface);border-radius:8px;padding:9px 14px;font-weight:600;font-size:14px;cursor:pointer;text-decoration:none;color:var(--text)}
+.btn:hover{border-color:var(--accent2)}
+.btn.prim{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.prim:hover{background:var(--accent2)}
+.btn.peligro{color:var(--red);border-color:#f0c4be}
+.btn.chico{padding:5px 10px;font-size:12px}
+.btn:disabled{opacity:.5;cursor:default}
+.btn.full{width:100%}
+
+.tarjeta{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;margin-bottom:14px}
+.tarjeta h3{font-family:var(--serif);font-size:18px;color:var(--accent);margin-bottom:12px}
+
+/* ── Historial ── */
+.hist-barra{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.hist-barra input{flex:1;min-width:200px}
+.hist-item{display:flex;gap:14px;align-items:stretch;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
+.hist-item:hover{border-color:var(--accent2)}
+.hist-thumb{width:76px;height:76px;flex:none;border-radius:8px;background:var(--surface2) center/cover no-repeat;display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:24px}
+.hist-body{flex:1;min-width:0}
+.hist-fecha{font-size:12px;color:var(--text3);font-weight:600}
+.hist-prod{font-weight:600;font-size:16px}
+.hist-dx{font-size:14px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pills{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.pill{font-size:11px;font-weight:600;border-radius:99px;padding:2px 9px;background:var(--surface2);color:var(--text2)}
+.pill.alt{background:var(--red-l);color:var(--red)}
+.pill.ok{background:var(--ok-l);color:var(--ok)}
+.vacio{text-align:center;color:var(--text2);padding:48px 16px;border:2px dashed var(--border);border-radius:var(--radius)}
+
+/* ── Sistemas en el formulario ── */
+.sis{background:var(--surface);border:1px solid var(--border);border-left:5px solid var(--border);border-radius:var(--radius);margin-bottom:12px;overflow:hidden}
+.sis[data-estado=sin]{border-left-color:var(--ok)}
+.sis[data-estado=alt]{border-left-color:var(--red)}
+.sis-cab{display:flex;align-items:center;gap:10px;padding:14px 16px;cursor:pointer;user-select:none}
+.sis-cab h3{font-family:var(--serif);font-size:17px;color:var(--text);flex:1;margin:0}
+.sis-cab .ico{font-size:20px}
+.sis-resumen{font-size:12px;color:var(--text3)}
+.sis-cuerpo{padding:0 16px 16px;display:none}
+.sis.abierto .sis-cuerpo{display:block}
+.sis-cab::after{content:'▾';color:var(--text3);transition:transform .2s}
+.sis.abierto .sis-cab::after{transform:rotate(180deg)}
+.seg{display:inline-flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:12px}
+.seg button{border:none;background:var(--surface);padding:8px 12px;font-size:13px;font-weight:600;color:var(--text2);cursor:pointer;border-right:1px solid var(--border)}
+.seg button:last-child{border-right:none}
+.seg button.on[data-v=sin]{background:var(--ok);color:#fff}
+.seg button.on[data-v=alt]{background:var(--red);color:#fff}
+.seg button.on[data-v=ne]{background:var(--text3);color:#fff}
+.organo{margin-bottom:10px}
+.organo-t{font-size:12px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.03em;margin-bottom:5px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--border);background:var(--surface);border-radius:99px;padding:5px 11px;font-size:13px;cursor:pointer;color:var(--text)}
+.chip.on{background:var(--red-l);border-color:var(--red);color:var(--red);font-weight:600}
+.chip.muestra.on{background:var(--accent-l);border-color:var(--accent2);color:var(--accent)}
+
+/* Score hepático */
+.score-higado{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin:6px 0 4px}
+.sw{aspect-ratio:1;border-radius:8px;border:3px solid transparent;cursor:pointer;position:relative}
+.sw.on{border-color:var(--text);box-shadow:0 0 0 2px #fff inset}
+.sw.on::after{content:'✓';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:18px;text-shadow:0 1px 2px rgba(0,0,0,.6)}
+.score-leyenda{display:grid;grid-template-columns:2fr 3fr 2fr;gap:6px;font-size:11px;font-weight:600;text-align:center}
+.score-leyenda span{border-top:3px solid;padding-top:3px}
+.score-leyenda .n{border-color:var(--ok);color:var(--ok)}
+.score-leyenda .r{border-color:var(--gold);color:var(--gold)}
+.score-leyenda .f{border-color:var(--red);color:var(--red)}
+.hemo{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.hemo button{border:1px solid var(--border);background:var(--surface);border-radius:8px;padding:6px 4px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center}
+.hemo button b{font-size:17px;font-family:var(--serif)}
+.hemo button span{font-size:10.5px;line-height:1.2;color:var(--text2)}
+.hemo button.on{background:var(--red-l);border-color:var(--red)}
+.hemo button.on[data-hemo="0"]{background:var(--ok-l);border-color:var(--ok)}
+details.dif{margin:4px 0 12px;font-size:13px}
+details.dif summary{cursor:pointer;font-weight:600;color:var(--accent2)}
+.dif-lista{padding-left:18px;font-size:13.5px;color:var(--text2);display:grid;gap:4px;margin-top:6px}
+.dif-lista b{color:var(--text)}
+details.ficha summary{cursor:pointer;list-style-position:outside}
+.ficha-grupo{display:flex;gap:12px;align-items:center;margin:8px 0;font-size:14px}
+.ficha-grupo span{color:var(--text2);font-size:13px}
+.ficha-grupo .normal{color:var(--ok)} .ficha-grupo .riesgo{color:var(--gold)} .ficha-grupo .flhs{color:var(--red)}
+.ficha-sw{display:flex;gap:6px;flex:none;width:186px}
+.sw.grande{width:56px;height:56px;aspect-ratio:auto;cursor:default;display:flex;align-items:flex-end;justify-content:flex-end;padding:3px 5px}
+.sw.grande span{color:#fff;font-size:11px;font-weight:700;text-shadow:0 1px 2px rgba(0,0,0,.6)}
+@media (max-width:520px){ .ficha-sw{width:auto} .sw.grande{width:44px;height:44px} .ficha-grupo{align-items:flex-start;flex-direction:column;gap:4px} }
+.guia-indice{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.guia-indice a{font-size:12.5px;background:var(--surface);border:1px solid var(--border);border-radius:99px;padding:4px 10px;color:var(--accent);text-decoration:none}
+.guia-sec{margin:22px 0}
+.guia-sec h3{font-family:var(--serif);font-size:20px;color:var(--accent);display:flex;align-items:center;gap:10px;margin-bottom:4px}
+.guia-sec h3 span{flex:none;width:30px;height:30px;border-radius:50%;background:var(--accent);color:#fff;font-size:14px;display:flex;align-items:center;justify-content:center;font-family:'DM Sans'}
+.guia-intro{font-size:14px;color:var(--text2);margin-bottom:10px}
+.guia-pasos{list-style:none;counter-reset:paso;display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.guia-pasos li{counter-increment:paso;background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;border-top:4px solid var(--border)}
+.guia-pasos li.normal{border-top-color:#4caf50} .guia-pasos li.alterado{border-top-color:#e53935}
+.guia-pasos img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;cursor:pointer;background:var(--surface2)}
+.guia-pasos p{padding:8px 10px;font-size:13.5px;line-height:1.4}
+.guia-pasos p::before{content:counter(paso) ". ";font-weight:700;color:var(--accent)}
+.link-guia{font-size:13px;color:var(--accent2);font-weight:600}
+.score-msg{font-size:13px;margin-top:8px;padding:8px 10px;border-radius:8px;background:var(--surface2);color:var(--text2)}
+
+/* Referencias dentro de cada sistema */
+.ref-tira-t{font-size:12px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.03em;margin:14px 0 6px;display:flex;align-items:center;gap:6px}
+.ref-tira{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px}
+.ref-mini{flex:none;width:96px;cursor:pointer}
+.ref-mini .im{width:96px;height:72px;border-radius:6px;background:var(--surface2) center/cover no-repeat;border:3px solid var(--border)}
+.ref-mini.normal .im{border-color:#4caf50}
+.ref-mini.alterado .im{border-color:#e53935}
+.ref-mini span{display:block;font-size:11px;line-height:1.25;color:var(--text2);margin-top:3px}
+
+/* Fotos */
+.fotos{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin-top:8px}
+.foto{position:relative;aspect-ratio:1;border-radius:8px;background:var(--surface2) center/cover no-repeat;cursor:pointer;border:1px solid var(--border)}
+.foto .x{position:absolute;top:4px;right:4px;width:24px;height:24px;border-radius:50%;border:none;background:rgba(0,0,0,.6);color:#fff;cursor:pointer;font-size:13px;line-height:1}
+.foto.subiendo{display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--text3)}
+.btn-foto{margin-top:8px}
+.btn-foto input{display:none}
+
+.fila-notas{position:relative}
+.mic{position:absolute;right:8px;bottom:8px;border:none;background:var(--surface2);border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:15px}
+.mic.rec{background:var(--red);color:#fff;animation:pulso 1s infinite}
+@keyframes pulso{50%{opacity:.6}}
+
+.barra-guardar{position:sticky;bottom:0;background:linear-gradient(transparent,var(--bg) 30%);padding:20px 0 14px;display:flex;gap:10px;z-index:40}
+.barra-guardar .btn{flex:1;padding:13px}
+.estado-guardado{font-size:12px;color:var(--text3);text-align:center;margin-top:-6px}
+
+/* ── Referencias (vista) ── */
+.ref-filtros{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.ref-grupo h3{font-family:var(--serif);font-size:18px;color:var(--accent);margin:18px 0 8px}
+.ref-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
+.ref-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer}
+.ref-card .im{aspect-ratio:4/3;background:var(--surface2) center/cover no-repeat;border-bottom:4px solid var(--border)}
+.ref-card.normal .im{border-bottom-color:#4caf50}
+.ref-card.alterado .im{border-bottom-color:#e53935}
+.ref-card .tx{padding:8px 10px;font-size:13px;font-weight:600;line-height:1.3}
+.ref-card .tx small{display:block;font-weight:400;color:var(--text3);font-size:11px}
+.aviso{background:var(--gold-l);border:1px solid #e8d5a8;border-radius:10px;padding:12px 14px;font-size:14px;color:#7a5520;margin-bottom:14px}
+
+/* ── Visor ── */
+#visor{position:fixed;inset:0;background:rgba(10,12,10,.92);z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px}
+#visor img{max-width:100%;max-height:72vh;border-radius:6px;object-fit:contain}
+#visor .cap{color:#fff;max-width:640px;text-align:center;margin-top:12px;font-size:14px}
+#visor .cap b{display:block;font-family:var(--serif);font-size:18px;margin-bottom:4px}
+#visor .cap small{color:#bbb}
+#visor .nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);color:#fff;border:none;width:44px;height:44px;border-radius:50%;font-size:22px;cursor:pointer}
+#visor .ant{left:12px} #visor .sig{right:12px}
+#visor .cerrar{position:absolute;top:12px;right:12px;background:rgba(255,255,255,.15);color:#fff;border:none;width:40px;height:40px;border-radius:50%;font-size:20px;cursor:pointer}
+#visor .acc{margin-top:10px}
+
+/* ── Informe (vista detalle / impresión) ── */
+.inf-cab{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;border-bottom:2px solid var(--accent);padding-bottom:10px;margin-bottom:14px}
+.inf-cab h2{font-family:var(--serif);color:var(--accent);font-size:24px;line-height:1.1}
+.inf-meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:6px 16px;font-size:14px;margin-bottom:14px}
+.inf-meta div span{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--text3);font-weight:600}
+.inf-sis{border-left:4px solid var(--border);padding:6px 0 6px 12px;margin-bottom:10px;break-inside:avoid}
+.inf-sis.alt{border-left-color:var(--red)}
+.inf-sis.sin{border-left-color:var(--ok)}
+.inf-sis h4{font-size:15px;margin-bottom:2px}
+.inf-sis p{font-size:14px;color:var(--text2)}
+.inf-fotos{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-top:6px}
+.inf-fotos figure{break-inside:avoid}
+.inf-fotos img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:6px;cursor:pointer}
+.inf-fotos figcaption{font-size:11px;color:var(--text3)}
+.inf-bloque{margin-top:14px;break-inside:avoid}
+.inf-bloque h4{font-family:var(--serif);color:var(--accent);font-size:16px;margin-bottom:4px}
+.inf-acciones{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--text);color:#fff;padding:10px 18px;border-radius:99px;font-size:14px;z-index:300;box-shadow:var(--shadow)}
+
+@media (max-width:520px){
+  .score-higado{gap:4px}
+  .hist-thumb{width:60px;height:60px}
+}
+@media print{
+  body{background:#fff}
+  .cab,.tabs,.inf-acciones,.toast,#visor{display:none!important}
+  main{padding:0}
+  .tarjeta{box-shadow:none;border:none;padding:0}
+  .inf-fotos{grid-template-columns:repeat(3,1fr)}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ APP ═══ -->
+<div id="app">
+  <header class="cab">
+    <div class="cont">
+      <div class="marca">Necropsias<small>AviVet · uso interno</small></div>
+      <div class="cab-user">🔒 Solo en este<br>dispositivo</div>
+    </div>
+  </header>
+  <nav class="tabs"><div class="cont">
+    <button class="tab" data-vista="historial">📋 Historial</button>
+    <button class="tab" data-vista="form">＋ Nueva</button>
+    <button class="tab" data-vista="guia">📖 Guía</button>
+    <button class="tab" data-vista="refs">🖼 Referencias</button>
+    <button class="tab" data-vista="respaldo">💾 Respaldo</button>
+  </div></nav>
+
+  <main><div class="cont">
+    <section id="v-historial" class="vista"></section>
+    <section id="v-form" class="vista"></section>
+    <section id="v-refs" class="vista"></section>
+    <section id="v-ver" class="vista"></section>
+    <section id="v-respaldo" class="vista"></section>
+    <section id="v-guia" class="vista"></section>
+  </div></main>
+</div>
+
+<div id="visor" class="oculto">
+  <button class="cerrar" aria-label="Cerrar">✕</button>
+  <button class="nav ant" aria-label="Anterior">‹</button>
+  <img alt="">
+  <div class="cap"></div>
+  <div class="acc"></div>
+  <button class="nav sig" aria-label="Siguiente">›</button>
+</div>
+
+<script src="guia.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
