@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Carteles de bioseguridad · AviVet</title>
+<meta name="description" content="Carteles de bioseguridad para planteles avícolas según el Manual SAG y la NCh 1411: personalizados con el nombre del plantel y descargables en PDF A4.">
+<style>
+  :root { --tinta:#1b5e20; --panel:#eef3ef; --gris:#5f6b73; }
+  body { margin:0; font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; background:var(--panel); color:#1a1a1a; }
+  header { padding:20px 24px 8px; }
+  h1 { margin:0 0 6px; font-size:22px; color:var(--tinta); }
+  .volver { margin:0 0 6px; font-size:13px; } .volver a { color:var(--tinta); text-decoration:none; font-weight:700; }
+  header p { margin:0 0 12px; color:var(--gris); font-size:14px; }
+  label { font-size:14px; }
+  input { font:inherit; padding:6px 8px; width:280px; max-width:100%; }
+  fieldset { margin:12px 0 0; border:1px solid #c9d3cc; border-radius:8px; padding:8px 12px; background:#fff; }
+  fieldset label { display:inline-block; margin:4px 14px 4px 0; font-size:13px; }
+  fieldset input { width:auto; }
+  .grilla { display:grid; grid-template-columns:repeat(auto-fill, minmax(230px, 1fr)); gap:18px; padding:16px 24px 40px; }
+  .ficha { background:#fff; border-radius:10px; padding:10px; box-shadow:0 1px 3px #0002; }
+  .ficha a { color:inherit; text-decoration:none; }
+  .ficha svg { width:100%; height:auto; display:block; }
+  .ficha h2 { font-size:14px; margin:8px 2px 2px; }
+  .ficha small { color:var(--gris); font-size:12px; }
+  .vacio { aspect-ratio:210/297; display:flex; align-items:center; justify-content:center; text-align:center;
+               border:2px dashed #c9d3cc; border-radius:6px; color:var(--gris); font-size:13px; padding:10px; }
+  .estado { font-size:11px; padding:1px 6px; border-radius:8px; background:#e0e0e0; margin-left:4px; }
+  .estado.borrador { background:#fff3cd; } .estado.listo { background:#d4edda; }
+  body.solo { background:#fff; }
+  body.solo #cartel svg { width:210mm; height:297mm; display:block; }
+  body.solo #cartel > svg + svg { break-before:page; }
+  .acciones { margin:14px 0 0; display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+  .acciones button { font:inherit; font-weight:700; padding:9px 16px; border:0; border-radius:8px;
+                     background:var(--tinta); color:#fff; cursor:pointer; }
+  .acciones small { color:var(--gris); }
+  .incluir { display:flex; align-items:center; gap:6px; font-size:13px; margin:6px 2px 0; }
+  .incluir input { width:auto; }
+  @page { size:A4; margin:0; }
+  @media print { header, .grilla { display:none; } body { background:#fff; } }
+</style>
+</head>
+<body>
+<div id="cartel"></div>
+<header id="cabecera">
+  <p class="volver"><a href="https://avivet.cl/apps.html">← Apps AviVet</a></p>
+  <h1>Carteles de bioseguridad</h1>
+  <p>Formas y colores NCh 1411 · contenidos del Manual SAG D-VYC-VIS-PP-004 v02. Escribe el nombre del plantel, elige los pasos del filtro y los carteles, y descarga la serie completa en PDF (en la ventana de impresión elige «Guardar como PDF»).</p>
+  <label>Nombre del plantel (opcional): <input id="plantel" placeholder="Ej.: Granja Los Aromos"></label>
+  <fieldset id="pasos"><legend>Pasos del filtro sanitario de este plantel</legend></fieldset>
+  <div class="acciones">
+    <button id="serie">Descargar serie en PDF</button>
+    <small id="cuenta"></small>
+  </div>
+</header>
+<main class="grilla" id="grilla"></main>
+<script src="siluetas.js"></script>
+<script src="carteles.js"></script>
+<script>
+  const q = new URLSearchParams(location.search);
+  const plantelIn = document.getElementById('plantel');
+  plantelIn.value = q.get('plantel') || '';
+  const pasosIni = q.get('pasos') ? q.get('pasos').split(',') : PASOS_POR_DEFECTO;
+  document.getElementById('pasos').insertAdjacentHTML('beforeend', PASOS_FILTRO.map(p =>
+    `<label><input type="checkbox" value="${p.id}" ${pasosIni.includes(p.id) ? 'checked' : ''}> ${p.nombre}</label>`).join(''));
+  const pasosElegidos = () => [...document.querySelectorAll('#pasos input:checked')].map(x => x.value);
+
+  const hechos = CARTELES.filter(c => c.estado !== 'pendiente');
+  const incluidos = new Set(hechos.map(c => c.id));
+
+  // Vista de impresión: ?id=uno  ó  ?serie=a,b,c (cada cartel en su hoja A4).
+  function vistaImpresion(ids, opciones) {
+    const lista = ids.map(i => CARTELES.find(c => c.id === i)).filter(Boolean);
+    document.body.classList.add('solo');
+    document.getElementById('cabecera').remove();
+    document.getElementById('grilla').remove();
+    document.getElementById('cartel').innerHTML = lista.map(c => plantilla(c, opciones)).join('');
+    const plantel = opciones.plantel ? ' — ' + opciones.plantel : '';
+    document.title = (lista.length === 1 ? lista[0].titulo.join(' ') : 'Carteles de bioseguridad') + plantel;
+  }
+
+  function dibujar() {
+    const plantel = plantelIn.value;
+    const pasos = q.get('id') || q.get('serie') ? pasosIni : pasosElegidos();
+    const opciones = { plantel, pasos };
+    if (q.get('id')) return vistaImpresion([q.get('id')], opciones);
+    if (q.get('serie')) {
+      vistaImpresion(q.get('serie').split(','), opciones);
+      if (!q.has('sinimprimir')) addEventListener('load', () => setTimeout(print, 300));
+      return;
+    }
+    document.getElementById('cuenta').textContent = `${incluidos.size} carteles, uno por hoja A4`;
+    document.getElementById('grilla').innerHTML = CARTELES.map((c, i) => {
+      const hecho = c.estado !== 'pendiente';
+      const vista = hecho
+        ? plantilla(c, opciones)
+        : `<div class="vacio">${c.titulo.join('<br>')}<br><br>(${c.tipo})</div>`;
+      const enlace = '?' + new URLSearchParams({ id: c.id, ...(plantel && { plantel }),
+        ...(c.pasosFiltro && { pasos: pasos.join(',') }) });
+      return `<article class="ficha">
+        ${hecho ? `<a href="${enlace}" target="_blank">${vista}</a>` : vista}
+        <h2>${i + 1}. ${c.titulo.join(' ')}<span class="estado ${c.estado}">${c.estado}</span></h2>
+        <small>${c.lugar} · ${c.norma}</small>
+        ${hecho ? `<label class="incluir"><input type="checkbox" data-incluir="${c.id}" ${incluidos.has(c.id) ? 'checked' : ''}> Incluir en la serie</label>` : ''}
+      </article>`;
+    }).join('');
+  }
+  plantelIn.addEventListener('input', dibujar);
+  document.getElementById('pasos').addEventListener('change', dibujar);
+  document.getElementById('grilla').addEventListener('change', e => {
+    const id = e.target.dataset.incluir;
+    if (!id) return;
+    e.target.checked ? incluidos.add(id) : incluidos.delete(id);
+    document.getElementById('cuenta').textContent = `${incluidos.size} carteles, uno por hoja A4`;
+  });
+  document.getElementById('serie').addEventListener('click', () => {
+    if (!incluidos.size) return alert('Marca al menos un cartel.');
+    const ids = hechos.map(c => c.id).filter(i => incluidos.has(i));
+    const plantel = plantelIn.value.trim();
+    open('?' + new URLSearchParams({ serie: ids.join(','), ...(plantel && { plantel }), pasos: pasosElegidos().join(',') }), '_blank');
+  });
+  dibujar();
+</script>
+</body>
+</html>

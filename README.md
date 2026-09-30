@@ -14,6 +14,7 @@
 | **Vacunación en Agua de Bebida** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/vacunacion-agua/) | Volumen y dosis, calidad del agua, espacio de bebedero, cronograma del día y control de calidad |
 | **Calculadoras de Dosis** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/calculadoras-dosis/) | Cálculo de dosis de antibióticos en agua de bebida |
 | **Auditoría SAG Bioseguridad** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/auditoria-sag/) | Pauta de verificación para Engorda y Ponedoras, Res. Ex. N°2114/2023 |
+| **Carteles de Bioseguridad** | [🔗 Abrir herramienta](https://avivet.cl/avivet/carteles-bioseguridad/) | 17 carteles SAG / NCh 1411 personalizados por plantel, serie completa en PDF A4 |
 | **Inventario de Huevos** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/inventario-huevos/) | Control de stock y ventas |
 | **Inventario Alimento — Portal** | [🔗 Plantas de alimento](https://avivet.cl/avivet/plantasdealimento) | Acceso directo a las 3 plantas |
 | **Inventario — La Campestre** | [Conteo](https://avivet.cl/avivet/inventario/?c=campestre) · [Admin](https://avivet.cl/avivet/inventario/admin.html?c=campestre) | Materias primas planta La Campestre |
@@ -66,6 +67,17 @@ Productores de Engorda y Ponedoras del sur de Chile que necesitan autoevaluar su
 | Ponedora B | < 20.000 aves en el RUP (sector) |
 
 No cubre Reproductoras/Abuelas ni Incubadoras — ver el detalle técnico en [`auditoria-sag/README.md`](auditoria-sag/README.md).
+
+---
+
+## 🪧 Carteles de Bioseguridad
+
+### ➡️ [https://avivet.cl/avivet/carteles-bioseguridad/](https://avivet.cl/avivet/carteles-bioseguridad/)
+
+Señalética exigida por el Manual SAG de bioseguridad en planteles de aves, con formas y colores
+NCh 1411. Se escribe el nombre del plantel, se eligen los pasos del filtro sanitario y los
+carteles que lleva, y se descarga la serie completa en PDF (una hoja A4 por cartel).
+Detalle en [`carteles-bioseguridad/README.md`](carteles-bioseguridad/README.md).
 
 ---
 
