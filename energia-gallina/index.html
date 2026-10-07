@@ -1,0 +1,672 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Balance energético de la ponedora por línea genética y formulador de dieta base (energía, proteína, lisina).">
+<title>Energía de la Gallina · avivet.cl</title>
+<style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#f5f4f0; --panel:#ffffff; --ink:#1a1f1b; --ink2:#465049; --ink3:#78827b;
+  --line:#dfe3dc; --green:#1b4332; --green2:#2d6a4f; --leaf:#52b788; --gold:#b8860b;
+  --warn:#b45309; --bad:#c0392b; --okc:#2f8a57; --okbg:#e6f2ea; --badbg:#f9e7e4; --warnbg:#fbf1e1;
+  --ground:#e8e3d4; --ground2:#d9d2bd; --ca:#2d6a4f; --cb:#a8740a;
+  --s-maint:#2d6a4f; --s-act:#74a98a; --s-egg:#c9a84c; --s-gp:#7c9dc9;
+  --i1:#d9a441; --i2:#8a9e5e; --i3:#c98a52; --i4:#d9c06a; --i5:#a98f6b; --i6:#bcb5a6;
+  --serif:"Fraunces",Georgia,serif; --sans:"DM Sans",system-ui,sans-serif; --mono:"DM Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  color-scheme:dark; --bg:#121714; --panel:#1a211d; --ink:#e8ece8; --ink2:#b9c3bc; --ink3:#879189;
+  --line:#2c3630; --green:#8fd3ad; --green2:#6cc393; --leaf:#52b788; --gold:#d9b75a;
+  --warn:#f0a44b; --bad:#f07565; --okc:#5ec48a; --okbg:#1d3326; --badbg:#3a201d; --warnbg:#3a2c17;
+  --ground:#232b25; --ground2:#2e3830; --ca:#6cc393; --cb:#e0b551;
+  --s-maint:#4f9e75; --s-act:#8cc4a3; --s-egg:#d9b75a; --s-gp:#8fb3e0;
+  --i1:#e0b657; --i2:#9db571; --i3:#d69c68; --i4:#e0cd82; --i5:#bba482; --i6:#7c8579;}}
+:root[data-theme="dark"]{
+  color-scheme:dark; --bg:#121714; --panel:#1a211d; --ink:#e8ece8; --ink2:#b9c3bc; --ink3:#879189;
+  --line:#2c3630; --green:#8fd3ad; --green2:#6cc393; --leaf:#52b788; --gold:#d9b75a;
+  --warn:#f0a44b; --bad:#f07565; --okc:#5ec48a; --okbg:#1d3326; --badbg:#3a201d; --warnbg:#3a2c17;
+  --ground:#232b25; --ground2:#2e3830; --ca:#6cc393; --cb:#e0b551;
+  --s-maint:#4f9e75; --s-act:#8cc4a3; --s-egg:#d9b75a; --s-gp:#8fb3e0;
+  --i1:#e0b657; --i2:#9db571; --i3:#d69c68; --i4:#e0cd82; --i5:#bba482; --i6:#7c8579;}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--sans);padding-inline:16px;padding-block:24px 48px}
+.wrap{max-width:1120px;margin:0 auto;display:grid;gap:20px}
+.wrap>*,.hens>*,.two>*,.shared>*,.ings>*,.sliders>*{min-width:0}
+header h1{font:600 clamp(26px,4vw,38px)/1.12 var(--serif);margin:0;color:var(--green);text-wrap:balance}
+header p{margin:8px 0 0;color:var(--ink2);max-width:72ch}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px}
+h2{font:600 18px/1.3 var(--serif);margin:0 0 12px}
+h2 small{font:500 12.5px var(--sans);color:var(--ink3)}
+h3{font:600 12px/1.3 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);margin:14px 0 8px}
+.shared{display:grid;grid-template-columns:repeat(4,1fr);gap:6px 24px}
+@media (max-width:900px){.shared{grid-template-columns:1fr 1fr}}
+@media (max-width:560px){.shared{grid-template-columns:1fr}}
+.field{display:grid;grid-template-columns:1fr auto;gap:2px 10px;margin:6px 0}
+.field label{font-size:13.5px;color:var(--ink2)}
+.field output{font:500 13.5px var(--mono);font-variant-numeric:tabular-nums}
+.field input[type=range]{grid-column:1/-1;width:100%;accent-color:var(--green2)}
+.hen .field input[type=range]{accent-color:var(--c)}
+.field.big label{font-weight:600;color:var(--ink)}
+.field.big output{font-size:17px;color:var(--green)}
+.hint{font-size:12px;color:var(--ink3);grid-column:1/-1;margin:0}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{font:500 13px var(--sans);border:1px solid var(--line);background:var(--bg);color:var(--ink);padding:6px 10px;border-radius:6px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--green);border-color:var(--green);color:var(--panel)}
+.seg button:disabled,input:disabled{opacity:.4;cursor:not-allowed}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--leaf);outline-offset:2px}
+select{font:500 14px var(--sans);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:7px;padding:7px 10px;width:100%}
+.scene{padding:0;overflow:hidden}
+.scene canvas{display:block;width:100%}
+.hens{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media (max-width:760px){.hens{grid-template-columns:1fr}}
+.hen{border-top:4px solid var(--c)}
+.hen h2{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.tag{display:inline-block;font:600 10.5px var(--sans);letter-spacing:.06em;text-transform:uppercase;padding:1px 6px;border-radius:4px;background:var(--warnbg);color:var(--warn);vertical-align:1px}
+.ref{margin:8px 0 2px;padding:8px 10px;border-radius:7px;background:var(--bg);border:1px dashed var(--line);font-size:12.5px;color:var(--ink2)}
+.ref b{font-family:var(--mono);font-weight:500;color:var(--ink)}
+.sliders{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}
+@media (max-width:460px){.sliders{grid-template-columns:1fr}}
+.nums{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:12px}
+.num{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px}
+.num .l{font-size:11px;color:var(--ink3);text-transform:uppercase;letter-spacing:.06em}
+.num .v{font:500 19px/1.2 var(--mono);font-variant-numeric:tabular-nums}
+.num .v small{font-size:11px;color:var(--ink3);margin-left:2px}
+.status{margin-top:10px;padding:10px 12px;border-radius:8px;font-size:14px;border:1px solid transparent}
+.status.ok{background:var(--okbg);border-color:var(--leaf)}
+.status.bad{background:var(--badbg);border-color:var(--bad)}
+.status.warn{background:var(--warnbg);border-color:var(--warn)}
+.stack{display:flex;height:14px;border-radius:4px;overflow:hidden;margin:10px 0 6px;border:1px solid var(--line)}
+.stack div{height:100%}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12.5px;color:var(--ink2)}
+.legend span{display:inline-flex;align-items:center;gap:5px}
+.legend i{width:10px;height:10px;border-radius:2px;display:inline-block}
+.legend b{font:500 12.5px var(--mono);color:var(--ink)}
+.chartbox,.tablebox{overflow-x:auto}
+svg text{font-family:var(--sans)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media (max-width:760px){.two{grid-template-columns:1fr}}
+.note{font-size:13.5px;color:var(--ink2);max-width:78ch}
+.note li{margin:5px 0}
+.eq{font:13px/1.6 var(--mono);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:10px 12px;overflow-x:auto;white-space:pre}
+.inv{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+.inv div{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px}
+.inv .v{font:500 22px var(--mono)}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{text-align:right;padding:6px 8px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums;white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+th{font:600 11.5px var(--sans);color:var(--ink3);text-transform:uppercase;letter-spacing:.05em}
+tr.mix td{font-weight:600;background:var(--bg)}
+td .ok{color:var(--okc)} td .no{color:var(--bad)}
+.ings{display:grid;grid-template-columns:1fr 1fr;gap:6px 22px}
+@media (max-width:760px){.ings{grid-template-columns:1fr}}
+.ing{display:grid;grid-template-columns:1fr auto;gap:2px 8px;margin:6px 0;align-items:baseline}
+.ing label{font-size:13.5px;color:var(--ink);display:flex;align-items:center;gap:6px}
+.ing label i{width:10px;height:10px;border-radius:2px;display:inline-block;flex:none}
+.ing output{font:500 13px var(--mono)}
+.ing input{grid-column:1/-1;width:100%;accent-color:var(--ic,var(--green2))}
+.sumline{display:flex;justify-content:space-between;align-items:baseline;margin-top:10px;font-size:13px;color:var(--ink2)}
+.sumline b{font:500 14px var(--mono);color:var(--ink)}
+.mixbar{display:flex;height:22px;border-radius:6px;overflow:hidden;margin:8px 0;border:1px solid var(--line)}
+.mixbar div{height:100%}
+.mixleg{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12px;color:var(--ink2);margin-bottom:4px}
+.mixleg span{display:inline-flex;align-items:center;gap:4px}
+.mixleg i{width:9px;height:9px;border-radius:2px;display:inline-block}
+.usebtn{margin-top:12px;font:600 13px var(--sans);border:1px solid var(--green);background:var(--green);color:var(--panel);padding:9px 14px;border-radius:7px;cursor:pointer}
+.usebtn.alt{background:transparent;color:var(--green)}
+.btnrow{display:flex;flex-wrap:wrap;gap:8px}
+</style>
+</head>
+<body>
+<nav style="max-width:1120px;margin:0 auto 12px;font:500 13px var(--sans)"><a href="../" style="color:var(--green2);text-decoration:none">← Herramientas AviVet</a></nav>
+<div class="wrap">
+<header>
+  <h1>Misma ración, distinta gallina</h1>
+  <p>Elija dos líneas genéticas y su semana de edad: peso, postura y peso del huevo salen del manual de cada línea. Las dos comen la misma ración; la barra muestra qué parte de su energía cubre. Abajo, arme la dieta con maíz, soya, canola, trigo y avena, y compárela con lo que pide cada línea.</p>
+</header>
+
+<section class="panel" aria-label="Ración y ambiente">
+  <div class="shared">
+    <div>
+      <div class="field big"><label for="ration">Ración diaria (ambas)</label><output id="rationo"></output><input id="ration" type="range" min="60" max="160" step="1"></div>
+      <div class="field"><label for="ema">Energía del pienso (EM)</label><output id="emao"></output><input id="ema" type="range" min="1900" max="3100" step="10"></div>
+    </div>
+    <div>
+      <div class="field"><label for="t">Temperatura media</label><output id="to"></output><input id="t" type="range" min="5" max="32" step="0.5"><p class="hint">Los manuales asumen galpón a 21–24 °C. Valdivia: ~8 °C en invierno.</p></div>
+    </div>
+    <div>
+      <h3>Sistema</h3>
+      <div class="seg" id="sys">
+        <button type="button" data-s="jaula" aria-pressed="true">Jaula</button>
+        <button type="button" data-s="piso">Piso / aviario</button>
+        <button type="button" data-s="range">Free-range</button>
+      </div>
+      <p class="hint" id="sysNote" style="margin-top:6px"></p>
+    </div>
+    <div>
+      <h3>Ecuación</h3>
+      <div class="seg" id="eqsel">
+        <button type="button" data-e="rostagno" aria-pressed="true">Rostagno 2024</button>
+        <button type="button" data-e="peguri">Peguri 1991</button>
+        <button type="button" data-e="brainer">Brainer 2016</button>
+      </div>
+      <p class="hint" id="eqNote" style="margin-top:6px"></p>
+    </div>
+  </div>
+</section>
+
+<section class="panel scene" aria-label="Las dos gallinas con su barra de energía">
+  <canvas id="scene" role="img" aria-label="Dos gallinas con la misma ración y una barra de energía cada una"></canvas>
+</section>
+
+<div class="hens" id="hens"></div>
+
+<section class="panel">
+  <h2>¿Cuántos gramos necesitaría cada una?</h2>
+  <p class="note" style="margin:0 0 8px">Gramos de alimento que cubren toda la energía de cada gallina, según la energía del pienso. La línea punteada es la ración que reciben las dos. Donde la curva queda sobre esa línea, la ración no le alcanza.</p>
+  <div class="chartbox"><svg id="chart" viewBox="0 0 720 300" width="100%" style="min-width:520px" role="img" aria-label="Alimento necesario según energía del pienso para las dos gallinas"></svg></div>
+</section>
+
+<section class="panel" id="dietpanel">
+  <h2>Formulador de dieta base <small>composición: Rostagno 2024, Cap. 1 (materia natural)</small></h2>
+  <p class="note" style="margin:0 0 10px">Cinco insumos grandes, en % de la ración. El resto (no modelado) es caliza, fosfato, sal y premezcla: aporta calcio, fósforo y vitaminas, pero casi nada de energía ni proteína. El tope de cada slider es el <b>máximo práctico de inclusión en ponedora</b> de la misma fuente.</p>
+  <div class="ings" id="ings"></div>
+  <div class="sumline"><span>Suma de los 5 insumos</span><b id="isum"></b></div>
+  <div class="mixleg" id="mixleg"></div>
+  <div class="mixbar" id="mixbar"></div>
+  <h3 style="margin-top:16px">La dieta frente a lo que pide cada gallina</h3>
+  <div class="tablebox">
+  <table>
+    <thead><tr><th></th><th>Consumo base</th><th>Energía (kcal/kg)</th><th>Proteína bruta</th><th>Lisina dig.</th></tr></thead>
+    <tbody id="targets"></tbody>
+  </table>
+  </div>
+  <p class="hint" style="margin-top:8px">La meta de cada gallina = su necesidad diaria ÷ el consumo del manual en esa semana (si la línea no tiene manual, se usa la ración). Proteína meta estimada desde la lisina: lisina digestible = 5,04% de la proteína bruta (Rostagno 2024). La meta de energía sube con el frío: a 24 °C coincide con los manuales; a menor temperatura la gallina come lo mismo pero necesita un pienso más denso, o come más.</p>
+  <div class="btnrow">
+    <button type="button" class="usebtn" id="useMix">Usar la energía de esta dieta arriba</button>
+    <button type="button" class="usebtn alt" id="useFeed">Poner la ración = consumo del manual de A</button>
+  </div>
+</section>
+
+<div class="two">
+<section class="panel">
+  <h2>Modelo frente a los manuales</h2>
+  <p class="note" style="margin:0 0 8px">Consumo que predice la ecuación elegida, con la temperatura y el sistema de arriba, en la semana 45, con pienso de 2.900 kcal/kg (blancas) o 2.850 (marrones). Contra el consumo del manual de cada línea.</p>
+  <div class="tablebox">
+  <table>
+    <thead><tr><th>Línea</th><th>Manual g/d</th><th>Modelo g/d</th><th>Diferencia</th></tr></thead>
+    <tbody id="valid"></tbody>
+  </table>
+  </div>
+  <p class="hint" style="margin-top:8px">Rostagno a 22–24 °C en jaula queda dentro de ±5% de los manuales. Nick Brown y Lohmann: el consumo del manual es estimado (*) en la fuente de la app de curvas.</p>
+</section>
+
+<section class="panel">
+  <h2>Pienso de energía desconocida</h2>
+  <p class="note" style="margin:0 0 6px">Mida cuánto comen a voluntad. Si el lote mantiene peso y postura, la energía efectiva del pienso es aproximadamente su necesidad dividida por lo que comen.</p>
+  <div class="field"><label for="obs">Consumo medido en el galpón</label><output id="obso"></output><input id="obs" type="range" min="70" max="160" step="1"></div>
+  <div class="inv">
+    <div><div class="note">Si el lote es como A</div><div class="v" id="invA"></div></div>
+    <div><div class="note">Si el lote es como B</div><div class="v" id="invB"></div></div>
+  </div>
+  <p class="hint" style="margin-top:8px">Válido solo sin desperdicio importante en comederos y con el lote estable.</p>
+</section>
+</div>
+
+<section class="panel">
+  <h2>Cómo calcula</h2>
+  <div class="eq">Rostagno 2024: EM (kcal/d) = EMm(T) × PV^0,75 × (1 + actividad) + 6,68 × GP + 2,4 × masa de huevo
+               EMm(T) = 113 + 6,73 × (24 − T) si T &lt; 24 °C;   113 + 0,88 × (T − 24) si T &gt; 24 °C
+               Lisina dig. (g/d) = [45,1 × PV^0,75 + (55 + 12 × GP) / 0,80 + 11,5 × masa de huevo] / 1000
+Peguri 1991:  EM (kcal/d) = PV^0,75 × (173,91 − 1,563 × T) × (1 + actividad) + 2,08 × masa de huevo
+Brainer 2016: EM (kcal/d) = 121,8 × PV^0,75 + 2,41 × masa de huevo
+Energía que recibe = ración (g) × EM del pienso (kcal/kg) ÷ 1000
+Dieta: EM, PB y lisina = Σ (% insumo × valor del insumo) ÷ 100</div>
+  <ul class="note">
+    <li><b>Líneas genéticas:</b> peso vivo (centro del rango), % postura, peso del huevo y consumo del manual por semana, tomados de la app Curvas Genéticas de AviVet: Hy-Line W-80 y Hy-Line Brown (Estándares de Chile, jaula), Hy-Line Brown sistemas alternativos, Nick Brown (H&amp;N), Lohmann Brown-Lite y Dekalb Brown. La ganancia de peso (GP) se calcula de la curva de peso. Todos los valores se pueden ajustar a mano.</li>
+    <li><b>Por qué la grande necesita más:</b> la mantención crece con el peso metabólico (PV^0,75). La lisina, en cambio, va 83% al huevo: una gallina grande y poco productiva pide mucha más energía pero casi la misma lisina.</li>
+    <li><b>Si falta energía:</b> la gallina cubre primero su mantención y lo que sobra va a postura (Brainer 2016). <b>Si sobra:</b> con ración fija el exceso se deposita como grasa; con alimento a voluntad la ponedora come menos.</li>
+    <li><b>Temperatura:</b> la pendiente de frío de Rostagno (6,73 kcal/kg^0,75 por °C) es ~4× la de Peguri (1,563). A 24 °C Rostagno calza con los manuales; bajo 20 °C sube rápido. No hay datos del sur de Chile para decidir cuál es correcta.</li>
+    <li><b>Actividad:</b> piso +10% (supuesto, sin cifra en la wiki) y free-range +20% (centro del 10–30% de Brainer 2016) sobre la mantención, en Rostagno y Peguri.</li>
+    <li><b>Dominant BLS 229 y criolla:</b> sin curva semanal. Dominant usa la semana 40 y el consumo promedio de su guía (105 g/d); la criolla son valores de ejemplo sin fuente.</li>
+    <li><b>Insumos:</b> EM "gallinas" y lisina digestible aves de Rostagno 2024 (Tabla 1.01). Calcio, fósforo, sodio y vitaminas no están modelados.</li>
+    <li><b>Tamaño del dibujo:</b> el área de cada gallina es proporcional a su peso vivo.</li>
+  </ul>
+</section>
+</div>
+
+<script>
+const CURVES={"Hy-Line W-80":{"fuente":"Hy-Line W-80 Guía de Rendimiento — Estándares de Chile (jaula), Abr 2026.","post":[[18,1.227,0.2,41.1,76],[19,1.268,6.7,43.6,79],[20,1.304,43.1,46.1,83],[21,1.337,73.8,47.8,86],[22,1.367,83.5,49.5,89],[23,1.393,89.3,50.9,92],[24,1.417,92.6,52.2,94],[25,1.441,94.2,53.5,96],[26,1.462,95.2,54.5,97],[27,1.48,96,55.5,98],[28,1.495,96.6,56.4,99],[29,1.509,96.8,57,100],[30,1.522,97,57.6,101],[31,1.531,97.2,58.1,102],[32,1.541,97.2,58.5,103],[33,1.547,97,58.9,104],[34,1.554,97,59.2,104],[35,1.558,96.8,59.5,105],[36,1.563,96.7,59.8,106],[37,1.566,96.5,60,106],[38,1.57,96.2,60.2,106],[39,1.572,96.1,60.3,107],[40,1.575,95.9,60.5,107],[41,1.576,95.8,60.7,107],[42,1.578,95.6,60.8,107],[43,1.579,95.4,60.9,107],[44,1.58,95.2,61,107],[45,1.581,95.1,61.2,107],[46,1.582,95.1,61.2,107],[47,1.583,94.9,61.3,107],[48,1.584,94.9,61.4,107],[49,1.585,94.7,61.5,107],[50,1.586,94.7,61.5,107],[51,1.587,94.6,61.6,107],[52,1.587,94.4,61.7,107],[53,1.589,94.3,61.8,107],[54,1.589,94.2,61.8,107],[55,1.591,94.1,61.8,107],[56,1.592,93.9,61.9,107],[57,1.592,93.8,62,107],[58,1.594,93.7,62,107],[59,1.595,93.5,62.1,107],[60,1.595,93.3,62.2,107],[61,1.597,93.2,62.2,107],[62,1.598,93.1,62.2,107],[63,1.599,92.9,62.3,107],[64,1.6,92.8,62.3,107],[65,1.601,92.6,62.4,107],[66,1.601,92.4,62.5,107],[67,1.603,92.2,62.5,107],[68,1.603,92.1,62.5,107],[69,1.604,91.9,62.5,107],[70,1.605,91.8,62.6,107],[71,1.607,91.7,62.7,107],[72,1.607,91.4,62.7,107],[73,1.608,91.2,62.7,107],[74,1.61,90.9,62.8,107],[75,1.611,90.6,62.8,107],[76,1.611,90.2,62.8,107],[77,1.613,90,62.8,107],[78,1.614,89.5,62.8,107],[79,1.615,89.1,62.8,107],[80,1.615,88.8,63,107],[81,1.617,88.3,63,107],[82,1.617,88,63,107],[83,1.618,87.7,63,107],[84,1.619,87.5,63,107],[85,1.62,87.2,63,107],[86,1.621,86.8,63.1,107],[87,1.623,86.5,63.1,107],[88,1.623,86.2,63.1,107],[89,1.624,86,63.1,107],[90,1.626,85.6,63.2,107],[91,1.626,85.3,63.2,107],[92,1.627,85,63.2,107],[93,1.628,84.6,63.2,107],[94,1.629,84.3,63.2,107],[95,1.631,83.9,63.2,107],[96,1.631,83.6,63.3,107],[97,1.632,83.2,63.3,107],[98,1.633,82.8,63.3,107],[99,1.634,82.4,63.3,107],[100,1.635,82.2,63.3,107]],"plum":"white","short":"W-80"},"Hy-Line Brown":{"fuente":"Hy-Line Brown Guía de Rendimiento — Estándares de Chile (jaula), Oct 2025.","post":[[18,1.477,4.4,44.3,85],[19,1.534,17.6,46.8,91],[20,1.595,44,49.2,97],[21,1.655,70.9,50.9,102],[22,1.713,86.5,52.3,107],[23,1.769,92.3,53.8,110],[24,1.82,94.3,55,113],[25,1.861,95.2,56.2,114],[26,1.893,95.5,57.2,115],[27,1.917,95.7,58,116],[28,1.933,95.7,58.9,116],[29,1.943,95.7,59.5,116],[30,1.951,95.7,60.2,116],[31,1.957,95.6,60.7,116],[32,1.963,95.6,61.1,116],[33,1.97,95.5,61.5,116],[34,1.977,95.2,61.8,116],[35,1.985,95.1,62,116],[36,1.992,94.9,62.2,116],[37,1.998,94.7,62.3,116],[38,2.005,94.5,62.5,116],[39,2.009,94.3,62.5,116],[40,2.013,94,62.5,116],[41,2.017,93.9,62.5,116],[42,2.02,93.7,62.6,116],[43,2.023,93.4,62.7,116],[44,2.026,93.2,62.8,116],[45,2.028,92.9,62.8,116],[46,2.03,92.7,62.8,116],[47,2.032,92.5,62.9,116],[48,2.034,92.4,63,116],[49,2.035,92.1,63,116],[50,2.038,92,63,116],[51,2.039,91.8,63.1,116],[52,2.04,91.5,63.2,116],[53,2.042,91.4,63.2,116],[54,2.044,91.3,63.3,116],[55,2.046,91.1,63.3,116],[56,2.047,91,63.4,116],[57,2.048,90.8,63.5,116],[58,2.05,90.7,63.5,116],[59,2.051,90.4,63.6,116],[60,2.053,90.2,63.6,116],[61,2.054,89.9,63.7,116],[62,2.056,89.8,63.7,116],[63,2.057,89.5,63.8,116],[64,2.058,89.3,63.8,116],[65,2.06,89.1,63.9,116],[66,2.062,88.8,63.9,116],[67,2.063,88.3,64,116],[68,2.064,88,64,116],[69,2.066,87.5,64.1,116],[70,2.067,87,64.2,116],[71,2.067,86.5,64.2,116],[72,2.069,85.9,64.2,116],[73,2.071,85.3,64.3,116],[74,2.071,84.8,64.4,116],[75,2.072,84.2,64.5,116],[76,2.074,83.6,64.5,116],[77,2.075,83,64.5,116],[78,2.077,82.5,64.6,116],[79,2.077,81.9,64.7,116],[80,2.079,81.3,64.7,116],[81,2.079,80.8,64.8,116],[82,2.08,80.3,64.8,116],[83,2.082,79.8,64.8,116],[84,2.083,79.3,65,116],[85,2.084,78.9,65,116],[86,2.085,78.4,65,116],[87,2.086,78,65,116],[88,2.087,77.5,65.2,116],[89,2.088,77.1,65.2,116],[90,2.089,76.8,65.2,116],[91,2.09,76.4,65.3,116],[92,2.091,76.1,65.3,116],[93,2.091,75.8,65.5,116],[94,2.092,75.5,65.5,116],[95,2.093,75.2,65.5,116],[96,2.094,74.8,65.6,116],[97,2.095,74.5,65.7,116],[98,2.095,74.2,65.7,116],[99,2.096,73.8,65.8,116],[100,2.098,73.5,65.8,116]],"plum":"brown","short":"HL Brown"},"Hy-Line Brown Alt.":{"fuente":"Hy-Line Brown Guía de Rendimiento — Sistemas Alternativos (estándares internacionales), May 2026.","post":[[18,1.452,6.5,41.5,89],[19,1.509,23.4,44,95],[20,1.567,51.3,46.5,101],[21,1.627,74.5,48.3,105],[22,1.684,85.8,49.9,110],[23,1.74,89.9,51.4,114],[24,1.788,91.8,52.8,116],[25,1.829,93.2,54,117],[26,1.862,93.8,55.1,119],[27,1.885,94.1,56.1,119],[28,1.9,94.3,57,120],[29,1.911,94.5,57.8,120],[30,1.917,94.7,58.4,120],[31,1.924,94.8,59,119],[32,1.93,95,59.4,119],[33,1.937,95,59.8,119],[34,1.944,95.1,60.1,119],[35,1.95,95.2,60.4,119],[36,1.957,95.2,60.6,119],[37,1.964,95,60.8,119],[38,1.968,95,61,119],[39,1.972,95,61,119],[40,1.976,94.8,61.1,119],[41,1.978,94.8,61.2,119],[42,1.983,94.6,61.2,119],[43,1.986,94.5,61.2,119],[44,1.988,94.3,61.3,119],[45,1.991,94.2,61.3,119],[46,1.993,94,61.5,119],[47,1.995,93.8,61.5,119],[48,1.997,93.7,61.5,119],[49,1.998,93.5,61.5,119],[50,1.999,93.3,61.6,119],[51,2.002,93.1,61.7,119],[52,2.003,92.9,61.7,119],[53,2.005,92.7,61.8,119],[54,2.006,92.5,61.8,119],[55,2.008,92.2,61.8,119],[56,2.01,92,61.8,119],[57,2.01,91.7,61.8,119],[58,2.012,91.5,61.8,119],[59,2.014,91.2,61.8,119],[60,2.015,90.9,61.8,119],[61,2.016,90.6,62,119],[62,2.018,90.3,62,119],[63,2.019,89.9,62,119],[64,2.021,89.5,62,119],[65,2.022,89.2,62,119],[66,2.023,88.8,62,119],[67,2.024,88.5,62,119],[68,2.026,88,62,119],[69,2.027,87.7,62,119],[70,2.029,87.2,62,119],[71,2.03,86.8,62,119],[72,2.03,86.5,62.1,119],[73,2.032,86,62.1,119],[74,2.033,85.5,62.1,119],[75,2.034,85.2,62.2,119],[76,2.035,84.8,62.2,119],[77,2.037,84.3,62.2,119],[78,2.038,83.8,62.2,119],[79,2.038,83.4,62.2,119],[80,2.04,83,62.2,119],[81,2.041,82.5,62.2,119],[82,2.042,82,62.2,119],[83,2.042,81.6,62.2,119],[84,2.043,81.1,62.3,119],[85,2.045,80.7,62.3,119],[86,2.046,80.2,62.3,119],[87,2.046,79.8,62.3,119],[88,2.048,79.2,62.3,119],[89,2.048,78.8,62.3,119],[90,2.05,78.3,62.4,119],[91,2.05,77.8,62.4,119],[92,2.051,77.3,62.4,119],[93,2.052,76.8,62.4,119],[94,2.053,76.4,62.4,119],[95,2.053,75.9,62.4,119],[96,2.054,75.4,62.5,119],[97,2.055,74.9,62.5,119],[98,2.055,74.5,62.5,119],[99,2.056,74,62.5,119],[100,2.057,73.5,62.5,119]],"plum":"brown","short":"HL Brown alt."},"Nick Brown":{"fuente":"H&N Brown Nick — Tabla 4 (peso crianza) y Tabla 28 (producción, viabilidad). pct y pesoHuevo: oficial. mortPostura: 100−Viabilidad%. (*) Alimento, agua y mortCrianza: estimados.","post":[[19,1.596,9.8,44.8,116],[20,1.675,44.7,47.4,116],[21,1.75,67.1,49.8,116],[22,1.81,80.4,52,116],[23,1.85,88.4,53.9,116],[24,1.882,91.9,55.6,116],[25,1.897,93.2,57,116],[26,1.908,93.8,58.2,116],[27,1.914,94.2,59,116],[28,1.918,94.6,59.7,116],[29,1.922,94.8,60.3,116],[30,1.925,95,60.8,116],[31,1.928,95.1,61.2,116],[32,1.931,95.2,61.7,116],[33,1.934,95.2,62,116],[34,1.937,95.2,62.3,116],[35,1.94,95.1,62.6,116],[36,1.943,95,62.8,116],[37,1.946,94.9,63,116],[38,1.949,94.8,63.1,116],[39,1.952,94.6,63.3,116],[40,1.955,94.4,63.4,116],[41,1.958,94.2,63.5,116],[42,1.961,94,63.6,116],[43,1.964,93.8,63.7,116],[44,1.967,93.6,63.8,116],[45,1.97,93.4,63.9,116],[46,1.973,93.1,64,116],[47,1.976,92.8,64.1,116],[48,1.979,92.5,64.2,116],[49,1.982,92.2,64.3,116],[50,1.985,91.8,64.4,116],[51,1.988,91.5,64.4,116],[52,1.991,91.2,64.5,116],[53,1.994,90.7,64.6,116],[54,1.997,90.4,64.7,116],[55,1.999,90,64.8,116],[56,2.001,89.6,64.9,116],[57,2.003,89.2,65,116],[58,2.005,88.8,65.1,116],[59,2.007,88.3,65.2,116],[60,2.009,87.8,65.2,116],[61,2.011,87.3,65.3,116],[62,2.013,86.8,65.4,116],[63,2.015,86.3,65.4,116],[64,2.017,85.8,65.5,116],[65,2.019,85.3,65.6,116],[66,2.021,84.8,65.7,116],[67,2.023,84.3,65.7,116],[68,2.025,83.8,65.8,116],[69,2.027,83.3,65.9,116],[70,2.029,82.8,66,116],[71,2.031,82.3,66,116],[72,2.033,81.8,66.1,116],[73,2.035,81.3,66.2,116],[74,2.037,80.8,66.2,116],[75,2.039,80.3,66.3,116],[76,2.041,79.8,66.3,116],[77,2.043,79.3,66.4,116],[78,2.045,78.8,66.5,116],[79,2.048,78.3,66.5,116],[80,2.05,77.8,66.5,116],[81,2.052,77.3,66.6,116],[82,2.054,76.8,66.6,116],[83,2.056,76.3,66.7,116],[84,2.058,75.7,66.7,116],[85,2.06,75.1,66.8,116],[86,2.062,74.5,66.8,116],[87,2.064,73.9,66.9,116],[88,2.066,73.3,66.9,116],[89,2.068,72.7,67,116],[90,2.07,72.1,67,116],[91,2.072,71.5,67,116],[92,2.074,70.9,67,116],[93,2.076,70.3,67.1,116],[94,2.078,69.7,67.1,116],[95,2.08,69.1,67.1,116],[96,2.082,68.5,67.2,116],[97,2.084,67.9,67.2,116],[98,2.086,67.3,67.2,116],[99,2.088,66.7,67.3,116],[100,2.09,66.1,67.3,116]],"plum":"nick","short":"Nick Brown","feedEst":true},"Lohmann Brown":{"fuente":"LB-Lite Guía Sistemas Alternativos 2021 — % postura y peso huevo (sem 19-90) oficiales. Peso corporal: Tabla 17 manual. (*) Alimento, agua, sem 91-100 y crianza: estimados.","post":[[19,1.544,9.3,42.5,91],[20,1.613,36.7,44.9,95],[21,1.679,54.7,47.5,99],[22,1.737,72.2,49.9,103],[23,1.781,82.6,52.1,106],[24,1.817,88.2,54,109],[25,1.843,91.4,55.7,112],[26,1.859,93.2,56.9,112],[27,1.867,94.3,58,112],[28,1.872,94.9,58.9,112],[29,1.875,95.2,59.7,112],[30,1.878,95.4,60.3,112],[31,1.881,95.6,60.7,112],[32,1.883,95.7,61.1,112],[33,1.886,95.8,61.4,112],[34,1.889,95.8,61.6,112],[35,1.891,95.7,61.8,112],[36,1.893,95.6,61.9,112],[37,1.895,95.4,62.1,112],[38,1.897,95.2,62.2,112],[39,1.9,95.1,62.3,112],[40,1.902,94.9,62.5,112],[41,1.905,94.7,62.6,112],[42,1.908,94.5,62.8,112],[43,1.91,94.3,62.9,112],[44,1.912,94.1,63,112],[45,1.915,93.8,63.1,112],[46,1.917,93.6,63.2,112],[47,1.92,93.3,63.3,112],[48,1.922,93,63.4,112],[49,1.925,92.7,63.5,112],[50,1.928,92.3,63.5,112],[51,1.93,92,63.6,112],[52,1.932,91.7,63.7,112],[53,1.934,91.3,63.7,112],[54,1.936,91,63.8,112],[55,1.939,90.6,63.9,112],[56,1.942,90.2,63.9,112],[57,1.945,89.9,64,112],[58,1.947,89.5,64,112],[59,1.949,89.1,64.1,112],[60,1.951,88.8,64.1,112],[61,1.954,88.4,64.1,112],[62,1.956,88,64.2,112],[63,1.959,87.6,64.2,112],[64,1.961,87.2,64.3,112],[65,1.964,86.8,64.3,112],[66,1.967,86.5,64.3,112],[67,1.969,86.1,64.4,112],[68,1.971,85.6,64.4,112],[69,1.974,85.2,64.4,112],[70,1.976,84.7,64.4,112],[71,1.978,84.3,64.5,112],[72,1.98,83.7,64.5,112],[73,1.983,83.2,64.5,112],[74,1.986,82.7,64.6,112],[75,1.988,82.2,64.6,112],[76,1.99,81.7,64.6,112],[77,1.993,81.1,64.6,112],[78,1.995,80.6,64.7,112],[79,1.997,80,64.7,112],[80,1.999,79.5,64.8,112],[81,2.001,78.9,64.8,112],[82,2.003,78.3,64.8,112],[83,2.004,77.8,64.9,112],[84,2.006,77.2,64.9,112],[85,2.007,76.6,64.9,112],[86,2.009,76,65,112],[87,2.01,75.3,65,112],[88,2.012,74.7,65.1,112],[89,2.013,74.1,65.1,112],[90,2.015,73.5,65.1,112],[91,2.016,72.9,65.1,112],[92,2.018,72.2,65.2,112],[93,2.019,71.6,65.2,112],[94,2.021,70.9,65.2,112],[95,2.022,70.3,65.3,112],[96,2.022,69.6,65.3,112],[97,2.023,69,65.3,112],[98,2.023,68.3,65.3,112],[99,2.024,67.7,65.4,112],[100,2.024,67.1,65.4,112]],"plum":"brown","short":"Lohmann","feedEst":true},"Dekalb Brown":{"fuente":"Dekalb Brown Product Guide (jaula) — Hendrix Genetics. pesoHuevo y tamHuevo: tabla oficial clasificación por peso. (*) Agua estimada.","post":[[18,1.46,4,41.1,89],[19,1.525,15.9,44.7,95],[20,1.595,41.8,47.8,100],[21,1.65,67.9,50.4,104],[22,1.695,86.4,52.6,107],[23,1.73,94.8,54.4,109],[24,1.755,96.3,56,111],[25,1.775,96.8,57.2,112],[26,1.79,96.9,58.3,113],[27,1.8,97,59.2,114],[28,1.809,97,59.7,115],[29,1.817,97,60.3,115],[30,1.824,96.9,60.7,115],[31,1.83,96.8,61,115],[32,1.835,96.7,61.2,115],[33,1.84,96.5,61.4,115],[34,1.845,96.4,61.6,115],[35,1.85,96.2,61.8,115],[36,1.854,96,61.9,115],[37,1.858,95.8,62.1,115],[38,1.862,95.5,62.1,115],[39,1.865,95.3,62.1,115],[40,1.868,95.1,62.3,115],[41,1.87,94.8,62.4,115],[42,1.872,94.6,62.4,115],[43,1.874,94.4,62.4,115],[44,1.876,94.1,62.4,115],[45,1.878,93.9,62.4,115],[46,1.88,93.7,62.5,115],[47,1.882,93.4,62.5,115],[48,1.884,93.2,62.5,115],[49,1.886,92.9,62.5,115],[50,1.888,92.6,62.6,115],[51,1.89,92.2,62.6,115],[52,1.892,92,62.7,115],[53,1.894,91.7,62.6,115],[54,1.896,91.4,62.7,115],[55,1.898,91.1,62.7,115],[56,1.9,90.8,62.7,115],[57,1.902,90.6,62.8,115],[58,1.904,90.3,62.8,115],[59,1.906,90,62.8,115],[60,1.908,89.7,62.8,115],[61,1.91,89.4,62.9,115],[62,1.912,89.1,62.9,115],[63,1.914,88.8,62.9,115],[64,1.916,88.6,63,115],[65,1.918,88.3,63,115],[66,1.92,88,63,115],[67,1.922,87.7,63,115],[68,1.924,87.4,63,115],[69,1.926,87.1,63.1,115],[70,1.928,86.7,63.1,115],[71,1.93,86.4,63.1,115],[72,1.932,86.1,63.2,115],[73,1.934,85.8,63.2,115],[74,1.936,85.5,63.2,115],[75,1.938,85.2,63.2,115],[76,1.94,84.9,63.3,115],[77,1.941,84.5,63.3,115],[78,1.942,84.2,63.3,115],[79,1.943,83.9,63.3,115],[80,1.944,83.6,63.4,115],[81,1.945,83.2,63.4,115],[82,1.946,82.9,63.4,115],[83,1.947,82.6,63.5,115],[84,1.948,82.2,63.5,115],[85,1.949,81.9,63.5,115],[86,1.95,81.6,63.5,115],[87,1.95,81.2,63.6,115],[88,1.95,80.9,63.6,115],[89,1.95,80.6,63.6,115],[90,1.95,80.2,63.6,115],[91,1.95,79.9,63.7,115],[92,1.95,79.5,63.7,115],[93,1.95,79.2,63.7,115],[94,1.95,78.9,63.8,115],[95,1.95,78.6,63.8,115],[96,1.95,78.2,63.8,115],[97,1.95,77.9,63.8,115],[98,1.95,77.6,63.9,115],[99,1.95,77.2,63.9,115],[100,1.95,76.9,63.9,115]],"plum":"dekalb","short":"Dekalb"}};
+(function(){
+const $=id=>document.getElementById(id);
+const fmt=(x,d=0)=>(isFinite(x)?x:0).toLocaleString('es-CL',{minimumFractionDigits:d,maximumFractionDigits:d});
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// ---------- lines ----------
+const LINES=Object.assign({},CURVES,{
+  'Dominant BLS 229':{plum:'white',short:'Dominant',fixed:{w:1.9,lay:86,egg:56.2,feed:105},fuente:'Guía Dominant CZ (s.f.): 1,90 kg adulta; postura y peso de huevo de la semana 40; consumo promedio del ciclo 105 g/d.'},
+  'Criolla / doble propósito':{plum:'black',short:'Criolla',fixed:{w:2.6,lay:50,egg:55,feed:null},flag:true,fuente:'Ejemplo editable, sin fuente. Ajústelo con registros del predio.'}
+});
+const ORDER=['Hy-Line W-80','Hy-Line Brown','Hy-Line Brown Alt.','Nick Brown','Lohmann Brown','Dekalb Brown','Dominant BLS 229','Criolla / doble propósito'];
+const LABEL={'Hy-Line W-80':'Hy-Line W-80 (blanca, jaula)','Hy-Line Brown':'Hy-Line Brown (convencional, jaula)','Hy-Line Brown Alt.':'Hy-Line Brown (sistemas alternativos)','Nick Brown':'Nick Brown (H&N)','Lohmann Brown':'Lohmann Brown-Lite','Dekalb Brown':'Dekalb Brown','Dominant BLS 229':'Dominant BLS 229 (huevo azul)','Criolla / doble propósito':'Criolla / doble propósito (ejemplo)'};
+
+const PAL={
+  white:{light:'#ffffff',mid:'#efebe2',dark:'#c4bcab',tail1:'#ddd6c8',tail2:'#fcfbf7',hackle:'#fbf9f3',head:'#fbf9f4',lobe:'#f4f2ec',leg:'#e2b53c',beak:'#e8c766',edge:'rgba(70,60,40,.30)',comb:1.35,flop:0.12},
+  brown:{light:'#d98e52',mid:'#a3562b',dark:'#5f2a12',tail1:'#3a2414',tail2:'#7c4b29',hackle:'#e8ad66',head:'#c47a40',lobe:'#c8302a',leg:'#dcb44c',beak:'#d9b65a',edge:'rgba(55,22,6,.38)',comb:1,flop:0},
+  nick:{light:'#cf8247',mid:'#99502a',dark:'#572612',tail1:'#2f1e12',tail2:'#e9e0cf',hackle:'#e2a462',head:'#bd733d',lobe:'#c8302a',leg:'#dcb44c',beak:'#d9b65a',edge:'rgba(55,22,6,.38)',comb:1,flop:0},
+  dekalb:{light:'#b9713c',mid:'#87431f',dark:'#4a1f0c',tail1:'#24160d',tail2:'#5b361e',hackle:'#d4924f',head:'#a8622f',lobe:'#c8302a',leg:'#d6ad45',beak:'#d2ad52',edge:'rgba(40,15,5,.42)',comb:1,flop:0},
+  black:{light:'#5c5d66',mid:'#2f3036',dark:'#141418',tail1:'#0d1411',tail2:'#2f5242',hackle:'#cf9f45',head:'#3a3a40',lobe:'#c8302a',leg:'#6f6d5c',beak:'#8d8672',edge:'rgba(0,0,0,.45)',comb:0.9,flop:0}
+};
+const SYS={jaula:{act:0,note:'Sin gasto extra: base de la ecuación.'},piso:{act:10,note:'+10% sobre mantención. Supuesto: la wiki no cuantifica piso/aviario.'},range:{act:20,note:'+20% sobre mantención (centro del 10–30% de Brainer 2016).'}};
+const EQN={
+  rostagno:'Tablas Brasileñas 2024. Usa temperatura, sistema y ganancia de peso. A 24 °C calza con los manuales.',
+  peguri:'Jaula, Leghorn, 6 temperaturas constantes. Usa temperatura y sistema; ignora ganancia de peso.',
+  brainer:'Free-range en Brasil. Actividad incluida; no usa temperatura, sistema ni ganancia de peso.'
+};
+let EQ='rostagno', SYSK='jaula';
+const HEN={A:{key:'Hy-Line W-80'},B:{key:'Hy-Line Brown'}};
+
+// Rostagno 2024, Cap. 1 (materia natural). em = EM gallinas kcal/kg; lys = lisina digestible aves %; max = inclusión máxima práctica ponedora %
+const ING=[
+  {k:'maiz',  name:'Maíz, grano',        em:3391, pb:7.81, lys:0.21, max:65, color:'--i1'},
+  {k:'soya',  name:'Soya, harina 45,6%', em:2332, pb:45.6, lys:2.60, max:30, color:'--i2'},
+  {k:'canola',name:'Canola, harina',     em:1856, pb:36.2, lys:1.63, max:12, color:'--i3'},
+  {k:'trigo', name:'Trigo, grano',       em:3084, pb:13.6, lys:0.29, max:30, color:'--i4'},
+  {k:'avena', name:'Avena, grano',       em:3030, pb:12.6, lys:0.45, max:10, color:'--i5'}
+];
+const DEFAULT_MIX={maiz:58,soya:23,canola:4,trigo:7,avena:3};
+
+// ---------- hen cards ----------
+function buildCard(h){
+  const c=h==='A'?'--ca':'--cb';
+  return '<section class="panel hen" style="--c:var('+c+')">'
+   +'<h2>Gallina '+h+'</h2>'
+   +'<label class="hint" for="line'+h+'" style="display:block;margin-bottom:4px">Línea genética</label>'
+   +'<select id="line'+h+'">'+ORDER.map(k=>'<option value="'+k+'">'+LABEL[k]+'</option>').join('')+'</select>'
+   +'<div class="field"><label for="sem'+h+'">Semana de edad</label><output id="sem'+h+'o"></output><input id="sem'+h+'" type="range" min="18" max="100" step="1"></div>'
+   +'<p class="hint" id="src'+h+'"></p>'
+   +'<div class="sliders">'
+   +'<div class="field"><label for="w'+h+'">Peso vivo</label><output id="w'+h+'o"></output><input id="w'+h+'" type="range" min="1.2" max="3.5" step="0.01"></div>'
+   +'<div class="field"><label for="lay'+h+'">Postura</label><output id="lay'+h+'o"></output><input id="lay'+h+'" type="range" min="0" max="99" step="0.1"></div>'
+   +'<div class="field"><label for="egg'+h+'">Peso del huevo</label><output id="egg'+h+'o"></output><input id="egg'+h+'" type="range" min="40" max="72" step="0.1"></div>'
+   +'<div class="field"><label for="gp'+h+'">Ganancia de peso</label><output id="gp'+h+'o"></output><input id="gp'+h+'" type="range" min="-2" max="6" step="0.1"></div>'
+   +'</div>'
+   +'<div class="ref" id="ref'+h+'"></div>'
+   +'<div class="nums">'
+   +'<div class="num"><div class="l">Necesita</div><div class="v" id="need'+h+'"></div></div>'
+   +'<div class="num"><div class="l">Recibe</div><div class="v" id="get'+h+'"></div></div>'
+   +'<div class="num"><div class="l">Balance</div><div class="v" id="bal'+h+'"></div></div>'
+   +'<div class="num"><div class="l">Lisina dig. necesaria</div><div class="v" id="lys'+h+'"></div></div>'
+   +'</div>'
+   +'<div class="stack" id="stack'+h+'"></div><div class="legend" id="leg'+h+'"></div><div class="status" id="st'+h+'"></div>'
+   +'</section>';
+}
+$('hens').innerHTML=buildCard('A')+buildCard('B');
+
+function curveAt(L,sem){
+  const p=L.post, i=p.findIndex(r=>r[0]===sem); if(i<0) return null;
+  const r=p[i], prev=p[Math.max(0,i-1)], next=p[Math.min(p.length-1,i+1)];
+  const gp=(next[1]-prev[1])/((next[0]-prev[0])*7)*1000;
+  return {w:r[1],lay:r[2],egg:r[3],feed:r[4],gp:gp};
+}
+function applyLine(h,keepSem){
+  const k=$('line'+h).value, L=LINES[k]; HEN[h].key=k;
+  const s=$('sem'+h);
+  if(L.post){
+    s.disabled=false; s.min=L.post[0][0]; s.max=L.post[L.post.length-1][0];
+    if(!keepSem||+s.value<+s.min) s.value=Math.max(+s.min,30);
+    applyWeek(h);
+  }else{
+    s.disabled=true;
+    const f=L.fixed; $('w'+h).value=f.w; $('lay'+h).value=f.lay; $('egg'+h).value=f.egg; $('gp'+h).value=0;
+    HEN[h].manual=f.feed?{w:f.w,lay:f.lay,egg:f.egg,feed:f.feed}:null;
+  }
+  $('src'+h).innerHTML=(L.flag?'<span class="tag">sin fuente</span> ':'')+(L.feedEst?'<span class="tag">consumo estimado</span> ':'')+L.fuente;
+}
+function applyWeek(h){
+  const L=LINES[HEN[h].key]; if(!L.post) return;
+  const c=curveAt(L,+$('sem'+h).value); if(!c) return;
+  $('w'+h).value=c.w; $('lay'+h).value=c.lay; $('egg'+h).value=c.egg; $('gp'+h).value=Math.round(c.gp*10)/10;
+  HEN[h].manual=c;
+}
+['A','B'].forEach(h=>{
+  $('line'+h).addEventListener('change',()=>{applyLine(h,true);update();});
+  $('sem'+h).addEventListener('input',()=>{applyWeek(h);update();});
+  ['w','lay','egg','gp'].forEach(f=>$(f+h).addEventListener('input',update));
+});
+
+function setSys(k){SYSK=k;$('sysNote').textContent=SYS[k].note;document.querySelectorAll('#sys button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.s===k));}
+function setEq(k){
+  EQ=k;$('eqNote').textContent=EQN[k];
+  document.querySelectorAll('#eqsel button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.e===k));
+  const noTemp=k==='brainer';
+  $('t').disabled=noTemp;document.querySelectorAll('#sys button').forEach(b=>b.disabled=noTemp);
+  ['A','B'].forEach(h=>$('gp'+h).disabled=(k!=='rostagno'));
+}
+$('sys').addEventListener('click',e=>{const b=e.target.closest('button');if(b&&!b.disabled){setSys(b.dataset.s);update();}});
+$('eqsel').addEventListener('click',e=>{const b=e.target.closest('button');if(b){setEq(b.dataset.e);update();}});
+['ration','ema','t','obs'].forEach(i=>$(i).addEventListener('input',update));
+
+// ---------- energy model ----------
+function model(w,lay,egg,eq,T,act,GP){
+  const W75=Math.pow(w,0.75), EM=lay/100*egg;
+  if(eq==='brainer'){const base=121.8*W75, e=2.41*EM;return {base,act:0,gp:0,egg:e,total:base+e,EM,kEgg:2.41};}
+  if(eq==='rostagno'){
+    const EMm=T<24?113+6.73*(24-T):113+0.88*(T-24);
+    const base=EMm*W75, a=base*act/100, g=6.68*GP, e=2.4*EM;
+    return {base,act:a,gp:g,egg:e,total:base+a+g+e,EM,kEgg:2.4};
+  }
+  const base=W75*(173.91-1.563*T), a=base*act/100, e=2.08*EM;
+  return {base,act:a,gp:0,egg:e,total:base+a+e,EM,kEgg:2.08};
+}
+function lysReq(w,GP,MO){ return (45.1*Math.pow(w,0.75)+(55+12*Math.max(0,GP))/0.80+11.5*MO)/1000; }
+const S={A:{ratio:1,shown:1},B:{ratio:1,shown:1}};
+let RES={};
+
+function update(){
+  const ration=+$('ration').value, ema=+$('ema').value, T=+$('t').value, obs=+$('obs').value, act=SYS[SYSK].act;
+  $('rationo').textContent=fmt(ration)+' g/d';
+  $('emao').textContent=fmt(ema)+' kcal/kg';
+  $('to').textContent=fmt(T,1)+' °C';
+  $('obso').textContent=fmt(obs)+' g/d';
+  const kIn=ration*ema/1000;
+  ['A','B'].forEach(h=>{
+    const w=+$('w'+h).value, lay=+$('lay'+h).value, egg=+$('egg'+h).value, GP=+$('gp'+h).value;
+    $('sem'+h+'o').textContent=$('sem'+h).disabled?'—':$('sem'+h).value;
+    $('w'+h+'o').textContent=fmt(w,2)+' kg';
+    $('lay'+h+'o').textContent=fmt(lay,1)+' %';
+    $('egg'+h+'o').textContent=fmt(egg,1)+' g';
+    $('gp'+h+'o').textContent=(GP>=0?'+':'')+fmt(GP,1)+' g/d';
+    const m=model(w,lay,egg,EQ,T,act,GP);
+    const ratio=kIn/m.total, bal=kIn-m.total, need=m.total/ema*1000;
+    m.ratio=ratio; m.need=need; m.w=w; m.lys=lysReq(w,GP,m.EM);
+    S[h].ratio=ratio; RES[h]=m;
+    $('need'+h).innerHTML=fmt(m.total)+'<small>kcal</small>';
+    $('get'+h).innerHTML=fmt(kIn)+'<small>kcal</small>';
+    $('bal'+h).innerHTML='<span style="color:var('+(bal<0?'--bad':'--okc')+')">'+(bal>=0?'+':'−')+fmt(Math.abs(bal))+'</span><small>kcal</small>';
+    $('lys'+h).innerHTML=fmt(m.lys,2)+'<small>g/d</small>';
+    const man=HEN[h].manual, L=LINES[HEN[h].key];
+    if(man&&man.feed){
+      const d=(need/man.feed-1)*100;
+      $('ref'+h).innerHTML='Manual: consumo guía <b>'+fmt(man.feed)+' g/d</b>'+(L.feedEst?' (estimado)':'')+'. Con este pienso el modelo pide <b>'+fmt(need)+' g/d</b> ('+(d>=0?'+':'')+fmt(d)+'%).';
+    }else{
+      $('ref'+h).innerHTML='Sin consumo de manual para comparar. Con este pienso el modelo pide <b>'+fmt(need)+' g/d</b>.';
+    }
+    const parts=[['Mantención',m.base,'--s-maint'],['Actividad',m.act,'--s-act'],['Crecimiento',Math.max(0,m.gp),'--s-gp'],['Huevo',m.egg,'--s-egg']].filter(p=>p[1]>0.5);
+    $('stack'+h).innerHTML=parts.map(p=>'<div style="width:'+(p[1]/m.total*100)+'%;background:var('+p[2]+')"></div>').join('');
+    $('leg'+h).innerHTML=parts.map(p=>'<span><i style="background:var('+p[2]+')"></i>'+p[0]+' <b>'+fmt(p[1])+'</b></span>').join('');
+    const st=$('st'+h), maint=m.base+m.act+Math.max(0,m.gp);
+    if(ratio<1){
+      if(kIn<maint){
+        st.className='status bad';
+        st.innerHTML='<b>No cubre ni la mantención.</b> Le faltan '+fmt(-bal)+' kcal/d. Pierde peso y deja de poner. Necesitaría '+fmt(need)+' g/d de este pienso.';
+      }else{
+        const EMs=(kIn-maint)/m.kEgg, l=egg>0?Math.min(lay,EMs/egg*100):0;
+        st.className=ratio<0.95?'status bad':'status warn';
+        st.innerHTML='<b>Le faltan '+fmt(-bal)+' kcal/d ('+fmt((1-ratio)*100)+'%).</b> Cubre su mantención y le alcanza para ~'+fmt(EMs,1)+' g de huevo al día (≈ '+fmt(l)+'% de postura en vez de '+fmt(lay)+'%). <span style="color:var(--ink3)">En la práctica la caída es gradual: primero usa reservas.</span>';
+      }
+    }else if(ratio<=1.1){
+      st.className='status ok';
+      st.innerHTML='<b>La ración le alcanza.</b> Sobran '+fmt(bal)+' kcal/d, un margen normal.';
+    }else{
+      st.className='status warn';
+      st.innerHTML='<b>Sobran '+fmt(bal)+' kcal/d ('+fmt((ratio-1)*100)+'%).</b> Si se come toda la ración, el exceso se acumula como grasa. Le bastarían '+fmt(need)+' g/d.';
+    }
+    $('inv'+h).textContent=fmt(m.total/obs*1000)+' kcal/kg';
+  });
+  drawChart(RES,ration,ema);
+  validation(T,act);
+  updateDiet(ration);
+  if(reduce) drawScene(0);
+}
+
+function validation(T,act){
+  const rows=['Hy-Line W-80','Hy-Line Brown','Hy-Line Brown Alt.','Nick Brown','Lohmann Brown','Dekalb Brown'].map(k=>{
+    const L=LINES[k], c=curveAt(L,45); if(!c) return '';
+    const ema=L.plum==='white'?2900:2850;
+    const m=model(c.w,c.lay,c.egg,EQ,T,act,c.gp), g=m.total/ema*1000, d=(g/c.feed-1)*100;
+    const col=Math.abs(d)<=5?'--okc':Math.abs(d)<=10?'--warn':'--bad';
+    return '<tr><td>'+L.short+(L.feedEst?' *':'')+'</td><td>'+fmt(c.feed)+'</td><td>'+fmt(g)+'</td><td style="color:var('+col+')">'+(d>=0?'+':'')+fmt(d)+'%</td></tr>';
+  }).join('');
+  const W=1.75,MO=43.8, m=model(W,100,MO,EQ,T,act,1.4), g=m.total/2725*1000, d=(g/105-1)*100;
+  const col=Math.abs(d)<=5?'--okc':Math.abs(d)<=10?'--warn':'--bad';
+  $('valid').innerHTML=rows+'<tr><td>Dominant (promedio ciclo)</td><td>105</td><td>'+fmt(g)+'</td><td style="color:var('+col+')">'+(d>=0?'+':'')+fmt(d)+'%</td></tr>';
+}
+
+// ---------- diet builder ----------
+function buildIngs(){
+  $('ings').innerHTML=ING.map(i=>
+    '<div class="ing"><label for="mix_'+i.k+'"><i style="background:var('+i.color+')"></i>'+i.name+'</label><output id="mix_'+i.k+'o"></output>'
+    +'<input id="mix_'+i.k+'" type="range" min="0" max="'+i.max+'" step="1" style="--ic:var('+i.color+')"></div>'
+  ).join('');
+  ING.forEach(i=>{ $('mix_'+i.k).value=DEFAULT_MIX[i.k]; $('mix_'+i.k).addEventListener('input',update); });
+}
+let MIX={EM:0,PB:0,Lys:0};
+function updateDiet(ration){
+  let sum=0, EM=0, PB=0, Lys=0;
+  const parts=ING.map(i=>{const v=+$('mix_'+i.k).value;$('mix_'+i.k+'o').textContent=v+'%';sum+=v;EM+=v*i.em;PB+=v*i.pb;Lys+=v*i.lys;return [i.name,v,i.color];});
+  EM/=100;PB/=100;Lys/=100; MIX={EM,PB,Lys};
+  const resto=Math.max(0,100-sum);
+  $('isum').textContent=fmt(sum)+'%'+(sum>100?' — reduzca algún insumo':'');
+  $('isum').style.color=sum>100?css('--bad'):'';
+  $('mixbar').innerHTML=parts.filter(p=>p[1]>0).map(p=>'<div style="width:'+(p[1]/Math.max(sum,100)*100)+'%;background:var('+p[2]+')" title="'+p[0]+' '+p[1]+'%"></div>').join('')
+    +(resto>0?'<div style="width:'+resto+'%;background:var(--i6)" title="Otros '+resto+'%"></div>':'');
+  $('mixleg').innerHTML=parts.filter(p=>p[1]>0).map(p=>'<span><i style="background:var('+p[2]+')"></i>'+p[0]+' '+p[1]+'%</span>').join('')
+    +(resto>0?'<span><i style="background:var(--i6)"></i>Otros '+fmt(resto)+'%</span>':'');
+  const chk=(val,target,tol)=>'<span class="'+(val>=target*(1-tol)?'ok':'no')+'">'+(val>=target*(1-tol)?'✓':'✗')+'</span>';
+  let html='<tr class="mix"><td>Dieta armada</td><td>—</td><td>'+fmt(EM)+'</td><td>'+fmt(PB,1)+'%</td><td>'+fmt(Lys,2)+'%</td></tr>';
+  ['A','B'].forEach(h=>{
+    const m=RES[h]; if(!m) return;
+    const man=HEN[h].manual, base=man&&man.feed?man.feed:ration, src=man&&man.feed?'manual':'ración';
+    const emT=m.total/base*1000, lysT=m.lys/base*100, pbT=lysT/0.0504;
+    html+='<tr><td>Meta gallina '+h+' <span class="hint">('+LINES[HEN[h].key].short+')</span></td><td>'+fmt(base)+' g/d <span class="hint">'+src+'</span></td>'
+      +'<td>'+fmt(emT)+' '+chk(EM,emT,0.02)+'</td><td>'+fmt(pbT,1)+'% '+chk(PB,pbT,0.03)+'</td><td>'+fmt(lysT,2)+'% '+chk(Lys,lysT,0.03)+'</td></tr>';
+  });
+  $('targets').innerHTML=html;
+}
+$('useMix').addEventListener('click',()=>{ $('ema').value=Math.round(MIX.EM/10)*10; update(); });
+$('useFeed').addEventListener('click',()=>{ const m=HEN.A.manual; if(m&&m.feed){ $('ration').value=Math.round(m.feed); update(); } });
+
+// ---------- chart ----------
+function drawChart(res,ration,ema){
+  const svg=$('chart'),W=720,H=300,L=56,R=24,T=18,B=46,x0=1900,x1=3100,y0=60,y1=220;
+  const X=e=>L+(e-x0)/(x1-x0)*(W-L-R), Y=g=>T+(1-(Math.min(Math.max(g,y0),y1)-y0)/(y1-y0))*(H-T-B);
+  const ink3=css('--ink3'),line=css('--line'),ink=css('--ink'),panel=css('--panel');
+  let s='';
+  for(let g=y0;g<=y1;g+=20) s+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(g)+'" y2="'+Y(g)+'" stroke="'+line+'"/><text x="'+(L-8)+'" y="'+(Y(g)+4)+'" text-anchor="end" font-size="11" fill="'+ink3+'">'+g+'</text>';
+  for(let e=1900;e<=3100;e+=200) s+='<text x="'+X(e)+'" y="'+(H-B+18)+'" text-anchor="middle" font-size="11" fill="'+ink3+'">'+fmt(e)+'</text>';
+  s+='<text x="'+((L+W-R)/2)+'" y="'+(H-6)+'" text-anchor="middle" font-size="12" fill="'+ink3+'">Energía del pienso (kcal EM/kg)</text>';
+  s+='<text transform="translate(14,'+((T+H-B)/2)+') rotate(-90)" text-anchor="middle" font-size="12" fill="'+ink3+'">g alimento/gallina/día</text>';
+  s+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(ration)+'" y2="'+Y(ration)+'" stroke="'+ink+'" stroke-width="1.5" stroke-dasharray="6 4"/>';
+  s+='<text x="'+X(2200)+'" y="'+(Y(ration)+16)+'" text-anchor="start" font-size="11.5" fill="'+ink+'">ración '+fmt(ration)+' g/d</text>';
+  [['A','--ca'],['B','--cb']].forEach(([h,c])=>{
+    const col=css(c),tot=res[h].total;let d='';
+    for(let e=x0;e<=x1;e+=10) d+=(e===x0?'M':'L')+X(e).toFixed(1)+','+Y(tot/e*1000).toFixed(1);
+    s+='<path d="'+d+'" fill="none" stroke="'+col+'" stroke-width="2.5"/>';
+    s+='<circle cx="'+X(ema)+'" cy="'+Y(tot/ema*1000)+'" r="5.5" fill="'+col+'" stroke="'+panel+'" stroke-width="2"/>';
+    s+='<text x="'+(X(1960)+4)+'" y="'+(Math.max(T+12,Y(tot/1960*1000)-8))+'" font-size="12" font-weight="600" fill="'+col+'">'+h+' · '+LINES[HEN[h].key].short+'</text>';
+  });
+  s+='<line x1="'+X(ema)+'" x2="'+X(ema)+'" y1="'+T+'" y2="'+(H-B)+'" stroke="'+ink3+'" stroke-dasharray="2 3"/>';
+  svg.innerHTML=s;
+}
+
+// ---------- scene ----------
+const cv=$('scene'),ctx=cv.getContext('2d');let CW=0,CH=0,DPR=1;
+function resize(){CW=cv.parentElement.clientWidth;CH=Math.round(Math.max(300,Math.min(450,CW*0.46)));DPR=window.devicePixelRatio||1;cv.width=CW*DPR;cv.height=CH*DPR;cv.style.height=CH+'px';if(reduce)drawScene(0);}
+function ell(x,y,rx,ry,rot){ctx.beginPath();ctx.ellipse(x,y,rx,ry,rot||0,0,Math.PI*2);}
+
+function bodyPath(){
+  ctx.beginPath();
+  ctx.moveTo(-0.22,-0.70);
+  ctx.bezierCurveTo(-0.41,-0.66,-0.44,-0.46,-0.33,-0.37);
+  ctx.bezierCurveTo(-0.24,-0.28,-0.10,-0.24,0.06,-0.25);
+  ctx.bezierCurveTo(0.22,-0.26,0.36,-0.32,0.41,-0.46);
+  ctx.bezierCurveTo(0.44,-0.58,0.37,-0.67,0.24,-0.68);
+  ctx.bezierCurveTo(0.08,-0.71,-0.08,-0.73,-0.22,-0.70);
+  ctx.closePath();
+}
+function drawHen(pal,peck,breath){
+  // shadow
+  ctx.fillStyle='rgba(0,0,0,.15)';ell(0.03,0,0.40,0.045);ctx.fill();
+  // legs and feet
+  ctx.lineCap='round';ctx.lineJoin='round';
+  [[-0.05,-0.075],[0.09,0.075]].forEach(([top,foot])=>{
+    ctx.strokeStyle=pal.leg;ctx.lineWidth=0.034;
+    ctx.beginPath();ctx.moveTo(top,-0.24);ctx.lineTo(foot,-0.016);ctx.stroke();
+    ctx.lineWidth=0.017;ctx.beginPath();
+    ctx.moveTo(foot,-0.012);ctx.lineTo(foot-0.10,0);
+    ctx.moveTo(foot,-0.012);ctx.lineTo(foot-0.07,0.012);
+    ctx.moveTo(foot,-0.012);ctx.lineTo(foot+0.045,0.003);
+    ctx.stroke();
+    ctx.strokeStyle='rgba(0,0,0,.18)';ctx.lineWidth=0.004;
+    for(let j=1;j<4;j++){const y=-0.24+j*0.05, x=top+(foot-top)*(j*0.05/0.224);ctx.beginPath();ctx.moveTo(x-0.012,y);ctx.lineTo(x+0.012,y);ctx.stroke();}
+  });
+  ctx.save();ctx.translate(0,0.065);
+  ctx.save();ctx.translate(0,-0.3);ctx.scale(1,breath);ctx.translate(0,0.3);
+  // tail feathers, behind the body
+  [[-1.32,0.29],[-1.15,0.33],[-0.98,0.345],[-0.81,0.32],[-0.65,0.27]].forEach(([a,L])=>{
+    ctx.save();ctx.translate(0.30,-0.56);ctx.rotate(a);
+    const g=ctx.createLinearGradient(0,0,L,0);g.addColorStop(0,pal.tail1);g.addColorStop(1,pal.tail2);
+    ctx.fillStyle=g;ctx.beginPath();ctx.moveTo(0,-0.045);ctx.quadraticCurveTo(L*0.55,-0.072,L,-0.006);ctx.quadraticCurveTo(L*0.6,0.052,0,0.045);ctx.closePath();ctx.fill();
+    ctx.strokeStyle=pal.edge;ctx.lineWidth=0.005;ctx.stroke();
+    ctx.beginPath();ctx.moveTo(0.03,0);ctx.quadraticCurveTo(L*0.5,-0.012,L*0.94,-0.005);ctx.stroke();
+    ctx.restore();
+  });
+  // body
+  const bg=ctx.createRadialGradient(-0.16,-0.60,0.02,0.04,-0.50,0.55);
+  bg.addColorStop(0,pal.light);bg.addColorStop(0.5,pal.mid);bg.addColorStop(1,pal.dark);
+  bodyPath();ctx.fillStyle=bg;ctx.fill();
+  ctx.save();bodyPath();ctx.clip();
+  const sh=ctx.createLinearGradient(0,-0.72,0,-0.24);sh.addColorStop(0,'rgba(255,255,255,0.10)');sh.addColorStop(0.55,'rgba(0,0,0,0)');sh.addColorStop(1,'rgba(0,0,0,0.22)');
+  ctx.fillStyle=sh;ctx.fillRect(-0.5,-0.8,1,0.6);
+  ctx.strokeStyle=pal.edge;ctx.lineWidth=0.005;ctx.globalAlpha=0.55;
+  [[-0.35,-0.56],[-0.30,-0.60],[-0.37,-0.48],[-0.31,-0.52],[-0.25,-0.56],[-0.33,-0.43],[-0.27,-0.47],[-0.21,-0.51],[-0.27,-0.39],[-0.21,-0.43]].forEach(([x,y])=>{ctx.beginPath();ctx.arc(x,y,0.026,0.35,Math.PI-0.35);ctx.stroke();});
+  ctx.globalAlpha=1;ctx.restore();
+  bodyPath();ctx.strokeStyle=pal.edge;ctx.lineWidth=0.007;ctx.stroke();
+  // wing
+  ctx.beginPath();
+  ctx.moveTo(-0.12,-0.60);
+  ctx.bezierCurveTo(0.02,-0.67,0.20,-0.63,0.31,-0.52);
+  ctx.lineTo(0.35,-0.45);
+  ctx.bezierCurveTo(0.20,-0.38,0.02,-0.41,-0.08,-0.47);
+  ctx.bezierCurveTo(-0.15,-0.51,-0.16,-0.57,-0.12,-0.60);
+  ctx.closePath();
+  const wg=ctx.createLinearGradient(0,-0.66,0,-0.40);wg.addColorStop(0,pal.mid);wg.addColorStop(1,pal.dark);
+  ctx.fillStyle=wg;ctx.fill();ctx.strokeStyle=pal.edge;ctx.lineWidth=0.006;ctx.stroke();
+  ctx.beginPath();ctx.moveTo(-0.08,-0.55);ctx.bezierCurveTo(0.04,-0.58,0.16,-0.56,0.25,-0.50);ctx.stroke();
+  for(let j=0;j<4;j++){ctx.beginPath();ctx.moveTo(0.10+j*0.05,-0.53+j*0.01);ctx.quadraticCurveTo(0.16+j*0.05,-0.47,0.22+j*0.035,-0.43);ctx.stroke();}
+  ctx.restore();
+  // neck and head (rotate when pecking)
+  ctx.save();ctx.translate(-0.16,-0.64);ctx.rotate(peck);ctx.translate(0.16,0.64);
+  ctx.beginPath();
+  ctx.moveTo(-0.09,-0.64);
+  ctx.bezierCurveTo(-0.08,-0.77,-0.13,-0.88,-0.21,-0.93);
+  ctx.bezierCurveTo(-0.28,-0.97,-0.36,-0.95,-0.385,-0.90);
+  ctx.bezierCurveTo(-0.40,-0.82,-0.38,-0.72,-0.355,-0.62);
+  const tips=7;for(let i=1;i<=tips;i++){const x=-0.355+i*(0.265/tips);ctx.lineTo(x-0.019,i%2?-0.565:-0.60);ctx.lineTo(x,-0.615+(i/tips)*-0.02);}
+  ctx.closePath();
+  const hg=ctx.createLinearGradient(-0.28,-0.95,-0.20,-0.57);hg.addColorStop(0,pal.hackle);hg.addColorStop(0.8,pal.mid);
+  ctx.fillStyle=hg;ctx.fill();ctx.strokeStyle=pal.edge;ctx.lineWidth=0.005;ctx.stroke();
+  ctx.globalAlpha=0.35;
+  [[-0.20,-0.88,-0.17,-0.66],[-0.25,-0.88,-0.24,-0.64],[-0.30,-0.86,-0.31,-0.64],[-0.34,-0.84,-0.345,-0.66]].forEach(([x1,y1,x2,y2])=>{ctx.beginPath();ctx.moveTo(x1,y1);ctx.quadraticCurveTo((x1+x2)/2+0.01,(y1+y2)/2,x2,y2);ctx.stroke();});
+  ctx.globalAlpha=1;
+  // head
+  ctx.fillStyle=pal.head;ell(-0.31,-0.905,0.075,0.062);ctx.fill();
+  ctx.fillStyle='rgba(208,62,52,0.78)';ell(-0.335,-0.90,0.040,0.030);ctx.fill();
+  // comb
+  ctx.save();ctx.translate(-0.30,-0.958);ctx.rotate(pal.flop);ctx.scale(pal.comb,pal.comb);
+  ctx.beginPath();ctx.moveTo(-0.075,0.004);
+  [[-0.065,-0.055],[-0.045,-0.028],[-0.028,-0.078],[-0.006,-0.032],[0.014,-0.085],[0.034,-0.034],[0.052,-0.072],[0.068,-0.028],[0.086,-0.048],[0.095,0.006]].forEach(([x,y])=>ctx.lineTo(x,y));
+  ctx.quadraticCurveTo(0.01,0.03,-0.075,0.004);ctx.closePath();
+  const cg=ctx.createLinearGradient(0,-0.09,0,0.02);cg.addColorStop(0,'#e3493d');cg.addColorStop(1,'#a3221b');
+  ctx.fillStyle=cg;ctx.fill();ctx.strokeStyle='rgba(90,10,10,.35)';ctx.lineWidth=0.004;ctx.stroke();
+  ctx.restore();
+  // wattles
+  ctx.fillStyle='#a92620';ell(-0.345,-0.842,0.019,0.036);ctx.fill();
+  ctx.fillStyle='#cf3b30';ell(-0.362,-0.838,0.021,0.040);ctx.fill();
+  // ear lobe
+  ctx.fillStyle=pal.lobe;ell(-0.272,-0.885,0.015,0.019);ctx.fill();
+  // beak
+  ctx.fillStyle=pal.beak;ctx.beginPath();ctx.moveTo(-0.37,-0.927);ctx.quadraticCurveTo(-0.418,-0.932,-0.44,-0.898);ctx.quadraticCurveTo(-0.405,-0.898,-0.372,-0.893);ctx.closePath();ctx.fill();
+  ctx.strokeStyle='rgba(0,0,0,.28)';ctx.lineWidth=0.004;ctx.beginPath();ctx.moveTo(-0.374,-0.896);ctx.quadraticCurveTo(-0.40,-0.892,-0.425,-0.889);ctx.stroke();
+  // eye
+  ctx.fillStyle='#e08a2c';ctx.beginPath();ctx.arc(-0.326,-0.918,0.0135,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='#111';ctx.beginPath();ctx.arc(-0.329,-0.918,0.007,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(-0.332,-0.921,0.0028,0,Math.PI*2);ctx.fill();
+  ctx.restore();
+  ctx.restore();
+}
+
+function drawFeeder(x,y,w,label,ink){
+  const h=w*0.32;
+  ctx.fillStyle='#8a6a45';ctx.beginPath();ctx.moveTo(x-w/2,y-h);ctx.lineTo(x+w/2,y-h);ctx.lineTo(x+w*0.4,y);ctx.lineTo(x-w*0.4,y);ctx.closePath();ctx.fill();
+  const fg=ctx.createRadialGradient(x,y-h-w*0.02,1,x,y-h,w*0.5);fg.addColorStop(0,'#e3c26a');fg.addColorStop(1,'#b98f35');
+  ctx.fillStyle=fg;ctx.beginPath();ctx.ellipse(x,y-h,w*0.47,w*0.13,0,Math.PI,0);ctx.fill();
+  ctx.fillStyle='#6d5234';ctx.fillRect(x-w/2,y-h-1,w,Math.max(2,w*0.05));
+  ctx.fillStyle=ink;ctx.font='600 '+Math.max(11,Math.round(w*0.2))+'px "DM Mono",monospace';ctx.textAlign='center';
+  ctx.fillText(label,x,y-h-w*0.2);
+}
+function roundRect(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+function drawBar(x,top,h,w,ratio,col,ink,ink3,line){
+  const max=1.4, f=Math.max(0,Math.min(ratio,max))/max;
+  ctx.fillStyle=line;roundRect(x,top,w,h,w/2);ctx.fill();
+  ctx.save();roundRect(x,top,w,h,w/2);ctx.clip();
+  const fh=h*f;const g=ctx.createLinearGradient(0,top+h-fh,0,top+h);g.addColorStop(0,col);g.addColorStop(1,col+'cc');
+  ctx.fillStyle=g;ctx.fillRect(x,top+h-fh,w,fh);ctx.restore();
+  const y100=top+h*(1-1/max);
+  ctx.strokeStyle=ink;ctx.lineWidth=2;ctx.setLineDash([4,3]);ctx.beginPath();ctx.moveTo(x-6,y100);ctx.lineTo(x+w+6,y100);ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle=ink3;ctx.font='500 10.5px "DM Sans",sans-serif';if(x+w+40>CW){ctx.textAlign='right';ctx.fillText('100%',x-8,y100-6);}else{ctx.textAlign='left';ctx.fillText('100%',x+w+8,y100+4);}
+  ctx.fillStyle=ink;ctx.font='600 15px "DM Mono",monospace';ctx.textAlign='center';ctx.fillText(fmt(ratio*100)+'%',x+w/2,top-10);
+  const bx=x+w/2,by=top+h+16;ctx.fillStyle=ink3;ctx.beginPath();ctx.moveTo(bx+2,by-9);ctx.lineTo(bx-5,by+1);ctx.lineTo(bx,by+1);ctx.lineTo(bx-2,by+9);ctx.lineTo(bx+5,by-1);ctx.lineTo(bx,by-1);ctx.closePath();ctx.fill();
+}
+function barColor(r){return r<0.95?css('--bad'):r<1?css('--warn'):r<=1.1?css('--okc'):css('--warn');}
+
+function drawScene(t){
+  if(!CW) return;
+  ctx.setTransform(DPR,0,0,DPR,0,0);ctx.clearRect(0,0,CW,CH);
+  const ink=css('--ink'),ink3=css('--ink3'),line=css('--line');
+  const gy=Math.round(CH*0.8);
+  ctx.fillStyle=css('--ground');ctx.fillRect(0,gy,CW,CH-gy);
+  ctx.fillStyle=css('--ground2');ctx.fillRect(0,gy,CW,2);
+  ctx.strokeStyle=line;ctx.setLineDash([5,5]);ctx.beginPath();ctx.moveTo(CW/2,16);ctx.lineTo(CW/2,CH-10);ctx.stroke();ctx.setLineDash([]);
+  const half=CW/2, ration=+$('ration').value;
+  ['A','B'].forEach((h,i)=>{
+    const ox=i*half, w=+$('w'+h).value, L=LINES[HEN[h].key], pal=PAL[L.plum];
+    const base=Math.min(CH*0.42,half*0.44), s=base*Math.sqrt(w/1.55);
+    const hx=ox+half*0.47, fx=ox+half*0.11;
+    drawFeeder(fx,gy+2,Math.max(38,half*0.16),fmt(ration)+' g',ink);
+    let peck=0;
+    if(!reduce){const period=3.6,ph=((t/1000)+(i?1.7:0))%period;if(ph<0.7){peck=-0.95*Math.sin(Math.PI*ph/0.7);}}
+    const breath=reduce?1:1+0.01*Math.sin(t/650+i);
+    ctx.save();ctx.translate(hx,gy);ctx.scale(s,s);drawHen(pal,peck,breath);ctx.restore();
+    ctx.fillStyle=css(h==='A'?'--ca':'--cb');ctx.font='600 13px "DM Sans",sans-serif';ctx.textAlign='center';
+    ctx.fillText(h+' · '+L.short+' · '+fmt(w,2)+' kg',hx,gy+Math.min(30,(CH-gy)*0.62));
+    const st=S[h];st.shown+=reduce?(st.ratio-st.shown):(st.ratio-st.shown)*0.12;
+    const bw=Math.max(16,Math.min(26,half*0.055)), top=CH*0.13, bh=gy-top-34;
+    drawBar(ox+half*0.87-bw/2,top,bh,bw,st.shown,barColor(st.ratio),ink,ink3,line);
+  });
+}
+function loop(t){drawScene(t);requestAnimationFrame(loop);}
+
+// ---------- init ----------
+buildIngs();
+$('lineA').value='Hy-Line W-80';$('lineB').value='Hy-Line Brown';
+$('semA').value=30;$('semB').value=30;
+applyLine('A',true);applyLine('B',true);
+setSys('jaula');setEq('rostagno');
+$('ration').value=110;$('ema').value=2850;$('t').value=22;$('obs').value=112;
+resize();update();
+S.A.shown=S.A.ratio;S.B.shown=S.B.ratio;
+if('ResizeObserver' in window) new ResizeObserver(resize).observe(cv.parentElement); else window.addEventListener('resize',resize);
+if(!reduce) requestAnimationFrame(loop); else drawScene(0);
+const rerender=()=>{update();};
+if(window.matchMedia) matchMedia('(prefers-color-scheme: dark)').addEventListener('change',rerender);
+new MutationObserver(rerender).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+})();
+</script>
+</body>
+</html>
