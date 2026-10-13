@@ -3,6 +3,8 @@
 App móvil para registro de pesos individuales y control de uniformidad de lotes de pollitas. Ingreso por tipeo, foto (OCR con Claude Vision) y voz. Backend en Supabase con autenticación y datos aislados por productor.
 
 **URL:** http://avivet.cl/avivet/pesaje-pollitas/  
+
+> **Trasladada (oct 2026):** el pesaje ahora es la pestaña **Pesaje** de Registro Productivo (http://avivet.cl/registro-productivo-avicola/src/supabase/, repo `Alazoe/registro-productivo-avicola`), con la misma tabla `pesajes` y los mismos lotes. Esta app sigue funcionando y muestra un aviso con el enlace a la nueva.
 **Autor:** Andrés Lazo Escobar, Médico Veterinario · avivet.cl
 
 ---

@@ -160,6 +160,8 @@ label { font-size:.85rem; color:#666; font-weight:500; }
 .manual-body th { background:var(--verde); color:#fff; padding:6px 8px; text-align:left; }
 .manual-body td { padding:5px 8px; border-bottom:1px solid var(--gris-b); vertical-align:top; }
 .manual-body tr:nth-child(even) td { background:#f5f5f5; }
+.aviso-traslado{background:#f6eed8;color:#5c4708;border-bottom:1px solid #e7d7a8;padding:12px 16px;font-size:.86rem;line-height:1.45}
+.aviso-traslado a{display:inline-block;margin-top:6px;background:#2a5430;color:#fff;text-decoration:none;font-weight:700;padding:7px 14px;border-radius:999px}
 </style>
 </head>
 <body>
@@ -169,6 +171,7 @@ label { font-size:.85rem; color:#666; font-weight:500; }
   <div class="login-card">
     <div class="login-logo">🐔</div>
     <h2>Pesaje Pollitas</h2>
+    <p style="background:#f6eed8;color:#5c4708;border-radius:10px;padding:10px 12px;font-size:.82rem;line-height:1.4;text-align:left">⚖️ El pesaje ahora está en <a href="http://avivet.cl/registro-productivo-avicola/src/supabase/" style="color:#2a5430;font-weight:700">Registro Productivo</a> (pestaña Pesaje). Entra allá con tu mismo correo y clave.</p>
     <p>avivet.cl</p>
     <label style="text-align:left;display:block">Correo electrónico
       <input type="email" id="login-email" placeholder="correo@ejemplo.com"
@@ -191,6 +194,8 @@ label { font-size:.85rem; color:#666; font-weight:500; }
   <span class="nav-user" id="nav-user" onclick="logout()" title="Cerrar sesión">— sesión —</span>
 </div>
 
+<div class="aviso-traslado">⚖️ <b>El pesaje ahora está en Registro Productivo</b>, en la pestaña <b>Pesaje</b>, con los mismos lotes y pesajes. Esta versión seguirá funcionando un tiempo.
+  <a href="http://avivet.cl/registro-productivo-avicola/src/supabase/">Ir a la nueva app →</a></div>
 <div class="tabs">
   <div class="tab active" onclick="irTab('registro')">📋 Registro</div>
   <div class="tab" onclick="irTab('resumen')">📊 Historial</div>
