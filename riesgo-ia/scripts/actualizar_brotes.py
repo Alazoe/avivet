@@ -98,6 +98,8 @@ def bajar_brotes(pausa=0.25):
             especies.append({"nombre": (t.get("speciesName") or "").strip(), "silvestre": bool(t.get("isWild")),
                              "expuestas": t.get("susceptible"), "casos": t.get("cases")})
         tipo, n, usadas = clasificar(especies) if especies else ("traspatio", 0, [])
+        # WAHIS entrega las especies en orden variable: ordenar para que el resultado sea estable
+        usadas = sorted(usadas, key=lambda e: (-(e["expuestas"] or e["casos"] or 0), e["nombre"]))
         nombres = [e["nombre"] for e in usadas if e["nombre"]]
         detalle = " · ".join(x for x in [f"{miles(n)} aves" if n else "",
                                          (nombres[0] + (f" +{len(nombres) - 1}" if len(nombres) > 1 else "")) if nombres else ""] if x)
@@ -108,7 +110,7 @@ def bajar_brotes(pausa=0.25):
                        "resuelto": bool(o.get("endDate")) or estado_evento.get(o["_evento"]) == "Resolved",
                        "_iso": o["startDate"][:10]})
         time.sleep(pausa)
-    salida.sort(key=lambda b: b["_iso"], reverse=True)
+    salida.sort(key=lambda b: (b["_iso"], -b["lat"], -b["lon"]), reverse=True)   # orden estable
     return salida
 
 
