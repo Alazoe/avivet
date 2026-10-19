@@ -1,0 +1,33 @@
+name: Actualizar brotes WAHIS (riesgo-ia)
+
+# El día 1 de cada mes baja de WAHIS (OMSA) los brotes de influenza aviar de alta
+# patogenicidad notificados por Chile y actualiza riesgo-ia/index.html.
+# También se puede correr a mano: pestaña Actions -> este flujo -> "Run workflow".
+on:
+  schedule:
+    - cron: "0 12 1 * *"     # día 1, 12:00 UTC (≈ 09:00 Chile)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  actualizar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Bajar brotes desde WAHIS
+        run: python3 riesgo-ia/scripts/actualizar_brotes.py
+      - name: Publicar si cambió algo
+        run: |
+          if git diff --quiet riesgo-ia/index.html; then
+            echo "Sin cambios."; exit 0
+          fi
+          git config user.name  "AviVet bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add riesgo-ia/index.html
+          git commit -m "data(riesgo-ia): brotes WAHIS al $(date +%d-%m-%Y)"
+          git push
