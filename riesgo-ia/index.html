@@ -1098,15 +1098,16 @@ function initMap(){
   leafletMap = L.map('map').setView([-38.5, -72.5], 7);
 
   // Capas base: mapa claro (etiquetas) y satélite (identificación visual de agua)
-  const claro = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{
-    attribution:'© OpenStreetMap / CartoDB', maxZoom:19
+  // CartoDB empezó a exigir API key (oct 2026): mapa claro desde OpenStreetMap, sin clave.
+  const claro = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{
+    attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>', maxZoom:19
   }).addTo(leafletMap);
   const satelite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{
     attribution:'© Esri, Maxar, Earthstar Geographics', maxZoom:19
   });
-  // Etiquetas sobre el satélite (nombres de esteros, lagos, comunas)
-  const etiquetas = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png',{
-    maxZoom:19, pane:'overlayPane'
+  // Etiquetas sobre el satélite (comunas, lagos, ríos): capa de referencia de Esri (sin clave, mismo proveedor del satélite)
+  const etiquetas = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',{
+    attribution:'Etiquetas © Esri', maxZoom:19, pane:'overlayPane'
   });
   const sateliteConEtiquetas = L.layerGroup([satelite, etiquetas]);
 
