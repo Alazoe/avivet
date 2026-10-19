@@ -1102,6 +1102,16 @@ function initMap(){
   const claro = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{
     attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>', maxZoom:19
   }).addTo(leafletMap);
+  // Seguro: si OpenStreetMap rechaza las teselas (algunos navegadores no envían Referer al abrir
+  // la app como archivo), el mapa claro pasa solo al mapa de calles de Esri, que no pide clave.
+  let fallosClaro = 0;
+  claro.on('tileerror', () => {
+    if(++fallosClaro !== 3) return;
+    leafletMap.attributionControl.removeAttribution(claro.getAttribution());
+    claro.options.attribution = '© Esri, HERE, Garmin, © OpenStreetMap';
+    leafletMap.attributionControl.addAttribution(claro.options.attribution);
+    claro.setUrl('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}');
+  });
   const satelite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{
     attribution:'© Esri, Maxar, Earthstar Geographics', maxZoom:19
   });
