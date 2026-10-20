@@ -18,6 +18,7 @@ Seguro: si WAHIS falla o entrega menos del 90 % de los brotes que ya hay, NO mod
 """
 from __future__ import annotations
 import argparse, datetime as dt, json, re, sys, time
+from zoneinfo import ZoneInfo
 from pathlib import Path
 import urllib.request
 
@@ -133,7 +134,7 @@ def main():
     nuevos = bajar_brotes()
     if len(nuevos) < 0.9 * actuales:
         sys.exit(f"SEGURO: WAHIS entregó {len(nuevos)} brotes y la app tiene {actuales}. No modifico nada.")
-    hoy = dt.date.today()
+    hoy = dt.datetime.now(ZoneInfo("America/Santiago")).date()   # GitHub corre en UTC
     viejos = set(re.findall(r"lat:(-?[\d.]+), lon:(-?[\d.]+), tipo:'\w+', anio:\d+, fecha:'([^']+)'", m.group(1)))
     agregados = [b for b in nuevos if (str(b["lat"]), str(b["lon"]), b["fecha"]) not in viejos]
     print(f"Brotes en la app: {actuales} | en WAHIS: {len(nuevos)} | nuevos o cambiados: {len(agregados)}")
