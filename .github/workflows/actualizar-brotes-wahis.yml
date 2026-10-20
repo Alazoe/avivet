@@ -1,7 +1,8 @@
 name: Actualizar brotes WAHIS (riesgo-ia)
 
 # El día 1 de cada mes baja de WAHIS (OMSA) los brotes de influenza aviar de alta
-# patogenicidad notificados por Chile y actualiza riesgo-ia/index.html.
+# patogenicidad notificados por Chile, Perú, Argentina y Bolivia y actualiza
+# riesgo-ia/index.html (tarda ~15 min: ~1.100 consultas con pausa).
 # También se puede correr a mano: pestaña Actions -> este flujo -> "Run workflow".
 on:
   schedule:
@@ -14,6 +15,7 @@ permissions:
 jobs:
   actualizar:
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

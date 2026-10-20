@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Actualiza los brotes de influenza aviar de Chile en riesgo-ia/index.html desde WAHIS (OMSA).
+"""Actualiza los brotes de influenza aviar de Chile y países vecinos (Perú, Argentina, Bolivia)
+en riesgo-ia/index.html desde WAHIS (OMSA).
 
 Baja todos los informes de influenza aviar de ALTA patogenicidad (H5N1 y similares, aves de
 corral y silvestres) que Chile ha notificado a la OMSA, toma cada brote con sus coordenadas y
@@ -11,7 +12,7 @@ Clasificación (la misma que usaba la app):
   traspatio  -> aves domésticas, menos de 1.000
   resuelto   -> el brote tiene fecha de término o el evento está cerrado
 
-Seguro: si WAHIS falla o entrega menos del 90 % de los brotes que ya hay, NO modifica nada.
+Seguro: si WAHIS falla o entrega, para algún país, menos del 90 % de los brotes que ya hay, NO modifica nada.
 
     python3 riesgo-ia/scripts/actualizar_brotes.py            # actualiza index.html
     python3 riesgo-ia/scripts/actualizar_brotes.py --dry-run  # solo muestra qué cambiaría
@@ -27,6 +28,8 @@ H = {"User-Agent": "Mozilla/5.0 (AviVet riesgo-ia; actualizacion mensual)",
      "Referer": "https://wahis.woah.org/", "Accept": "application/json",
      "Content-Type": "application/json"}
 CHILE = 42
+# Chile y países vecinos (nombre en WAHIS -> código que usa la app)
+PAISES = {"Chile": "CL", "Peru": "PE", "Argentina": "AR", "Bolivia": "BO"}
 MESES = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"]
 APP = Path(__file__).resolve().parents[1] / "index.html"
 
@@ -44,8 +47,8 @@ def pedir(url, cuerpo=None, intentos=4):
             time.sleep(2 * 2 ** i)
 
 
-def informes_chile():
-    filtro = {"eventIds": [], "reportIds": [], "countries": [CHILE], "firstDiseases": [],
+def informes_pais(area_id):
+    filtro = {"eventIds": [], "reportIds": [], "countries": [area_id], "firstDiseases": [],
               "secondDiseases": [], "typeStatuses": [], "reasons": [], "eventStatuses": [],
               "reportTypes": [], "reportStatuses": [], "eventStartDate": None, "submissionDate": None,
               "animalTypes": [], "sortColumn": "submissionDate", "sortOrder": "desc",
@@ -78,8 +81,13 @@ def clasificar(especies):
     return "silvestre", n, especies
 
 
-def bajar_brotes(pausa=0.25):
-    reps = [r for r in informes_chile() if "high pathogenicity" in r["disease"].lower()]
+def ids_paises():
+    lista = pedir(f"{API}/country/list?language=en")
+    return {c["name"]: c["areaId"] for c in lista if c["name"] in PAISES}
+
+
+def bajar_brotes(area_id, pausa=0.25):
+    reps = [r for r in informes_pais(area_id) if "high pathogenicity" in r["disease"].lower()]
     estado_evento = {r["eventId"]: r["eventStatus"] for r in reps}
     brotes = {}
     for r in reps:
@@ -115,10 +123,26 @@ def bajar_brotes(pausa=0.25):
     return salida
 
 
+def bajar_todo():
+    ids = ids_paises()
+    faltan = set(PAISES) - set(ids)
+    if faltan:
+        sys.exit(f"WAHIS no devolvió el código de: {', '.join(sorted(faltan))}. No modifico nada.")
+    todos = []
+    for nombre, codigo in PAISES.items():
+        brotes = bajar_brotes(ids[nombre])
+        for b in brotes:
+            b["pais"] = codigo
+        print(f"  {nombre:10} {len(brotes):4} brotes")
+        todos += brotes
+    todos.sort(key=lambda b: (b["_iso"], -b["lat"], -b["lon"]), reverse=True)
+    return todos
+
+
 def js(b):
     esc = lambda s: s.replace("\\", "\\\\").replace("'", "\\'")
     return (f"  {{ lat:{b['lat']}, lon:{b['lon']}, tipo:'{b['tipo']}', anio:{b['anio']}, fecha:'{b['fecha']}', "
-            f"region:'{esc(b['region'])}', detalle:'{esc(b['detalle'])}', resuelto:{'true' if b['resuelto'] else 'false'} }},")
+            f"region:'{esc(b['region'])}', detalle:'{esc(b['detalle'])}', resuelto:{'true' if b['resuelto'] else 'false'}, pais:'{b['pais']}' }},")
 
 
 def main():
@@ -130,22 +154,32 @@ def main():
     m = re.search(r"const WAHIS_BROTES = \[\n(.*?)\n\];", html, re.S)
     if not m:
         sys.exit("No encontré el bloque WAHIS_BROTES en la app.")
-    actuales = m.group(1).count("{ lat:")
-    nuevos = bajar_brotes()
-    if len(nuevos) < 0.9 * actuales:
-        sys.exit(f"SEGURO: WAHIS entregó {len(nuevos)} brotes y la app tiene {actuales}. No modifico nada.")
+    actuales = {}
+    for linea in m.group(1).splitlines():
+        if "{ lat:" in linea:
+            pm = re.search(r"pais:'(\w+)'", linea)
+            c = pm.group(1) if pm else "CL"          # datos antiguos sin país = Chile
+            actuales[c] = actuales.get(c, 0) + 1
+    nuevos = bajar_todo()
+    for c, n in actuales.items():
+        n_nuevo = sum(1 for b in nuevos if b["pais"] == c)
+        if n_nuevo < 0.9 * n:
+            sys.exit(f"SEGURO: WAHIS entregó {n_nuevo} brotes de {c} y la app tiene {n}. No modifico nada.")
+    actuales = sum(actuales.values())
     hoy = dt.datetime.now(ZoneInfo("America/Santiago")).date()   # GitHub corre en UTC
     viejos = set(re.findall(r"lat:(-?[\d.]+), lon:(-?[\d.]+), tipo:'\w+', anio:\d+, fecha:'([^']+)'", m.group(1)))
+    nuevos = nuevos
     agregados = [b for b in nuevos if (str(b["lat"]), str(b["lon"]), b["fecha"]) not in viejos]
     print(f"Brotes en la app: {actuales} | en WAHIS: {len(nuevos)} | nuevos o cambiados: {len(agregados)}")
     for b in agregados[:15]:
-        print(f"   + {b['fecha']:12} {b['tipo']:9} {b['region'][:45]}")
+        print(f"   + {b['pais']} {b['fecha']:12} {b['tipo']:9} {b['region'][:45]}")
     if a.dry_run:
         return
     cuerpo = "\n".join(js(b) for b in nuevos)
     anios = sorted({b["anio"] for b in nuevos})
-    cab = (f"// Brotes de Influenza Aviar de alta patogenicidad en Chile — fuente: WAHIS/OMSA (API pública)\n"
-           f"// {len(nuevos)} brotes {anios[0]}-{anios[-1]} · generado por scripts/actualizar_brotes.py el {hoy:%d-%m-%Y}\n"
+    por_pais = " · ".join(f"{c} {sum(1 for b in nuevos if b['pais'] == c)}" for c in PAISES.values())
+    cab = (f"// Brotes de Influenza Aviar de alta patogenicidad en Chile y países vecinos — fuente: WAHIS/OMSA (API pública)\n"
+           f"// {len(nuevos)} brotes {anios[0]}-{anios[-1]} ({por_pais}) · generado por scripts/actualizar_brotes.py el {hoy:%d-%m-%Y}\n"
            f"// clasificados por especie y nº de aves (comercial >=1.000) · resuelto = con fecha de término o evento cerrado\n"
            f"const WAHIS_ACTUALIZADO = '{hoy:%d-%m-%Y}';\n")
     ini = html.rfind("\n//", 0, m.start())          # comentario de cabecera anterior
