@@ -210,6 +210,49 @@ table.data-table{width:100%;border-collapse:collapse;font-size:13px;}
 .met-item-icon{font-size:1.4rem;margin-bottom:8px;}
 .met-item-title{font-size:13px;font-weight:600;margin-bottom:6px;}
 .met-item-body{font-size:12px;color:var(--text2);line-height:1.5;}
+/* ── Informe para presentación ── */
+#informe-overlay{position:fixed;inset:0;background:rgba(20,24,20,.72);z-index:5000;display:none;flex-direction:column;align-items:center;overflow:auto;padding:18px 12px 40px;}
+.inf-barra{position:sticky;top:0;z-index:2;display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:#1b4332;color:#fff;padding:10px 14px;border-radius:12px;margin-bottom:14px;width:min(1100px,100%);box-shadow:0 4px 16px rgba(0,0,0,.3);}
+.inf-barra button{font-family:inherit;font-size:13px;font-weight:600;border:0;border-radius:8px;padding:8px 14px;cursor:pointer;}
+.inf-barra .pri{background:#d8f3dc;color:#1b4332;} .inf-barra .sec{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.5);}
+#informe-estado{font-size:12.5px;opacity:.9;flex:1;min-width:160px;}
+#informe-lamina{width:1100px;max-width:none;}
+#inf-total{background:#f5f4f0;padding:22px;border-radius:6px;font-family:"DM Sans",sans-serif;color:#1a1916;}
+.inf-cargando{background:#fff;padding:60px;border-radius:12px;text-align:center;font-size:15px;color:#5a5650;}
+.inf-bloque{position:relative;background:#fff;border:1px solid #ddd9d0;border-radius:12px;padding:18px 20px;margin-bottom:14px;}
+.inf-fila{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start;} .inf-fila.f1{grid-template-columns:440px 1fr;}
+.inf-dl{position:absolute;top:10px;right:10px;font-family:inherit;font-size:11.5px;font-weight:600;border:1px solid #ddd9d0;background:#f5f4f0;color:#5a5650;border-radius:6px;padding:3px 8px;cursor:pointer;}
+.inf-dl:hover{background:#d8f3dc;color:#1b4332;}
+.inf-cab{display:flex;justify-content:space-between;align-items:center;gap:20px;background:#1b4332;color:#fff;border:0;}
+.inf-cab .inf-sub{color:rgba(255,255,255,.78);} .inf-cab .inf-dl{background:rgba(255,255,255,.12);color:#fff;border-color:rgba(255,255,255,.3);}
+.inf-kicker{font-size:11.5px;letter-spacing:.6px;text-transform:uppercase;opacity:.8;font-weight:700;}
+.inf-cab h1{font-family:"Fraunces",serif;font-size:28px;margin:4px 0 4px;}
+.inf-marca{font-family:"Fraunces",serif;font-size:22px;font-weight:700;text-align:right;margin-right:60px;} .inf-marca span{display:block;font-family:"DM Sans";font-size:11px;font-weight:600;opacity:.75;letter-spacing:.5px;}
+.inf-h{font-size:11.5px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:#9a948c;margin-bottom:10px;}
+.inf-sh{font-size:13px;font-weight:700;margin:12px 0 6px;}
+.inf-sub{font-size:11.5px;color:#7a746c;line-height:1.35;}
+.inf-res{border:2px solid var(--c);} .inf-tier{font-family:"Fraunces",serif;font-size:30px;font-weight:700;color:var(--c);}
+.inf-total-pts{font-size:15px;margin:2px 0 12px;} .inf-total-pts b{font-size:26px;}
+.inf-escala{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;}
+.inf-escala-seg{border-top:6px solid var(--c);background:#f5f4f0;border-radius:4px;padding:5px 6px;font-size:10.5px;opacity:.5;}
+.inf-escala-seg b{display:block;font-size:11px;} .inf-escala-seg.on{opacity:1;background:#fff;box-shadow:0 0 0 2px var(--c) inset;}
+.inf-tabla{width:100%;border-collapse:collapse;font-size:12.5px;} .inf-tabla td,.inf-tabla th{padding:7px 6px;border-bottom:1px solid #eee;vertical-align:top;text-align:left;}
+.inf-tabla th{font-size:10.5px;text-transform:uppercase;color:#9a948c;letter-spacing:.4px;}
+.inf-fact td:nth-child(2){width:70px;vertical-align:middle;} .inf-fact td:nth-child(4){width:130px;}
+.inf-bar{height:8px;border-radius:4px;background:#e8e4de;overflow:hidden;} .inf-bar div{height:100%;border-radius:4px;}
+.inf-pts{font-weight:700;white-space:nowrap;vertical-align:middle!important;} .inf-num{text-align:right;white-space:nowrap;}
+.inf-mapa img{width:100%;border-radius:8px;display:block;}
+.inf-ley{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:8px;font-size:11px;color:#5a5650;}
+.inf-ley i,.inf-lista i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;vertical-align:-1px;border:1.5px solid #fff;box-shadow:0 0 0 1px #ccc;}
+.inf-lista{list-style:none;margin:0;padding:0;font-size:12.5px;} .inf-lista li{padding:4px 0;border-bottom:1px dashed #eee;display:flex;justify-content:space-between;gap:10px;}
+.inf-lista li span{color:#7a746c;white-space:nowrap;} .inf-lista li span.izq{color:#1a1916;white-space:normal;text-align:left;}
+.inf-kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:2px 0 6px;}
+.inf-kpi{background:#f5f4f0;border-radius:8px;padding:8px 6px;text-align:center;} .inf-kpi span{font-size:15px;}
+.inf-kpi b{display:block;font-size:19px;line-height:1.2;} .inf-kpi small{font-size:10px;color:#7a746c;line-height:1.2;display:block;}
+.inf-rol{font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:10px;white-space:nowrap;}
+.inf-rec{margin:0;padding-left:18px;font-size:13px;line-height:1.5;} .inf-rec li{margin-bottom:6px;}
+.inf-pie{margin-top:12px;padding-top:10px;border-top:1px solid #eee;font-size:10.5px;color:#9a948c;line-height:1.45;}
+.btn-informe{margin-top:12px;width:100%;}
 </style>
 </head>
 <body>
@@ -2259,6 +2302,7 @@ function renderResultado(tier, breakdown, waterDist, dbCount, manualCount, brote
         <thead><tr><th>Factor</th><th>Nivel</th><th style="text-align:center">Pts</th></tr></thead>
         <tbody>${rows}</tbody>
       </table>
+      <button class="btn-secondary btn-informe" onclick="abrirInforme()"><span>📄 Informe para presentación (imagen)</span></button>
     </div>`;
 }
 
@@ -2489,6 +2533,305 @@ async function detectarPlantelesIA(){
   }
 }
 
+// ════════════════════════════════════════════════════════════════
+//  INFORME PARA PRESENTACIÓN (lámina descargable como imagen PNG)
+// ════════════════════════════════════════════════════════════════
+const ESPECIES_RIESGO = [
+  {"sci": "Larus dominicanus", "gbif": 2481173, "nom": "Gaviota dominicana", "rol": "carronero", "peso": 9, "pesoBrote": 9, "syn": []},
+  {"sci": "Cathartes aura", "gbif": 2481930, "nom": "Jote de cabeza colorada", "rol": "carronero", "peso": 6, "pesoBrote": 9, "syn": []},
+  {"sci": "Chroicocephalus maculipennis", "gbif": 6065823, "nom": "Gaviota cáhuil", "rol": "carronero", "peso": 6, "pesoBrote": 9, "syn": []},
+  {"sci": "Milvago chimango", "gbif": 2481065, "nom": "Tiuque", "rol": "carronero", "peso": 6, "pesoBrote": 9, "syn": ["Daptrius chimango"]},
+  {"sci": "Coragyps atratus", "gbif": 2481942, "nom": "Jote de cabeza negra", "rol": "carronero", "peso": 6, "pesoBrote": 9, "syn": []},
+  {"sci": "Anas flavirostris", "gbif": 2498065, "nom": "Pato jergón chico", "rol": "reservorio", "peso": 6, "pesoBrote": 6, "syn": []},
+  {"sci": "Anas georgica", "gbif": 2498127, "nom": "Pato jergón grande", "rol": "reservorio", "peso": 6, "pesoBrote": 6, "syn": []},
+  {"sci": "Cygnus melancoryphus", "gbif": 2498335, "nom": "Cisne de cuello negro", "rol": "humedal", "peso": 6, "pesoBrote": 6, "syn": []},
+  {"sci": "Geranoaetus melanoleucus", "gbif": 2480668, "nom": "Águila", "rol": "carronero", "peso": 4, "pesoBrote": 6, "syn": []},
+  {"sci": "Caracara plancus", "gbif": 2480989, "nom": "Traro", "rol": "carronero", "peso": 3, "pesoBrote": 4.5, "syn": []},
+  {"sci": "Coscoroba coscoroba", "gbif": 2498288, "nom": "Coscoroba", "rol": "humedal", "peso": 4, "pesoBrote": 4, "syn": []},
+  {"sci": "Nannopterum brasilianum", "gbif": 9399113, "nom": "Yeco", "rol": "humedal", "peso": 4, "pesoBrote": 4, "syn": ["Phalacrocorax brasilianus"]},
+  {"sci": "Oressochen melanopterus", "gbif": 5232422, "nom": "Piuquén", "rol": "humedal", "peso": 4, "pesoBrote": 4, "syn": ["Chloephaga melanoptera"]},
+  {"sci": "Chloephaga picta", "gbif": 5232428, "nom": "Caiquén", "rol": "humedal", "peso": 4, "pesoBrote": 4, "syn": []},
+  {"sci": "Vanellus chilensis", "gbif": 5229146, "nom": "Queltehue", "rol": "puente", "peso": 3, "pesoBrote": 3, "syn": []},
+  {"sci": "Leucophaeus pipixcan", "gbif": 5846430, "nom": "Gaviota de Franklin", "rol": "migratorio", "peso": 3, "pesoBrote": 3, "syn": ["Larus pipixcan"]},
+  {"sci": "Pelecanus thagus", "gbif": 5229157, "nom": "Pelícano", "rol": "marino", "peso": 3, "pesoBrote": 3, "syn": []},
+  {"sci": "Sula variegata", "gbif": 2480970, "nom": "Piquero", "rol": "marino", "peso": 3, "pesoBrote": 3, "syn": []},
+  {"sci": "Leucocarbo bougainvillii", "gbif": 6066498, "nom": "Guanay", "rol": "marino", "peso": 3, "pesoBrote": 3, "syn": ["Leucocarbo bougainvilliorum", "Phalacrocorax bougainvillii"]},
+  {"sci": "Sterna hirundinacea", "gbif": 5229231, "nom": "Gaviotín sudamericano", "rol": "marino", "peso": 3, "pesoBrote": 3, "syn": []},
+  {"sci": "Spheniscus humboldti", "gbif": 5229386, "nom": "Pingüino de Humboldt", "rol": "marino", "peso": 3, "pesoBrote": 3, "syn": []},
+  {"sci": "Parabuteo unicinctus", "gbif": 2480410, "nom": "Peuco", "rol": "carronero", "peso": 2, "pesoBrote": 3, "syn": []},
+  {"sci": "Vultur gryphus", "gbif": 2481907, "nom": "Cóndor", "rol": "carronero", "peso": 2, "pesoBrote": 3, "syn": []},
+  {"sci": "Calidris alba", "gbif": 2481748, "nom": "Playero blanco", "rol": "migratorio", "peso": 2, "pesoBrote": 2, "syn": []},
+  {"sci": "Egretta thula", "gbif": 2480873, "nom": "Garza chica", "rol": "humedal", "peso": 2, "pesoBrote": 2, "syn": []},
+  {"sci": "Fulica armillata", "gbif": 2474382, "nom": "Tagua", "rol": "humedal", "peso": 2, "pesoBrote": 2, "syn": []},
+  {"sci": "Nycticorax nycticorax", "gbif": 2480863, "nom": "Huairavo", "rol": "humedal", "peso": 2, "pesoBrote": 2, "syn": []},
+  {"sci": "Leucophaeus modestus", "gbif": 6065847, "nom": "Gaviota garuma", "rol": "marino", "peso": 2, "pesoBrote": 2, "syn": ["Larus modestus"]},
+  {"sci": "Larus belcheri", "gbif": 2481179, "nom": "Gaviota peruana", "rol": "marino", "peso": 2, "pesoBrote": 2, "syn": []},
+  {"sci": "Larosterna inca", "gbif": 2481125, "nom": "Gaviotín monja", "rol": "marino", "peso": 2, "pesoBrote": 2, "syn": []},
+  {"sci": "Numenius phaeopus", "gbif": 2481784, "nom": "Zarapito", "rol": "migratorio", "peso": 1, "pesoBrote": 1, "syn": ["Numenius hudsonicus"]},
+];
+let ultimoInforme = null;          // lo llena runScore()
+const MESES_ES = {ene:0,feb:1,mar:2,abr:3,may:4,jun:5,jul:6,ago:7,sep:8,oct:9,nov:10,dic:11};
+function fechaBrote(b){             // '26 sep 2026' -> Date
+  const m = /^(\d{1,2}) (\w{3}) (\d{4})$/.exec((b.fecha||'').trim());
+  return m ? new Date(+m[3], MESES_ES[m[2]] ?? 0, +m[1]) : (b.anio ? new Date(b.anio, 6, 1) : null);
+}
+const ROL_INF = {
+  carronero:{lbl:'Carroñero', color:'#c0392b', bg:'#fde2e1'}, reservorio:{lbl:'Reservorio', color:'#1b7a4a', bg:'#e8f5e9'},
+  humedal:{lbl:'Humedal', color:'#0e7490', bg:'#e0f7fa'},     migratorio:{lbl:'Migratorio', color:'#6b3fa0', bg:'#f3e8ff'},
+  marino:{lbl:'Marino / costero', color:'#555', bg:'#f0f0f0'}, puente:{lbl:'Playera de potrero', color:'#1a5fb4', bg:'#e3f0ff'},
+};
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const kmTxt = km => km < 1 ? `${Math.round(km*1000)} m` : `${km.toFixed(km < 10 ? 1 : 0)} km`;
+
+// ── Aves silvestres de riesgo en 5 km: presencia habitual (GBIF) + últimos 60 días (iNaturalist) ──
+// GBIF reúne eBird (con ~1 año de retraso), iNaturalist y censos. iNaturalist trae lo reciente,
+// pero en zonas rurales casi no hay registros: cuando esté la clave de eBird se usará eBird.
+async function avesINat(lat, lon){
+  const d1 = new Date(Date.now() - 60*864e5).toISOString().slice(0,10);
+  const anio = new Date().getFullYear();
+  const keys = ESPECIES_RIESGO.filter(e => e.gbif).map(e => 'taxonKey=' + e.gbif).join('&');
+  const [rg, ri] = await Promise.all([
+    fetchConTimeout(`https://api.gbif.org/v1/occurrence/search?${keys}&geoDistance=${lat},${lon},5km&year=${anio-9},${anio}&limit=0&facet=speciesKey&facetLimit=60`, {}, 20000).then(r => r.json()),
+    fetchConTimeout(`https://api.inaturalist.org/v1/observations/species_counts?lat=${lat}&lng=${lon}&radius=5&taxon_id=3&verifiable=true&d1=${d1}&per_page=200`, {}, 15000).then(r => r.json()).catch(() => ({ results: [] })),
+  ]);
+  const porGbif = {}; ESPECIES_RIESGO.forEach(e => { if(e.gbif) porGbif[e.gbif] = e; });
+  const porNombre = {}; ESPECIES_RIESGO.forEach(e => [e.sci, ...e.syn].forEach(n => porNombre[n.toLowerCase()] = e));
+  const filas = new Map();
+  (rg.facets?.[0]?.counts || []).forEach(f => { const e = porGbif[+f.name]; if(e) filas.set(e.sci, { e, n: f.count, reciente: 0 }); });
+  (ri.results || []).forEach(x => { const e = porNombre[(x.taxon?.name || '').toLowerCase()]; if(!e) return;
+    const f = filas.get(e.sci) || { e, n: 0, reciente: 0 }; f.reciente = x.count; filas.set(e.sci, f); });
+  return { riesgo: [...filas.values()], registros: rg.count || 0, desde: anio - 9, recientes: (ri.results || []).length };
+}
+
+// ── Mapa del entorno dibujado en canvas (teselas + capas), apto para PNG ────
+function lonLatPx(lon, lat, z){
+  const n = 256 * 2**z, s = Math.sin(lat*Math.PI/180);
+  return [ (lon+180)/360*n, (0.5 - Math.log((1+s)/(1-s))/(4*Math.PI))*n ];
+}
+function cargarImg(url){
+  return new Promise(res => { const im = new Image(); im.crossOrigin = 'anonymous';
+    im.onload = () => res(im); im.onerror = () => res(null); im.src = url; setTimeout(() => res(null), 12000); });
+}
+async function mapaInformeDataURL(inf, W = 900, H = 640){
+  const S = 2;                                   // doble resolución para que se vea nítido al pegar
+  const mpp = 156543.03392 * Math.cos(inf.lat*Math.PI/180);
+  const z = Math.min(17, Math.floor(Math.log2(mpp * (H/2) / 5700))) + 1;   // 5 km caben con margen
+  const cv = document.createElement('canvas'); cv.width = W*S; cv.height = H*S;
+  const g = cv.getContext('2d');
+  const [cx, cy] = lonLatPx(inf.lon, inf.lat, z);
+  const x0 = cx - W*S/2, y0 = cy - H*S/2;
+  const P = (lat, lon) => { const [x, y] = lonLatPx(lon, lat, z); return [x - x0, y - y0]; };
+  const tasks = [];
+  for(let tx = Math.floor(x0/256); tx <= Math.floor((x0+W*S)/256); tx++)
+    for(let ty = Math.floor(y0/256); ty <= Math.floor((y0+H*S)/256); ty++)
+      tasks.push(cargarImg(`https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/${z}/${ty}/${tx}`)
+        .then(im => im && g.drawImage(im, tx*256 - x0, ty*256 - y0)));
+  g.fillStyle = '#dfe6df'; g.fillRect(0, 0, cv.width, cv.height);
+  await Promise.all(tasks);
+  g.fillStyle = 'rgba(0,0,0,.12)'; g.fillRect(0, 0, cv.width, cv.height);   // atenúa para que resalten las capas
+  const pxPorM = 1 / (mpp / 2**z);
+  // anillos 500 m / 2 km / 5 km
+  [[5000,'#F1C40F','5 km'],[2000,'#E67E22','2 km'],[500,'#E74C3C','500 m']].forEach(([r,c,t]) => {
+    g.beginPath(); g.arc(W*S/2, H*S/2, r*pxPorM, 0, 2*Math.PI);
+    g.setLineDash([10*S, 7*S]); g.lineWidth = 2.5*S; g.strokeStyle = c; g.stroke(); g.setLineDash([]);
+    g.font = `700 ${12*S}px "DM Sans",sans-serif`; g.fillStyle = c;
+    g.strokeStyle = 'rgba(0,0,0,.6)'; g.lineWidth = 3*S; const ty = H*S/2 - r*pxPorM - 5*S;
+    g.strokeText(t, W*S/2 + 6*S, ty); g.fillText(t, W*S/2 + 6*S, ty);
+  });
+  const punto = (lat, lon, r, fill, stroke = '#fff', lw = 2) => {
+    const [x, y] = P(lat, lon); if(x < -20 || y < -20 || x > cv.width+20 || y > cv.height+20) return;
+    g.beginPath(); g.arc(x, y, r*S, 0, 2*Math.PI); g.fillStyle = fill; g.fill(); g.lineWidth = lw*S; g.strokeStyle = stroke; g.stroke();
+  };
+  // agua (los 8 más cercanos) y línea al más cercano
+  inf.agua.slice(0, 8).forEach(w => punto(w.lat, w.lon, 5, '#5DADE2', '#1A6EBF', 2));
+  if(inf.agua.length){
+    const [x, y] = P(inf.agua[0].lat, inf.agua[0].lon);
+    g.beginPath(); g.moveTo(W*S/2, H*S/2); g.lineTo(x, y); g.setLineDash([6*S,5*S]); g.lineWidth = 2*S; g.strokeStyle = '#5DADE2'; g.stroke(); g.setLineDash([]);
+  }
+  // planteles registrados y detectados por IA
+  inf.planteles.forEach(p => punto(p.lat, p.lon, 6, '#95a5a6', '#fff', 2));
+  inf.detectados.forEach(p => punto(p.lat, p.lon, 6, '#8e44ad', '#fff', 2));
+  // brotes
+  const col = { comercial:'#c0392b', traspatio:'#E67E22', silvestre:'#1A5FB4' };
+  inf.brotesTodos.forEach(b => punto(b.lat, b.lon, b.resuelto ? 5 : 8, col[b.tipo] || '#1A5FB4', '#fff', b.resuelto ? 1.5 : 3));
+  // plantel evaluado
+  punto(inf.lat, inf.lon, 11, inf.tier.color, '#fff', 4);
+  // escala y crédito
+  const barM = 2000, barPx = barM*pxPorM, bx = 18*S, by = cv.height - 22*S;
+  g.fillStyle = 'rgba(255,255,255,.85)'; g.fillRect(bx - 8*S, by - 22*S, barPx + 16*S, 32*S);
+  g.fillStyle = '#222'; g.fillRect(bx, by, barPx, 4*S);
+  g.font = `600 ${11*S}px "DM Sans",sans-serif`; g.fillText('2 km', bx, by - 6*S);
+  const cred = 'Imagen © Esri, Maxar, Earthstar Geographics · Brotes WAHIS/OMSA';
+  g.font = `${10*S}px "DM Sans",sans-serif`; const tw = g.measureText(cred).width;
+  g.fillStyle = 'rgba(255,255,255,.85)'; g.fillRect(cv.width - tw - 16*S, cv.height - 20*S, tw + 16*S, 20*S);
+  g.fillStyle = '#333'; g.fillText(cred, cv.width - tw - 8*S, cv.height - 6*S);
+  // norte
+  g.font = `700 ${14*S}px "DM Sans",sans-serif`; g.fillStyle = '#fff'; g.strokeStyle = 'rgba(0,0,0,.7)'; g.lineWidth = 3*S;
+  g.strokeText('N ↑', cv.width - 46*S, 26*S); g.fillText('N ↑', cv.width - 46*S, 26*S);
+  try { return cv.toDataURL('image/jpeg', 0.9); } catch(e){ return null; }   // null si alguna tesela bloqueó la exportación
+}
+
+// ── Recomendaciones del entorno (reglas simples, revisables por el MV) ──────
+function recomendacionesEntorno(inf){
+  const R = [];
+  const a = inf.agua[0];
+  if(a && a.dist < 0.5) R.push(`<b>Cuerpo de agua a ${kmTxt(a.dist)}.</b> Es el factor de entorno más fuerte en planteles de EE.UU. 2022 (aves acuáticas o playeras en el potrero más cercano: riesgo ×6). Vigilar a diario aves acuáticas y aves muertas en la orilla; no usar agua superficial sin tratar.`);
+  else if(a && a.dist < 2) R.push(`<b>Cuerpo de agua a ${kmTxt(a.dist)}.</b> Registrar presencia de aves acuáticas en el potrero vecino, sobre todo en migración (primavera-verano).`);
+  if(inf.brotesSilv5km60d > 0) R.push(`<b>${inf.brotesSilv5km60d} brote(s) en aves silvestres a 5 km en los últimos 60 días.</b> Alerta por carroñeros (jotes, tiuque, gaviota dominicana): retirar la mortalidad al tiro, en contenedor cerrado, sin acceso de aves.`);
+  if(inf.brotes.length) R.push(`<b>${inf.brotes.length} brote(s) de IA a menos de ${inf.radioBrotes} km.</b> Notificar al SAG cualquier mortalidad anormal; restringir visitas y vehículos de otros planteles.`);
+  const carr = (inf.aves?.riesgo || []).filter(x => x.e.rol === 'carronero');
+  if(carr.length) R.push(`<b>Carroñeros observados en 5 km</b> (${carr.map(x => x.e.nom).join(', ')}). En EE.UU., retirar la mortalidad fuera del predio fue factor de riesgo: compostar o disponer en el predio, cubierto.`);
+  if(inf.nPlanteles >= 2) R.push(`<b>${inf.nPlanteles} planteles industriales a menos de 5 km.</b> Zona de alta densidad: coordinar bioseguridad con los vecinos (rutas de camiones, retiro de mortalidad, personal compartido).`);
+  if(['traspatio','libre_pastoreo'].includes(inf.tipo)) R.push(`<b>Aves con acceso al exterior.</b> En temporada de riesgo, confinar o techar el patio y separar el agua y el alimento de las aves silvestres.`);
+  R.push(`<b>Siguiente paso:</b> evaluar la bioseguridad del plantel (acceso de gorriones y otros pájaros al pabellón y al alimento, corte de pasto, duchas y cambio de ropa).`);
+  return R;
+}
+
+// ── Construcción de la lámina ──────────────────────────────────────────
+async function abrirInforme(){
+  if(!ultimoInforme){ alert('Primero calcula el riesgo de un plantel.'); return; }
+  const inf = { ...ultimoInforme };
+  const ov = document.getElementById('informe-overlay');
+  ov.style.display = 'flex';
+  const cont = document.getElementById('informe-lamina');
+  cont.innerHTML = '<div class="inf-cargando">Armando el informe (mapa satelital y aves observadas)…</div>';
+  // datos que se completan aquí
+  const ahora = Date.now(), hace60 = ahora - 60*864e5;
+  inf.brotesTodos = getAllBrotes().filter(b => brotePasaFiltro(b) && (b.resuelto ? mostrarResueltos : true)
+    && haversine(inf.lat, inf.lon, b.lat, b.lon) <= Math.max(7.5, inf.radioBrotes));
+  inf.brotes = getAllBrotes().filter(b => brotePasaFiltro(b) && haversine(inf.lat, inf.lon, b.lat, b.lon) <= inf.radioBrotes)
+    .map(b => ({ ...b, dist: haversine(inf.lat, inf.lon, b.lat, b.lon), f: fechaBrote(b) }))
+    .sort((a, b) => (b.f||0) - (a.f||0));
+  inf.brotesSilv5km60d = getAllBrotes().filter(b => b.tipo === 'silvestre' && haversine(inf.lat, inf.lon, b.lat, b.lon) <= 5
+    && (fechaBrote(b)?.getTime() || 0) >= hace60).length;
+  inf.detectados = (typeof detectorPlanteles !== 'undefined') ? detectorPlanteles.map(p => ({ lat:p.lat, lon:p.lon })) : [];
+  const [mapa, aves] = await Promise.all([
+    mapaInformeDataURL(inf),
+    avesINat(inf.lat, inf.lon).catch(() => null),
+  ]);
+  inf.aves = aves;
+  cont.innerHTML = htmlInforme(inf, mapa);
+}
+
+function htmlInforme(inf, mapa){
+  const t = inf.tier, hoy = new Date().toLocaleDateString('es-CL');
+  const barra = (p, m) => { const c = p>=m ? '#E74C3C' : p>=m*.66 ? '#E67E22' : p>=m*.33 ? '#d4a017' : '#2ECC71';
+    return `<div class="inf-bar"><div style="width:${p/m*100}%;background:${c}"></div></div>`; };
+  const F = inf.factores.map(f => `<tr><td><b>${f.label}</b><div class="inf-sub">${esc(f.detail)}</div></td>
+    <td>${barra(f.pts, f.max)}</td><td class="inf-pts">${f.pts}/${f.max}</td><td class="inf-sub">${f.interp}</td></tr>`).join('');
+  const escala = Object.values(TIER_CONFIG).map(c => `<div class="inf-escala-seg ${t.label===c.label?'on':''}" style="--c:${c.color}">
+    <b>${c.label}</b><span>${c.pts[0]}–${c.pts[1]}</span></div>`).join('');
+  const vistos = new Set();                                  // un mismo río aparece en varios tramos: mostrar 1 vez
+  const aguaU = inf.agua.filter(w => { const k = (w.name || w.type || '').trim().toLowerCase() || (w.lat + ',' + w.lon);
+    if(vistos.has(k)) return false; vistos.add(k); return true; });
+  const aguaL = aguaU.slice(0, 4).map(w => `<li><span class="izq">${esc((w.name || '').trim() || 'Cuerpo de agua sin nombre')}</span><span>${kmTxt(w.dist)}</span></li>`).join('') || '<li>Sin cuerpos de agua en 6 km</li>';
+  const plL = inf.planteles.slice(0, 4).map(p => `<li><span class="izq">${esc(p.nombre || 'Plantel')}</span><span>${kmTxt(haversine(inf.lat, inf.lon, p.lat, p.lon))}</span></li>`).join('')
+    + (inf.detectados.length ? `<li><span class="izq">${inf.detectados.length} plantel(es) detectado(s) por IA en satélite</span><span>≤ 3 km</span></li>` : '');
+  const resumen = [
+    ['💧', aguaU[0] ? kmTxt(aguaU[0].dist) : '> 6 km', 'agua más cercana'],
+    ['🦠', inf.brotes.length, `brotes a ${inf.radioBrotes} km`],
+    ['🔴', inf.brotes.filter(b => !b.resuelto).length, 'brotes activos'],
+    ['🏭', inf.nPlanteles, 'planteles a 5 km'],
+    ['🦅', (inf.aves?.riesgo || []).filter(x => x.e.rol === 'carronero').length, 'carroñeros en 5 km'],
+  ].map(([e, v, t]) => `<div class="inf-kpi"><span>${e}</span><b>${v}</b><small>${t}</small></div>`).join('');
+  const pais = c => (c && c !== 'CL') ? ` · ${PAISES_BROTE[c]}` : '';
+  const brL = inf.brotes.slice(0, 6).map(b => `<li><span class="izq"><i style="background:${{comercial:'#c0392b',traspatio:'#E67E22',silvestre:'#1A5FB4'}[b.tipo]}"></i>${esc(b.fecha)} · ${b.tipo}${pais(b.pais)} — ${esc(b.region)}</span><span>${kmTxt(b.dist)}${b.resuelto ? '' : ' · <b style="color:#c0392b">activo</b>'}</span></li>`).join('')
+    || `<li>Sin brotes a menos de ${inf.radioBrotes} km</li>`;
+  let avesH;
+  if(!inf.aves) avesH = '<p class="inf-sub">No se pudo consultar GBIF / iNaturalist (sin conexión).</p>';
+  else {
+    const epoca = inf.brotesSilv5km60d > 0;
+    const filas = inf.aves.riesgo.sort((a, b) => (epoca ? b.e.pesoBrote - a.e.pesoBrote : b.e.peso - a.e.peso) || b.n - a.n).slice(0, 12).map(x => {
+      const r = ROL_INF[x.e.rol]; const p = epoca ? x.e.pesoBrote : x.e.peso;
+      return `<tr><td><b>${esc(x.e.nom)}</b><div class="inf-sub"><i>${esc(x.e.sci)}</i></div></td>
+        <td><span class="inf-rol" style="color:${r.color};background:${r.bg}">${r.lbl}</span></td>
+        <td class="inf-num">${x.n.toLocaleString('es-CL')}</td><td class="inf-num">${x.reciente ? '✓ ' + x.reciente : '—'}</td><td class="inf-num"><b>${p}</b>/9</td></tr>`; }).join('');
+    const n = inf.aves.riesgo.length;
+    avesH = filas ? `<table class="inf-tabla"><thead><tr><th>Especie de riesgo</th><th>Rol</th><th>Registros ${inf.aves.desde}–hoy</th><th>Últ. 60 días</th><th>Peso${epoca ? ' (brote)' : ''}</th></tr></thead><tbody>${filas}</tbody></table>
+      <p class="inf-sub">${n} especies de riesgo con registros en 5 km${n > 12 ? ' (se muestran 12)' : ''}. Registros: GBIF (eBird, iNaturalist y censos); últimos 60 días: iNaturalist.
+      ${epoca ? 'Hay brotes en aves silvestres a 5 km en 60 días: los carroñeros pesan ×1,5. ' : ''}Más registros también reflejan más observadores. Informativo: aún no suma al puntaje.</p>`
+      : `<p class="inf-sub">Sin registros de especies de riesgo en 5 km. La ausencia de registros no significa ausencia de aves.</p>`;
+  }
+  const rec = recomendacionesEntorno(inf).map(r => `<li>${r}</li>`).join('');
+  const btn = id => `<button class="inf-dl" data-html2canvas-ignore onclick="descargarBloque('${id}')">⬇ PNG</button>`;
+  return `
+  <div id="inf-total">
+    <div class="inf-bloque inf-cab" id="inf-b-cab">${btn('inf-b-cab')}
+      <div><div class="inf-kicker">Análisis de riesgo de influenza aviar H5N1 · Entorno del plantel</div>
+        <h1>${esc(inf.nombre)}</h1>
+        <div class="inf-sub">${esc(TYPE_LABEL[inf.tipo] || inf.tipo)} · ${inf.lat.toFixed(5)}, ${inf.lon.toFixed(5)} · evaluado el ${hoy}</div></div>
+      <div class="inf-marca">AviVet<span>Riesgo IA</span></div>
+    </div>
+    <div class="inf-fila f1">
+      <div class="inf-bloque inf-res" id="inf-b-res" style="--c:${t.color}">${btn('inf-b-res')}
+        <div class="inf-h">Resultado</div>
+        <div class="inf-tier">${t.emoji} RIESGO ${t.label}</div>
+        <div class="inf-total-pts"><b>${t.total}</b>/15 puntos</div>
+        <div class="inf-escala">${escala}</div>
+        <div class="inf-h" style="margin-top:16px">Desglose por factor</div>
+        <table class="inf-tabla inf-fact">${F}</table>
+      </div>
+      <div class="inf-bloque inf-mapa" id="inf-b-mapa">${btn('inf-b-mapa')}
+        <div class="inf-h">Entorno a 5 km</div>
+        ${mapa ? `<img src="${mapa}" alt="Mapa del entorno">` : '<p class="inf-sub">No se pudo generar el mapa.</p>'}
+        <div class="inf-ley"><span><i style="background:${t.color}"></i>Plantel evaluado</span><span><i style="background:#5DADE2"></i>Agua</span>
+          <span><i style="background:#c0392b"></i>Brote comercial</span><span><i style="background:#E67E22"></i>Brote traspatio</span>
+          <span><i style="background:#1A5FB4"></i>Brote silvestre</span><span><i style="background:#95a5a6"></i>Plantel registrado</span>
+          <span><i style="background:#8e44ad"></i>Plantel detectado (IA)</span></div>
+      </div>
+    </div>
+    <div class="inf-fila">
+      <div class="inf-bloque" id="inf-b-hall">${btn('inf-b-hall')}
+        <div class="inf-h">Hallazgos del entorno</div>
+        <div class="inf-kpis">${resumen}</div>
+        <div class="inf-sh">💧 Cuerpos de agua más cercanos</div><ul class="inf-lista">${aguaL}</ul>
+        <div class="inf-sh">🦠 Brotes IA a menos de ${inf.radioBrotes} km (WAHIS/OMSA)</div><ul class="inf-lista">${brL}</ul>
+        ${inf.brotes.length > 6 ? `<div class="inf-sub">y ${inf.brotes.length - 6} más.</div>` : ''}
+        <div class="inf-sh">🏭 Planteles industriales cercanos</div><ul class="inf-lista">${plL || '<li><span class="izq">Sin planteles registrados ni detectados a 5 km</span></li>'}</ul>
+      </div>
+      <div class="inf-bloque" id="inf-b-aves">${btn('inf-b-aves')}
+        <div class="inf-h">Aves silvestres de riesgo observadas</div>${avesH}
+      </div>
+    </div>
+    <div class="inf-bloque" id="inf-b-rec">${btn('inf-b-rec')}
+      <div class="inf-h">Recomendaciones para el entorno</div><ul class="inf-rec">${rec}</ul>
+      <div class="inf-pie">Metodología AviVet Riesgo IA: escala 0–15 en 5 factores (agua OSM + DGA; planteles a 5 km; estación; tipo de producción;
+        brotes WAHIS/OMSA de Chile, Perú, Argentina y Bolivia). Referencias: Yoo 2021; Gkrinia 2025; Azat 2024; Green et al. 2023 (USDA, caso-control 2022).
+        Herramienta de apoyo a la decisión: no reemplaza la evaluación del médico veterinario ni la normativa del SAG. avivet.cl</div>
+    </div>
+  </div>`;
+}
+
+// ── Descarga como imagen ─────────────────────────────────────────────
+let _h2c = null;
+function cargarHtml2canvas(){
+  if(window.html2canvas) return Promise.resolve();
+  if(_h2c) return _h2c;
+  _h2c = new Promise((ok, mal) => { const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+    s.onload = ok; s.onerror = () => { _h2c = null; mal(new Error('sin conexión')); }; document.head.appendChild(s); });
+  return _h2c;
+}
+async function descargarBloque(id){
+  const el = document.getElementById(id); if(!el) return;
+  const avisos = document.getElementById('informe-estado');
+  avisos.textContent = 'Generando imagen…';
+  try{
+    await cargarHtml2canvas();
+    const cv = await html2canvas(el, { scale: 2, backgroundColor: '#ffffff', useCORS: true, logging: false });
+    const nom = (ultimoInforme?.nombre || 'plantel').replace(/[^\wáéíóúñ-]+/gi, '_');
+    const parte = { 'inf-total':'informe', 'inf-b-cab':'encabezado', 'inf-b-res':'resultado', 'inf-b-mapa':'mapa',
+                    'inf-b-hall':'hallazgos', 'inf-b-aves':'aves', 'inf-b-rec':'recomendaciones' }[id] || id;
+    const a = document.createElement('a');
+    a.download = `riesgo-IA_${nom}_${parte}_${new Date().toISOString().slice(0,10)}.png`;
+    a.href = cv.toDataURL('image/png'); a.click();
+    avisos.textContent = `✅ Imagen descargada (${parte}). Revisa tu carpeta Descargas.`;
+  }catch(e){
+    avisos.textContent = '⚠️ No se pudo generar la imagen: ' + e.message;
+  }
+}
+function cerrarInforme(){ document.getElementById('informe-overlay').style.display = 'none'; }
+
 async function calcular(){
   const lat  = parseFloat(document.getElementById('inp-lat').value);
   const lon  = parseFloat(document.getElementById('inp-lon').value);
@@ -2543,6 +2886,21 @@ function runScore(lat, lon, tipo, manualFarms, osmWater, dga){
   renderResultado(tier, {water:w,farms:f,season:s,type:t,brotes:br.pts,tipo}, nearestKm, dbNearby.length, manualFarms, br.n);
 
   lastEval = { lat, lon, tipo, manualFarms, osmWater, dga };
+  const interpAgua = nearestKm < 0.5 ? 'Muy cercano: aves acuáticas junto al plantel' : nearestKm < 2 ? 'Cercano' : nearestKm < 5 ? 'Moderado' : 'Lejano';
+  ultimoInforme = {
+    lat, lon, tipo, tier, manualFarms, radioBrotes: broteFiltro.radioKm,
+    nombre: document.getElementById('inp-nombre').value.trim() || 'Plantel evaluado',
+    agua: waterFeatures.map(w => ({ lat:w.lat, lon:w.lon, name:w.name, type:w.type, dist:w.dist })),
+    planteles: dbNearby.map(f => ({ lat:f.lat, lon:f.lon, nombre:f.nombre })),
+    nPlanteles: totalFarms,
+    factores: [
+      { label:'💧 Distancia a agua', pts:w, max:3, detail: nearestKm < 6 ? kmTxt(nearestKm) : 'más de 6 km', interp: interpAgua },
+      { label:'🏭 Planteles cercanos (5 km)', pts:f, max:3, detail:`${totalFarms} plantel(es)`, interp: totalFarms >= 2 ? 'Zona de densidad avícola' : totalFarms === 1 ? 'Un vecino industrial' : 'Sin vecinos industriales' },
+      { label:'📅 Estación del año', pts:s, max:3, detail: seasonLabel(), interp: s === 3 ? 'Mayor riesgo: migración e ingreso de H5N1' : s === 2 ? 'Riesgo intermedio' : 'Menor riesgo estacional' },
+      { label:'🐔 Tipo de producción', pts:t, max:3, detail: TYPE_LABEL[tipo] || tipo, interp: t >= 3 ? 'Acceso exterior / baja bioseguridad' : t === 2 ? 'Bioseguridad intermedia' : 'Confinado, industrial' },
+      { label:'🦠 Brotes IA cercanos', pts:br.pts, max:3, detail:`${br.n} en ${broteFiltro.radioKm} km`, interp: br.n >= 6 ? 'Alta presión de virus en la zona' : br.n >= 1 ? 'Hay brotes notificados en la zona' : 'Sin brotes notificados' },
+    ],
+  };
 }
 
 function setBtnLoading(on){
@@ -2708,5 +3066,14 @@ function mostrarApp(){
   renderTablaPlantel();
 }
 </script>
+<div id="informe-overlay" role="dialog" aria-label="Informe de riesgo">
+  <div class="inf-barra">
+    <b>📄 Informe para presentación</b>
+    <button class="pri" onclick="descargarBloque('inf-total')">⬇ Descargar informe completo (PNG)</button>
+    <span id="informe-estado">También puedes bajar cada bloque con su botón “⬇ PNG”.</span>
+    <button class="sec" onclick="cerrarInforme()">✕ Cerrar</button>
+  </div>
+  <div id="informe-lamina"></div>
+</div>
 </body>
 </html>
