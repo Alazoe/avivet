@@ -78,4 +78,5 @@ Debajo, el resumen muestra una **segunda lectura de las mismas respuestas**, pon
 - Cada ítem tiene un peso (1 · 0,8 · 0,6 · 0,4 · 0,2) y una categoría, externa o interna, definidos en [pesos-riesgo.xlsx](pesos-riesgo.xlsx) (columna «TU PESO» manda sobre «Peso propuesto»).
 - Índice = 100 · Σ(peso · cumple) / Σ(peso de los ítems aplicables); los N/A no cuentan. Se entrega total, externo, interno y un **radar por categoría**.
 - **Barrera crítica:** un ítem de peso 1 sin cumplir impide el nivel «riesgo bajo» y se lista por nombre.
+- Los 68 pesos de plantel parten de los del informe SEPA (marzo 2025, escala 1–5 ÷ 5; con ellos el caso SEPA da 77,8 %); la columna «Borrador inicial» guarda los pesos anteriores y «Origen del peso» indica la fuente. Traspatio sigue con pesos borrador.
 - Para actualizar pesos: editar el Excel y correr `python3 generar-pesos.py` (agrega `--revisado` cuando estén aprobados; mientras tanto la app avisa «pesos en revisión»).
