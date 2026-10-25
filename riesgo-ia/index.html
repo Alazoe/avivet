@@ -344,7 +344,7 @@ table.data-table{width:100%;border-collapse:collapse;font-size:13px;}
           <div class="section-icon">🗺️</div>
           <div>
             <div class="section-title">Evaluación de riesgo</div>
-            <div class="section-meta">Escala 0–15 pts · 5 factores · Agua OSM + DGA · Brotes WAHIS ponderados</div>
+            <div class="section-meta">Escala 0–18 pts · 6 factores · Agua OSM + DGA · Brotes WAHIS · Aves eBird</div>
           </div>
         </div>
 
@@ -421,6 +421,14 @@ table.data-table{width:100%;border-collapse:collapse;font-size:13px;}
                 <div class="filtro-row">
                   <span class="filtro-lbl">Radio:</span>
                   <input type="number" class="form-input filtro-radio" id="inp-brote-radio" min="1" max="50" value="10" onchange="onFiltroBrotesChange()"> <span class="filtro-lbl">km</span>
+                </div>
+              </div>
+              <div class="filtro-brotes" id="ebird-box">
+                <div class="filtro-brotes-head">🦅 Aves silvestres de riesgo (eBird, 5 km)</div>
+                <div id="ebird-estado" class="form-hint" style="margin-bottom:6px;"></div>
+                <div class="filtro-row" id="ebird-form" style="gap:6px;">
+                  <input type="password" class="form-input" id="inp-ebird-key" placeholder="Pega tu clave de eBird" autocomplete="off" style="flex:1;min-width:0;">
+                  <button type="button" class="btn-secondary" onclick="guardarClaveEbird()" style="width:auto;padding:6px 12px;"><span>Guardar</span></button>
                 </div>
               </div>
 
@@ -626,8 +634,14 @@ table.data-table{width:100%;border-collapse:collapse;font-size:13px;}
                 0 → 0 pts · 1–2 → 1 pt · 3–5 → 2 pts · ≥6 → 3 pts
               </div>
             </div>
+            <div class="met-item">
+              <div class="met-item-title">Aves silvestres de riesgo (5 km)</div>
+              <div class="met-item-body">Especies de entorno observadas a 5 km: eBird (últimos 30 días, máximo que entrega eBird) e iNaturalist (60 días). Cada especie tiene un peso de 1 a 9 = evidencia de infección × contacto con planteles (WAHIS/OMSA + literatura). Los carroñeros pesan ×1,5 si hubo brotes en aves silvestres a 5 km en 60 días. Ver aves acuáticas o playeras en el potrero más cercano multiplicó el riesgo ×6 en EE.UU. 2022 (Green 2023). Los pájaros que entran al pabellón se evalúan en bioseguridad.<br><br>
+                Especie de mayor peso: ≥7 → 3 pts · 5–6,9 → 2 pts · 3–4,9 → 1 pt · &lt;3 o ninguna → 0 pts
+              </div>
+            </div>
           </div>
-          <p style="margin-top:14px;font-size:12px;color:var(--text3);">Puntaje total <b>0–15 pts</b> (5 factores × 0–3) · BAJO 0–4 · MEDIO 5–8 · ALTO 9–11 · MUY ALTO 12–15</p>
+          <p style="margin-top:14px;font-size:12px;color:var(--text3);">Puntaje total <b>0–18 pts</b> (6 factores × 0–3) · BAJO 0–5 · MEDIO 6–10 · ALTO 11–13 · MUY ALTO 14–18</p>
         </div>
 
         <div class="card">
@@ -665,12 +679,12 @@ const BROTES_KEY = 'avivet_brotes_v1';
 const RADIUS_SEARCH_M = 6000;
 const FARM_RADIUS_KM  = 5.0;
 
-// Escala 0–15 (5 factores × 0–3)
+// Escala 0–18 (6 factores × 0–3)
 const TIER_CONFIG = {
-  bajo:  { label:'BAJO',     emoji:'🟢', pts:[0,4],   cls:'bajo',  color:'#2ECC71' },
-  medio: { label:'MEDIO',    emoji:'🟡', pts:[5,8],   cls:'medio', color:'#d4a017' },
-  alto:  { label:'ALTO',     emoji:'🟠', pts:[9,11],  cls:'alto',  color:'#E67E22' },
-  muy:   { label:'MUY ALTO', emoji:'🔴', pts:[12,15], cls:'muy',   color:'#E74C3C' },
+  bajo:  { label:'BAJO',     emoji:'🟢', pts:[0,5],   cls:'bajo',  color:'#2ECC71' },
+  medio: { label:'MEDIO',    emoji:'🟡', pts:[6,10],  cls:'medio', color:'#d4a017' },
+  alto:  { label:'ALTO',     emoji:'🟠', pts:[11,13], cls:'alto',  color:'#E67E22' },
+  muy:   { label:'MUY ALTO', emoji:'🔴', pts:[14,18], cls:'muy',   color:'#E74C3C' },
 };
 
 // Filtro de brotes (afecta mapa y 5º factor). Se inicializa al cargar.
@@ -2190,10 +2204,10 @@ function limpiarAguaManual(){
 
 function recalcularConAguaManual(){
   if(!lastEval) return;
-  const { lat, lon, osmWater, dga } = lastEval;
+  const { lat, lon, osmWater, dga, aves } = lastEval;
   const tipo = document.getElementById('inp-tipo').value;
   const manualFarms = parseInt(document.getElementById('inp-farms-manual').value) || 0;
-  runScore(lat, lon, tipo, manualFarms, osmWater, dga);
+  runScore(lat, lon, tipo, manualFarms, osmWater, dga, aves);
 }
 
 // ── Brotes DB (localStorage) ───────────────────────────────────────
@@ -2261,7 +2275,7 @@ function renderMap(lat, lon, tier, waterFeatures, dbFarms, dga){
     iconAnchor:[11,11],
   });
   const nombre = document.getElementById('inp-nombre').value || 'Plantel evaluado';
-  addLayer(L.marker([lat,lon],{icon}).bindPopup(`<b>${nombre}</b><br>Tier: ${tier.emoji} ${tier.label}<br>Puntos: ${tier.total}/15`).openPopup());
+  addLayer(L.marker([lat,lon],{icon}).bindPopup(`<b>${nombre}</b><br>Tier: ${tier.emoji} ${tier.label}<br>Puntos: ${tier.total}/18`).openPopup());
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -2274,6 +2288,7 @@ function renderResultado(tier, breakdown, waterDist, dbCount, manualCount, brote
     { label:'📅 Estación del año',           pts: breakdown.season, max:3, detail: seasonLabel() },
     { label:'🐔 Tipo de producción propia',  pts: breakdown.type,   max:3, detail: TYPE_LABEL[breakdown.tipo] || breakdown.tipo },
     { label:'🦠 Brotes IA cercanos',         pts: breakdown.brotes, max:3, detail: `${brotesCount||0} en ${broteFiltro.radioKm} km` },
+    { label:'🦅 Aves silvestres de riesgo',  pts: breakdown.aves ?? 0, max:3, detail: breakdown.avesDet || '—' },
   ];
 
   const barColor = (p,m) => p>=m ? '#E74C3C' : p>=m*.66 ? '#E67E22' : p>=m*.33 ? '#d4a017' : '#2ECC71';
@@ -2295,7 +2310,7 @@ function renderResultado(tier, breakdown, waterDist, dbCount, manualCount, brote
           <div class="resultado-label">RIESGO ${tier.label}</div>
           <div class="resultado-date">Evaluado ${today}</div>
         </div>
-        <div class="resultado-score">${tier.total}/15</div>
+        <div class="resultado-score">${tier.total}/18</div>
       </div>
       <table class="breakdown-table">
         <colgroup><col><col class="c-bar"><col class="c-pts"></colgroup>
@@ -2534,6 +2549,81 @@ async function detectarPlantelesIA(){
 }
 
 // ════════════════════════════════════════════════════════════════
+//  6º FACTOR: AVES SILVESTRES DE RIESGO A 5 KM (eBird 30 días + iNaturalist 60 días)
+//  La clave de eBird se guarda SOLO en este equipo (localStorage), nunca en el código.
+// ════════════════════════════════════════════════════════════════
+const EBIRD_KEY_LS = 'avivet_ebird_key';
+function getEbirdKey(){ try{ return localStorage.getItem(EBIRD_KEY_LS) || ''; } catch{ return ''; } }
+function renderEbirdBox(msg){
+  const k = getEbirdKey(), st = document.getElementById('ebird-estado'), fm = document.getElementById('ebird-form');
+  if(!st) return;
+  st.innerHTML = msg || (k ? `✅ Clave guardada en este equipo (…${k.slice(-4)}). <a href="#" onclick="borrarClaveEbird();return false;">Cambiar</a>`
+                            : 'Sin clave: solo se usa iNaturalist, que casi no tiene registros rurales. Pégala una vez y queda guardada en este equipo.');
+  fm.style.display = k ? 'none' : 'flex';
+}
+async function guardarClaveEbird(){
+  const k = document.getElementById('inp-ebird-key').value.trim();
+  if(!k){ renderEbirdBox('⚠️ Pega la clave primero.'); return; }
+  renderEbirdBox('Verificando la clave con eBird…');
+  try{
+    const r = await fetchConTimeout('https://api.ebird.org/v2/ref/taxonomy/versions', { headers:{ 'X-eBirdApiToken': k } }, 10000);
+    const r2 = await fetchConTimeout('https://api.ebird.org/v2/data/obs/geo/recent?lat=-33.45&lng=-70.66&dist=1&back=1', { headers:{ 'X-eBirdApiToken': k } }, 10000);
+    if(!r2.ok){ renderEbirdBox(`⚠️ eBird rechazó la clave (HTTP ${r2.status}). Revísala en ebird.org/api/keygen.`); document.getElementById('ebird-form').style.display='flex'; return; }
+  }catch(e){ renderEbirdBox('⚠️ No pude conectar con eBird. Intenta de nuevo.'); document.getElementById('ebird-form').style.display='flex'; return; }
+  try{ localStorage.setItem(EBIRD_KEY_LS, k); }catch{}
+  document.getElementById('inp-ebird-key').value = '';
+  renderEbirdBox(); if(lastEval) calcular();
+}
+function borrarClaveEbird(){ try{ localStorage.removeItem(EBIRD_KEY_LS); }catch{} renderEbirdBox(); }
+document.addEventListener('DOMContentLoaded', () => renderEbirdBox());
+
+let _idxEsp = null;
+function idxEspecies(){ if(!_idxEsp){ _idxEsp = {}; ESPECIES_RIESGO.forEach(e => [e.sci, ...e.syn].forEach(n => _idxEsp[n.toLowerCase()] = e)); } return _idxEsp; }
+
+async function avesRecientes(lat, lon){
+  const key = getEbirdKey(), obs = [];
+  let ebird = key ? null : 'sin_clave';
+  const tareas = [];
+  if(key) tareas.push(fetchConTimeout(`https://api.ebird.org/v2/data/obs/geo/recent?lat=${lat}&lng=${lon}&dist=5&back=30&maxResults=1000`,
+      { headers:{ 'X-eBirdApiToken': key } }, 15000)
+    .then(async r => {
+      if(!r.ok){ ebird = r.status === 401 || r.status === 403 ? 'clave_mala' : 'error'; return; }
+      ebird = 'ok';
+      (await r.json()).forEach(o => { const e = idxEspecies()[(o.sciName || '').toLowerCase()];
+        if(e) obs.push({ e, lat:o.lat, lon:o.lng, fecha:(o.obsDt||'').slice(0,10), n:o.howMany || 1, fuente:'eBird' }); });
+    }).catch(() => { ebird = 'error'; }));
+  const d1 = new Date(Date.now() - 60*864e5).toISOString().slice(0,10);
+  tareas.push(fetchConTimeout(`https://api.inaturalist.org/v1/observations?lat=${lat}&lng=${lon}&radius=5&taxon_id=3&verifiable=true&d1=${d1}&per_page=200`, {}, 15000)
+    .then(r => r.json()).then(j => (j.results || []).forEach(o => {
+      const e = idxEspecies()[(o.taxon?.name || '').toLowerCase()]; const [la, lo] = (o.location || '').split(',').map(Number);
+      if(e && !isNaN(la)) obs.push({ e, lat:la, lon:lo, fecha:o.observed_on || '', n:1, fuente:'iNaturalist' }); })).catch(() => {}));
+  await Promise.all(tareas);
+  const porEsp = new Map();
+  obs.forEach(o => { const x = porEsp.get(o.e.sci) || { e:o.e, n:0, obs:[], ultima:'' };
+    x.n += o.n; x.obs.push(o); if(o.fecha > x.ultima) x.ultima = o.fecha; porEsp.set(o.e.sci, x); });
+  return { ebird, especies:[...porEsp.values()], obs };
+}
+
+// Puntaje: según la especie de mayor peso observada a 5 km (peso ×1,5 para carroñeros en época de brote silvestre)
+function avesPts(av, epoca){
+  if(!av || !av.especies.length) return { pts:0, max:0, top:null, n:0 };
+  const peso = x => (epoca ? x.e.pesoBrote : x.e.peso);
+  const top = av.especies.reduce((a, b) => peso(b) > peso(a) ? b : a);
+  const m = peso(top);
+  return { pts: m >= 7 ? 3 : m >= 5 ? 2 : m >= 3 ? 1 : 0, max:m, top, n: av.especies.length };
+}
+function avesDetalle(aves, av, epoca){
+  if(!aves) return 'sin datos';
+  const fuente = aves.ebird === 'ok' ? 'eBird 30 d + iNat 60 d' : aves.ebird === 'sin_clave' ? 'sin clave eBird (solo iNat)' : aves.ebird === 'clave_mala' ? 'clave eBird rechazada' : 'eBird no respondió';
+  return `${av.n} especie(s) · ${fuente}${epoca ? ' · época de brote' : ''}`;
+}
+function brotesSilvestres5km60d(lat, lon){
+  const hace60 = Date.now() - 60*864e5;
+  return getAllBrotes().filter(b => b.tipo === 'silvestre' && haversine(lat, lon, b.lat, b.lon) <= 5
+    && (fechaBrote(b)?.getTime() || 0) >= hace60).length;
+}
+
+// ════════════════════════════════════════════════════════════════
 //  INFORME PARA PRESENTACIÓN (lámina descargable como imagen PNG)
 // ════════════════════════════════════════════════════════════════
 const ESPECIES_RIESGO = [
@@ -2599,7 +2689,9 @@ async function avesINat(lat, lon){
   const filas = new Map();
   (rg.facets?.[0]?.counts || []).forEach(f => { const e = porGbif[+f.name]; if(e) filas.set(e.sci, { e, n: f.count, reciente: 0 }); });
   (ri.results || []).forEach(x => { const e = porNombre[(x.taxon?.name || '').toLowerCase()]; if(!e) return;
-    const f = filas.get(e.sci) || { e, n: 0, reciente: 0 }; f.reciente = x.count; filas.set(e.sci, f); });
+    const f = filas.get(e.sci) || { e, n: 0, reciente: 0 }; f.reciente = Math.max(f.reciente, x.count); filas.set(e.sci, f); });
+  (ultimoInforme?.avesRec?.especies || []).forEach(x => { const f = filas.get(x.e.sci) || { e: x.e, n: 0, reciente: 0 };
+    f.reciente = Math.max(f.reciente, x.obs.length); f.ultima = x.ultima; filas.set(x.e.sci, f); });
   return { riesgo: [...filas.values()], registros: rg.count || 0, desde: anio - 9, recientes: (ri.results || []).length };
 }
 
@@ -2654,6 +2746,8 @@ async function mapaInformeDataURL(inf, W = 900, H = 640){
   // brotes
   const col = { comercial:'#c0392b', traspatio:'#E67E22', silvestre:'#1A5FB4' };
   inf.brotesTodos.forEach(b => punto(b.lat, b.lon, b.resuelto ? 5 : 8, col[b.tipo] || '#1A5FB4', '#fff', b.resuelto ? 1.5 : 3));
+  // aves de riesgo observadas recientemente (eBird / iNaturalist)
+  (inf.avesRec?.obs || []).forEach(o => punto(o.lat, o.lon, 4.5, '#d63384', '#fff', 1.5));
   // plantel evaluado
   punto(inf.lat, inf.lon, 11, inf.tier.color, '#fff', 4);
   // escala y crédito
@@ -2741,15 +2835,15 @@ function htmlInforme(inf, mapa){
   if(!inf.aves) avesH = '<p class="inf-sub">No se pudo consultar GBIF / iNaturalist (sin conexión).</p>';
   else {
     const epoca = inf.brotesSilv5km60d > 0;
-    const filas = inf.aves.riesgo.sort((a, b) => (epoca ? b.e.pesoBrote - a.e.pesoBrote : b.e.peso - a.e.peso) || b.n - a.n).slice(0, 12).map(x => {
+    const filas = inf.aves.riesgo.sort((a, b) => (!!b.reciente - !!a.reciente) || (epoca ? b.e.pesoBrote - a.e.pesoBrote : b.e.peso - a.e.peso) || b.n - a.n).slice(0, 12).map(x => {
       const r = ROL_INF[x.e.rol]; const p = epoca ? x.e.pesoBrote : x.e.peso;
       return `<tr><td><b>${esc(x.e.nom)}</b><div class="inf-sub"><i>${esc(x.e.sci)}</i></div></td>
         <td><span class="inf-rol" style="color:${r.color};background:${r.bg}">${r.lbl}</span></td>
-        <td class="inf-num">${x.n.toLocaleString('es-CL')}</td><td class="inf-num">${x.reciente ? '✓ ' + x.reciente : '—'}</td><td class="inf-num"><b>${p}</b>/9</td></tr>`; }).join('');
+        <td class="inf-num">${x.n.toLocaleString('es-CL')}</td><td class="inf-num">${x.reciente ? '✓ ' + x.reciente + (x.ultima ? '<div class="inf-sub">' + x.ultima.slice(5).split('-').reverse().join('/') + '</div>' : '') : '—'}</td><td class="inf-num"><b>${p}</b>/9</td></tr>`; }).join('');
     const n = inf.aves.riesgo.length;
-    avesH = filas ? `<table class="inf-tabla"><thead><tr><th>Especie de riesgo</th><th>Rol</th><th>Registros ${inf.aves.desde}–hoy</th><th>Últ. 60 días</th><th>Peso${epoca ? ' (brote)' : ''}</th></tr></thead><tbody>${filas}</tbody></table>
-      <p class="inf-sub">${n} especies de riesgo con registros en 5 km${n > 12 ? ' (se muestran 12)' : ''}. Registros: GBIF (eBird, iNaturalist y censos); últimos 60 días: iNaturalist.
-      ${epoca ? 'Hay brotes en aves silvestres a 5 km en 60 días: los carroñeros pesan ×1,5. ' : ''}Más registros también reflejan más observadores. Informativo: aún no suma al puntaje.</p>`
+    avesH = filas ? `<table class="inf-tabla"><thead><tr><th>Especie de riesgo</th><th>Rol</th><th>Registros ${inf.aves.desde}–hoy</th><th>Recientes*</th><th>Peso${epoca ? ' (brote)' : ''}</th></tr></thead><tbody>${filas}</tbody></table>
+      <p class="inf-sub">${n} especies de riesgo con registros en 5 km${n > 12 ? ' (se muestran 12)' : ''}. Registros: GBIF (eBird, iNaturalist y censos). *Recientes: eBird 30 días + iNaturalist 60 días (son los que suman al puntaje).
+      ${epoca ? 'Hay brotes en aves silvestres a 5 km en 60 días: los carroñeros pesan ×1,5. ' : ''}Más registros también reflejan más observadores.</p>`
       : `<p class="inf-sub">Sin registros de especies de riesgo en 5 km. La ausencia de registros no significa ausencia de aves.</p>`;
   }
   const rec = recomendacionesEntorno(inf).map(r => `<li>${r}</li>`).join('');
@@ -2766,7 +2860,7 @@ function htmlInforme(inf, mapa){
       <div class="inf-bloque inf-res" id="inf-b-res" style="--c:${t.color}">${btn('inf-b-res')}
         <div class="inf-h">Resultado</div>
         <div class="inf-tier">${t.emoji} RIESGO ${t.label}</div>
-        <div class="inf-total-pts"><b>${t.total}</b>/15 puntos</div>
+        <div class="inf-total-pts"><b>${t.total}</b>/18 puntos</div>
         <div class="inf-escala">${escala}</div>
         <div class="inf-h" style="margin-top:16px">Desglose por factor</div>
         <table class="inf-tabla inf-fact">${F}</table>
@@ -2777,7 +2871,7 @@ function htmlInforme(inf, mapa){
         <div class="inf-ley"><span><i style="background:${t.color}"></i>Plantel evaluado</span><span><i style="background:#5DADE2"></i>Agua</span>
           <span><i style="background:#c0392b"></i>Brote comercial</span><span><i style="background:#E67E22"></i>Brote traspatio</span>
           <span><i style="background:#1A5FB4"></i>Brote silvestre</span><span><i style="background:#95a5a6"></i>Plantel registrado</span>
-          <span><i style="background:#8e44ad"></i>Plantel detectado (IA)</span></div>
+          <span><i style="background:#8e44ad"></i>Plantel detectado (IA)</span><span><i style="background:#d63384"></i>Ave de riesgo reciente</span></div>
       </div>
     </div>
     <div class="inf-fila">
@@ -2795,8 +2889,8 @@ function htmlInforme(inf, mapa){
     </div>
     <div class="inf-bloque" id="inf-b-rec">${btn('inf-b-rec')}
       <div class="inf-h">Recomendaciones para el entorno</div><ul class="inf-rec">${rec}</ul>
-      <div class="inf-pie">Metodología AviVet Riesgo IA: escala 0–15 en 5 factores (agua OSM + DGA; planteles a 5 km; estación; tipo de producción;
-        brotes WAHIS/OMSA de Chile, Perú, Argentina y Bolivia). Referencias: Yoo 2021; Gkrinia 2025; Azat 2024; Green et al. 2023 (USDA, caso-control 2022).
+      <div class="inf-pie">Metodología AviVet Riesgo IA: escala 0–18 en 6 factores (agua OSM + DGA; planteles a 5 km; estación; tipo de producción;
+        brotes WAHIS/OMSA de Chile, Perú, Argentina y Bolivia; aves silvestres de riesgo a 5 km, eBird 30 días + iNaturalist 60 días). Referencias: Yoo 2021; Gkrinia 2025; Azat 2024; Green et al. 2023 (USDA, caso-control 2022).
         Herramienta de apoyo a la decisión: no reemplaza la evaluación del médico veterinario ni la normativa del SAG. avivet.cl</div>
     </div>
   </div>`;
@@ -2846,9 +2940,10 @@ async function calcular(){
 
   let osmWater = [];
   let dga = { points:[], rivers:[], lakes:[] };
-  const [ro, rd] = await Promise.allSettled([ fetchWater(lat, lon), fetchDGA(lat, lon) ]);
+  const [ro, rd, ra] = await Promise.allSettled([ fetchWater(lat, lon), fetchDGA(lat, lon), avesRecientes(lat, lon) ]);
   if(ro.status === 'fulfilled') osmWater = ro.value;
   if(rd.status === 'fulfilled') dga = rd.value;
+  const aves = ra.status === 'fulfilled' ? ra.value : { ebird:'error', especies:[], obs:[] };
 
   if(ro.status !== 'fulfilled' && rd.status !== 'fulfilled'){
     setOsmStatus('error','Sin conexión a fuentes de agua');
@@ -2857,12 +2952,12 @@ async function calcular(){
     setOsmStatus('ok', `OSM ${osmWater.length} · DGA ${nRios} ríos / ${nLagos} lagos`);
   }
 
-  runScore(lat, lon, tipo, manualFarms, osmWater, dga);
+  runScore(lat, lon, tipo, manualFarms, osmWater, dga, aves);
   setBtnLoading(false);
 }
 
 // Calcula y dibuja combinando agua OSM + DGA + agua marcada a mano.
-function runScore(lat, lon, tipo, manualFarms, osmWater, dga){
+function runScore(lat, lon, tipo, manualFarms, osmWater, dga, aves){
   dga = dga || { points:[], rivers:[], lakes:[] };
   const manualFeatures = manualWater.map(w => ({
     lat:w.lat, lon:w.lon, name:'Marcado a mano', type:'manual', manual:true,
@@ -2879,16 +2974,22 @@ function runScore(lat, lon, tipo, manualFarms, osmWater, dga){
   const s = seasonPts();
   const t = typePts(tipo);
   const br = brotesPts(lat, lon);
-  const total = w + f + s + t + br.pts;
+  const epoca = brotesSilvestres5km60d(lat, lon) > 0;
+  const av = avesPts(aves, epoca);
+  const total = w + f + s + t + br.pts + av.pts;
   const tier = { ...getTier(total), total };
 
   renderMap(lat, lon, tier, waterFeatures, dbNearby, dga);
-  renderResultado(tier, {water:w,farms:f,season:s,type:t,brotes:br.pts,tipo}, nearestKm, dbNearby.length, manualFarms, br.n);
+  renderResultado(tier, {water:w,farms:f,season:s,type:t,brotes:br.pts,tipo,aves:av.pts,avesDet:avesDetalle(aves, av, epoca)}, nearestKm, dbNearby.length, manualFarms, br.n);
+  // aves de riesgo observadas en el mapa
+  (aves?.obs || []).forEach(o => addLayer(L.circleMarker([o.lat, o.lon], { radius:5, color:'#fff', weight:1.5,
+    fillColor:'#d63384', fillOpacity:.9 })
+    .bindTooltip(`🦅 ${o.e.nom} · ${o.fuente} ${o.fecha}`)));
 
-  lastEval = { lat, lon, tipo, manualFarms, osmWater, dga };
+  lastEval = { lat, lon, tipo, manualFarms, osmWater, dga, aves };
   const interpAgua = nearestKm < 0.5 ? 'Muy cercano: aves acuáticas junto al plantel' : nearestKm < 2 ? 'Cercano' : nearestKm < 5 ? 'Moderado' : 'Lejano';
   ultimoInforme = {
-    lat, lon, tipo, tier, manualFarms, radioBrotes: broteFiltro.radioKm,
+    lat, lon, tipo, tier, manualFarms, radioBrotes: broteFiltro.radioKm, avesRec: aves, avesEpoca: epoca,
     nombre: document.getElementById('inp-nombre').value.trim() || 'Plantel evaluado',
     agua: waterFeatures.map(w => ({ lat:w.lat, lon:w.lon, name:w.name, type:w.type, dist:w.dist })),
     planteles: dbNearby.map(f => ({ lat:f.lat, lon:f.lon, nombre:f.nombre })),
@@ -2899,6 +3000,7 @@ function runScore(lat, lon, tipo, manualFarms, osmWater, dga){
       { label:'📅 Estación del año', pts:s, max:3, detail: seasonLabel(), interp: s === 3 ? 'Mayor riesgo: migración e ingreso de H5N1' : s === 2 ? 'Riesgo intermedio' : 'Menor riesgo estacional' },
       { label:'🐔 Tipo de producción', pts:t, max:3, detail: TYPE_LABEL[tipo] || tipo, interp: t >= 3 ? 'Acceso exterior / baja bioseguridad' : t === 2 ? 'Bioseguridad intermedia' : 'Confinado, industrial' },
       { label:'🦠 Brotes IA cercanos', pts:br.pts, max:3, detail:`${br.n} en ${broteFiltro.radioKm} km`, interp: br.n >= 6 ? 'Alta presión de virus en la zona' : br.n >= 1 ? 'Hay brotes notificados en la zona' : 'Sin brotes notificados' },
+      { label:'🦅 Aves silvestres de riesgo (5 km)', pts:av.pts, max:3, detail: avesDetalle(aves, av, epoca), interp: av.top ? `Mayor peso: ${av.top.e.nom} (${av.max}/9)` : 'Sin especies de riesgo registradas' },
     ],
   };
 }
