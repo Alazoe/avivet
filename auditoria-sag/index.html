@@ -186,7 +186,7 @@ header{
 
 .subsection{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:12px;overflow:hidden;box-shadow:var(--shadow);}
 .subsection-header{padding:11px 18px;background:var(--surface2);border-bottom:1px solid var(--border2);font-size:12px;font-weight:700;color:var(--text2);letter-spacing:0.3px;text-transform:uppercase;}
-.check-item{padding:12px 18px;border-bottom:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;gap:16px;transition:background 0.1s;}
+.check-item{padding:12px 18px;border-bottom:1px solid var(--border2);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 16px;transition:background 0.1s;}
 .check-item:last-child{border-bottom:none;}
 .check-item:hover{background:#fafaf8;}
 .check-label{flex:1;font-size:13px;line-height:1.45;}
@@ -289,7 +289,35 @@ header{
 .toast.ok{background:var(--ok);}
 .toast.err{background:var(--red);}
 
+/* ── Observaciones y fotos (opcional) ── */
+.ev{flex-basis:100%;display:flex;flex-direction:row;flex-wrap:wrap;gap:8px;align-items:flex-start;padding-top:2px;}
+.ev-obs{flex:1 1 260px;min-width:0;min-height:34px;resize:vertical;border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-family:"DM Sans",sans-serif;font-size:12.5px;color:var(--text);background:var(--surface);}
+.ev-obs:focus{outline:none;border-color:var(--accent2);}
+.ev-fotos{display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
+.ev-th{position:relative;width:64px;height:64px;border-radius:6px;overflow:hidden;border:1px solid var(--border);background:var(--surface2);}
+.ev-th img{width:100%;height:100%;object-fit:cover;display:block;}
+.ev-del{position:absolute;top:2px;right:2px;width:20px;height:20px;border:0;border-radius:50%;background:rgba(0,0,0,.6);color:#fff;font-size:13px;line-height:20px;cursor:pointer;padding:0;}
+.ev-ok{position:absolute;bottom:2px;left:3px;font-style:normal;font-size:11px;color:#fff;background:var(--ok);border-radius:8px;padding:0 5px;}
+.ev-add{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border:1px dashed var(--border);border-radius:6px;font-size:12px;color:var(--text3);cursor:pointer;background:var(--surface);}
+.ev-add:hover{border-color:var(--accent2);color:var(--accent2);}
+.ev-add input{display:none;}
+.ev-resumen{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;margin:16px 0;}
+.ev-resumen h3{font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;}
+.ev-fila{padding:10px 0;border-top:1px solid var(--border2);break-inside:avoid;}
+.ev-fila:first-of-type{border-top:0;}
+.ev-it{font-size:13px;display:flex;justify-content:space-between;gap:12px;}
+.ev-est{font-size:11px;font-weight:700;white-space:nowrap;}
+.ev-est.c{color:var(--ok);} .ev-est.n{color:var(--red);} .ev-est.a{color:var(--text3);}
+.ev-txt{font-size:12.5px;color:var(--text2);margin-top:4px;white-space:pre-wrap;}
+.ev-fotos-res{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;}
+.ev-fotos-res img{width:150px;height:110px;object-fit:cover;border-radius:6px;border:1px solid var(--border);}
+.aviso-rubro{background:var(--accent-l);border:1px solid #a8dfc0;border-radius:8px;padding:10px 14px;font-size:12.5px;color:var(--accent);margin:10px 0;line-height:1.5;}
+.bp-resumen{background:var(--surface);border:1px dashed var(--border);border-radius:var(--radius);padding:14px 18px;margin:16px 0;font-size:13px;}
+.bp-resumen h3{font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;}
+.bp-resumen li{margin:3px 0 3px 18px;color:var(--text2);}
+
 @media print{
+  .ev-add,.ev-del{display:none!important;}
   #pantalla-inicio{display:none!important;}
   header,.sidebar,.nav-btns,.btn-pdf,.btn-sync,.sync-pill,.offline-banner{display:none!important;}
   #app{display:flex!important;}
@@ -304,19 +332,19 @@ header{
 <div id="pantalla-inicio">
   <div class="inicio-card">
     <div class="inicio-hero">
-      <div class="inicio-badge">🇨🇱 SAG Chile · Res. Ex. N°2114/2023</div>
+      <div class="inicio-badge">🇨🇱 SAG Chile · Res. Ex. N°2114/2023 · 7695/2024</div>
       <div class="inicio-titulo">Auditoría de<br>Bioseguridad Avícola</div>
-      <div class="inicio-sub">Para planteles industriales de Engorda y Ponedoras · AviVet</div>
+      <div class="inicio-sub">Planteles de Engorda y Ponedoras, y traspatio / AFC · AviVet</div>
     </div>
     <div class="inicio-body">
       <div class="inicio-pasos">
-        <div class="paso"><div class="paso-num">1</div><div class="paso-text"><strong>Ingresa los datos de tu predio</strong><span>Establecimiento, rubro (Engorda o Ponedoras) y fecha</span></div></div>
+        <div class="paso"><div class="paso-num">1</div><div class="paso-text"><strong>Ingresa los datos de tu predio</strong><span>Establecimiento, rubro (Engorda, Ponedoras o Traspatio) y fecha</span></div></div>
         <div class="paso"><div class="paso-num">2</div><div class="paso-text"><strong>Responde cada ítem de bioseguridad</strong><span>Marca Cumple, No Cumple o N/A según lo que observas en terreno</span></div></div>
         <div class="paso"><div class="paso-num">3</div><div class="paso-text"><strong>Revisa el resumen y guarda el PDF</strong><span>Tu resultado queda registrado automáticamente y puedes descargarlo</span></div></div>
       </div>
       <div class="inicio-aviso">
         <div class="aviso-icon">💡</div>
-        <div>Los ítems con <strong style="color:var(--red)">*</strong> son medidas críticas exigidas por el manual oficial del SAG (<em>D-VYC-VIS-PP-004</em>). Puedes completar la auditoría sin internet — se guarda automáticamente cuando recuperes conexión.</div>
+        <div>Los ítems con <strong style="color:var(--red)">*</strong> son medidas críticas exigidas por el manual oficial del SAG (<em>D-VYC-VIS-PP-004</em>; en traspatio, lo que el <em>D-VYC-VIS-PP-005</em> declara fiscalizable). Puedes completar la auditoría sin internet — se guarda automáticamente cuando recuperes conexión.</div>
       </div>
       <div class="inicio-retomar" id="inicioBanner">
         <div class="retomar-txt">
@@ -383,8 +411,11 @@ var sb = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_K
 var RUBRO_LABEL = {
   engorda: 'Engorda',
   ponedora_a: 'Ponedora A (≥20.000 aves)',
-  ponedora_b: 'Ponedora B (<20.000 aves)'
+  ponedora_b: 'Ponedora B (<20.000 aves)',
+  traspatio: 'Traspatio / AFC (autoconsumo o venta ocasional)'
 };
+var BUCKET = 'auditoria-evidencias';
+var MAX_FOTOS_ITEM = 3, MAX_FOTOS_TOTAL = 30;
 
 // =====================================================
 // DATA: checklist oficial SAG — Manual de Bioseguridad en Planteles
@@ -508,21 +539,99 @@ var SAGS=[
   {id:'resumen',name:'Resumen',icon:'📊',isResumen:true}
 ];
 
-var __ic=0,ITEMS_FLAT=[];
-SAGS.forEach(function(s){
-  if(!s.subsections)return;
-  s.subsections.forEach(function(sub){
-    sub.items.forEach(function(item){
-      item.id='i'+(__ic++);item.seccion=s.name;item.subseccion=sub.sub;
-      ITEMS_FLAT.push(item);
+
+var SAGS_PLANTEL = SAGS;
+
+// =====================================================
+// DATA: pauta de verificación oficial para traspatio / AFC
+// Manual D-VYC-VIS-PP-005 v02 y pauta F-VYC-VIS-PP-005 v02 (Res. Ex. N°7695/2024, 13-11-2024).
+// Aplica a domicilios o predios con aves para autoconsumo o venta ocasional, sin iniciación de
+// actividades ni resolución sanitaria. Quien vende con resolución sanitaria se evalúa como plantel.
+// item.req → único ítem que el manual declara fiscalizable desde el 2.° semestre de 2025 (1.4).
+// La sección D no puntúa: reúne medidas del manual v02 que la pauta no verifica y de la versión
+// 2023 (Res. 4534/2023, derogada) que ya no están en la pauta pero siguen siendo buena práctica.
+// =====================================================
+var SAGS_TRASPATIO=[
+  {id:'datos',name:'Datos del Predio',icon:'📋',isDatos:true},
+  {id:'tA',name:'A) Responsabilidades del titular',icon:'📝',subsections:[
+    {sub:'1. Responsabilidades del titular del predio o domicilio',items:[
+      {l:'El predio o domicilio cuenta con RUP.'},
+      {l:'El predio o domicilio tiene su declaración de existencia animal (DEA) vigente.'},
+      {l:'El predio o domicilio cuenta con un gallinero.'},
+      {l:'El gallinero evita el ingreso de animales ajenos al predio o domicilio.',req:true}
+    ]}
+  ]},
+  {id:'tB',name:'B) Medidas para el predio y el gallinero',icon:'🏡',subsections:[
+    {sub:'2. Medidas de bioseguridad para la avicultura AFC o traspatio',items:[
+      {l:'Las áreas que rodean el gallinero están libres de pastizales, escombros, basura y aguas estancadas, para no atraer aves silvestres, roedores, plagas y otros animales externos.'},
+      {l:'Toda ave que ingresa al domicilio o predio se mantiene en un lugar aislado, separado de las otras aves, por 14 días (verificar el lugar).'},
+      {l:'Mantiene ropa y zapatos exclusivos para trabajar con las aves.'},
+      {l:'Limpia periódicamente los bebederos y comederos.'},
+      {l:'El producto desinfectante utilizado es autorizado y se dosifica de acuerdo con lo indicado en su etiqueta.'},
+      {l:'Limpia y desinfecta los materiales o equipos que se utilizan con las aves.'},
+      {l:'El guano de las aves se retira en forma periódica y se almacena en contenedores cerrados, alejados del gallinero.'},
+      {l:'Si ingresa guano de aves como fertilizante a su predio o domicilio, lo almacena y aplica lejos del lugar donde se encuentran las aves.'},
+      {l:'Realiza manejo de plagas y roedores en el domicilio o predio.'},
+      {l:'La basura domiciliaria está en contenedores cerrados, alejados del gallinero.'}
+    ]}
+  ]},
+  {id:'tC',name:'C) Manejo de las aves',icon:'🐔',subsections:[
+    {sub:'3. Medidas de bioseguridad para el manejo de aves',items:[
+      {l:'Cambia a diario el agua de bebida.'},
+      {l:'El agua de bebida es potable o de pozo.'},
+      {l:'El alimento se almacena en contenedores cerrados.'},
+      {l:'Retira diariamente los huevos producidos.'},
+      {l:'Cuenta con registros de los procedimientos veterinarios realizados a las aves.'},
+      {l:'Las aves enfermas se separan de las sanas y de otros animales (verificar el lugar).'},
+      {l:'Retira diariamente las aves muertas desde el interior del gallinero, con medidas de bioseguridad personal (lleva registro de la mortalidad).'},
+      {l:'Las aves muertas por enfermedad se eliminan mediante entierro (fosa en el suelo) de 1 metro de profundidad y cubiertas de cal, alejadas de las fuentes de agua y de otros animales.'},
+      {l:'Evita el contacto de las aves acuáticas de traspatio con aves silvestres en cuerpos de agua aledaños.'}
+    ]}
+  ]},
+  {id:'tD',name:'D) Buenas prácticas recomendadas (no puntúan)',icon:'💡',noScore:true,subsections:[
+    {sub:'Del manual vigente (v02), que la pauta no verifica',items:[
+      {l:'Se lava las manos con agua y jabón antes y después de manejar las aves.'},
+      {l:'Las aves no tienen contacto directo con personas ajenas al domicilio o predio.'},
+      {l:'No se consumen aves muertas o enfermas ni se dan de alimento a otras especies de animales.'}
+    ]},
+    {sub:'De la versión 2023 del manual (ya no está en la pauta)',items:[
+      {l:'En la entrada del gallinero hay dos baldes, uno con escobilla, agua y jabón y otro con desinfectante, para limpiar y desinfectar la suela de los zapatos.'},
+      {l:'Toda persona ajena que entra al gallinero desinfecta sus zapatos.'},
+      {l:'Si estuvo en contacto con aves enfermas de otro predio, limpia y desinfecta el vehículo, la ropa y los zapatos antes de volver.'},
+      {l:'Ante una alerta sanitaria, las aves permanecen encerradas dentro del gallinero.'},
+      {l:'Ante alta mortalidad o enfermedad, avisa de inmediato a la oficina del SAG o al fono denuncia.'}
+    ]}
+  ]},
+  {id:'resumen',name:'Resumen',icon:'📊',isResumen:true}
+];
+
+// Los ítems de plantel conservan sus ids históricos (i0…) para no invalidar auditorías guardadas.
+function asignarIds(lista,pref){
+  var c=0,flat=[];
+  lista.forEach(function(s){
+    if(!s.subsections)return;
+    s.subsections.forEach(function(sub){
+      sub.items.forEach(function(item){
+        item.id=pref+(c++);item.seccion=s.name;item.subseccion=sub.sub;
+        if(s.noScore)item.noScore=true;
+        flat.push(item);
+      });
     });
   });
-});
+  return flat;
+}
+var ITEMS_PLANTEL=asignarIds(SAGS_PLANTEL,'i'), ITEMS_TRASPATIO=asignarIds(SAGS_TRASPATIO,'t');
+var ITEMS_FLAT=ITEMS_PLANTEL;
+function usarPauta(){
+  if(STATE.rubro==='traspatio'){SAGS=SAGS_TRASPATIO;ITEMS_FLAT=ITEMS_TRASPATIO;}
+  else{SAGS=SAGS_PLANTEL;ITEMS_FLAT=ITEMS_PLANTEL;}
+}
 
-var STATE={nombre:'',email:'',telefono:'',copiaCorreo:false,rubro:'',establecimiento:'',fecha:new Date().toISOString().split('T')[0],responses:{},currentPage:0,pendienteSync:false,ultimoSync:null,auditoriaId:null};
+
+var STATE={nombre:'',email:'',telefono:'',copiaCorreo:false,rubro:'',establecimiento:'',fecha:new Date().toISOString().split('T')[0],responses:{},currentPage:0,pendienteSync:false,ultimoSync:null,auditoriaId:null,evidencias:false,observaciones:{},fotos:{}};
 var SK='sag_bio_v4';
 function saveState(){try{localStorage.setItem(SK,JSON.stringify(STATE));}catch(e){}}
-function loadState(){try{var s=JSON.parse(localStorage.getItem(SK)||'null');if(s)Object.assign(STATE,s);}catch(e){}}
+function loadState(){try{var s=JSON.parse(localStorage.getItem(SK)||'null');if(s)Object.assign(STATE,s);}catch(e){}STATE.observaciones=STATE.observaciones||{};STATE.fotos=STATE.fotos||{};usarPauta();}
 
 // ── Filtrado por rubro ──────────────────────────────────────────
 function itemVisible(item){
@@ -540,17 +649,18 @@ function sectionVisibleItems(s){
 function comenzar(){
   document.getElementById('pantalla-inicio').style.display='none';
   document.getElementById('app').classList.add('visible');
-  loadState();buildSidebar();renderPage(STATE.currentPage);updateProgress();actualizarSync();
+  loadState();usarPauta();buildSidebar();renderPage(STATE.currentPage);updateProgress();actualizarSync();
   setTimeout(function(){if(STATE.pendienteSync&&navigator.onLine)sincronizarPendientes();},1500);
 }
 
 function limpiarYComenzar(){
   cerrarModal();
   try{ localStorage.removeItem(SK); }catch(e){}
-  STATE={nombre:'',email:'',telefono:'',copiaCorreo:false,rubro:'',establecimiento:'',fecha:new Date().toISOString().split('T')[0],responses:{},currentPage:0,pendienteSync:false,ultimoSync:null,auditoriaId:null};
+  idbClear();
+  STATE={nombre:'',email:'',telefono:'',copiaCorreo:false,rubro:'',establecimiento:'',fecha:new Date().toISOString().split('T')[0],responses:{},currentPage:0,pendienteSync:false,ultimoSync:null,auditoriaId:null,evidencias:false,observaciones:{},fotos:{}};
   document.getElementById('pantalla-inicio').style.display='none';
   document.getElementById('app').classList.add('visible');
-  buildSidebar();renderPage(0);updateProgress();actualizarSync();
+  usarPauta();buildSidebar();renderPage(0);updateProgress();actualizarSync();
   toast('✓ Nueva auditoría lista','ok');
 }
 
@@ -607,10 +717,10 @@ function uuid(){
 function calcScores(){
   var scores={},tC=0,tNC=0,tNA=0;
   SAGS.forEach(function(s){
-    if(!s.subsections)return;
+    if(!s.subsections||s.noScore)return;
     var c=0,nc=0,na=0;
     sectionVisibleItems(s).forEach(function(i){var r=STATE.responses[i.id];if(r==='cumple')c++;else if(r==='nocumple')nc++;else if(r==='noaplica')na++;});
-    var ap=c+nc;scores[s.id]={nombre:s.name.replace(/^[A-C]\) /,''),cumple:c,nocumple:nc,noaplica:na,ap:ap,pct:ap?Math.round(c/ap*100):0};
+    var ap=c+nc;scores[s.id]={nombre:s.name.replace(/^[A-D]\) /,''),cumple:c,nocumple:nc,noaplica:na,ap:ap,pct:ap?Math.round(c/ap*100):0};
     tC+=c;tNC+=nc;tNA+=na;
   });
   var tAp=tC+tNC;return{scores:scores,totalPct:tAp?Math.round(tC/tAp*100):0,tC:tC,tNC:tNC,tNA:tNA};
@@ -619,9 +729,160 @@ function calcScores(){
 function listaNoCumple(){
   var out=[];
   ITEMS_FLAT.forEach(function(i){
-    if(itemVisible(i) && STATE.responses[i.id]==='nocumple') out.push(i.l);
+    if(!i.noScore && itemVisible(i) && STATE.responses[i.id]==='nocumple'){
+      var ob=((STATE.evidencias&&STATE.observaciones[i.id])||'').trim();
+      out.push(i.l+(ob?' — Observación: '+ob:''));
+    }
   });
   return out;
+}
+
+
+// ══ OBSERVACIONES Y FOTOS (opcional) ═══════════════════════════
+// Las fotos se comprimen en el dispositivo y quedan en IndexedDB hasta subirse al bucket privado
+// `auditoria-evidencias` de Supabase (solo inserción pública, sin lectura). En STATE (localStorage)
+// solo se guarda la lista de fotos; las imágenes nunca van en la fila de la tabla.
+var IDB=null;
+function idb(){
+  return new Promise(function(res,rej){
+    if(IDB)return res(IDB);
+    var rq=indexedDB.open('sag_bio_fotos',1);
+    rq.onupgradeneeded=function(){rq.result.createObjectStore('fotos');};
+    rq.onsuccess=function(){IDB=rq.result;res(IDB);};
+    rq.onerror=function(){rej(rq.error);};
+  });
+}
+function idbOp(modo,fn){
+  return idb().then(function(db){return new Promise(function(res,rej){
+    var tx=db.transaction('fotos',modo),st=tx.objectStore('fotos'),rq=fn(st);
+    tx.oncomplete=function(){res(rq&&rq.result);};tx.onerror=function(){rej(tx.error);};
+  });});
+}
+function idbPut(k,b){return idbOp('readwrite',function(s){return s.put(b,k);});}
+function idbGet(k){return idbOp('readonly',function(s){return s.get(k);});}
+function idbDel(k){return idbOp('readwrite',function(s){return s.delete(k);});}
+function idbClear(){try{idbOp('readwrite',function(s){return s.clear();}).catch(function(){});}catch(e){}}
+
+function comprimir(file,max,q){
+  return new Promise(function(res,rej){
+    var url=URL.createObjectURL(file),im=new Image();
+    im.onload=function(){
+      var s=Math.min(1,max/Math.max(im.naturalWidth,im.naturalHeight)),c=document.createElement('canvas');
+      c.width=Math.round(im.naturalWidth*s);c.height=Math.round(im.naturalHeight*s);
+      c.getContext('2d').drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(url);
+      c.toBlob(function(b){b?res(b):rej(new Error('No se pudo comprimir la imagen'));},'image/jpeg',q);
+    };
+    im.onerror=function(){URL.revokeObjectURL(url);rej(new Error('Archivo de imagen no válido'));};
+    im.src=url;
+  });
+}
+function totalFotos(){var n=0;Object.keys(STATE.fotos).forEach(function(k){n+=STATE.fotos[k].length;});return n;}
+
+function setObs(id,v){STATE.observaciones[id]=v;saveState();}
+function setEvidencias(on){
+  STATE.evidencias=!!on;saveState();
+  var h=document.getElementById('evHelp');if(h)h.style.display=on?'block':'none';
+}
+function agregarFotos(id,input){
+  var files=Array.prototype.slice.call(input.files||[]);input.value='';
+  if(!files.length)return;
+  STATE.fotos[id]=STATE.fotos[id]||[];
+  var lugar=Math.min(MAX_FOTOS_ITEM-STATE.fotos[id].length,MAX_FOTOS_TOTAL-totalFotos());
+  if(lugar<=0){toast('Máximo '+MAX_FOTOS_ITEM+' fotos por ítem y '+MAX_FOTOS_TOTAL+' por auditoría','err');return;}
+  files.slice(0,lugar).reduce(function(p,f){
+    return p.then(function(){
+      return comprimir(f,1280,0.72).then(function(b){
+        var k=uuid().slice(0,8);
+        return idbPut(k,b).then(function(){STATE.fotos[id].push({k:k,up:false,path:null});});
+      });
+    });
+  },Promise.resolve()).then(function(){
+    STATE.pendienteSync=true;saveState();actualizarSync();refrescarFotos(id);
+    if(files.length>lugar)toast('Se agregaron solo '+lugar+' fotos (límite alcanzado)','err');
+  }).catch(function(e){toast('✗ '+(e&&e.message||'No se pudo guardar la foto'),'err');});
+}
+function borrarFoto(id,k){
+  STATE.fotos[id]=(STATE.fotos[id]||[]).filter(function(f){return f.k!==k;});
+  idbDel(k).catch(function(){});saveState();refrescarFotos(id);
+}
+function fotosHTML(id){
+  var fs=STATE.fotos[id]||[],h='';
+  fs.forEach(function(f){
+    h+='<span class="ev-th"><img data-fk="'+f.k+'" alt="">'
+      +'<button class="ev-del" title="Quitar foto" onclick="borrarFoto(\''+id+'\',\''+f.k+'\')">×</button>'
+      +(f.up?'<i class="ev-ok" title="Ya subida">✓</i>':'')+'</span>';
+  });
+  if(fs.length<MAX_FOTOS_ITEM)h+='<label class="ev-add">📷 Foto<input type="file" accept="image/*" multiple onchange="agregarFotos(\''+id+'\',this)"></label>';
+  return h;
+}
+function refrescarFotos(id){
+  var el=document.getElementById('evf_'+id);if(!el)return;
+  el.innerHTML=fotosHTML(id);cargarMiniaturas(el);
+}
+function cargarMiniaturas(root){
+  var imgs=root.querySelectorAll('img[data-fk]');if(!imgs.length)return;
+  imgs.forEach(function(im){
+    idbGet(im.getAttribute('data-fk')).then(function(b){if(b)im.src=URL.createObjectURL(b);}).catch(function(){});
+  });
+}
+function renderEv(item){
+  if(!STATE.evidencias)return '';
+  return '<div class="ev" id="ev_'+item.id+'">'
+    +'<textarea class="ev-obs" rows="1" placeholder="Observación (opcional)" oninput="setObs(\''+item.id+'\',this.value)">'+esc(STATE.observaciones[item.id]||'')+'</textarea>'
+    +'<div class="ev-fotos" id="evf_'+item.id+'">'+fotosHTML(item.id)+'</div></div>';
+}
+
+// Sube al bucket las fotos pendientes. Resuelve true si no queda ninguna sin subir.
+function subirFotosPendientes(){
+  var pend=[];
+  Object.keys(STATE.fotos).forEach(function(it){STATE.fotos[it].forEach(function(f){if(!f.up)pend.push({it:it,f:f});});});
+  if(!pend.length)return Promise.resolve(true);
+  return pend.reduce(function(p,x){
+    return p.then(function(ok){
+      return idbGet(x.f.k).then(function(blob){
+        if(!blob){x.f.up=true;x.f.path=null;return ok;}   // la foto ya no está en este dispositivo
+        var path=STATE.auditoriaId+'/'+x.it+'-'+x.f.k+'.jpg';
+        return sb.storage.from(BUCKET).upload(path,blob,{contentType:'image/jpeg',upsert:false}).then(function(r){
+          if(r.error&&!/exist|duplicate/i.test(r.error.message||''))return false;
+          x.f.up=true;x.f.path=path;return ok;
+        });
+      }).catch(function(){return false;});
+    });
+  },Promise.resolve(true)).then(function(ok){saveState();return ok;});
+}
+function obsLimpias(){
+  var o={};Object.keys(STATE.observaciones).forEach(function(k){var v=(STATE.observaciones[k]||'').trim();if(v)o[k]=v;});return o;
+}
+function fotosPaths(){
+  var o={};Object.keys(STATE.fotos).forEach(function(k){
+    var ps=STATE.fotos[k].filter(function(f){return f.up&&f.path;}).map(function(f){return f.path;});
+    if(ps.length)o[k]=ps;
+  });return o;
+}
+function evidenciasHTML(){
+  if(!STATE.evidencias)return '';
+  var filas='';
+  ITEMS_FLAT.forEach(function(i){
+    if(!itemVisible(i))return;
+    var obs=(STATE.observaciones[i.id]||'').trim(),fs=STATE.fotos[i.id]||[];
+    if(!obs&&!fs.length)return;
+    var r=STATE.responses[i.id];
+    var est=r==='cumple'?['c','✓ Cumple']:r==='nocumple'?['n','✗ No cumple']:r==='noaplica'?['a','N/A']:['a','Sin responder'];
+    filas+='<div class="ev-fila"><div class="ev-it"><span>'+esc(i.l)+'</span><span class="ev-est '+est[0]+'">'+est[1]+'</span></div>'
+      +(obs?'<div class="ev-txt">'+esc(obs)+'</div>':'')
+      +(fs.length?'<div class="ev-fotos-res">'+fs.map(function(f){return '<img data-fk="'+f.k+'" alt="">';}).join('')+'</div>':'')
+      +'</div>';
+  });
+  return '<div class="ev-resumen"><h3>Observaciones y fotos</h3>'+(filas||'<div style="font-size:13px;color:var(--text3)">Activaste el registro de observaciones y fotos, pero no agregaste ninguna.</div>')+'</div>';
+}
+function buenasPracticasHTML(){
+  var s=SAGS.filter(function(x){return x.noScore;})[0];if(!s)return '';
+  var vis=sectionVisibleItems(s),ap=0,pend=[];
+  vis.forEach(function(i){var r=STATE.responses[i.id];if(r==='cumple')ap++;else if(r==='nocumple')pend.push(i.l);});
+  var h='<div class="bp-resumen"><h3>Buenas prácticas recomendadas (no puntúan)</h3>'
+    +'<div style="color:var(--text2)">'+ap+' de '+vis.length+' aplicadas.</div>';
+  if(pend.length)h+='<div style="margin-top:6px;font-weight:600;color:var(--text2)">Por reforzar:</div><ul>'+pend.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul>';
+  return h+'</div>';
 }
 
 // ── Guardado en Supabase + alerta por correo ────────────────────
@@ -632,6 +893,8 @@ function guardarEnSupabase(cb){
   var sc=calcScores();
   if(!STATE.auditoriaId) STATE.auditoriaId=uuid();
   setSC('saving','Guardando...');
+  var subir=STATE.evidencias?subirFotosPendientes():Promise.resolve(true);
+  subir.then(function(fotosOk){
   var payload={
     id:STATE.auditoriaId,
     establecimiento:STATE.establecimiento,
@@ -647,6 +910,9 @@ function guardarEnSupabase(cb){
     items_no_cumple:sc.tNC,
     items_na:sc.tNA
   };
+  // Las columnas de evidencias solo se envían si el modo está activo: así la app sigue
+  // funcionando aunque aún no se haya corrido la migración de la base.
+  if(STATE.evidencias){payload.con_evidencias=true;payload.observaciones=obsLimpias();payload.fotos=fotosPaths();}
   // Insert la primera vez, update las siguientes — evitamos upsert()
   // a propósito: el ON CONFLICT DO UPDATE que genera internamente exige
   // permisos de lectura de la fila para detectar el conflicto, incluso
@@ -655,10 +921,10 @@ function guardarEnSupabase(cb){
   var query=esNueva
     ? sb.from('auditorias_bioseguridad').insert([payload])
     : sb.from('auditorias_bioseguridad').update(payload).eq('id',STATE.auditoriaId);
-  query.then(function(res){
+  return query.then(function(res){
     if(res.error){STATE.pendienteSync=true;saveState();setSC('error','Error');if(cb)cb(false,res.error.message);return;}
-    STATE.pendienteSync=false;STATE.ultimoSync=new Date().toISOString();saveState();actualizarSync();
-    if(cb)cb(true);
+    STATE.pendienteSync=!fotosOk;STATE.ultimoSync=new Date().toISOString();saveState();actualizarSync();
+    if(cb)cb(fotosOk,fotosOk?undefined:'Auditoría guardada; faltan fotos por subir');
     if(esNueva){
       sb.functions.invoke('alerta-bioseguridad',{body:{
         establecimiento:STATE.establecimiento,
@@ -670,6 +936,7 @@ function guardarEnSupabase(cb){
         emailProductor:(STATE.copiaCorreo && STATE.email) ? STATE.email : null
       }}).catch(function(){/* la auditoría ya quedó guardada igual */});
     }
+  });
   }).catch(function(e){
     STATE.pendienteSync=true;saveState();setSC('error','Error de red');if(cb)cb(false,String(e));
   });
@@ -682,7 +949,7 @@ function toast(msg,type){var t=document.getElementById('toast');t.textContent=ms
 
 function updateProgress(){
   var total=0,ans=0;
-  SAGS.forEach(function(s){if(s.subsections)sectionVisibleItems(s).forEach(function(i){total++;if(STATE.responses[i.id])ans++;});});
+  SAGS.forEach(function(s){if(s.subsections&&!s.noScore)sectionVisibleItems(s).forEach(function(i){total++;if(STATE.responses[i.id])ans++;});});
   var pct=total?Math.round(ans/total*100):0;
   var pf=document.getElementById('pFill'),pt=document.getElementById('pText');
   if(pf)pf.style.width=pct+'%';if(pt)pt.textContent=pct+'%';
@@ -718,7 +985,7 @@ function renderCheck(item){
     +'<button class="btn-check cumple'+(r==='cumple'?' active':'')+'" data-val="cumple" onclick="setResp(\''+item.id+'\',\'cumple\')">✓ Cumple</button>'
     +'<button class="btn-check nocumple'+(r==='nocumple'?' active':'')+'" data-val="nocumple" onclick="setResp(\''+item.id+'\',\'nocumple\')">✗ No Cumple</button>'
     +'<button class="btn-check noaplica'+(r==='noaplica'?' active':'')+'" data-val="noaplica" onclick="setResp(\''+item.id+'\',\'noaplica\')">N/A</button>'
-    +'</div></div>';
+    +'</div>'+renderEv(item)+'</div>';
 }
 
 function navigateTo(idx){STATE.currentPage=idx;buildSidebar();renderPage(idx);updateProgress();var mc=document.getElementById('mc');if(mc)mc.scrollTop=0;}
@@ -732,15 +999,19 @@ function renderPage(idx){
       +'<div class="form-group"><label class="form-label">Nombre del establecimiento *</label><input class="form-input" placeholder="Ej: Granja Santa Rosa" value="'+esc(STATE.establecimiento)+'" oninput="STATE.establecimiento=this.value;saveState()"></div>'
       +'<div class="form-group"><label class="form-label">Correo electrónico</label><input class="form-input" type="email" placeholder="Ej: juan@granja.cl" value="'+esc(STATE.email)+'" oninput="STATE.email=this.value;saveState();syncCheckVis();"></div>'
       +'<div class="form-group"><label class="form-label">Teléfono</label><input class="form-input" type="tel" placeholder="Ej: +56 9 1234 5678" value="'+esc(STATE.telefono)+'" oninput="STATE.telefono=this.value;saveState()"></div>'
-      +'<div class="form-group"><label class="form-label">Rubro *</label><select class="form-select" onchange="STATE.rubro=this.value;saveState();buildSidebar();updateProgress();">'
+      +'<div class="form-group"><label class="form-label">Rubro *</label><select class="form-select" onchange="STATE.rubro=this.value;saveState();usarPauta();buildSidebar();updateProgress();renderPage(0);">'
       +'<option value="">Seleccione un rubro...</option>'
       +'<option value="engorda"'+(STATE.rubro==='engorda'?' selected':'')+'>Engorda</option>'
       +'<option value="ponedora_a"'+(STATE.rubro==='ponedora_a'?' selected':'')+'>Ponedora A (≥20.000 aves)</option>'
       +'<option value="ponedora_b"'+(STATE.rubro==='ponedora_b'?' selected':'')+'>Ponedora B (&lt;20.000 aves)</option>'
+      +'<option value="traspatio"'+(STATE.rubro==='traspatio'?' selected':'')+'>Traspatio / AFC (autoconsumo o venta ocasional)</option>'
       +'</select></div>'
       +'<div class="form-group"><label class="form-label">Fecha de auditoría</label><input class="form-input" type="date" value="'+esc(STATE.fecha)+'" oninput="STATE.fecha=this.value;saveState()"></div>'
       +'</div>'
       +'<div class="form-check" id="copiaCorreoWrap" style="display:'+(STATE.email?'flex':'none')+'"><input type="checkbox" id="copiaCorreoChk" '+(STATE.copiaCorreo?'checked':'')+' onchange="STATE.copiaCorreo=this.checked;saveState()"><label for="copiaCorreoChk">Enviarme también a mí una copia del resultado por correo</label></div>'
+      +(STATE.rubro==='traspatio'?'<div class="aviso-rubro"><strong>Traspatio / AFC:</strong> aves en un domicilio o predio para autoconsumo o venta ocasional, sin iniciación de actividades ni resolución sanitaria (manual D-VYC-VIS-PP-005 v02). Si el predio vende con iniciación de actividades o resolución sanitaria, se evalúa como plantel: elige Ponedora B.</div>':'')
+      +'<div class="form-check" style="margin-top:14px"><input type="checkbox" id="evChk" '+(STATE.evidencias?'checked':'')+' onchange="setEvidencias(this.checked)"><label for="evChk">Registrar observaciones y fotos de respaldo (opcional)</label></div>'
+      +'<div class="aviso-rubro" id="evHelp" style="display:'+(STATE.evidencias?'block':'none')+'">Aparecerá un campo de observación y un botón de foto en cada ítem (hasta '+MAX_FOTOS_ITEM+' fotos por ítem y '+MAX_FOTOS_TOTAL+' por auditoría). Las fotos se reducen en tu dispositivo y, al guardar, se suben a un almacenamiento privado de AviVet que solo ve tu asesor. Sin conexión quedan en el dispositivo hasta que vuelvas a guardar.</div>'
       +'<div class="form-error" id="datosError">Completa el nombre del establecimiento y el rubro para continuar.</div>'
       +'</div>'
       +'<div class="nav-btns"><span></span><button class="btn btn-primary" onclick="irASeccion1()">Comenzar evaluación →</button></div>';
@@ -764,7 +1035,7 @@ function renderPage(idx){
     var nextI=idx<SAGS.length-1?idx+1:SAGS.length-1;
     var nextTxt=idx<SAGS.length-2?'Siguiente →':'Ver resumen →';
     html+='<div class="nav-btns">'+prev+'<button class="btn btn-primary" onclick="navigateTo('+nextI+')">'+nextTxt+'</button></div>';
-    mc.innerHTML=html;
+    mc.innerHTML=html;cargarMiniaturas(mc);
   }
 }
 
@@ -834,6 +1105,7 @@ function renderResumen(mc){
   html+='</div>';
 
   var waMsg = encodeURIComponent('Hola Andrés, necesito asesoría en bioseguridad avícola. Mi establecimiento es: ' + (STATE.establecimiento||'(sin nombre)') + ', rubro: ' + (RUBRO_LABEL[STATE.rubro]||STATE.rubro||'no indicado') + ', cumplimiento SAG: ' + tPct + '%.');
+  html+=buenasPracticasHTML()+evidenciasHTML();
   html+='<div class="contacto-card">'
     +'<div class="contacto-txt">'
     +'<h3>¿Quieres mejorar tu bioseguridad?</h3>'
@@ -854,7 +1126,7 @@ function renderResumen(mc){
   html+='<div class="nav-btns"><button class="btn" onclick="navigateTo('+(SAGS.length-2)+')">← Volver</button>'
     +'<div style="display:flex;gap:8px">'+syncBtn+'<button class="btn-pdf" onclick="guardar()">Guardar PDF</button></div></div>';
 
-  mc.innerHTML=html;
+  mc.innerHTML=html;cargarMiniaturas(mc);
 }
 
 function guardar(){

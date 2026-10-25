@@ -13,7 +13,7 @@
 | **Vacunación por Spray** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/vacunacion-spray/) | Calibración del pulverizador, tamaño de gota, papel hidrosensible y control de calidad |
 | **Vacunación en Agua de Bebida** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/vacunacion-agua/) | Volumen y dosis, calidad del agua, espacio de bebedero, cronograma del día y control de calidad |
 | **Calculadoras de Dosis** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/calculadoras-dosis/) | Cálculo de dosis de antibióticos en agua de bebida |
-| **Auditoría SAG Bioseguridad** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/auditoria-sag/) | Pauta de verificación para Engorda y Ponedoras, Res. Ex. N°2114/2023 |
+| **Auditoría SAG Bioseguridad** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/auditoria-sag/) | Pauta de verificación para Engorda, Ponedoras y Traspatio/AFC, Res. Ex. N°2114/2023 y 7695/2024 |
 | **Carteles de Bioseguridad** | [🔗 Abrir herramienta](https://avivet.cl/avivet/carteles-bioseguridad/) | 17 carteles SAG / NCh 1411 personalizados por plantel, serie completa en PDF A4 |
 | **Inventario de Huevos** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/inventario-huevos/) | Control de stock y ventas |
 | **Inventario Alimento — Portal** | [🔗 Plantas de alimento](https://avivet.cl/avivet/plantasdealimento) | Acceso directo a las 3 plantas |
@@ -67,7 +67,7 @@ Productores de Engorda y Ponedoras del sur de Chile que necesitan autoevaluar su
 | Ponedora A | ≥ 20.000 aves en el RUP (sector) |
 | Ponedora B | < 20.000 aves en el RUP (sector) |
 
-No cubre Reproductoras/Abuelas ni Incubadoras — ver el detalle técnico en [`auditoria-sag/README.md`](auditoria-sag/README.md).
+No cubre Reproductoras/Abuelas ni Incubadoras; el traspatio/AFC usa su propia pauta (manual D-VYC-VIS-PP-005) — ver el detalle técnico en [`auditoria-sag/README.md`](auditoria-sag/README.md).
 
 ---
 

@@ -22,6 +22,7 @@ const RUBRO_LABEL: Record<string, string> = {
   engorda:    'Engorda',
   ponedora_a: 'Ponedora A (≥20.000 aves)',
   ponedora_b: 'Ponedora B (<20.000 aves)',
+  traspatio:  'Traspatio / AFC',
 };
 
 serve(async (req) => {
