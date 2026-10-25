@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Plataforma de Bioseguridad — AviVet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f5f4f0;--surface:#fff;--surface2:#f0ede8;--border:#ddd9d0;--text:#1a1916;--text2:#5a5650;--text3:#9a948c;--accent:#1b4332;--accent2:#2d6a4f;--accent-l:#d8f3dc;--gold:#b5813a;--gold-l:#fdf3e0}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.5}
+.wrap{max-width:920px;margin:0 auto;padding:20px 16px 60px}
+header{background:var(--accent);color:#fff;border-radius:12px;padding:28px 28px 24px;margin-bottom:22px}
+header h1{font-family:Fraunces,serif;font-size:28px;margin-bottom:4px}
+header p{color:#d8f3dc;font-size:14px;max-width:620px}
+.grupo{font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:22px 0 10px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+a.h{display:flex;flex-direction:column;gap:6px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px;text-decoration:none;color:inherit;box-shadow:0 1px 3px rgba(0,0,0,.06);transition:transform .15s,border-color .15s}
+a.h:hover{transform:translateY(-2px);border-color:var(--accent2)}
+.ic{font-size:26px}.n{font-weight:700;font-size:16px}.d{font-size:13.5px;color:var(--text2);flex:1}
+.tag{align-self:flex-start;font-size:11px;font-weight:700;border-radius:20px;padding:2px 10px;background:var(--accent-l);color:var(--accent)}
+.tag.nuevo{background:var(--gold-l);color:var(--gold)}
+.pie{margin-top:28px;font-size:12.5px;color:var(--text3)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>Plataforma de bioseguridad</h1>
+  <p>Evaluaciones independientes entre sí: cada una mide algo distinto y se usa por separado. Elige la que necesites.</p>
+</header>
+<div id="g"></div>
+<p class="pie">Para sumar una herramienta, agrega una línea a la lista <b>HERRAMIENTAS</b> al final de este archivo.</p>
+</div>
+<script>
+// grupo · icono · nombre · descripción · ruta · etiqueta (opcional: 'nuevo')
+var HERRAMIENTAS=[
+ {g:'Evaluación del predio',i:'✅',n:'Auditoría SAG',d:'Pauta oficial del SAG (cumple / no cumple / no aplica) para Engorda, Ponedoras y Traspatio/AFC, con su resultado y semáforo.',u:'../auditoria-sag/'},
+ {g:'Evaluación del entorno',i:'🗺️',n:'Riesgo del entorno del sector',d:'Diez criterios (A–J) de cercanía de traspatios, granjas, agua, aves acuáticas, brotes y accesos. Puntaje máximo 30, ranking de sectores.',u:'../riesgo-entorno/',t:'nuevo'},
+ {g:'Evaluación del entorno',i:'🦆',n:'Riesgo Influenza Aviar',d:'Riesgo por cuerpos de agua, aves silvestres (eBird), brotes cercanos y de países vecinos, sobre mapa.',u:'../riesgo-ia/'}
+];
+var grupos={};HERRAMIENTAS.forEach(function(h){(grupos[h.g]=grupos[h.g]||[]).push(h);});
+document.getElementById('g').innerHTML=Object.keys(grupos).map(function(g){
+  return '<div class="grupo">'+g+'</div><div class="grid">'+grupos[g].map(function(h){
+    return '<a class="h" href="'+h.u+'"><div class="ic">'+h.i+'</div><div class="n">'+h.n+'</div><div class="d">'+h.d+'</div>'+(h.t?'<span class="tag nuevo">Nuevo</span>':'<span class="tag">Abrir</span>')+'</a>';}).join('')+'</div>';
+}).join('');
+</script>
+</body>
+</html>

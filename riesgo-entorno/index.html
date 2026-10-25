@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Riesgo del Entorno — AviVet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f5f4f0;--surface:#fff;--surface2:#f0ede8;--border:#ddd9d0;
+  --text:#1a1916;--text2:#5a5650;--text3:#9a948c;
+  --accent:#1b4332;--accent2:#2d6a4f;--accent-l:#d8f3dc;
+  --alto:#c0392b;--alto-l:#fde8e6;--medio:#b5813a;--medio-l:#fdf3e0;--bajo:#1b7a4a;--bajo-l:#e8f7ee;
+  --radius:12px;--shadow:0 1px 3px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.04);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.5}
+.wrap{max-width:900px;margin:0 auto;padding:20px 16px 80px}
+header{background:var(--accent);color:#fff;border-radius:var(--radius);padding:24px 26px;margin-bottom:20px}
+header a{color:#b7e4c7;font-size:13px;text-decoration:none}
+header h1{font-family:Fraunces,serif;font-size:26px;margin:6px 0 4px}
+header p{font-size:13.5px;color:#d8f3dc;max-width:640px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px 20px;margin-bottom:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+label.f{display:block;font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px}
+input[type=text],input[type=date],select{width:100%;padding:9px 11px;border:1px solid var(--border);border-radius:8px;font:inherit;background:#fff}
+h2{font-family:Fraunces,serif;font-size:18px;margin-bottom:2px}
+.crit-h{display:flex;gap:12px;align-items:center;margin-bottom:10px}
+.letra{flex:none;width:34px;height:34px;border-radius:50%;background:var(--accent);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center}
+.crit-h .t{font-weight:700}.crit-h .s{font-size:12.5px;color:var(--text3)}
+.op{display:flex;gap:10px;align-items:flex-start;padding:9px 11px;border:1.5px solid var(--border);border-radius:9px;margin-top:7px;cursor:pointer;font-size:14px}
+.op input{margin-top:3px;accent-color:var(--accent)}
+.op .pt{flex:none;font-size:11px;font-weight:700;border-radius:20px;padding:2px 9px;margin-left:auto;white-space:nowrap}
+.op.n1 .pt{background:var(--alto-l);color:var(--alto)}.op.n2 .pt{background:var(--medio-l);color:var(--medio)}.op.n3 .pt{background:var(--bajo-l);color:var(--bajo)}
+.op:has(input:checked){border-color:var(--accent);background:var(--accent-l)}
+.ayuda{font-size:12.5px;color:var(--text2);margin-top:8px}.ayuda a{color:var(--accent2)}
+.res{position:sticky;bottom:8px;z-index:5;box-shadow:0 4px 24px rgba(0,0,0,.18)}
+.res-top{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.pts{font-family:Fraunces,serif;font-size:44px;font-weight:700;line-height:1}
+.pts small{font-size:18px;color:var(--text3)}
+.nivel{padding:7px 16px;border-radius:20px;font-weight:700;font-size:14px}
+.nivel.alto{background:var(--alto-l);color:var(--alto)}.nivel.medio{background:var(--medio-l);color:var(--medio)}.nivel.bajo{background:var(--bajo-l);color:var(--bajo)}.nivel.na{background:var(--surface2);color:var(--text3)}
+.barras{display:grid;grid-template-columns:repeat(10,1fr);gap:6px;margin-top:12px}
+.barra{text-align:center;font-size:11px;font-weight:700;color:var(--text3)}
+.barra i{display:block;height:6px;border-radius:3px;background:var(--border);margin-bottom:3px}
+.barra.p1 i{background:var(--alto)}.barra.p2 i{background:var(--medio)}.barra.p3 i{background:var(--bajo)}
+.btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+button{font:inherit;font-weight:600;padding:9px 16px;border-radius:9px;border:1px solid var(--border);background:#fff;cursor:pointer}
+button.pri{background:var(--accent);color:#fff;border-color:var(--accent)}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.4px;color:var(--text3);padding:6px 8px;border-bottom:1px solid var(--border)}
+td{padding:8px;border-bottom:1px solid var(--surface2)}
+tr.fila{cursor:pointer}tr.fila:hover{background:var(--surface2)}
+td .nivel{padding:2px 10px;font-size:12px}
+.nota{font-size:12.5px;color:var(--text3);margin-top:8px}
+@media(max-width:560px){.barras{grid-template-columns:repeat(5,1fr)}.pts{font-size:36px}}
+@media print{body{background:#fff}.res{position:static}.btns,#lista-card,.ayuda,header a{display:none}.card{box-shadow:none;break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <a href="../plataforma/">← Plataforma de bioseguridad</a>
+  <h1>Riesgo del entorno del sector</h1>
+  <p>Diez criterios (A–J) con tres niveles: riesgo alto 1 punto, moderado 2, bajo 3. Máximo 30 puntos: cuanto más alto, mejor protegido el sector. Es independiente de la pauta SAG.</p>
+</header>
+
+<div class="card"><div class="grid">
+  <div><label class="f" for="sector">Sector / granja</label><input type="text" id="sector" placeholder="Ej: Huaquén 2.1"></div>
+  <div><label class="f" for="estrato">Estrato</label><input type="text" id="estrato" placeholder="Ej: Reproductores producción"></div>
+  <div><label class="f" for="zona">Zona</label><input type="text" id="zona" placeholder="Ej: Norte"></div>
+  <div><label class="f" for="evaluador">Evaluador</label><input type="text" id="evaluador"></div>
+  <div><label class="f" for="fecha">Fecha</label><input type="date" id="fecha"></div>
+</div></div>
+
+<div id="criterios"></div>
+
+<div class="card res" id="resultado"></div>
+
+<div class="card" id="lista-card">
+  <h2>Sectores evaluados</h2>
+  <p class="nota" style="margin:0 0 8px">Guardados solo en este dispositivo. Ordenados del puntaje más bajo (mayor riesgo) al más alto. Toca una fila para abrirla.</p>
+  <div id="lista"></div>
+  <div class="btns"><button onclick="exportarCSV()">Descargar CSV</button></div>
+</div>
+</div>
+
+<script>
+// ── Criterios (planilla «Riesgo Externo», criterios A–J; 1 = riesgo alto · 2 = moderado · 3 = bajo) ──
+var CRITERIOS=[
+ {k:'A',t:'Traspatio con aves cercano',o:['Traspatio con aves a menos de 200 m de la entrada al sector.','Traspatio con aves a menos de 1 km de la entrada al sector.','Sin traspatio con aves en 1 km a la redonda.']},
+ {k:'B',t:'Granjas comerciales cercanas',o:['Granja comercial dentro de un radio de 800 m.','Granja comercial dentro de un radio de 1.600 m.','Sin granjas comerciales dentro de 1.600 m.']},
+ {k:'C',t:'Circulación del jefe de terreno',o:['El jefe de terreno participa activamente en otros sectores.','El jefe de terreno participa habitualmente en otros sectores.','El jefe de terreno no participa en otras granjas.']},
+ {k:'D',t:'Aves acuáticas observadas',o:['Hay evidencia de aves acuáticas observadas en los últimos 3 meses.','Se han observado aves, pero se aplicaron medidas de mitigación.','No se han observado aves acuáticas.'],ayuda:'riesgo'},
+ {k:'E',t:'Cuerpos de agua cercanos',o:['Tranque o cuerpo de agua a menos de 200 m.','Tranque o cuerpo de agua a menos de 800 m.','No hay cuerpos de agua dentro de 800 m.'],ayuda:'riesgo'},
+ {k:'F',t:'Brotes de enfermedad de denuncia obligatoria',o:['Brote de enfermedad de denuncia obligatoria en los últimos 6 meses.','Brote de enfermedad de denuncia obligatoria en los últimos 12 meses.','Sin brotes de enfermedad de denuncia obligatoria en los últimos 12 meses.'],ayuda:'riesgo'},
+ {k:'G',t:'Agua estancada en el sector',o:['Hay acumulación evidente de agua estancada en la granja.','Hay acumulación de agua, debida principalmente a condiciones climáticas recientes.','Sin agua estancada en el sector.']},
+ {k:'H',t:'Vehículos de servicio (basura, rendering, gas, etc.)',o:['Ingresan a menos de 30 m del sector.','Ingresan a más de 30 m del sector, pero hay puntos fijos (por ejemplo el gas) a menos de 30 m.','Ingresan a más de 30 m del sector.']},
+ {k:'I',t:'Ingreso de personas',o:['Sin duchas de ingreso, solo cambio de ropa.','Con duchas y cambio de ropa, pero sin ropa de tránsito.','Antes de ingresar al sector se pasa por una portería seca.']},
+ {k:'J',t:'Ingreso de vehículos',o:['Solo bomba dosificadora para el ingreso de vehículos.','Hay arco sanitario, pero no cumple los parámetros de bioseguridad.','Arco sanitario que cumple el estándar de bioseguridad definido por la empresa.']}
+];
+// Cortes del nivel (propuesta; ajustar según la experiencia con los sectores)
+var CORTE_BAJO=25, CORTE_MEDIO=18;   // ≥25 bajo · 18–24 moderado · <18 alto
+
+var SK='avivet_riesgo_entorno_v1', resp={}, abierto=null;
+function lee(){try{return JSON.parse(localStorage.getItem(SK)||'[]');}catch(e){return [];}}
+function escribe(a){try{localStorage.setItem(SK,JSON.stringify(a));return true;}catch(e){return false;}}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function nivelDe(p){return p>=CORTE_BAJO?['bajo','Riesgo bajo']:p>=CORTE_MEDIO?['medio','Riesgo moderado']:['alto','Riesgo alto'];}
+function total(r){return CRITERIOS.reduce(function(s,c){return s+(r[c.k]||0);},0);}
+function completos(r){return CRITERIOS.every(function(c){return r[c.k];});}
+
+function pinta(){
+  document.getElementById('criterios').innerHTML=CRITERIOS.map(function(c){
+    var ops=c.o.map(function(t,i){var n=i+1;
+      return '<label class="op n'+n+'"><input type="radio" name="c'+c.k+'" value="'+n+'"'+(resp[c.k]===n?' checked':'')+' onchange="elige(\''+c.k+'\','+n+')"><span>'+esc(t)+'</span><span class="pt">'+n+(n===1?' pto · alto':n===2?' ptos · moderado':' ptos · bajo')+'</span></label>';}).join('');
+    var ay=c.ayuda==='riesgo'?'<div class="ayuda">Apóyate en el mapa y los factores de <a href="../riesgo-ia/" target="_blank" rel="noopener">Riesgo Influenza Aviar</a> (cuerpos de agua, aves silvestres, brotes cercanos).</div>':'';
+    return '<div class="card"><div class="crit-h"><div class="letra">'+c.k+'</div><div><div class="t">'+esc(c.t)+'</div></div></div>'+ops+ay+'</div>';
+  }).join('');
+  resultado();
+}
+function elige(k,n){resp[k]=n;resultado();}
+function resultado(){
+  var hechos=CRITERIOS.filter(function(c){return resp[c.k];}).length, p=total(resp), ok=hechos===10, nv=ok?nivelDe(p):['na','Faltan '+(10-hechos)+' criterios'];
+  var barras=CRITERIOS.map(function(c){return '<div class="barra p'+(resp[c.k]||0)+'"><i></i>'+c.k+'</div>';}).join('');
+  document.getElementById('resultado').innerHTML=
+   '<div class="res-top"><div class="pts">'+p+'<small> / 30</small></div><span class="nivel '+nv[0]+'">'+nv[1]+'</span>'+
+   '<div style="font-size:13px;color:var(--text2)">'+(ok?Math.round(p/30*100)+' % de protección':'Completa los 10 criterios')+'</div></div>'+
+   '<div class="barras">'+barras+'</div>'+
+   '<div class="btns"><button class="pri" onclick="guardar()">Guardar sector</button><button onclick="nuevo()">Nuevo sector</button><button onclick="window.print()">Imprimir / PDF</button></div>'+
+   '<div class="nota">Niveles: ≥'+CORTE_BAJO+' bajo · '+CORTE_MEDIO+'–'+(CORTE_BAJO-1)+' moderado · <'+CORTE_MEDIO+' alto (cortes propuestos, ajustables).</div>';
+}
+function datos(){return {id:abierto||('s'+Date.now()),sector:v('sector'),estrato:v('estrato'),zona:v('zona'),evaluador:v('evaluador'),fecha:v('fecha'),resp:JSON.parse(JSON.stringify(resp)),puntaje:total(resp)};}
+function v(id){return document.getElementById(id).value.trim();}
+function guardar(){
+  if(!v('sector')){alert('Escribe el nombre del sector.');return;}
+  if(!completos(resp)){alert('Faltan criterios por responder.');return;}
+  var d=datos(),a=lee(),i=a.findIndex(function(x){return x.id===d.id;});
+  if(i>=0)a[i]=d;else a.push(d);
+  if(!escribe(a)){alert('No se pudo guardar en este navegador. Descarga el CSV para no perder los datos.');return;}
+  abierto=d.id;lista();
+}
+function nuevo(){abierto=null;resp={};['sector','estrato','zona','evaluador'].forEach(function(i){document.getElementById(i).value='';});fechaHoy();pinta();window.scrollTo(0,0);}
+function abre(id){
+  var d=lee().filter(function(x){return x.id===id;})[0];if(!d)return;
+  abierto=id;resp=d.resp;['sector','estrato','zona','evaluador','fecha'].forEach(function(i){document.getElementById(i).value=d[i]||'';});pinta();window.scrollTo(0,0);
+}
+function borra(id,ev){ev.stopPropagation();if(!confirm('¿Eliminar este sector de la lista?'))return;escribe(lee().filter(function(x){return x.id!==id;}));if(abierto===id)abierto=null;lista();}
+function lista(){
+  var a=lee().sort(function(x,y){return x.puntaje-y.puntaje;});
+  document.getElementById('lista').innerHTML=a.length?'<table><tr><th>Sector</th><th>Estrato</th><th>Zona</th><th>Puntaje</th><th>Nivel</th><th></th></tr>'+a.map(function(d){var n=nivelDe(d.puntaje);
+    return '<tr class="fila" onclick="abre(\''+d.id+'\')"><td><b>'+esc(d.sector)+'</b></td><td>'+esc(d.estrato)+'</td><td>'+esc(d.zona)+'</td><td>'+d.puntaje+' / 30</td><td><span class="nivel '+n[0]+'">'+n[1]+'</span></td><td><button onclick="borra(\''+d.id+'\',event)" title="Eliminar">✕</button></td></tr>';}).join('')+'</table>':'<p class="nota">Aún no hay sectores guardados.</p>';
+}
+function exportarCSV(){
+  var a=lee();if(!a.length){alert('No hay sectores guardados.');return;}
+  var cab=['Sector','Estrato','Zona','Evaluador','Fecha'].concat(CRITERIOS.map(function(c){return c.k;}),['Puntaje','Nivel']);
+  var f=a.map(function(d){return [d.sector,d.estrato,d.zona,d.evaluador,d.fecha].concat(CRITERIOS.map(function(c){return d.resp[c.k];}),[d.puntaje,nivelDe(d.puntaje)[1]]);});
+  var csv=[cab].concat(f).map(function(r){return r.map(function(x){return '"'+String(x==null?'':x).replace(/"/g,'""')+'"';}).join(';');}).join('\n');
+  var u=URL.createObjectURL(new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8'})),l=document.createElement('a');
+  l.href=u;l.download='riesgo-entorno-sectores.csv';document.body.appendChild(l);l.click();l.remove();setTimeout(function(){URL.revokeObjectURL(u);},500);
+}
+function fechaHoy(){document.getElementById('fecha').value=new Date().toISOString().slice(0,10);}
+fechaHoy();pinta();lista();
+</script>
+</body>
+</html>
