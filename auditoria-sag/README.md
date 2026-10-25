@@ -69,3 +69,13 @@ Los resultados se revisan desde el **Table Editor de Supabase** (`auditorias_bio
 ## Historial
 
 Antes de esta versión, la herramienta cubría los 5 rubros del manual (incluyendo Reproductora/Abuela e Incubadora), no filtraba los ítems según el rubro elegido (solo los anotaba en el texto), citaba solo la Res. 7695/2024 (que aprueba los manuales y sus pautas) y no la Res. Ex. N°2114/2023 (que crea el sistema oficial) y guardaba en Google Sheets vía Apps Script sin aviso automático al asesor.
+
+## Evaluación de riesgo AviVet (aparte de la pauta SAG)
+
+La pauta SAG no se toca: sigue siendo cumple / no cumple / no aplica, con su % y su semáforo.
+Debajo, el resumen muestra una **segunda lectura de las mismas respuestas**, ponderada por riesgo:
+
+- Cada ítem tiene un peso (1 · 0,8 · 0,6 · 0,4 · 0,2) y una categoría, externa o interna, definidos en [pesos-riesgo.xlsx](pesos-riesgo.xlsx) (columna «TU PESO» manda sobre «Peso propuesto»).
+- Índice = 100 · Σ(peso · cumple) / Σ(peso de los ítems aplicables); los N/A no cuentan. Se entrega total, externo, interno y un **radar por categoría**.
+- **Barrera crítica:** un ítem de peso 1 sin cumplir impide el nivel «riesgo bajo» y se lista por nombre.
+- Para actualizar pesos: editar el Excel y correr `python3 generar-pesos.py` (agrega `--revisado` cuando estén aprobados; mientras tanto la app avisa «pesos en revisión»).
