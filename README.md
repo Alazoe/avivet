@@ -15,6 +15,7 @@
 | **Calculadoras de Dosis** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/calculadoras-dosis/) | Cálculo de dosis de antibióticos en agua de bebida |
 | **Auditoría SAG Bioseguridad** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/auditoria-sag/) | Pauta de verificación para Engorda, Ponedoras y Traspatio/AFC, Res. Ex. N°2114/2023 y 7695/2024 |
 | **Carteles de Bioseguridad** | [🔗 Abrir herramienta](https://avivet.cl/avivet/carteles-bioseguridad/) | 17 carteles SAG / NCh 1411 personalizados por plantel, serie completa en PDF A4 |
+| **Evaluación Certified Humane (HFAC)** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/evaluacion-hfac/) | Pauta de verificación para gallinas ponedoras (HFAC Ed. 21): 221 puntos, aplicabilidad por sistema, etapa producción/crianza, cálculo por ave y exportación CSV/JSON (prototipo) |
 | **Inventario de Huevos** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/inventario-huevos/) | Control de stock y ventas |
 | **Inventario Alimento — Portal** | [🔗 Plantas de alimento](https://avivet.cl/avivet/plantasdealimento) | Acceso directo a las 3 plantas |
 | **Inventario — La Campestre** | [Conteo](https://avivet.cl/avivet/inventario/?c=campestre) · [Admin](https://avivet.cl/avivet/inventario/admin.html?c=campestre) | Materias primas planta La Campestre |
