@@ -334,6 +334,7 @@ python3 oxitetraciclina.py
 | `primavet.html` | Web | Amoxicilina · Primavet® 50% | Pollos broiler / Cerdos | 40 mg/kg PV/día · 5–7 días |
 | `azovetril.html` | Web | Trimetoprim+Sulfadimidina · Azovetril® | Pollos broiler / Pavos | 0,125–0,25 mL/kg PV/día · 5 días |
 | `levantel.html` | Web | Levamisol · LEVANTEL® 46% | Pollos broiler | 30–40 mg base/kg PV · Dosis única |
+| `panacur.html` | Web | Fenbendazol · PANACUR® 10% (extra-etiqueta en aves) | Pollos, pollas y gallinas | 10–20 mg/kg PV · Dosis única (repetir 10–14 d) · Capillaria × 5 días |
 | `quiflumil.html` | Web | Enrofloxacino · QUIFLUMIL® 10% | Pollos broiler / Pavos / Ponedoras crianza | 0,1 mL/kg PV/día · 5–10 días |
 | `enrofloxacino.html` | Web | Enrofloxacino · Enromic® 20% | Pollos broiler / Pollas reemplazo | 0,05 mL/kg PV/día · 3–5 días |
 | `duflosan.html` | Web | Florfenicol · DUFLOSAN® 2% | Pollos broiler / Cerdos | 0,5–0,75 mL/kg/dosis × 2/día (pollos) · 0,5 mL/kg/día (cerdos) · 5 días |

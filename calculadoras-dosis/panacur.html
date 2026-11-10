@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fenbendazol · PANACUR® 10% — AviVet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#f5f4f0; --surface:#ffffff; --surface2:#f0ede8;
+  --border:#ddd9d0; --border2:#e8e4de;
+  --text:#1a1916; --text2:#5a5650; --text3:#9a948c;
+  --accent:#1b4332; --accent2:#2d6a4f; --accent-l:#d8f3dc;
+  --gold:#b5813a; --gold-l:#fdf3e0;
+  --ok:#1b7a4a; --ok-l:#e8f7ee;
+  --purple:#5b2d8e; --purple-l:#f3eeff; --purple-b:#d4b8f5;
+  --radius:12px;
+  --shadow:0 1px 3px rgba(0,0,0,0.06),0 4px 16px rgba(0,0,0,0.04);
+  --shadow-md:0 2px 8px rgba(0,0,0,0.08),0 8px 32px rgba(0,0,0,0.06);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;line-height:1.5;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;height:56px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100;}
+.hdr-back{display:flex;align-items:center;gap:5px;font-size:13px;font-weight:500;color:var(--text2);text-decoration:none;padding:5px 10px;border-radius:8px;border:1px solid var(--border);transition:all 0.15s;}
+.hdr-back:hover{border-color:var(--accent);color:var(--accent);}
+.logo-mark{width:32px;height:32px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.logo-text{font-family:"Fraunces",serif;font-weight:700;font-size:16px;color:var(--text);}
+.logo-sub{font-size:11px;color:var(--text3);font-weight:500;margin-left:2px;}
+.hdr-sep{width:1px;height:20px;background:var(--border);margin:0 4px;}
+.hdr-title{font-size:13px;color:var(--text2);font-weight:500;}
+
+main{max-width:900px;margin:0 auto;padding:32px 20px 60px;animation:fadeIn 0.4s ease;}
+.page-hero{margin-bottom:24px;}
+.drug-badge{display:inline-flex;align-items:center;gap:6px;background:var(--purple-l);border:1px solid var(--purple-b);color:var(--purple);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:10px;}
+.page-title{font-family:"Fraunces",serif;font-size:28px;font-weight:700;line-height:1.2;margin-bottom:6px;}
+.page-sub{font-size:14px;color:var(--text2);}
+.dose-ref{display:inline-flex;align-items:center;gap:6px;margin-top:10px;background:var(--gold-l);border:1px solid #e8d5a8;border-radius:8px;padding:6px 12px;font-size:12px;color:#7a5a1a;}
+
+/* Alerta dosis única */
+.dosis-unica-alert{background:var(--purple-l);border:1.5px solid var(--purple-b);border-radius:14px;padding:14px 18px;margin-bottom:20px;display:flex;gap:10px;align-items:flex-start;}
+.dosis-unica-icon{font-size:18px;flex-shrink:0;}
+.dosis-unica-title{font-size:13px;font-weight:700;color:var(--purple);margin-bottom:3px;}
+.dosis-unica-text{font-size:12px;color:#3d1d6e;line-height:1.5;}
+
+/* Info indicación */
+.ind-info{background:var(--ok-l);border:1px solid #a8dfc0;border-radius:12px;padding:14px 16px;margin-bottom:20px;display:flex;gap:10px;align-items:flex-start;font-size:13px;}
+.ind-info-icon{font-size:18px;flex-shrink:0;}
+.ind-info-title{font-weight:600;color:var(--ok);margin-bottom:3px;}
+.ind-info-text{color:#1a4a2a;line-height:1.4;}
+
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+@media(max-width:620px){.grid{grid-template-columns:1fr;}}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);overflow:hidden;}
+.card-header{padding:16px 20px 14px;border-bottom:1px solid var(--border2);display:flex;align-items:center;gap:10px;}
+.card-icon{width:34px;height:34px;border-radius:8px;background:var(--accent-l);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.card-title{font-weight:600;font-size:14px;}
+.card-body{padding:20px;}
+.field{margin-bottom:16px;}
+.field:last-child{margin-bottom:0;}
+label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;color:var(--text);}
+label span{font-weight:400;color:var(--text3);margin-left:4px;}
+input[type=number],select{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:var(--radius);font-family:"DM Sans",sans-serif;font-size:14px;color:var(--text);background:var(--surface);outline:none;transition:border-color 0.15s,box-shadow 0.15s;appearance:none;-webkit-appearance:none;}
+input[type=number]:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(27,67,50,0.1);}
+input[type=number]::-webkit-inner-spin-button{opacity:1;}
+.select-wrap{position:relative;}
+.select-wrap::after{content:'▾';position:absolute;right:12px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--text3);font-size:13px;}
+.select-wrap select{padding-right:30px;}
+.custom-agua{display:none;margin-top:10px;}
+.custom-agua.visible{display:block;}
+
+.dose-options{display:flex;gap:8px;flex-wrap:wrap;}
+.dose-opt{flex:1;min-width:70px;border:1.5px solid var(--border);border-radius:10px;padding:8px 10px;text-align:center;cursor:pointer;transition:all 0.15s;background:var(--surface);}
+.dose-opt:hover{border-color:var(--purple);background:var(--purple-l);}
+.dose-opt.active{border-color:var(--purple);background:var(--purple-l);}
+.dose-opt .opt-label{font-size:11px;color:var(--text3);font-weight:500;display:block;margin-bottom:2px;}
+.dose-opt .opt-val{font-size:14px;font-weight:700;color:var(--purple);}
+.dose-custom{margin-top:10px;display:none;}
+.dose-custom.visible{display:block;}
+
+/* Dosis fija */
+.dosis-fija{background:var(--purple-l);border:1px solid var(--purple-b);border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:12px;}
+.dosis-fija-val{font-size:18px;font-weight:700;color:var(--purple);}
+.dosis-fija-sub{font-size:11px;color:#5b2d8e99;margin-top:2px;}
+
+.btn-calc{width:100%;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);padding:14px 24px;font-family:"DM Sans",sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:background 0.2s,transform 0.1s;margin-top:4px;display:flex;align-items:center;justify-content:center;gap:8px;}
+.btn-calc:hover{background:var(--accent2);}
+.btn-calc:active{transform:scale(0.99);}
+
+#resultado{display:none;animation:slideIn 0.35s ease;}
+#resultado.visible{display:block;}
+.sp-tag{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600;letter-spacing:0.3px;text-transform:uppercase;margin-bottom:10px;}
+.result-card{background:var(--accent);border-radius:16px;padding:24px;margin-bottom:20px;color:#fff;}
+.result-card-title{font-family:"Fraunces",serif;font-size:18px;font-weight:700;margin-bottom:4px;}
+.result-card-sub{font-size:13px;color:rgba(255,255,255,0.7);margin-bottom:20px;}
+.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:480px){.result-grid{grid-template-columns:1fr;}}
+.result-item{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);border-radius:10px;padding:12px 14px;}
+.result-item.highlight{background:rgba(255,255,255,0.18);border-color:rgba(255,255,255,0.3);}
+.result-label{font-size:11px;color:rgba(255,255,255,0.65);font-weight:600;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:4px;}
+.result-value{font-size:22px;font-weight:700;line-height:1;}
+.result-unit{font-size:13px;color:rgba(255,255,255,0.7);margin-top:3px;}
+.instruccion{background:var(--ok-l);border:1px solid #a8dfc0;border-radius:12px;padding:16px 18px;display:flex;gap:12px;align-items:flex-start;margin-bottom:20px;}
+.instr-icon{font-size:20px;flex-shrink:0;margin-top:1px;}
+.instr-title{font-weight:600;font-size:14px;color:var(--ok);margin-bottom:4px;}
+.instr-text{font-size:14px;color:#1a4a2a;line-height:1.5;}
+.summary-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:20px;}
+.summary-title{font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:10px;}
+.summary-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border2);font-size:13px;}
+.summary-row:last-child{border-bottom:none;}
+.summary-key{color:var(--text2);}
+.summary-val{font-weight:600;color:var(--text);text-align:right;max-width:60%;}
+.btn-reset{background:transparent;border:1.5px solid var(--border);color:var(--text2);border-radius:var(--radius);padding:10px 20px;font-family:"DM Sans",sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:all 0.15s;}
+.btn-reset:hover{border-color:var(--accent);color:var(--accent);}
+.aviso{background:var(--gold-l);border:1px solid #e8d5a8;border-radius:10px;padding:12px 16px;font-size:12px;color:#7a5a1a;display:flex;gap:8px;align-items:flex-start;margin-top:20px;}
+
+.extra-alert{background:#fff4e5;border:1.5px solid #f0c27a;border-radius:14px;padding:14px 18px;margin-bottom:20px;display:flex;gap:10px;align-items:flex-start;}
+.extra-title{font-size:13px;font-weight:700;color:#8a4b00;margin-bottom:3px;}
+.extra-text{font-size:12px;color:#5c3500;line-height:1.5;}
+.esq-opts{display:flex;flex-direction:column;gap:8px;}
+.esq-opt{border:1.5px solid var(--border);border-radius:10px;padding:9px 12px;cursor:pointer;transition:all 0.15s;background:var(--surface);}
+.esq-opt:hover,.esq-opt.active{border-color:var(--purple);background:var(--purple-l);}
+.esq-opt .esq-name{font-size:13px;font-weight:700;color:var(--purple);}
+.esq-opt .esq-sub{font-size:11px;color:var(--text2);margin-top:2px;}
+.ficha{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-top:24px;font-size:13px;color:var(--text2);}
+.ficha h2{font-family:"Fraunces",serif;font-size:16px;color:var(--text);margin-bottom:8px;}
+.ficha p{margin-bottom:6px;}
+.ficha a{color:var(--accent);}
+</style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="hdr-back">← Volver</a>
+  <div class="hdr-sep"></div>
+  <div class="logo-mark">🐔</div>
+  <span class="logo-text">AviVet</span>
+  <span class="logo-sub">MV Andrés Lazo</span>
+  <div class="hdr-sep"></div>
+  <span class="hdr-title">Calculadora de Dosis</span>
+</header>
+
+<main>
+  <div class="page-hero">
+    <div class="drug-badge">🪱 Antiparasítico · Suspensión oral</div>
+    <h1 class="page-title">Fenbendazol<br>PANACUR® 10%</h1>
+    <p class="page-sub">Cálculo de dosis vía oral (agua de bebida o individual) · Pollos, pollas y gallinas</p>
+    <div class="dose-ref">📋 100 mg Fenbendazol / mL · Aves: 10–20 mg/kg PV (Capillaria: × 5 días)</div>
+  </div>
+
+  <div class="extra-alert">
+    <span class="dosis-unica-icon">⚠️</span>
+    <div>
+      <div class="extra-title">Uso extra-etiqueta en aves</div>
+      <div class="extra-text">
+        La ficha técnica de PANACUR® 10% (Reg. SAG N°1006) indica <strong>bovinos, ovinos, caballos y perros</strong>; no incluye aves.
+        Su uso en aves es bajo responsabilidad y <strong>receta del Médico Veterinario</strong>, quien debe fijar el período de resguardo
+        de carne y huevos (la ficha no establece resguardo aviar). Dosis aviares tomadas de la
+        <a href="referencia-farmacologia-aviar.html">referencia de farmacología aviar</a>.
+      </div>
+    </div>
+  </div>
+
+  <div class="ind-info">
+    <span class="ind-info-icon">🪱</span>
+    <div>
+      <div class="ind-info-title">Parásitos objetivo en aves</div>
+      <div class="ind-info-text"><em>Ascaridia galli · Heterakis gallinarum · Capillaria spp.</em> — vermicida, larvicida y ovicida.</div>
+    </div>
+  </div>
+
+  <div class="grid">
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">🐣</div>
+        <span class="card-title">Datos del lote</span>
+      </div>
+      <div class="card-body">
+        <div class="field">
+          <label>N° de aves</label>
+          <input type="number" id="n_aves" min="1" placeholder="Ej: 5000">
+        </div>
+        <div class="field">
+          <label>Peso promedio por ave <span>(kg)</span></label>
+          <input type="number" id="peso" min="0.01" step="any" placeholder="Ej: 1.800">
+        </div>
+        <div class="field">
+          <label>Consumo de agua</label>
+          <div class="select-wrap">
+            <select id="etapa" onchange="toggleCustomAgua()">
+              <option value="65">Broiler sem. 1 · ~65 mL/ave/día</option>
+              <option value="120">Broiler sem. 2 · ~120 mL/ave/día</option>
+              <option value="175">Broiler sem. 3 · ~175 mL/ave/día</option>
+              <option value="220">Broiler sem. 4 · ~220 mL/ave/día</option>
+              <option value="270">Broiler sem. 5 · ~270 mL/ave/día</option>
+              <option value="310">Broiler sem. 6+ · ~310 mL/ave/día</option>
+              <option value="150">Polla de reemplazo · ~150 mL/ave/día</option>
+              <option value="250" selected>Gallina en postura / reproductora · ~250 mL/ave/día</option>
+              <option value="custom">Consumo personalizado…</option>
+            </select>
+          </div>
+          <div class="custom-agua" id="customAguaWrap">
+            <input type="number" id="custom_agua" min="1" step="1" placeholder="mL / ave / día">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">💉</div>
+        <span class="card-title">Parámetros del tratamiento</span>
+      </div>
+      <div class="card-body">
+        <div class="field">
+          <label>Esquema</label>
+          <div class="esq-opts">
+            <div class="esq-opt active" data-esq="asc" onclick="selectEsquema(this)">
+              <div class="esq-name">Ascáridos / Heterakis</div>
+              <div class="esq-sub">Dosis única · repetir a los 10–14 días</div>
+            </div>
+            <div class="esq-opt" data-esq="cap" onclick="selectEsquema(this)">
+              <div class="esq-name">Capillaria</div>
+              <div class="esq-sub">Cada 24 h × 5 días</div>
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <label>Dosis de Fenbendazol <span>(mg/kg PV)</span></label>
+          <div class="dose-options">
+            <div class="dose-opt active" onclick="selectDosis(this,10)"><span class="opt-label">Base</span><span class="opt-val">10</span></div>
+            <div class="dose-opt" onclick="selectDosis(this,15)"><span class="opt-label">Media</span><span class="opt-val">15</span></div>
+            <div class="dose-opt" onclick="selectDosis(this,20)"><span class="opt-label">Alta</span><span class="opt-val">20</span></div>
+            <div class="dose-opt" onclick="selectDosis(this,'custom')"><span class="opt-label">Otra</span><span class="opt-val">···</span></div>
+          </div>
+          <div class="dose-custom" id="doseCustomWrap">
+            <input type="number" id="dosis_custom" min="1" max="50" step="any" placeholder="1–50 mg Fenbendazol/kg PV">
+          </div>
+        </div>
+        <button class="btn-calc" onclick="calcular()">Calcular dosis</button>
+      </div>
+    </div>
+
+  </div>
+
+  <div id="resultado">
+    <div style="height:24px;"></div>
+    <div class="result-card">
+      <div class="sp-tag" id="res-tag">🐔 Aves</div>
+      <div class="result-card-title">Resultado del cálculo</div>
+      <div class="result-card-sub" id="res-subtitulo"></div>
+      <div class="result-grid">
+        <div class="result-item highlight">
+          <div class="result-label" id="res-ml-label">PANACUR® 10% por toma</div>
+          <div class="result-value" id="res-ml">—</div>
+          <div class="result-unit">mL de producto</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Agua del lote / día</div>
+          <div class="result-value" id="res-agua">—</div>
+          <div class="result-unit">litros / día</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Por ave (vía individual)</div>
+          <div class="result-value" id="res-ave">—</div>
+          <div class="result-unit">mL / ave con jeringa</div>
+        </div>
+        <div class="result-item highlight">
+          <div class="result-label">Total del tratamiento</div>
+          <div class="result-value" id="res-total">—</div>
+          <div class="result-unit" id="res-total-sub"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="instruccion">
+      <span class="instr-icon">✅</span>
+      <div>
+        <div class="instr-title">Instrucción de preparación</div>
+        <div class="instr-text" id="res-instruccion"></div>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-title">Resumen del tratamiento</div>
+      <div class="summary-row"><span class="summary-key">Producto</span><span class="summary-val">PANACUR® 10% (Fenbendazol 100 mg/mL)</span></div>
+      <div class="summary-row"><span class="summary-key">Esquema</span><span class="summary-val" id="sum-esq">—</span></div>
+      <div class="summary-row"><span class="summary-key">Lote</span><span class="summary-val" id="sum-lote">—</span></div>
+      <div class="summary-row"><span class="summary-key">Consumo de agua</span><span class="summary-val" id="sum-etapa">—</span></div>
+      <div class="summary-row"><span class="summary-key">Dosis aplicada</span><span class="summary-val" id="sum-dosis">—</span></div>
+      <div class="summary-row"><span class="summary-key">Peso vivo total</span><span class="summary-val" id="sum-pvtotal">—</span></div>
+      <div class="summary-row"><span class="summary-key">Resguardo</span><span class="summary-val">Lo fija el MV (uso extra-etiqueta)</span></div>
+    </div>
+
+    <button class="btn-reset" onclick="resetForm()">← Nuevo cálculo</button>
+    <div class="aviso"><span>⚠️</span><span>Uso exclusivo bajo prescripción veterinaria. Los valores de consumo de agua son estimados — ajusta según el consumo real medido. El fenbendazol es poco soluble: agitar bien el frasco y la solución, y entregarla en un volumen que se consuma en pocas horas.</span></div>
+  </div>
+
+  <div class="ficha">
+    <h2>Ficha técnica · PANACUR® 10%</h2>
+    <p><strong>Composición:</strong> Fenbendazol 100 mg por mL · suspensión oral. Antihelmíntico de amplio espectro (vermicida, larvicida y ovicida).</p>
+    <p><strong>Especies en la ficha:</strong> bovinos (5 mg/kg), ovinos (6 mg/kg), equinos (7,5 mg/kg) y perros (50 mg/kg × 3 días). Aves: no indicadas.</p>
+    <p><strong>Contraindicaciones / interacciones:</strong> no administrar junto con derivados bromados de salicilanilida.</p>
+    <p><strong>Almacenamiento:</strong> 15–30 °C. Agitar antes de usar; una vez abierto, usar de inmediato y descartar el sobrante.</p>
+    <p><strong>Presentaciones:</strong> 100 mL, 250 mL, 1 L, 2,5 L y 5 L · MSD Salud Animal (Intervet Chile) · Venta bajo receta médico veterinaria · Reg. SAG N°1006.</p>
+    <p><a href="https://www.msd-salud-animal.cl/wp-content/uploads/sites/45/2021/05/Panacur-10-02.2019-v3.pdf" target="_blank" rel="noopener">Ver ficha técnica oficial (PDF, MSD)</a></p>
+  </div>
+</main>
+
+<script>
+// PANACUR® 10%: 100 mg Fenbendazol por mL
+const MG_POR_ML = 100;
+const DOSIS_MIN = 1, DOSIS_MAX = 50;
+const ESQ = {
+  asc: { nombre: 'Ascáridos / Heterakis · dosis única (repetir a los 10–14 d)', dias: 1 },
+  cap: { nombre: 'Capillaria · cada 24 h × 5 días', dias: 5 },
+};
+let esquema = 'asc';
+let dosisSel = 10;
+
+function selectEsquema(el) {
+  esquema = el.dataset.esq;
+  document.querySelectorAll('.esq-opt').forEach(o => o.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function selectDosis(el, val) {
+  dosisSel = val;
+  document.querySelectorAll('.dose-opt').forEach(o => o.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('doseCustomWrap').classList.toggle('visible', val === 'custom');
+}
+
+function getDosis() {
+  if (dosisSel === 'custom') return parseFloat(document.getElementById('dosis_custom').value) || null;
+  return dosisSel;
+}
+
+function toggleCustomAgua() {
+  document.getElementById('customAguaWrap').classList.toggle('visible',
+    document.getElementById('etapa').value === 'custom');
+}
+
+function getConsumoMl() {
+  const sel = document.getElementById('etapa');
+  if (sel.value === 'custom') return parseFloat(document.getElementById('custom_agua').value) || null;
+  return parseFloat(sel.value);
+}
+
+function getEtapaDesc() {
+  const sel = document.getElementById('etapa');
+  if (sel.value === 'custom') return `Personalizado (${document.getElementById('custom_agua').value} mL/ave/día)`;
+  return sel.options[sel.selectedIndex].text;
+}
+
+function fmt(n, dec=2) { return n.toLocaleString('es-CL',{minimumFractionDigits:dec,maximumFractionDigits:dec}); }
+
+function calcular() {
+  const nAves     = parseFloat(document.getElementById('n_aves').value);
+  const pesoKg    = parseFloat(document.getElementById('peso').value);
+  const consumoMl = getConsumoMl();
+  const dosis     = getDosis();   // mg Fenbendazol / kg PV / toma
+
+  if (!nAves || nAves < 1)    { alert('Ingresa el número de aves.'); return; }
+  if (!pesoKg || pesoKg <= 0) { alert('Ingresa el peso promedio.'); return; }
+  if (!consumoMl)             { alert('Ingresa el consumo de agua.'); return; }
+  if (!dosis)                 { alert('Ingresa o selecciona la dosis.'); return; }
+  if (dosis < DOSIS_MIN || dosis > DOSIS_MAX) {
+    alert(`Dosis fuera de rango (${DOSIS_MIN}–${DOSIS_MAX} mg/kg PV).`); return;
+  }
+
+  const e          = ESQ[esquema];
+  const pesoTotal  = nAves * pesoKg;                    // kg PV
+  const mgToma     = pesoTotal * dosis;                 // mg fenbendazol por toma
+  const mlToma     = mgToma / MG_POR_ML;                // mL PANACUR por toma
+  const mlAve      = pesoKg * dosis / MG_POR_ML;        // mL por ave
+  const aguaL      = (consumoMl * nAves) / 1000;        // L/día del lote
+  const aguaTomaL  = aguaL / 3;                         // volumen sugerido (~1/3 del día)
+  const mlTotal    = mlToma * e.dias;
+
+  document.getElementById('res-tag').textContent = esquema === 'asc' ? '🐔 Aves · Dosis única' : '🐔 Aves · 5 días';
+  document.getElementById('res-subtitulo').textContent =
+    `${fmt(nAves,0)} aves · ${pesoKg} kg/ave · ${dosis} mg/kg PV`;
+  document.getElementById('res-ml-label').textContent = esquema === 'asc' ? 'PANACUR® 10% — dosis única' : 'PANACUR® 10% por día';
+  document.getElementById('res-ml').textContent    = fmt(mlToma, 1);
+  document.getElementById('res-agua').textContent  = fmt(aguaL, 1);
+  document.getElementById('res-ave').textContent   = fmt(mlAve, 2);
+  document.getElementById('res-total').textContent = fmt(mlTotal, 1) + ' mL';
+  document.getElementById('res-total-sub').textContent =
+    e.dias === 1 ? '1 toma (+ repetición a los 10–14 d)' : `${e.dias} días × ${fmt(mlToma,1)} mL`;
+
+  document.getElementById('res-instruccion').innerHTML =
+    `Agita bien el frasco y mezcla <strong>${fmt(mlToma,1)} mL de PANACUR® 10%</strong> en un balde con agua; ` +
+    `luego incorpóralo a unos <strong>${fmt(aguaTomaL,1)} litros</strong> (≈ 1/3 del consumo diario) para que se consuma en 3–4 horas. ` +
+    `Suspende el agua 1–2 horas antes para asegurar el consumo y agita o recircula la solución, porque el fenbendazol decanta. ` +
+    (e.dias === 1
+      ? `Es una <strong>sola toma</strong>; repetir a los 10–14 días para cortar el ciclo.`
+      : `Repetir <strong>cada 24 h durante ${e.dias} días</strong>.`) +
+    ` En traspatio o pocas aves: <strong>${fmt(mlAve,2)} mL por ave</strong> directo al pico con jeringa.`;
+
+  document.getElementById('sum-esq').textContent     = e.nombre;
+  document.getElementById('sum-lote').textContent    = `${fmt(nAves,0)} aves`;
+  document.getElementById('sum-etapa').textContent   = getEtapaDesc();
+  document.getElementById('sum-dosis').textContent   = `${dosis} mg Fenbendazol/kg PV (= ${fmt(dosis/MG_POR_ML,2)} mL PANACUR® 10%/kg PV)`;
+  document.getElementById('sum-pvtotal').textContent = `${fmt(pesoTotal,1)} kg PV`;
+
+  document.getElementById('resultado').classList.add('visible');
+  document.getElementById('resultado').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function resetForm() {
+  document.getElementById('resultado').classList.remove('visible');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>

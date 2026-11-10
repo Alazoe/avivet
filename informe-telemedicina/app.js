@@ -53,7 +53,6 @@ const TM_CALENDARIO_REF = {
 // Antiparasitarios sin ficha/calculadora propia en el sitio — solo nombre + indicación.
 const TM_ANTIPARASITARIOS_EXTRA = [
   { label: 'Ivermectina',       indicacion: 'Endo y ectoparásitos: nematodos, ácaros, piojos. Inyectable o pour-on.' },
-  { label: 'Fenbendazol',       indicacion: 'Nematodos gastrointestinales.' },
   { label: 'Piperazina',        indicacion: 'Áscaris (Ascaridia galli).' },
   { label: 'Amprolio',          indicacion: 'Coccidiosis (Eimeria spp.) — coccidiostato, no es antiparasitario externo.' },
   { label: 'Tierra de diatomeas', indicacion: 'Control ambiental de ectoparásitos (ácaros, piojos) en cama y nidos.' },
@@ -82,6 +81,8 @@ const TM_CATALOGO_MED = [
     indicacion: 'Coccidiosis · Coriza infecciosa · Pasteurelosis · Colibacilosis · Salmonelosis', dosis: '0,125–0,25 mL/kg PV/día', duracion: '5 días' },
   { slug: 'levantel',       activo: 'Levamisol',                    comercial: 'LEVANTEL® 46%', tipo: 'Antiparasitario', antiparasitario: true,
     indicacion: 'Ascaridia galli · Heterakis gallinae · Capillaria spp.', dosis: '30–40 mg Levamisol base/kg PV', duracion: 'Dosis única' },
+  { slug: 'panacur',        activo: 'Fenbendazol',                  comercial: 'PANACUR® 10%', tipo: 'Antiparasitario', antiparasitario: true,
+    indicacion: 'Ascaridia galli · Heterakis gallinarum · Capillaria spp. (extra-etiqueta en aves)', dosis: '10–20 mg Fenbendazol/kg PV', duracion: 'Dosis única (repetir 10–14 d) · Capillaria: 5 días' },
   { slug: 'quiflumil',      activo: 'Enrofloxacino',                comercial: 'QUIFLUMIL® 10%', tipo: 'Uso restringido',
     indicacion: 'H. paragallinarum · P. multocida · E. coli · Mycoplasma spp. · Salmonella spp. (fluoroquinolona, no primera línea)', dosis: '0,1 mL/kg PV/día (fijo)', duracion: '5 días · CRD: 10 días' },
   { slug: 'enrofloxacino',  activo: 'Enrofloxacino',                comercial: 'Enromic® 20%', tipo: 'Uso restringido',

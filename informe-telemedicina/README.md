@@ -42,13 +42,13 @@ según la ficha real), lista para que ajustes dosis/vía al caso concreto:
   se inserta en el informe.
 - **Antiparasitarios y otros medicamentos**: los fármacos que ya tienen **ficha
   técnica y calculadora de dosis propia** en
-  [`../calculadoras-dosis/`](../calculadoras-dosis/) — Levamisol (Levantel),
+  [`../calculadoras-dosis/`](../calculadoras-dosis/) — Levamisol (Levantel), Fenbendazol (Panacur 10 %),
   Oxitetraciclina (Zanil 80 / Zanil HCL / Terrivet), Florfenicol (Veterin /
   Duflosan), Amoxicilina (Primavet), Trimetoprim+Sulfa (Azovetril), Enrofloxacino
   (Quiflumil / Enromic), Sulfacloropiridazina+TMP (Coliprim) — cada uno con un
   **🧮** que abre su calculadora en una pestaña nueva para sacar la dosis exacta
   del caso. Se completan con productos de uso frecuente que aún no tienen
-  calculadora propia (Ivermectina, Fenbendazol, Piperazina, Amprolio, tierra de
+  calculadora propia (Ivermectina, Piperazina, Amprolio, tierra de
   diatomeas, vitaminas + electrolitos, calcio, probióticos).
 
 El texto de indicación/dosis de los productos con ficha vive en `TM_CATALOGO_MED`
