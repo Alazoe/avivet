@@ -38,6 +38,14 @@ main{max-width:960px;margin:0 auto;padding:48px 20px 60px;animation:fadeIn 0.4s 
 .hero-title{font-family:"Fraunces",serif;font-size:32px;font-weight:700;line-height:1.2;margin-bottom:8px;}
 .hero-sub{font-size:15px;color:var(--text2);max-width:480px;}
 
+.group-head{margin:0 0 16px;}
+.group-head.antipar-head{margin-top:48px;padding-top:32px;border-top:2px solid var(--border);}
+.group-badge{display:inline-flex;align-items:center;gap:6px;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:8px;}
+.group-badge.abx{background:var(--accent-l);border:1px solid #a8dfc0;color:var(--accent);}
+.group-badge.antipar{background:var(--purple-l);border:1px solid var(--purple-b);color:var(--purple);}
+.group-title{font-family:"Fraunces",serif;font-size:22px;font-weight:700;margin-bottom:4px;}
+.group-sub{font-size:14px;color:var(--text2);}
+
 .drug-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
 @media(max-width:480px){.drug-grid{grid-template-columns:1fr;}}
 
@@ -127,6 +135,11 @@ main{max-width:960px;margin:0 auto;padding:48px 20px 60px;animation:fadeIn 0.4s 
     <div class="section-badge">💊 Antibióticos y Antiparasíticos</div>
     <h1 class="hero-title">Calculadoras<br>de Dosis</h1>
     <p class="hero-sub">Dosis en agua de bebida para pollos broiler, pavos, pollas de reemplazo y cerdos. Selecciona el fármaco a calcular.</p>
+  </div>
+
+  <div class="group-head">
+    <div class="group-badge abx">💊 Antibióticos</div>
+    <h2 class="group-title">Antimicrobianos</h2>
   </div>
 
   <div class="drug-grid">
@@ -253,53 +266,6 @@ main{max-width:960px;margin:0 auto;padding:48px 20px 60px;animation:fadeIn 0.4s 
       </div>
     </a>
 
-    <!-- Levamisol LEVANTEL -->
-    <a href="levantel.html" class="drug-card">
-      <div class="drug-card-top">
-        <div class="drug-type-badge antipar">🪱 Antiparasítico</div>
-        <div class="drug-name">Leva-<br>misol</div>
-        <div class="drug-commercial">LEVANTEL® 46%</div>
-        <div class="drug-species">
-          <span class="sp-badge">🐔 Pollos broiler</span>
-        </div>
-        <div class="drug-inds">
-          <div class="drug-ind"><span class="drug-ind-icon">🪱</span><span><em>Ascaridia galli · Heterakis gallinae · Capillaria spp.</em></span></div>
-          <div class="drug-ind"><span class="drug-ind-icon">⚡</span><span>Dosis única · En agua de bebida o alimento</span></div>
-        </div>
-      </div>
-      <div class="drug-card-bottom">
-        <div class="drug-dose-info">
-          <strong>30–40 mg Levamisol base/kg PV</strong>
-          Dosis única · g de producto
-        </div>
-        <div class="drug-cta">Calcular →</div>
-      </div>
-    </a>
-
-    <!-- Fenbendazol PANACUR -->
-    <a href="panacur.html" class="drug-card">
-      <div class="drug-card-top">
-        <div class="drug-type-badge antipar">🪱 Antiparasítico</div>
-        <div class="drug-name">Fenben-<br>dazol</div>
-        <div class="drug-commercial">PANACUR® 10%</div>
-        <div class="drug-species">
-          <span class="sp-badge">🐔 Pollos</span>
-          <span class="sp-badge">🐓 Pollas y gallinas</span>
-        </div>
-        <div class="drug-inds">
-          <div class="drug-ind"><span class="drug-ind-icon">🪱</span><span><em>Ascaridia galli · Heterakis gallinarum · Capillaria spp.</em></span></div>
-          <div class="drug-ind"><span class="drug-ind-icon">⚠️</span><span>Extra-etiqueta en aves · Suspensión oral, agua o individual</span></div>
-        </div>
-      </div>
-      <div class="drug-card-bottom">
-        <div class="drug-dose-info">
-          <strong>10–20 mg Fenbendazol/kg PV</strong>
-          Dosis única · Capillaria × 5 días · mL de producto
-        </div>
-        <div class="drug-cta">Calcular →</div>
-      </div>
-    </a>
-
     <!-- Enrofloxacino QUIFLUMIL -->
     <a href="quiflumil.html" class="drug-card">
       <div class="drug-card-top">
@@ -394,6 +360,64 @@ main{max-width:960px;margin:0 auto;padding:48px 20px 60px;animation:fadeIn 0.4s 
         <div class="drug-dose-info">
           <strong>1–1,5 mL/L de agua · ~30 mg/kg PV</strong>
           5 días · mL de producto/día
+        </div>
+        <div class="drug-cta">Calcular →</div>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- Sección Antiparasitarios -->
+  <div class="group-head antipar-head" id="antiparasitarios">
+    <div class="group-badge antipar">🪱 Antiparasitarios</div>
+    <h2 class="group-title">Antiparasitarios internos</h2>
+    <p class="group-sub">Nematodos gastrointestinales: <em>Ascaridia galli</em>, <em>Heterakis gallinarum</em> y <em>Capillaria</em> spp.</p>
+  </div>
+
+  <div class="drug-grid">
+
+    <!-- Levamisol LEVANTEL -->
+    <a href="levantel.html" class="drug-card">
+      <div class="drug-card-top">
+        <div class="drug-type-badge antipar">🪱 Antiparasítico</div>
+        <div class="drug-name">Leva-<br>misol</div>
+        <div class="drug-commercial">LEVANTEL® 46%</div>
+        <div class="drug-species">
+          <span class="sp-badge">🐔 Pollos broiler</span>
+        </div>
+        <div class="drug-inds">
+          <div class="drug-ind"><span class="drug-ind-icon">🪱</span><span><em>Ascaridia galli · Heterakis gallinae · Capillaria spp.</em></span></div>
+          <div class="drug-ind"><span class="drug-ind-icon">⚡</span><span>Dosis única · En agua de bebida o alimento</span></div>
+        </div>
+      </div>
+      <div class="drug-card-bottom">
+        <div class="drug-dose-info">
+          <strong>30–40 mg Levamisol base/kg PV</strong>
+          Dosis única · g de producto
+        </div>
+        <div class="drug-cta">Calcular →</div>
+      </div>
+    </a>
+
+    <!-- Fenbendazol PANACUR -->
+    <a href="panacur.html" class="drug-card">
+      <div class="drug-card-top">
+        <div class="drug-type-badge antipar">🪱 Antiparasítico</div>
+        <div class="drug-name">Fenben-<br>dazol</div>
+        <div class="drug-commercial">PANACUR® 10%</div>
+        <div class="drug-species">
+          <span class="sp-badge">🐔 Pollos</span>
+          <span class="sp-badge">🐓 Pollas y gallinas</span>
+        </div>
+        <div class="drug-inds">
+          <div class="drug-ind"><span class="drug-ind-icon">🪱</span><span><em>Ascaridia galli · Heterakis gallinarum · Capillaria spp.</em></span></div>
+          <div class="drug-ind"><span class="drug-ind-icon">⚠️</span><span>Extra-etiqueta en aves · Suspensión oral, agua o individual</span></div>
+        </div>
+      </div>
+      <div class="drug-card-bottom">
+        <div class="drug-dose-info">
+          <strong>10–20 mg Fenbendazol/kg PV</strong>
+          Dosis única · Capillaria × 5 días · mL de producto
         </div>
         <div class="drug-cta">Calcular →</div>
       </div>
