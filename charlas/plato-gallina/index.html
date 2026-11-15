@@ -249,7 +249,7 @@ footer{font-size:11px;color:var(--gris);text-align:center;padding:2px 12px 6px}
   </div>
 </section>
 </main>
-<footer>Andrés Lazo Escobar · Médico Veterinario · Huevos La Campestre · Fuentes: Rostagno et al. 2024; Embrapa 051; Marañón 2001; Bestman et al. 2020; FEDNA 2018; Karcher 2021; Asencio 2023 y las indicadas en cada tarjeta.</footer>
+<footer>Andrés Lazo Escobar · Médico Veterinario · Huevos La Campestre · Fuentes: Rostagno et al. 2024; Embrapa 051; Marañón 2001; González-Cerón 2020; Bestman et al. 2020; FEDNA 2018; Karcher 2021; Asencio 2023 y las indicadas en cada tarjeta.</footer>
 
 <script>
 (function(){
@@ -426,9 +426,9 @@ pintar();
 
 /* ---- remedios caseros ---- */
 var REM = [
- {n:"Ajo", ic:"🧄", c:"amar", v:"Resultados variables",
-  t:"La alicina del ajo frena las coccidias en laboratorio y en algunos ensayos en aves, pero no en todos. El aceite de ajo al 10 % redujo el ácaro del norte, aunque menos que los productos químicos.",
-  o:"No reemplaza el tratamiento contra coccidias ni contra ácaros.", f:"Ahmad et al. 2024; Lennox 2021"},
+ {n:"Ajo", ic:"🧄", c:"amar", v:"Efecto muy pequeño",
+  t:"Un análisis de 19 ensayos en gallinas encontró que el ajo sube la postura apenas 0,3 % y el huevo 0,07 g: es real, pero muy pequeño. Contra las coccidias los resultados varían, y el aceite de ajo al 10 % redujo el ácaro del norte, menos que los productos químicos.",
+  o:"No se conoce una dosis casera y no reemplaza el tratamiento contra coccidias ni ácaros.", f:"Ogbuewu et al. 2021 (solo resumen); Ahmad et al. 2024; Lennox 2021"},
  {n:"Ají", ic:"🌶️", c:"gris", v:"No espanta a la gallina",
   t:"Las aves sienten el picante pero no lo rechazan como nosotros: no sirve para que dejen de picarse o de comer huevos. Sí espanta a los ratones. El pimiento rojo, al 0,5–1,5 % de la ración, da color naranjo a la yema.",
   o:"Como remedio no tiene efecto probado.", f:"Poultry Science 5ª ed., Cap. 5; Matache et al. 2024"},
@@ -441,9 +441,9 @@ var REM = [
  {n:"Cúrcuma", ic:"🟡", c:"amar", v:"Evidencia mixta",
   t:"La curcumina frena las coccidias en laboratorio. En aves, algunos ensayos funcionaron y otros no. Tiene efecto antioxidante.",
   o:"No es un tratamiento contra coccidias.", f:"Wang et al. 2024"},
- {n:"Bicarbonato de sodio", ic:"🧂", c:"rojo", v:"Solo con calor y bien dosificado",
-  t:"Aporta sodio sin cloro, lo que puede ayudar a la cáscara cuando hace mucho calor o el agua viene muy clorada. En climas templados el efecto muchas veces no se nota.",
-  o:"En exceso alcaliniza la orina y favorece cálculos y gota en los riñones. No hay dosis casera segura: mejor que venga ya incluido en el alimento.", f:"FEDNA 2018; Applegate y Fowler 2021"}
+ {n:"Bicarbonato de sodio", ic:"🧂", c:"amar", v:"Efecto pasajero",
+  t:"En gallinas nativas, 1 a 1,5 % del alimento mejoró el peso y el grosor de la cáscara solo en algunas semanas, sin cambiar el consumo ni el peso del huevo. La gallina no come de noche, cuando se forma la cáscara. Aporta sodio sin cloro, útil con calor o agua muy clorada.",
+  o:"Se probó dentro del alimento y reemplazando parte de la sal. En exceso alcaliniza la orina y favorece cálculos en los riñones: no hay dosis casera segura.", f:"Gongruttananun y Chotesangasa 2005; FEDNA 2018; Applegate y Fowler 2021"}
 ];
 $("remgrid").innerHTML = REM.map(function(r){
   return '<div class="rem"><div class="top"><div class="ic">'+r.ic+'</div><div><h3>'+r.n+'</h3><span class="chip '+r.c+'">'+r.v+'</span></div></div>'+
@@ -540,6 +540,9 @@ var PREG = [
   {f:"“Una gallina come más o menos 110 g al día.”", r:"v",
    e:"Entre 100 y 115 g, según su tamaño, cuánto pone y el frío: una taza chica por gallina. Si en la tarde todavía queda alimento, está sobrando.",
    s:"Karcher 2021; Asencio 2023"},
+  {f:"“Una mezcla casera de maíz y frijol rinde igual que el alimento comercial.”", r:"m",
+   e:"En un ensayo con gallinas de doble propósito, la mezcla casera (11 % de proteína) puso igual al comienzo, pero desde la semana 40 puso 17–24 % menos y los huevos salieron 5–8 % más livianos. Le faltaba proteína de calidad.",
+   s:"González-Cerón et al. 2020"},
   {f:"“Si el alimento es bueno, el agua da lo mismo.”", r:"m",
    e:"La gallina toma cerca del doble de agua que de alimento. Si le falta agua, deja de poner primero que nada. Agua limpia todos los días.",
    s:"Bestman et al. 2020"}
