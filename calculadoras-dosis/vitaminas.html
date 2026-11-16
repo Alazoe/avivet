@@ -202,7 +202,7 @@ td.v.top::after{content:" ●";font-size:.6rem;vertical-align:middle}
     <p>Función, signo de deficiencia con su nombre de campo y lo que el ave hace distinto a otras especies. A la derecha, cuáles de los cinco productos la traen.</p>
   </div>
   <div class="tbl-wrap"><table id="vit-tbl"></table></div>
-  <p class="note">Resumen de McDonald et al. 2022 (<em>Animal Nutrition</em>, 8.ª ed., cap. 5) y FEDNA 2018. Dosis de vitaminas C y E en calor: Olayiwola y Adedokun 2025 (<em>Frontiers in Veterinary Science</em>) y Onagbesan 2023; vitamina D3 en el agua: Akter 2025. Las equivalencias por ave al día suponen 110 g de alimento y 0,22–0,25 L de agua.</p>
+  <p class="note">Resumen de McDonald et al. 2022 (<em>Animal Nutrition</em>, 8.ª ed., cap. 5) y FEDNA 2018. Dosis de vitaminas C y E en calor: Olayiwola y Adedokun 2025 (<em>Frontiers in Veterinary Science</em>), Onagbesan 2023 y Attia et al. 2016 (<em>SpringerPlus</em>). Vitaminas y vacunas: Shojadoost et al. 2021 (<em>Poultry Science</em>); vitamina D3 en el agua: Akter 2025. Las equivalencias por ave al día suponen 110 g de alimento y 0,22–0,25 L de agua.</p>
 </section>
 
 <section class="sec" aria-labelledby="h-calc">
@@ -271,6 +271,7 @@ td.v.top::after{content:" ●";font-size:.6rem;vertical-align:middle}
   <ul class="rules">
     <li><b>Nunca con la vacuna</b><span>El día de vacunar va solo agua sin cloro, con estabilizante o leche en polvo. Las vitaminas van antes y después.</span></li>
     <li><b>Cloro apagado durante el tratamiento</b><span>El cloro degrada las vitaminas. Al terminar, retomar con 3 a 5 ppm de cloro libre al final de la línea.</span></li>
+    <li><b>Un solo producto con vitamina A al vacunar</b><span>Vetervit, Chicktonic y Aminovital traen vitamina A. Junto al premix, dos de ellos pueden pasarse del nivel donde los títulos de vacuna bajaron.</span></li>
     <li><b>Preparar solo lo del día</b><span>El agua tratada se cambia cada 24 horas. Aminovit abierto dura 28 días; Vetervit, guardado seco y sin luz.</span></li>
     <li><b>Purgar las líneas al terminar</b><span>Vitaminas, electrolitos y azúcar alimentan el biofilm, que baja la eficacia de vacunas y medicamentos y vuelve en 2 a 3 días. Purga 1 minuto por cada 30 m de línea.</span></li>
     <li><b>Calcular sobre el consumo real</b><span>Con calor el consumo sube 50 a 100 %. Si dosificas por litro, el ave igual recibe la dosis; si preparas por ave, quedas corto.</span></li>
@@ -352,11 +353,11 @@ const ROWS = [
 
 /* Resumen de la wiki AviVet (vitaminas-aviares: McDonald 2022 cap. 5, FEDNA 2018) */
 const VIT = [
-  {n:'A', k:['A'], f:'Mantiene epitelios y mucosas (barrera respiratoria e intestinal), visión e inmunidad.', d:'Mucosas secas y más infecciones respiratorias; ceguera nocturna.', a:'Es el mejor conversor de β-caroteno de la granja (3:1). El exceso de A sube el requerimiento de E, D y K.'},
-  {n:'D3', k:['D3'], f:'Absorción de calcio y fósforo; hueso y glándula de la cáscara.', d:'Raquitismo en pollitos, cáscara delgada y hueso débil en ponedoras.', a:'La D2 vale solo ~10 % de la D3 en aves. En galpón cerrado casi no hay síntesis por sol.'},
+  {n:'A', k:['A'], f:'Mantiene epitelios y mucosas (barrera respiratoria e intestinal), visión, inmunidad y respuesta a vacunas.', d:'Mucosas secas y más infecciones respiratorias; ceguera nocturna.', a:'Es el mejor conversor de β-caroteno de la granja (3:1). Más no es mejor: en reproductoras, 20.000 UI/kg de alimento subió los títulos contra Newcastle y 35.000 UI/kg los bajó. El exceso de A sube el requerimiento de E, D y K.'},
+  {n:'D3', k:['D3'], f:'Absorción de calcio y fósforo; hueso y glándula de la cáscara.', d:'Raquitismo en pollitos, cáscara delgada y hueso débil en ponedoras.', a:'La D2 vale solo ~10 % de la D3 en aves. En galpón cerrado casi no hay síntesis por sol. Las vitaminas A y E en exceso compiten con su absorción.'},
   {n:'E', k:['E'], f:'Antioxidante de membranas e inmunidad; trabaja junto al selenio.', d:'Encefalomalacia (<em>crazy chick disease</em>), diátesis exudativa y miopatía de pechuga.', a:'El ave no la fabrica y el calor la agota. Los ensayos que funcionan usan 125–250 mg/kg de alimento (14–28 mg por ponedora al día); los productos al agua entregan unos 2 mg. El agua complementa la E del alimento, no la reemplaza.'},
   {n:'K', k:['K3'], f:'Coagulación (protrombina) y mineralización del hueso (osteocalcina).', d:'Hemorragias y coagulación lenta: el ave puede desangrarse por una herida.', a:'La K que hace la microbiota se forma demasiado lejos para absorberse; el ave depende del suplemento, salvo que coma cama.'},
-  {n:'C', k:['C'], f:'Antioxidante soluble; sostiene la respuesta inmune bajo estrés.', d:'Sin cuadro de deficiencia en condiciones normales.', a:'El ave la fabrica desde glucosa. Solo con calor la demanda supera la síntesis. Los ensayos en ponedoras usan 200–400 mg/kg de alimento, equivalente a unos 90–200 mg/L de agua. Sola no mejora el hueso; con E rinde más.'},
+  {n:'C', k:['C'], f:'Antioxidante soluble; sostiene la respuesta inmune bajo estrés.', d:'Sin cuadro de deficiencia en condiciones normales.', a:'El ave la fabrica desde glucosa. Solo con calor la demanda supera la síntesis. Los ensayos en ponedoras usan 200–400 mg/kg de alimento, equivalente a unos 90–200 mg/L de agua. La necesidad sube con despique, vacunación, transporte e infección. Sola no mejora el hueso; sumarle E no siempre rinde más que C sola.'},
   {n:'B1 tiamina', k:['B1'], f:'Metabolismo de carbohidratos y función nerviosa.', d:'Pollitos con poco apetito, crecimiento lento y polineuritis.', a:'Los cereales la aportan; la deficiencia es rara en la práctica.'},
   {n:'B2 riboflavina', k:['B2'], f:'Metabolismo energético; nervios periféricos.', d:'<em>Curled toe paralysis</em>: pollitos sobre los corvejones con los dedos curvados. En reproductoras, baja incubabilidad.', a:'—'},
   {n:'B3 niacina', k:['B3'], f:'Metabolismo energético y de la piel.', d:'Trastornos de hueso y emplume; boca y esófago inflamados.', a:'La niacina de los cereales está ligada y no se aprovecha; el maíz es pobre en niacina y en triptófano.'},
@@ -372,14 +373,14 @@ const VIT = [
 const SIT = [
   {id:'calor', label:'Ola de calor', p:'vv', s:'ch',
    why:'Es el que más vitamina C entrega: a 30 g/100 L son 120 mg/L, dentro de lo que funcionó en ensayos con ponedoras en calor (unos 90 a 200 mg/L). Además trae A y D3.',
-   whys:'Suma vitamina E: con calor, C y E juntas rinden más que cada una por separado. La E del agua es poca; la base tiene que venir del alimento.',
-   how:'Vetervit 30 g/100 L mientras dure el calor; Chicktonic 1 ml/L si el lote además baja postura. Con mucho consumo de agua, electrolitos. El calor se maneja primero con ventilación y agua fresca.'},
-  {id:'vacuna', label:'Vacunación', p:'ch', s:'vv',
-   why:'Trae A, D3 y E juntas, en líquido y con aminoácidos. A 1 ml/L entrega tanta vitamina A como Vetervit y tres veces su vitamina E, las dos vitaminas que más pesan en la mucosa y la respuesta inmune.',
-   whys:'Alternativa mucho más barata si el lote está bien y solo buscas A y D3.',
-   how:'Dar 2 días antes y 2 a 3 días después, nunca en la misma agua que la vacuna. El día de vacunar: agua sin cloro con estabilizante o leche en polvo.'},
+   whys:'Opcional, si el lote además baja postura: suma vitamina E. En un ensayo con gallinas a 38 °C la vitamina C sola rindió igual o mejor que C + E; otros estudios ven ventaja en combinarlas. La E del agua es poca; la base viene del alimento.',
+   how:'Vetervit 30 g/100 L mientras dure el calor; Chicktonic 1 ml/L solo si el lote además baja postura, y no si coincide con una vacunación. Con mucho consumo de agua, electrolitos. El calor se maneja primero con ventilación y agua fresca.'},
+  {id:'vacuna', label:'Vacunación', p:'ch', s:'vv', sl:'Alternativa',
+   why:'Trae A, D3 y E juntas, en líquido y con aminoácidos. A 1 ml/L entrega tanta vitamina A como Vetervit y tres veces su vitamina E. Con vitamina E en el alimento subieron los anticuerpos contra Newcastle y bronquitis.',
+   whys:'Usar en lugar de Chicktonic, no junto con él: más barato si el lote está bien y solo buscas A y D3. Sumar dos productos con vitamina A puede pasarse: en reproductoras, el exceso de vitamina A bajó los títulos contra Newcastle.',
+   how:'Un solo producto con vitamina A. Dar 2 días antes y 2 a 3 días después, nunca en la misma agua que la vacuna. El día de vacunar: agua sin cloro con estabilizante o leche en polvo.'},
   {id:'despique', label:'Despique', p:'av', s:'am',
-   why:'Reúne lo que pide un despique: vitamina K3 para la coagulación del pico cortado, aminoácidos, vitamina C y dextrosa para que el ave siga comiendo.',
+   why:'Reúne lo que pide un despique: vitamina K3 para la coagulación del pico cortado, aminoácidos, dextrosa para que el ave siga comiendo y vitamina C, cuya necesidad sube con el despique.',
    whys:'Si el galpón medica con dosificador: la ficha de Aminovit incluye el despique y es líquido.',
    how:'Aminovital 1.000 g por 1.000 L directo en el estanque, desde el día antes y por 5 días.'},
   {id:'pollitos', label:'Llegada de pollitos', p:'av', s:'am',
@@ -387,7 +388,7 @@ const SIT = [
    whys:'Si solo hay dosificador: su ficha lo indica para recuperar pollitos deficientes.',
    how:'500 a 1.000 g por 1.000 L directo en el estanque por 5 a 7 días. No usar con dosificador automático.'},
   {id:'traslado', label:'Traslado a postura', p:'ch', s:'am',
-   why:'Cubre en un solo producto lo que pide el cambio de galpón justo antes de la madurez sexual: A, D3, E y aminoácidos, en líquido para el dosificador.',
+   why:'Cubre en un solo producto lo que pide el cambio de galpón justo antes de la madurez sexual: A, D3, E y aminoácidos, en líquido para el dosificador. Si el traslado coincide con vacunas, no sumar otro producto con vitamina A.',
    whys:'Más barato; su ficha lo indica para embarque y transporte.',
    how:'Partir 2 días antes del traslado y seguir 5 días después.'},
   {id:'post', label:'Después de antibiótico o coccidiosis', p:'vv',
@@ -407,7 +408,7 @@ const SIT = [
    how:'Aminovital 500 g por 1.000 L directo en el estanque por 5 a 7 días. El agua no corrige el problema: revisar la energía de la dieta, la colina y el peso del lote.'},
   {id:'repro', label:'Reproductoras: fertilidad', p:'pl', s:'ch',
    why:'Su ficha lo indica para fertilidad, incubabilidad y viabilidad del pollito.',
-   whys:'Agrega lo que Promotor L no trae: A, D3 y vitamina E. La E del agua no reemplaza un buen aporte de E con selenio en el alimento.',
+   whys:'Agrega lo que Promotor L no trae: A, D3 y vitamina E. La E del agua no reemplaza la del alimento: reproductoras con 300 mg/kg de vitamina E en el alimento por 3 semanas antes de vacunar dieron pollitos con más anticuerpos maternos.',
    how:'Promotor L 1 ml/L por 5 días.'},
   {id:'convalece', label:'Recuperación de una enfermedad', p:'am', s:'ch',
    why:'La ficha lo indica para recuperar animales después de infecciones bacterianas, virales o por hongos. Es el tratamiento más largo (6 a 8 días) entre los líquidos baratos.',
@@ -435,7 +436,7 @@ function renderReco(){
   chips.querySelectorAll('.chip').forEach(c=>c.setAttribute('aria-pressed', c.dataset.id===sitSel));
   const s = SIT.find(x=>x.id===sitSel), p = P[s.p], el = document.getElementById('reco');
   el.className = 'reco ' + s.p;
-  const sec = s.s ? `<div class="second ${s.s}"><span class="lbl">Complemento</span><span class="tag">${P[s.s].name}</span></div><p>${s.whys}</p>` : '<p class="lbl">Sin complemento necesario</p>';
+  const sec = s.s ? `<div class="second ${s.s}"><span class="lbl">${s.sl||'Complemento'}</span><span class="tag">${P[s.s].name}</span></div><p>${s.whys}</p>` : '<p class="lbl">Sin complemento necesario</p>';
   el.innerHTML = `
     <div class="reco-main">
       <span class="lbl">Recomendado para: ${s.label}</span>
