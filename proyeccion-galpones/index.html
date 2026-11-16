@@ -9,6 +9,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/controls/OrbitControls.js"></script>
 <style>
 :root {
   --color-fondo: #f8f6f1;
@@ -120,6 +122,22 @@ body {
 .tab.activo { color: var(--color-primario); border-bottom-color: var(--color-acento); }
 .tab-panel { display: none; }
 .tab-panel.activo { display: block; }
+/* Plantel 3D (Three.js) */
+.p3d { display: grid; gap: 12px; }
+.p3d-barra { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; }
+.p3d-barra .btn-p3d { font: 600 13px var(--fuente-cuerpo); padding: 8px 14px; border-radius: 6px; border: 1px solid var(--color-primario); background: var(--color-primario); color: #fff; cursor: pointer; }
+.p3d-barra .btn-p3d.sec { background: var(--color-papel); color: var(--color-primario); }
+.p3d-fecha { font: 600 22px var(--fuente-titulo); color: var(--color-primario); min-width: 12ch; }
+.p3d-rango { flex: 1 1 260px; accent-color: var(--color-acento); }
+.p3d-lienzo { position: relative; height: min(62vh, 560px); min-height: 320px; border: 1px solid var(--color-linea); border-radius: 10px; overflow: hidden; background: #e9efe6; touch-action: none; }
+.p3d-lienzo canvas { display: block; width: 100%; height: 100%; }
+.p3d-ayuda { position: absolute; left: 10px; bottom: 8px; font: 12px var(--fuente-cuerpo); color: var(--color-tinta-suave); background: rgb(255 255 255 / .8); padding: 3px 8px; border-radius: 4px; pointer-events: none; }
+.p3d-galpones { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; }
+.p3d-g { border: 1px solid var(--color-linea); border-radius: 8px; padding: 8px 10px; background: var(--color-papel); display: grid; gap: 2px; font: 13px var(--fuente-cuerpo); }
+.p3d-g b { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+.p3d-g i { width: 14px; height: 14px; border-radius: 3px; border: 1px solid rgb(0 0 0 / .2); flex: none; }
+.p3d-g span { color: var(--color-tinta-suave); font-variant-numeric: tabular-nums; }
+.p3d-nota { font: 12px var(--fuente-cuerpo); color: var(--color-tinta-tenue); max-width: 90ch; }
 
 /* ── Galpones grid ── */
 .galpones-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
@@ -255,6 +273,7 @@ tbody td.total-celda { background: rgba(45, 74, 43, 0.05); font-weight: 600; col
       <a href="#metodo">Metodología</a>
       <button class="btn-cab" onclick="generarPDF()">↓ PDF</button>
       <button class="btn-cab" onclick="exportarExcel()">↓ Excel</button>
+      <button class="btn-cab" onclick="exportarEscenario3D()" title="Archivo para generar el plantel en 3D con Blender">↓ 3D (.json)</button>
       <button class="btn-cab" onclick="abrirModalEscenario()">+ Nuevo escenario</button>
     </div>
   </div>
@@ -776,6 +795,7 @@ function construirSkeletonContenido() {
     <div class="tabs">
       <button class="tab activo" data-tab="t-resumen" onclick="setTab(event,'t-resumen')">Resumen</button>
       <button class="tab" data-tab="t-cronograma" onclick="setTab(event,'t-cronograma')">Cronograma</button>
+      <button class="tab" data-tab="t-plantel" onclick="setTab(event,'t-plantel')">Plantel 3D</button>
       <button class="tab" data-tab="t-produccion" onclick="setTab(event,'t-produccion')">Producción</button>
       <button class="tab" data-tab="t-infraestructura" onclick="setTab(event,'t-infraestructura')">Infraestructura</button>
       <button class="tab" data-tab="t-anual" onclick="setTab(event,'t-anual')">Anual</button>
@@ -792,6 +812,19 @@ function construirSkeletonContenido() {
       <div class="grafico-wrap"><div style="height:${alturaCronograma}px"><canvas id="cCronograma"></canvas></div></div>
     </div>
 
+    <div id="t-plantel" class="tab-panel" style="display:none">
+      <div class="p3d">
+        <div class="p3d-barra">
+          <button class="btn-p3d" id="p3d-play" type="button">▶ Ver el ciclo</button>
+          <button class="btn-p3d sec" id="p3d-hoy" type="button">Hoy</button>
+          <span class="p3d-fecha" id="p3d-fecha"></span>
+          <input class="p3d-rango" type="range" id="p3d-semana" min="0" step="1" value="0" aria-label="Semana de la proyección">
+        </div>
+        <div class="p3d-lienzo" id="p3d-lienzo"><span class="p3d-ayuda">Arrastra para girar · rueda o pellizco para acercar</span></div>
+        <div class="p3d-galpones" id="p3d-galpones"></div>
+        <p class="p3d-nota">Techo de color pleno = postura · color claro = crianza · gris claro = vacío (aún no ingresa o sus pollitas están en el galpón de crianza) · gris oscuro = limpieza entre lotes. Tamaño de galpón según densidad de referencia del sistema (a validar), ancho 12 m, eje este–oeste, silos en el testero este y 20 m entre galpones.</p>
+      </div>
+    </div>
     <div id="t-produccion" class="tab-panel" style="display:none">
       <p class="bloque-desc">Huevos por día de cada galpón (áreas apiladas) y total combinado (línea).</p>
       <div class="grafico-wrap"><div style="height:320px"><canvas id="cProduccion"></canvas></div></div>
@@ -1237,7 +1270,226 @@ const RENDER_TAB = {
   't-curvas': renderCurvas,
   't-tabla': renderTabla,
   't-config': renderConfigTab,
+  't-plantel': renderPlantel3D,
 };
+
+/* ════════════════════════════════════════════════════════════
+   PLANTEL 3D (Three.js) — mismo escenario y misma proyección; el techo muestra la etapa de cada galpón
+   ════════════════════════════════════════════════════════════ */
+let P3D = null;
+const P3D_DENS = { jaula: 18, piso_conv: 7, piso_ext: 7 };   // aves/m² de galpón (referencia, igual que el render de Blender)
+const P3D_ESTADO = { postura: 'Postura', crianza: 'Crianza', crianza_ext: 'Vacío · pollitas en crianza', descartado: 'Limpieza', 'no nacido': 'Vacío' };
+
+function p3dColorEstado(hex, estado) {
+  const c = new THREE.Color(hex);
+  if (estado === 'postura') return c;
+  if (estado === 'crianza') return c.lerp(new THREE.Color('#ffffff'), 0.55);
+  if (estado === 'descartado') return new THREE.Color('#8d8d8d');
+  return new THREE.Color('#d9dde0');
+}
+
+function renderPlantel3D() {
+  const caja = document.getElementById('p3d-lienzo');
+  if (!caja || !D) return;
+  if (typeof THREE === 'undefined' || !THREE.OrbitControls) {
+    caja.insertAdjacentHTML('beforeend', '<p style="padding:20px">No se pudo cargar el visor 3D. Revisa la conexión a internet y recarga la página.</p>');
+    return;
+  }
+  const firma = JSON.stringify([ESC.id, ESC.sistema, ESC.galpones, ESC.galpon_crianza, D.proyeccion_semanal.length]);
+  if (P3D && P3D.firma === firma && caja.contains(P3D.renderer.domElement)) { p3dLoop(); return; }
+  p3dDestruir();
+
+  const SEM = D.proyeccion_semanal, N = ESC.galpones.length;
+  const avesG = ESC.galpones[0]?.aves || 1000;
+  const ANCHO = 12, SEP = 20, LARGO = Math.max(20, Math.round(avesG / (P3D_DENS[ESC.sistema] || 7) / ANCHO));
+  const anchoTot = N * ANCHO + (N - 1) * SEP, margen = 25;
+  const PX0 = -LARGO / 2 - margen - 20, PX1 = LARGO / 2 + margen + 25, PZ0 = -anchoTot / 2 - margen, PZ1 = anchoTot / 2 + margen;
+
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
+  caja.prepend(renderer.domElement);
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color('#e9efe6');
+  scene.fog = new THREE.Fog('#e9efe6', 300, 700);
+  const camera = new THREE.PerspectiveCamera(35, 1, 1, 2000);
+  const dist = Math.max(PX1 - PX0 + 40, PZ1 - PZ0 + 40) * 1.1;
+  camera.position.set(-dist * 0.55, dist * 0.6, dist * 0.75);
+  const controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true; controls.maxPolarAngle = Math.PI * 0.42; controls.minDistance = 25; controls.maxDistance = dist * 2.5;
+  controls.target.set((PX0 + PX1) / 2 - (ESC.galpon_crianza?.activo ? 25 : 5), 0, ESC.galpon_crianza?.activo ? -8 : 0);
+  scene.add(new THREE.HemisphereLight('#ffffff', '#5f7052', 0.55));
+  const sol = new THREE.DirectionalLight('#fff6e5', 0.5); sol.position.set(60, 120, -40); scene.add(sol);   // sol del norte (hemisferio sur)
+
+  const mats = {};
+  const mat = hex => mats[hex] || (mats[hex] = new THREE.MeshLambertMaterial({ color: hex }));
+  const lineaMat = new THREE.LineBasicMaterial({ color: '#2b3a30', transparent: true, opacity: 0.45 });
+  function caja3(dim, pos, color, contorno = true, m = null) {
+    const g = new THREE.BoxGeometry(...dim);
+    const mesh = new THREE.Mesh(g, m || mat(color));
+    mesh.position.set(...pos);
+    if (contorno) mesh.add(new THREE.LineSegments(new THREE.EdgesGeometry(g), lineaMat));
+    scene.add(mesh); return mesh;
+  }
+  function techo(L, W, hMuro, hCum, x, z, m) {
+    const s = new THREE.Shape(); const a = 0.8;
+    s.moveTo(-W / 2 - a, -0.25); s.lineTo(W / 2 + a, -0.25); s.lineTo(0, hCum - hMuro); s.lineTo(-W / 2 - a, -0.25);
+    const g = new THREE.ExtrudeGeometry(s, { depth: L + 2 * a, bevelEnabled: false });
+    g.translate(0, 0, -(L + 2 * a) / 2); g.rotateY(Math.PI / 2);
+    const mesh = new THREE.Mesh(g, m); mesh.position.set(x, hMuro, z);
+    mesh.add(new THREE.LineSegments(new THREE.EdgesGeometry(g), lineaMat));
+    scene.add(mesh); return mesh;
+  }
+  function etiqueta() {
+    const cv = document.createElement('canvas'); cv.width = 512; cv.height = 128;
+    const tex = new THREE.CanvasTexture(cv);
+    const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, depthTest: false }));
+    sp.scale.set(26, 6.5, 1); sp.renderOrder = 10; scene.add(sp);
+    sp.userData.escribir = (t1, t2, color) => {
+      const c = cv.getContext('2d'); c.clearRect(0, 0, 512, 128);
+      c.fillStyle = 'rgba(255,255,255,.92)'; c.beginPath(); c.roundRect ? c.roundRect(4, 8, 504, 112, 18) : c.rect(4, 8, 504, 112); c.fill();
+      c.fillStyle = color; c.fillRect(22, 34, 28, 28);
+      c.fillStyle = '#1b4332'; c.font = '600 44px Inter, system-ui, sans-serif'; c.fillText(t1, 64, 62);
+      c.fillStyle = '#555'; c.font = '34px Inter, system-ui, sans-serif'; c.fillText(t2, 22, 106);
+      tex.needsUpdate = true;
+    };
+    return sp;
+  }
+
+  // terreno, zona limpia, cerco, portería, rodiluvio, filtro sanitario
+  caja3([PX1 - PX0 + 160, 0.2, PZ1 - PZ0 + 120], [(PX0 + PX1) / 2 - 20, -0.1, (PZ0 + PZ1) / 2], '#a9c79a', false);
+  caja3([PX1 - PX0, 0.06, PZ1 - PZ0], [(PX0 + PX1) / 2, 0.03, (PZ0 + PZ1) / 2], '#c3d9b4', false);
+  const cerco = new THREE.LineBasicMaterial({ color: '#6b6b6b' });
+  [0.8, 1.6].forEach(y => {
+    const pts = [[PX0, PZ0], [PX1, PZ0], [PX1, PZ1], [PX0, PZ1], [PX0, PZ0]].map(([x, z]) => new THREE.Vector3(x, y, z));
+    scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), cerco));
+  });
+  const entZ = PZ1 - 12;                                         // portería en la esquina suroeste (z positivo = sur)
+  caja3([5, 3, 4], [PX0 - 6, 1.5, entZ - 7], '#f2efe6'); techo(5, 4, 3, 3.9, PX0 - 6, entZ - 7, mat('#7b8a80'));
+  caja3([7, 0.15, 4], [PX0 + 2, 0.08, entZ], '#5b9bd5');
+  caja3([40, 0.06, 5], [PX0 - 20, 0.03, entZ], '#cdb994', false);
+  caja3([8, 3, 5], [PX0 + 6, 1.5, PZ1 - 25], '#f2efe6'); techo(8, 5, 3, 4, PX0 + 6, PZ1 - 25, mat('#7b8a80'));
+  // caminos: limpio (verde, interno) y sucio (naranja, alimento-guano-mortalidad, externo)
+  caja3([LARGO + 20, 0.08, 3], [0, 0.05, PZ1 - 8], '#4f9a55', false);
+  caja3([8, 0.08, PZ1 - PZ0 + 30], [PX1 + 6, 0.05, (PZ0 + PZ1) / 2], '#e39a4a', false);
+
+  // galpones E–O con techo según etapa, antecámara oeste y silos en el testero este
+  const galpones = ESC.galpones.map((g, k) => {
+    const z = anchoTot / 2 - ANCHO / 2 - k * (ANCHO + SEP);   // G1 al sur, como en el render de Blender
+    caja3([LARGO, 0.6, ANCHO], [0, 0.3, z], '#f2efe6');
+    caja3([LARGO - 0.4, 1.9, ANCHO + 0.05], [0, 1.55, z], '#f6f3ea');
+    [-1, 1].forEach(sx => caja3([0.3, 2.8, ANCHO], [sx * LARGO / 2, 1.4, z], '#f2efe6'));
+    const mTecho = new THREE.MeshLambertMaterial({ color: p3dColorEstado(g.color, 'postura') });
+    techo(LARGO, ANCHO, 2.8, 4.8, 0, z, mTecho);
+    caja3([3, 2.6, 4], [-LARGO / 2 - 1.6, 1.3, z], '#f2efe6');
+    [-2.2, 2.2].forEach(dz => {
+      const cg = new THREE.CylinderGeometry(1.4, 1.4, 5.5, 24), silo = new THREE.Mesh(cg, mat('#c9ced3'));
+      silo.position.set(LARGO / 2 + 3, 4, z + dz); silo.add(new THREE.LineSegments(new THREE.EdgesGeometry(cg, 30), lineaMat)); scene.add(silo);
+      const co = new THREE.Mesh(new THREE.ConeGeometry(1.4, 1.8, 24), mat('#c9ced3')); co.rotation.x = Math.PI; co.position.set(LARGO / 2 + 3, 0.35 + 0.9, z + dz); scene.add(co);
+      const tapa = new THREE.Mesh(new THREE.ConeGeometry(1.5, 0.9, 24), mat('#b4bac0')); tapa.position.set(LARGO / 2 + 3, 7.2, z + dz); scene.add(tapa);
+    });
+    const et = etiqueta(); et.position.set(0, 10.5, z);
+    return { g, mTecho, et, actual: null };
+  });
+  // galpón de crianza externo (si el escenario lo usa): fuera del cerco, al noroeste, separado del plantel de postura
+  let crianzaExt = null;
+  if (ESC.galpon_crianza?.activo) {
+    const z = PZ0 - 18, x = PX0 - LARGO * 0.3 - 15;
+    caja3([LARGO * 0.6, 0.6, ANCHO * 0.8], [x, 0.3, z], '#f2efe6');
+    caja3([LARGO * 0.6 - 0.4, 1.9, ANCHO * 0.8 + 0.05], [x, 1.55, z], '#f6f3ea');
+    const m = new THREE.MeshLambertMaterial({ color: '#d9dde0' });
+    techo(LARGO * 0.6, ANCHO * 0.8, 2.8, 4.4, x, z, m);
+    const et = etiqueta(); et.position.set(x, 9.5, z);
+    crianzaExt = { m, et };
+  }
+  // bodega de huevos, mortalidad, guanera
+  caja3([10, 3.2, 7], [-LARGO / 2 - 12, 1.6, -12], '#f2efe6'); techo(10, 7, 3.2, 4.2, -LARGO / 2 - 12, -12, mat('#7b8a80'));
+  caja3([4, 1.6, 3], [PX1 - 6, 0.8, PZ0 + 6], '#9aa5ad');
+  caja3([14, 0.8, 9], [PX1 + 20, 0.4, PZ0 + 6], '#a1805a');
+  // flecha del norte (gira con la escena)
+  const flecha = new THREE.Mesh(new THREE.ConeGeometry(3, 8, 3), mat('#1b4332')); flecha.rotation.x = -Math.PI / 2; flecha.position.set(PX1 + 18, 0.5, PZ0 - 10); scene.add(flecha);
+  const n = etiqueta(); n.scale.set(12, 3, 1); n.position.set(PX1 + 18, 6, PZ0 - 10); n.userData.escribir('N', 'norte', '#1b4332');
+
+  const rango = document.getElementById('p3d-semana');
+  rango.max = SEM.length - 1;
+  const hoyIso = new Date().toISOString().slice(0, 10);
+  let iHoy = SEM.findIndex(s => s.fecha_lunes > hoyIso); iHoy = iHoy < 0 ? SEM.length - 1 : Math.max(0, iHoy - 1);
+
+  P3D = { firma, renderer, scene, camera, controls, galpones, crianzaExt, SEM, i: iHoy, raf: 0, play: 0, ro: null };
+  p3dSemana(iHoy);
+  rango.oninput = () => { p3dPausa(); p3dSemana(Number(rango.value)); };
+  document.getElementById('p3d-hoy').onclick = () => { p3dPausa(); p3dSemana(iHoy); };
+  document.getElementById('p3d-play').onclick = () => {
+    if (P3D.play) { p3dPausa(); return; }
+    if (P3D.i >= SEM.length - 1) p3dSemana(0);
+    document.getElementById('p3d-play').textContent = '❚❚ Pausa';
+    P3D.play = setInterval(() => { if (P3D.i >= SEM.length - 1) { p3dPausa(); return; } p3dSemana(P3D.i + 1); }, 220);
+  };
+  P3D.ro = new ResizeObserver(() => p3dTamano()); P3D.ro.observe(caja);
+  p3dTamano(); p3dLoop();
+}
+
+function p3dTamano() {
+  if (!P3D) return;
+  const c = document.getElementById('p3d-lienzo'); if (!c || !c.clientWidth) return;
+  P3D.renderer.setSize(c.clientWidth, c.clientHeight, false);
+  P3D.camera.aspect = c.clientWidth / c.clientHeight; P3D.camera.updateProjectionMatrix();
+}
+
+function p3dSemana(i) {
+  const S = P3D.SEM[i]; P3D.i = i;
+  document.getElementById('p3d-semana').value = i;
+  document.getElementById('p3d-fecha').textContent = FORMATO_FECHA(S.fecha_lunes);
+  let enCrianzaExt = 0;
+  const tarjetas = P3D.galpones.map(({ g, mTecho, et }, k) => {
+    const f = S[g.id] || { estado: 'no nacido', aves: 0, sem_vida: 0, huevos_dia: 0 };
+    if (f.estado === 'crianza_ext') enCrianzaExt += f.aves;
+    const col = p3dColorEstado(g.color, f.estado);
+    P3D.galpones[k].destino = col;
+    if (P3D.galpones[k].actual === null || matchMedia('(prefers-reduced-motion: reduce)').matches) mTecho.color.copy(col);
+    P3D.galpones[k].actual = 1;
+    const txt = P3D_ESTADO[f.estado] || f.estado, hex = '#' + col.getHexString();
+    const det = f.estado === 'postura' ? `${NUM(f.aves)} aves · sem ${f.sem_vida} · ${NUM(f.huevos_dia)} huevos/día`
+      : f.estado === 'crianza' ? `${NUM(f.aves)} pollitas · sem ${f.sem_vida}` : '';
+    et.userData.escribir(g.nombre || g.id, txt + (f.estado === 'postura' || f.estado === 'crianza' ? ` · sem ${f.sem_vida}` : ''), hex);
+    return `<div class="p3d-g"><b><i style="background:${hex}"></i>${g.nombre || g.id}</b><span>${txt}</span>${det ? `<span>${det}</span>` : ''}</div>`;
+  });
+  if (P3D.crianzaExt) {
+    const col = new THREE.Color(enCrianzaExt ? '#c5cae9' : '#d9dde0');
+    P3D.crianzaExt.m.color.copy(col);
+    P3D.crianzaExt.et.userData.escribir('Crianza externa', enCrianzaExt ? `${NUM(enCrianzaExt)} pollitas` : 'Vacío', '#' + col.getHexString());
+    tarjetas.push(`<div class="p3d-g"><b><i style="background:#${col.getHexString()}"></i>Galpón de crianza</b><span>${enCrianzaExt ? NUM(enCrianzaExt) + ' pollitas' : 'Vacío'}</span></div>`);
+  }
+  tarjetas.unshift(`<div class="p3d-g"><b>Total del plantel</b><span>${NUM(S.total.aves_en_postura)} aves en postura</span><span>${NUM(S.total.huevos_dia)} huevos/día</span></div>`);
+  document.getElementById('p3d-galpones').innerHTML = tarjetas.join('');
+}
+
+function p3dPausa() {
+  if (!P3D) return;
+  clearInterval(P3D.play); P3D.play = 0;
+  const b = document.getElementById('p3d-play'); if (b) b.textContent = '▶ Ver el ciclo';
+}
+
+function p3dLoop() {
+  if (!P3D) return;
+  cancelAnimationFrame(P3D.raf);
+  const paso = () => {
+    const panel = document.getElementById('t-plantel');
+    if (!P3D || !panel || panel.style.display === 'none') { p3dPausa(); return; }   // pestaña oculta: se detiene
+    P3D.galpones.forEach(x => { if (x.destino) x.mTecho.color.lerp(x.destino, 0.18); });
+    P3D.controls.update();
+    P3D.renderer.render(P3D.scene, P3D.camera);
+    P3D.raf = requestAnimationFrame(paso);
+  };
+  paso();
+}
+
+function p3dDestruir() {
+  if (!P3D) return;
+  p3dPausa(); cancelAnimationFrame(P3D.raf); P3D.ro?.disconnect();
+  P3D.scene.traverse(o => { o.geometry?.dispose(); if (o.material) { o.material.map?.dispose(); o.material.dispose(); } });
+  P3D.controls.dispose(); P3D.renderer.dispose(); P3D.renderer.domElement.remove();
+  P3D = null;
+}
 
 /* ════════════════════════════════════════════════════════════
    EXPORTAR PDF
@@ -1337,6 +1589,22 @@ function generarPDF() {
 /* ════════════════════════════════════════════════════════════
    EXPORTAR EXCEL
    ════════════════════════════════════════════════════════════ */
+function exportarEscenario3D() {
+  if (!ESC) return;
+  const datos = {
+    formato: 'avivet-escenario-galpones', version: 1,
+    nombre: ESC.nombre, sistema: ESC.sistema,
+    semanas_crianza: CRIANZA, semanas_postura: semanasPostura(ESC), semanas_limpieza: 2,
+    galpon_crianza: ESC.galpon_crianza || { activo: false, semana_salida: 0 }, horizonte_anios: ESC.horizonte_anios,
+    galpones: ESC.galpones.map(g => ({ id: g.id, nombre: g.nombre, aves: g.aves, fecha_nacimiento: g.fecha_nacimiento, color: g.color }))
+  };
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(datos, null, 2)], { type: 'application/json' }));
+  a.download = 'escenario-3d_' + (ESC.nombre || 'escenario').replace(/[^\w\-]+/g, '_') + '.json';
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+
 function exportarExcel() {
   if (!D) return;
   const wb = XLSX.utils.book_new();

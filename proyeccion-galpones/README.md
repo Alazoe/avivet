@@ -17,7 +17,32 @@ Cada escenario (N° de galpones 1–7, sistema productivo, semanas de postura, f
 
 Los tres sistemas productivos (Jaulas, Libre de jaulas, Crianza libre / pastoreo) solo definen mortalidad, factor sobre la curva oficial de postura y una **duración de postura sugerida** — pero las semanas de postura son editables por escenario (20–82 semanas) porque en la práctica cada sistema sostiene un ciclo productivo de distinta duración (jaulas persiste más cerca del tope de la curva oficial; pastoreo/campo libre suele descartarse antes por estacionalidad, calidad de cáscara y depredación).
 
-Pestañas disponibles por escenario: Resumen, Cronograma (Gantt), Producción semanal, Infraestructura (eficiencia y brechas), Anual, Curva genética de referencia, Detalle semanal y Configuración rápida.
+Pestañas disponibles por escenario: Resumen, Cronograma (Gantt), Plantel 3D, Producción semanal, Infraestructura (eficiencia y brechas), Anual, Curva genética de referencia, Detalle semanal y Configuración rápida.
+
+## Plantel 3D en el navegador (Three.js)
+
+La pestaña **Plantel 3D** dibuja el escenario abierto en 3D, sin exportar nada: galpones con eje este–oeste, silos en el testero este, antecámaras, filtro sanitario, portería con rodiluvio, bodega de huevos, mortalidad, guanera y caminos limpio (verde) y sucio (naranja). Si el escenario usa galpón de crianza externo, aparece fuera del cerco, al noroeste.
+
+- Se gira arrastrando y se acerca con la rueda o pellizcando (también en el teléfono).
+- El deslizador recorre todas las semanas de la proyección; **Hoy** vuelve a la semana actual y **Ver el ciclo** lo reproduce. El techo de cada galpón cambia de color con su etapa (misma lógica que `construirProyeccion()`), y las tarjetas de abajo muestran aves, semana de vida y huevos/día.
+- Three.js r147 (UMD) + OrbitControls desde jsDelivr. El dibujo se detiene cuando la pestaña no está visible.
+
+## Imágenes del plantel con Blender (opcional, local)
+
+El botón **↓ 3D (.json)** de la cabecera descarga el escenario activo (nombre, sistema, galpones y aves). Con ese archivo, el estudio genera una vista isométrica del plantel (galpones, silos, filtro sanitario, caminos limpio/sucio según el manual SAG) usando Blender en el computador:
+
+```bash
+python3 ~/AviVet_Estudio/blender/plantel_desde_escenario.py ~/Downloads/escenario-3d_<nombre>.json
+```
+
+Cada galpón sale con el color que tiene en la página. Para ver la **evolución en el tiempo** (una imagen por fecha, con la etapa de cada galpón, más un video y una tira):
+
+```bash
+python3 ~/AviVet_Estudio/blender/plantel_desde_escenario.py ~/Downloads/escenario-3d_<nombre>.json --evolucion [--cada 13] [--max 24]
+python3 ~/AviVet_Estudio/blender/plantel_desde_escenario.py ~/Downloads/escenario-3d_<nombre>.json --fechas 2026-01-05,2026-07-06
+```
+
+Etapas (misma lógica que la proyección): color pleno = en postura · color claro = crianza · gris claro = vacío (aún no nace o sus pollitas están en el galpón de crianza externo) · gris oscuro = limpieza entre lotes. Las imágenes quedan en `~/AviVet_Estudio/out/plantel/<escenario>/`. Las dimensiones salen de la densidad por sistema y las aves del escenario (valores de referencia, a validar por el MV).
 
 ## Despliegue en avivet.cl (GitHub Pages)
 
