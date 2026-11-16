@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vitaminas al agua: Vetervit, Promotor L y Aminovit — AviVet</title>
-<meta name="description" content="Cuál vitamina soluble usar en aves según la situación del lote: Vetervit Soluble Reforzado, Promotor L 47.0 o Aminovit. Comparación de fichas técnicas, nutrientes por litro y calculadora de dosis y costo.">
+<title>Vitaminas al agua: Vetervit, Promotor L, Aminovit, Aminovital y Chicktonic — AviVet</title>
+<meta name="description" content="Cuál vitamina soluble usar en aves según la situación del lote: Vetervit Soluble Reforzado, Promotor L 47.0, Aminovit, Aminovital Plus o Chicktonic. Para qué sirve cada vitamina. Comparación de fichas técnicas, nutrientes por litro y calculadora de dosis y costo.">
 <link rel="canonical" href="https://avivet.cl/avivet/calculadoras-dosis/vitaminas.html">
 <meta property="og:title" content="Vitaminas al agua — AviVet">
-<meta property="og:description" content="Vetervit, Promotor L o Aminovit: cuál usar según la situación del lote, con dosis y costo.">
+<meta property="og:description" content="Cinco vitaminas con aminoácidos para el agua: cuál usar según la situación del lote, con dosis y costo.">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://avivet.cl/avivet/calculadoras-dosis/vitaminas.html">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,7 +17,7 @@
 :root{
   --bg:#f5f4f0; --surface:#ffffff; --ink:#1a1916; --muted:#5a5650; --line:#ddd9d0;
   --accent:#1b4332;
-  --vv:#92400e; --pl:#1a4a7a; --am:#5b2d8e;
+  --vv:#92400e; --pl:#1a4a7a; --am:#5b2d8e; --av:#0e6e84; --ch:#9d174d;
   --warn:#7a5a1a;
   --f-display:"Fraunces",Georgia,serif;
   --f-body:"DM Sans",system-ui,sans-serif;
@@ -48,7 +48,7 @@ p{margin:0}
 .sec-head p{color:var(--muted);max-width:68ch}
 .num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
 
-.vv{--c:var(--vv)} .pl{--c:var(--pl)} .am{--c:var(--am)}
+.vv{--c:var(--vv)} .pl{--c:var(--pl)} .am{--c:var(--am)} .av{--c:var(--av)} .ch{--c:var(--ch)}
 .tag{display:inline-flex;align-items:center;gap:6px;font-weight:700;color:var(--c)}
 .tag::before{content:"";width:10px;height:10px;border-radius:2px;background:var(--c)}
 
@@ -67,7 +67,7 @@ p{margin:0}
 .how{background:color-mix(in srgb,var(--c) 9%,transparent);border-radius:6px;padding:12px 14px}
 
 /* Fichas */
-.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px;display:grid;gap:14px;align-content:start;border-top:5px solid var(--c)}
 .card h3{color:var(--c)}
 .card .sub{color:var(--muted);font-size:.9rem}
@@ -87,7 +87,7 @@ dl.kv dd{margin:0}
 .seg button{font:inherit;font-size:.9rem;border:0;background:transparent;color:var(--ink);padding:7px 12px;cursor:pointer}
 .seg button[aria-pressed="true"]{background:var(--accent);color:#fff}
 .tbl-wrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:10px}
-table{border-collapse:collapse;width:100%;min-width:560px;font-size:.93rem}
+table{border-collapse:collapse;width:100%;min-width:760px;font-size:.93rem}
 th,td{padding:8px 14px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
 th:first-child,td:first-child{text-align:left}
 thead th{font-family:var(--f-display);font-weight:700;position:sticky;top:0;background:var(--surface)}
@@ -133,6 +133,12 @@ td.v.top::after{content:" ●";font-size:.6rem;vertical-align:middle}
 }
 @media (max-width:460px){.calc-in{grid-template-columns:1fr}}
 @media (prefers-reduced-motion:no-preference){.reco-main,.calc-out{transition:background-color .2s}}
+.vit td{white-space:normal;text-align:left;vertical-align:top}
+.vit td:first-child{font-weight:700;white-space:nowrap}
+.vit table{min-width:820px}
+.dots{display:flex;gap:4px;flex-wrap:wrap}
+.dot{font-size:.75rem;font-weight:700;padding:1px 7px;border-radius:999px;color:var(--c);border:1px solid color-mix(in srgb,var(--c) 40%,transparent);background:color-mix(in srgb,var(--c) 8%,transparent);white-space:nowrap}
+.stock.warn{border-color:color-mix(in srgb,var(--warn) 45%,transparent);background:color-mix(in srgb,var(--warn) 8%,transparent)}
 </style>
 </head>
 <body>
@@ -152,7 +158,7 @@ td.v.top::after{content:" ●";font-size:.6rem;vertical-align:middle}
 <header class="head">
   <div class="eyebrow">Calculadoras de dosis · Vitaminas y aminoácidos · noviembre 2026</div>
   <h1>Vitaminas al agua</h1>
-  <p class="lede">Vetervit Soluble Reforzado, Promotor L 47.0 y Aminovit no hacen lo mismo. Uno aporta vitaminas liposolubles y vitamina C, los otros dos aportan complejo B y aminoácidos. Elige la situación del lote y la página recomienda cuál usar, con dosis y costo.</p>
+  <p class="lede">Cinco productos que se venden en Chile como «vitaminas con aminoácidos» y que no hacen lo mismo: unos aportan vitaminas liposolubles y vitamina C, otros casi solo complejo B y aminoácidos. Elige la situación del lote y la página recomienda cuál usar, con dosis y costo.</p>
 </header>
 
 <section class="sec" aria-labelledby="h-sit">
@@ -165,7 +171,7 @@ td.v.top::after{content:" ●";font-size:.6rem;vertical-align:middle}
 
 <section class="sec" aria-labelledby="h-prod">
   <div class="sec-head">
-    <h2 id="h-prod">Los tres productos</h2>
+    <h2 id="h-prod">Los cinco productos</h2>
     <p>Datos de las fichas técnicas. Costo por cada 1.000 litros de agua tratada, con precios de referencia.</p>
   </div>
   <div class="cards" id="cards"></div>
@@ -190,6 +196,15 @@ td.v.top::after{content:" ●";font-size:.6rem;vertical-align:middle}
   <p class="note" id="tbl-note"></p>
 </section>
 
+<section class="sec vit" aria-labelledby="h-vit">
+  <div class="sec-head">
+    <h2 id="h-vit">Para qué sirve cada vitamina</h2>
+    <p>Función, signo de deficiencia con su nombre de campo y lo que el ave hace distinto a otras especies. A la derecha, cuáles de los cinco productos la traen.</p>
+  </div>
+  <div class="tbl-wrap"><table id="vit-tbl"></table></div>
+  <p class="note">Resumen de McDonald et al. 2022 (<em>Animal Nutrition</em>, 8.ª ed., cap. 5) y FEDNA 2018. Vitamina C en calor: Onagbesan 2023; vitamina D3 en el agua: Akter 2025.</p>
+</section>
+
 <section class="sec" aria-labelledby="h-calc">
   <div class="sec-head">
     <h2 id="h-calc">Calculadora de tratamiento</h2>
@@ -203,6 +218,8 @@ td.v.top::after{content:" ●";font-size:.6rem;vertical-align:middle}
           <option value="vv">Vetervit Soluble Reforzado</option>
           <option value="pl">Promotor L 47.0</option>
           <option value="am">Aminovit</option>
+          <option value="av">Aminovital Plus</option>
+          <option value="ch">Chicktonic</option>
         </select>
       </div>
       <div class="field">
@@ -261,13 +278,15 @@ td.v.top::after{content:" ●";font-size:.6rem;vertical-align:middle}
   </ul>
   <div class="alert">
     <b>Uso bajo indicación veterinaria</b>
-    <span>Composición y dosis tomadas de las fichas técnicas de cada fabricante. Promotor L puede tener presentaciones con otra fórmula: esta página usa la ficha de Promotor L 47.0. Los precios son referencias de distribuidores en Chile a noviembre de 2026 y cambian; ingresa el tuyo en la calculadora.</span>
+    <span>Composición y dosis tomadas de las fichas técnicas de cada fabricante. Promotor L puede tener presentaciones con otra fórmula: esta página usa la ficha de Promotor L 47.0. La composición de Chicktonic viene de un distribuidor y no de la ficha del fabricante. Los precios son referencias de distribuidores en Chile a noviembre de 2026 y cambian; ingresa el tuyo en la calculadora.</span>
   </div>
   <div class="src">
     <span><b>Fuentes</b></span>
     <span>Vetervit Soluble Reforzado: ficha técnica Veterquimica 254-05, código 400938.</span>
     <span>Promotor L 47.0: ficha técnica Agrovet Chile (elaborado por Laboratorios Calier, España), REG SAG Res. Ex. 5290/2013.</span>
     <span>Aminovit: ficha técnica BTS Intrade Laboratorios, autorización SAG Res. Ex. 8326/2020.</span>
+    <span>Aminovital Plus: ficha técnica Miavit GmbH (versión 20/11/2019), publicada por Solagro.</span>
+    <span>Chicktonic (Livisto): composición publicada por el distribuidor Grupo Trisan; Solagro no publica ficha. Dosis 1–2 ml/L según Solagro.</span>
   </div>
 </section>
 
@@ -282,27 +301,41 @@ const clp = n => '$' + Math.round(n).toLocaleString('es-CL');
 const P = {
   vv: {name:'Vetervit Soluble Reforzado', short:'Vetervit', lab:'Veterquimica', forma:'Polvo soluble', unit:'g',
        envase:1000, envaseLbl:'bolsa 1 kg', precio:12500,
-       doses:{min:150, max:300}, doseLbl:{min:'Preventiva 15 g/100 L', max:'Curativa 30 g/100 L'},
+       doses:{min:150, max:300}, doseLbl:{min:'Preventiva 15 g/100 L', max:'Curativa 30 g/100 L'}, doseRange:'15 a 30 g/100 L',
        dias:5, diasLbl:'La ficha no fija días; lo usual son 3 a 5', reg:'Suplemento, no requiere registro', retiro:'No aplica',
-       strong:['Vit. A','Vit. D3','Vit. K3','Vit. C 400 g/kg','Niacina'], lacks:['Aminoácidos'],
-       use:['Estrés por calor','Antes y después de vacunar','Después de sulfas, antibióticos o coccidiosis','Crecimiento lento en recría'],
+       strong:['Vit. A','Vit. D3','Vit. K3','Vit. C 400 g/kg','El más barato'], lacks:['Aminoácidos'],
+       use:['Estrés por calor','Después de sulfas, antibióticos o coccidiosis','Crecimiento lento en recría'],
        comp:{A:16e6, D3:4.2e6, E:8000, K3:9.2, C:400, B1:7, B2:13, B6:5.7, B12:80, B3:60, B5:24.5}},
   pl: {name:'Promotor L 47.0', short:'Promotor L', lab:'Calier · Agrovet', forma:'Solución oral', unit:'ml',
        envase:1000, envaseLbl:'envase 1 L', precio:42000,
-       doses:{min:1000, max:1000}, doseLbl:{min:'1 ml/L de agua', max:'1 ml/L de agua'},
+       doses:{min:1000, max:1000}, doseLbl:{min:'1 ml/L de agua', max:'1 ml/L de agua'}, doseRange:'1 ml/L',
        dias:5, diasLbl:'5 días', reg:'SAG Res. Ex. 5290/2013', retiro:'No indica',
        strong:['17 aminoácidos (132 g/L)','Biotina','Serina, glicina, prolina'], lacks:['Vit. A, D3, E, K','Vit. C','B12'],
-       use:['Inicio de postura y subida al peak','Muda','Reproductoras: fertilidad e incubabilidad','Convalecencia'],
+       use:['Inicio de postura y subida al peak','Muda','Reproductoras: fertilidad e incubabilidad'],
        comp:{B1:1.75, B2:2.5, B6:1.125, B3:16.25, B5:7.5, BIO:1, Ala:7.4, Arg:8.6, Asp:10, Phe:5.8, Cys:4.6, Glu:17.8, Gly:10.3, His:1.5, Ile:5.6, Leu:8.7, Lys:7.6, Met:1.8, Pro:11.8, Ser:12, Thr:6.2, Tyr:3.1, Val:9.3}},
   am: {name:'Aminovit', short:'Aminovit', lab:'BTS Intrade', forma:'Solución oral', unit:'ml',
        envase:1000, envaseLbl:'envase 1 L', precio:24000,
-       doses:{min:500, max:1000}, doseLbl:{min:'50 ml/100 L', max:'100 ml/100 L'},
+       doses:{min:500, max:1000}, doseLbl:{min:'50 ml/100 L', max:'100 ml/100 L'}, doseRange:'50 a 100 ml/100 L',
        dias:7, diasLbl:'6 a 8 días', reg:'SAG Res. Ex. 8326/2020', retiro:'No requiere',
-       strong:['Metionina 10 g/L','B12 y ácido fólico','Niacina y pantotenato'], lacks:['Vit. A, D3, E, K','Vit. C'],
-       use:['Llegada de pollitos y pollitos débiles','Despique','Transporte y traslado','Recuperación post-infección'],
-       comp:{B1:1, B2:1.5, B6:1, B12:5, B3:10, B5:10, FOL:250, Met:10, Lys:7, Asp:6, Ala:13, Arg:6, Phe:3, Gly:8, Glu:13, Ile:1, His:1, Leu:4, Pro:4, Ser:1, Tyr:1, Thr:1, Val:3}}
+       strong:['Metionina 10 g/L','B12 y ácido fólico','Líquido barato'], lacks:['Vit. A, D3, E, K','Vit. C'],
+       use:['Recuperación post-infección','Hígado graso, si se usa dosificador','Transporte'],
+       comp:{B1:1, B2:1.5, B6:1, B12:5, B3:10, B5:10, FOL:250, Met:10, Lys:7, Asp:6, Ala:13, Arg:6, Phe:3, Gly:8, Glu:13, Ile:1, His:1, Leu:4, Pro:4, Ser:1, Tyr:1, Thr:1, Val:3}},
+  av: {name:'Aminovital Plus', short:'Aminovital', lab:'Miavit · Solagro', forma:'Polvo dispersable', unit:'g',
+       envase:1000, envaseLbl:'envase 1 kg', precio:17850, noDos:true,
+       doses:{min:500, max:1000}, doseLbl:{min:'500 g/1.000 L', max:'1.000 g/1.000 L'}, doseRange:'500 a 1.000 g/1.000 L',
+       dias:5, diasLbl:'5 a 7 días', reg:'No indicado en la ficha', retiro:'No indicado',
+       strong:['Lisina y metionina ~17 % c/u','Vit. A, D3, E, K3 y C','Biotina alta','Dextrosa y ácido cítrico'], lacks:['Uso con dosificador'],
+       use:['Llegada de pollitos','Despique','Hígado graso (metionina, biotina, B12, fólico)'],
+       comp:{A:1e6, D3:2e5, E:10000, K3:1.2, C:30, B1:0.75, B2:2.4, B6:1.2, B12:6, B3:12, B5:3.9, BIO:37.5, FOL:300, Lys:173.4, Met:162.7, Thr:67.2, Trp:8.3, Val:21.3}},
+  ch: {name:'Chicktonic', short:'Chicktonic', lab:'Livisto · Solagro', forma:'Solución oral', unit:'ml',
+       envase:1000, envaseLbl:'envase 1 L', precio:17850,
+       doses:{min:1000, max:2000}, doseLbl:{min:'1 ml/L de agua', max:'2 ml/L de agua'}, doseRange:'1 a 2 ml/L',
+       dias:5, diasLbl:'5 a 7 días', reg:'No publicado', retiro:'No publicado',
+       strong:['Vit. A, D3 y E','18 aminoácidos (117 g/L)','Inositol y colina','Líquido: sirve con dosificador'], lacks:['Vit. C','Niacina'],
+       use:['Vacunación','Traslado a postura','Reproductoras, por la vitamina E'],
+       comp:{A:2.5e6, D3:5e5, E:3750, K3:0.25, B1:3.5, B2:4, B6:2, B12:10, B5:15, BIO:2, COL:0.4, Asp:14.5, Thr:0.5, Ser:6.8, Glu:11.6, Pro:5.1, Gly:5.7, Ala:9.7, Cys:1.5, Met:5, Ile:1.2, Leu:15, Phe:8.1, Tyr:3.4, Lys:2.5, His:9, Arg:4.9, Val:11, Trp:0.075}}
 };
-const AA = ['Ala','Arg','Asp','Phe','Cys','Glu','Gly','His','Ile','Leu','Lys','Met','Pro','Ser','Thr','Tyr','Val'];
+const AA = ['Ala','Arg','Asp','Phe','Cys','Glu','Gly','His','Ile','Leu','Lys','Met','Pro','Ser','Thr','Trp','Tyr','Val'];
 for (const k in P){ P[k].comp.AAT = AA.reduce((s,a)=>s+(P[k].comp[a]||0),0); }
 
 const ROWS = [
@@ -310,58 +343,78 @@ const ROWS = [
   ['A','Vitamina A','UI'],['D3','Vitamina D3','UI'],['E','Vitamina E','UI'],['K3','Vitamina K3','g'],
   ['g','Vitamina C y complejo B'],
   ['C','Vitamina C','g'],['B1','B1 tiamina','g'],['B2','B2 riboflavina','g'],['B6','B6 piridoxina','g'],['B12','B12 cobalamina','mg'],
-  ['B3','B3 niacina / nicotinamida','g'],['B5','B5 pantotenato / pantenol','g'],['BIO','Biotina','mg'],['FOL','Ácido fólico','mg'],
+  ['B3','B3 niacina / nicotinamida','g'],['B5','B5 pantotenato / pantenol','g'],['BIO','Biotina','mg'],['FOL','Ácido fólico','mg'],['COL','Colina','g'],
   ['g','Aminoácidos'],
-  ['Met','Metionina','g'],['Cys','Cistina','g'],['Lys','Lisina (Aminovit: lisina HCl)','g'],['Thr','Treonina','g'],['Arg','Arginina','g'],
-  ['Val','Valina','g'],['Ile','Isoleucina','g'],['Leu','Leucina','g'],['AAT','Total aminoácidos','g']
+  ['Met','Metionina','g'],['Cys','Cistina','g'],['Lys','Lisina','g'],['Thr','Treonina','g'],['Trp','Triptófano','g'],['Arg','Arginina','g'],
+  ['Val','Valina','g'],['Ile','Isoleucina','g'],['Leu','Leucina','g'],['AAT','Total aminoácidos declarados','g']
+];
+
+/* Resumen de la wiki AviVet (vitaminas-aviares: McDonald 2022 cap. 5, FEDNA 2018) */
+const VIT = [
+  {n:'A', k:['A'], f:'Mantiene epitelios y mucosas (barrera respiratoria e intestinal), visión e inmunidad.', d:'Mucosas secas y más infecciones respiratorias; ceguera nocturna.', a:'Es el mejor conversor de β-caroteno de la granja (3:1). El exceso de A sube el requerimiento de E, D y K.'},
+  {n:'D3', k:['D3'], f:'Absorción de calcio y fósforo; hueso y glándula de la cáscara.', d:'Raquitismo en pollitos, cáscara delgada y hueso débil en ponedoras.', a:'La D2 vale solo ~10 % de la D3 en aves. En galpón cerrado casi no hay síntesis por sol.'},
+  {n:'E', k:['E'], f:'Antioxidante de membranas e inmunidad; trabaja junto al selenio.', d:'Encefalomalacia (<em>crazy chick disease</em>), diátesis exudativa y miopatía de pechuga.', a:'Bajo estrés oxidativo se necesita más que lo que evita la deficiencia clásica. Con calor, C + E juntas rinden más que cada una sola.'},
+  {n:'K', k:['K3'], f:'Coagulación (protrombina) y mineralización del hueso (osteocalcina).', d:'Hemorragias y coagulación lenta: el ave puede desangrarse por una herida.', a:'La K que hace la microbiota se forma demasiado lejos para absorberse; el ave depende del suplemento, salvo que coma cama.'},
+  {n:'C', k:['C'], f:'Antioxidante soluble; sostiene la respuesta inmune bajo estrés.', d:'Sin cuadro de deficiencia en condiciones normales.', a:'El ave la fabrica desde glucosa. Solo bajo estrés climático la demanda supera la síntesis; no es un suplemento de rutina.'},
+  {n:'B1 tiamina', k:['B1'], f:'Metabolismo de carbohidratos y función nerviosa.', d:'Pollitos con poco apetito, crecimiento lento y polineuritis.', a:'Los cereales la aportan; la deficiencia es rara en la práctica.'},
+  {n:'B2 riboflavina', k:['B2'], f:'Metabolismo energético; nervios periféricos.', d:'<em>Curled toe paralysis</em>: pollitos sobre los corvejones con los dedos curvados. En reproductoras, baja incubabilidad.', a:'—'},
+  {n:'B3 niacina', k:['B3'], f:'Metabolismo energético y de la piel.', d:'Trastornos de hueso y emplume; boca y esófago inflamados.', a:'La niacina de los cereales está ligada y no se aprovecha; el maíz es pobre en niacina y en triptófano.'},
+  {n:'B5 pantotenato', k:['B5'], f:'Parte de la coenzima A: metabolismo de grasas y energía.', d:'Pollitos con dermatitis y crecimiento lento; baja incubabilidad.', a:'Está en casi todos los alimentos.'},
+  {n:'B6 piridoxina', k:['B6'], f:'Metabolismo de los aminoácidos.', d:'Pollitos con movimientos espasmódicos; menos postura e incubabilidad.', a:'El requerimiento sube con la proteína de la dieta.'},
+  {n:'B12', k:['B12'], f:'Síntesis de proteína y glóbulos rojos; metabolismo de metilos junto al fólico.', d:'Emplume pobre. La gallina sigue sana pero baja la incubabilidad.', a:'Como la K, se sintetiza demasiado lejos en el intestino; la cama la aporta.'},
+  {n:'Biotina', k:['BIO'], f:'Síntesis de grasas; piel, patas y pluma.', d:'Patas agrietadas, dermatitis, mal emplume y FLKS (síndrome de hígado y riñón grasos).', a:'La avidina del huevo crudo y bacterias del estiércol la bloquean; el trigo la retiene en la fibra.'},
+  {n:'Ácido fólico', k:['FOL'], f:'División celular y formación de sangre.', d:'Anemia, mal desarrollo óseo y baja incubabilidad.', a:'—'},
+  {n:'Colina', k:['COL'], f:'Saca la grasa del hígado y forma membranas.', d:'Perosis (tendón deslizado) e hígado graso.', a:'El hígado la fabrica desde metionina: el requerimiento depende de la metionina de la dieta.'}
 ];
 
 /* ---- Situaciones ---- */
 const SIT = [
-  {id:'calor', label:'Ola de calor', p:'vv',
-   why:'Es el único de los tres con vitamina C (400 g/kg) y además trae A, D3 y E. El ave fabrica vitamina C, pero con calor no le alcanza.',
-   how:'Dosis curativa 30 g/100 L mientras dure el calor. Si el consumo de agua sube mucho, suma electrolitos. El calor se maneja primero con ventilación y agua fresca.'},
-  {id:'vacuna', label:'Vacunación', p:'vv', s:'am',
-   whys:'Si el lote viene decaído, el complejo B y los aminoácidos ayudan a que coma.',
-   why:'Las vitaminas A y E participan en la respuesta inmune y la mucosa donde entran las vacunas de agua y spray.',
+  {id:'calor', label:'Ola de calor', p:'vv', s:'ch',
+   why:'Es el que más vitamina C entrega (400 g/kg) y además trae A y D3. El ave fabrica vitamina C, pero con calor no le alcanza.',
+   whys:'Suma vitamina E: con calor, C y E juntas rinden más que cada una por separado.',
+   how:'Vetervit 30 g/100 L mientras dure el calor; Chicktonic 1 ml/L si el lote además baja postura. Con mucho consumo de agua, electrolitos. El calor se maneja primero con ventilación y agua fresca.'},
+  {id:'vacuna', label:'Vacunación', p:'ch', s:'vv',
+   why:'Trae A, D3 y E juntas, en líquido y con aminoácidos. A 1 ml/L entrega tanta vitamina A como Vetervit y tres veces su vitamina E, las dos vitaminas que más pesan en la mucosa y la respuesta inmune.',
+   whys:'Alternativa mucho más barata si el lote está bien y solo buscas A y D3.',
    how:'Dar 2 días antes y 2 a 3 días después, nunca en la misma agua que la vacuna. El día de vacunar: agua sin cloro con estabilizante o leche en polvo.'},
-  {id:'despique', label:'Despique', p:'am', s:'vv',
-   why:'Su ficha lo indica para despiques: complejo B y aminoácidos para que el ave siga comiendo con el pico sensible.',
-   whys:'Aporta vitamina K3, que ayuda a la coagulación del pico cortado.',
-   how:'Aminovit 100 ml/100 L por 6 a 8 días, partiendo el día antes. Vetervit 2 días antes y 3 después; si van el mismo día, disuelve cada uno por separado antes de juntarlos.'},
-  {id:'pollitos', label:'Llegada de pollitos', p:'am',
-   why:'La ficha lo indica para recuperar pollitos deficientes en sus primeras etapas. Es líquido, no deja residuo en los bebederos y trae metionina, B12 y ácido fólico.',
-   how:'50 ml/100 L los primeros 6 días. Si el viaje fue largo, el primer agua con azúcar o electrolitos.'},
-  {id:'traslado', label:'Traslado a postura', p:'am', s:'vv',
-   why:'La ficha lo indica para embarque y transporte.',
-   whys:'Suma A, D3, E y C para el cambio de galpón, justo antes de la madurez sexual.',
+  {id:'despique', label:'Despique', p:'av', s:'am',
+   why:'Reúne lo que pide un despique: vitamina K3 para la coagulación del pico cortado, aminoácidos, vitamina C y dextrosa para que el ave siga comiendo.',
+   whys:'Si el galpón medica con dosificador: la ficha de Aminovit incluye el despique y es líquido.',
+   how:'Aminovital 1.000 g por 1.000 L directo en el estanque, desde el día antes y por 5 días.'},
+  {id:'pollitos', label:'Llegada de pollitos', p:'av', s:'am',
+   why:'Está hecho para el arranque: aminoácidos esenciales y no esenciales, todas las vitaminas, dextrosa como energía rápida, electrolitos, y acidifica el agua.',
+   whys:'Si solo hay dosificador: su ficha lo indica para recuperar pollitos deficientes.',
+   how:'500 a 1.000 g por 1.000 L directo en el estanque por 5 a 7 días. No usar con dosificador automático.'},
+  {id:'traslado', label:'Traslado a postura', p:'ch', s:'am',
+   why:'Cubre en un solo producto lo que pide el cambio de galpón justo antes de la madurez sexual: A, D3, E y aminoácidos, en líquido para el dosificador.',
+   whys:'Más barato; su ficha lo indica para embarque y transporte.',
    how:'Partir 2 días antes del traslado y seguir 5 días después.'},
   {id:'post', label:'Después de antibiótico o coccidiosis', p:'vv',
-   why:'Las sulfas y la coccidiosis bajan la vitamina K y dañan el epitelio intestinal. Vetervit trae K3 (9,2 g/kg) y vitamina A. Los otros dos no traen vitaminas liposolubles.',
+   why:'Las sulfas y la coccidiosis bajan la vitamina K y dañan el epitelio intestinal. Vetervit es el que más K3 entrega (9,2 g/kg) y trae vitamina A.',
    how:'Dosis curativa 30 g/100 L por 3 a 5 días al terminar el tratamiento.'},
   {id:'peak', label:'Inicio de postura / peak', p:'pl', s:'vv',
-   why:'Su ficha lo indica para aumentar la puesta y es el más concentrado en aminoácidos: 132 g por litro.',
+   why:'Su ficha lo indica para aumentar la puesta y trae 17 aminoácidos en buena cantidad (132 g por litro).',
    whys:'Agrega vitamina D3, que el ave necesita para usar el calcio de la cáscara cuando arranca la postura.',
    how:'1 ml/L por 5 días. Antes, confirmar que el alimento de prepostura y postura esté cubriendo lo que pide la curva.'},
-  {id:'muda', label:'Muda', p:'pl', s:'am',
+  {id:'muda', label:'Muda', p:'pl', s:'ch',
    why:'La ficha lo indica para la muda. Las plumas son casi pura proteína y Promotor L trae cistina, serina, glicina y prolina, que son los aminoácidos de la pluma.',
-   whys:'Alternativa más barata si el objetivo es solo complejo B y metionina.',
+   whys:'Perfil parecido (serina, glicina, prolina, cistina) y además vitaminas A, D3 y E.',
    how:'1 ml/L por 5 días, al inicio de la recuperación de la muda.'},
-  {id:'higado', label:'Hígado graso', p:'am', s:'pl',
-   why:'Por composición, Aminovit trae más de lo que el hígado usa para sacar la grasa: 10 g/L de metionina, B12 y ácido fólico. Promotor L tiene 1,8 g/L de metionina y no trae B12 ni fólico. Ninguno de los dos trae colina.',
-   whys:'Tiene el hígado graso como indicación en su ficha y aporta biotina.',
-   how:'Aminovit 100 ml/100 L por 8 días. El agua no corrige el problema: revisar la energía de la dieta, la colina y el peso del lote.'},
-  {id:'repro', label:'Reproductoras: fertilidad', p:'pl', s:'vv',
+  {id:'higado', label:'Hígado graso', p:'av', s:'am',
+   why:'Es el que más trae de lo que el hígado usa para sacar la grasa: a 500 g por 1.000 L entrega unos 80 g de metionina, además de biotina, B12 y ácido fólico. Aminovit entrega 5 a 10 g de metionina y Promotor L 1,8 g.',
+   whys:'Si hay que usar dosificador: 10 g/L de metionina, B12 y fólico.',
+   how:'Aminovital 500 g por 1.000 L directo en el estanque por 5 a 7 días. El agua no corrige el problema: revisar la energía de la dieta, la colina y el peso del lote.'},
+  {id:'repro', label:'Reproductoras: fertilidad', p:'pl', s:'ch',
    why:'Su ficha lo indica para fertilidad, incubabilidad y viabilidad del pollito.',
-   whys:'Agrega A y D3. Su vitamina E es baja (8.000 UI/kg) y no reemplaza un aporte de vitamina E con selenio.',
-   how:'1 ml/L por 5 días.'},
-  {id:'convalece', label:'Recuperación de una enfermedad', p:'am', s:'pl',
-   why:'La ficha lo indica para recuperar animales después de infecciones bacterianas, virales o por hongos. Es el tratamiento más largo (6 a 8 días) y cuesta menos que Promotor L por litro de agua.',
-   whys:'Más aminoácidos por litro si el lote perdió mucho peso.',
+   whys:'Agrega lo que Promotor L no trae: A, D3 y vitamina E. La E del agua no reemplaza un buen aporte de E con selenio en el alimento.',
+   how:'Promotor L 1 ml/L por 5 días.'},
+  {id:'convalece', label:'Recuperación de una enfermedad', p:'am', s:'ch',
+   why:'La ficha lo indica para recuperar animales después de infecciones bacterianas, virales o por hongos. Es el tratamiento más largo (6 a 8 días) entre los líquidos baratos.',
+   whys:'Si el lote además necesita vitaminas A, D3 y E.',
    how:'100 ml/100 L por 8 días. Si hubo diarrea, sumar Vetervit los primeros 3 días.'},
-  {id:'recria', label:'Recría desuniforme', p:'vv', s:'am',
+  {id:'recria', label:'Recría desuniforme', p:'vv', s:'av',
    why:'Indicado como estimulante del crecimiento y es por lejos el más barato por litro de agua.',
-   whys:'Si además hubo un estrés reciente (despique, vacuna), aporta aminoácidos.',
+   whys:'Si además hubo un estrés reciente (despique, vacuna), aporta aminoácidos y energía.',
    how:'Dosis preventiva 15 g/100 L por 5 días. La uniformidad se corrige con densidad, espacio de comedero y alimento.'}
 ];
 
@@ -391,7 +444,7 @@ function renderReco(){
     </div>
     <div class="reco-side">
       ${sec}
-      <div><span class="lbl">Dosis de ficha</span><p>${p.doseLbl.min}${p.doses.min!==p.doses.max?' a '+p.doseLbl.max.split(' ').slice(1).join(' '):''} · ${p.diasLbl}</p></div>
+      <div><span class="lbl">Dosis de ficha</span><p>${p.doseRange} · ${p.diasLbl}</p></div>
       <div><span class="lbl">Costo aprox. por 1.000 L</span><p class="num">${clp(costPer1000(s.p,'min'))}${p.doses.min!==p.doses.max?' – '+clp(costPer1000(s.p,'max')):''}</p></div>
       <button type="button" class="chip" id="to-calc">Calcular para mi lote</button>
     </div>`;
@@ -432,10 +485,10 @@ function fmtVal(v, unit){
 }
 function renderTable(){
   const cons = Math.max(0, parseFloat(cCons.value)||0.25);
-  const keys = ['vv','pl','am'];
+  const keys = Object.keys(P);
   let h = '<thead><tr><th>Nutriente</th>' + keys.map(k=>`<th class="${k}" style="color:var(--c)">${P[k].short}<span>${tDose==='min'?P[k].doseLbl.min:P[k].doseLbl.max}</span></th>`).join('') + '</tr></thead><tbody>';
   ROWS.forEach(r=>{
-    if (r[0]==='g'){ h+=`<tr class="grp"><td colspan="4">${r[1]}</td></tr>`; return; }
+    if (r[0]==='g'){ h+=`<tr class="grp"><td colspan="${keys.length+1}">${r[1]}</td></tr>`; return; }
     const [key,label,unit] = r;
     const vals = keys.map(k=>{ const c=P[k].comp[key]||0; let v=c*P[k].doses[tDose]/P[k].envase; if (tBase==='ave') v=v*cons/1000; return v; });
     const mx = Math.max(...vals);
@@ -465,7 +518,9 @@ function renderCalc(){
   const total=perDay*days, envases=total/p.envase, cost=envases*price;
   const u=p.unit, big = v => v>=1000 ? fmtN(v/1000, 2)+(u==='g'?' kg':' L') : fmtN(v,0)+' '+u;
   let stock='';
-  if (dos>0 && water>0){
+  if (dos>0 && p.noDos){
+    stock = `<div class="stock warn"><b>No usar con dosificador.</b> La ficha de ${p.name} indica disolverlo directo en el estanque (1 kg por 1.000 L asegura la solubilidad).</div>`;
+  } else if (dos>0 && water>0){
     const sv = water*dos/100;
     stock = `<div class="stock">Solución madre para Dosatron ${dos} %: disolver <b class="num">${big(perDay)}</b> en <b class="num">${fmtN(sv,1)} L</b> de agua. Alcanza para un día de consumo.</div>`;
   }
@@ -488,6 +543,8 @@ cProd.addEventListener('change',onProd);
 [cAves,cCons,cDose,cDays,cPrice,cDos].forEach(i=>i.addEventListener('input',renderCalc));
 document.querySelectorAll('[data-cons]').forEach(b=>b.addEventListener('click',()=>{cCons.value=b.dataset.cons;renderCalc();}));
 
+document.getElementById('vit-tbl').innerHTML = '<thead><tr><th>Vitamina</th><th>Para qué sirve</th><th>Si falta</th><th>Lo que el ave hace distinto</th><th>La traen</th></tr></thead><tbody>' +
+  VIT.map(v=>`<tr><td>${v.n}</td><td>${v.f}</td><td>${v.d}</td><td>${v.a}</td><td><div class="dots">${Object.keys(P).filter(k=>v.k.some(x=>P[k].comp[x])).map(k=>`<span class="dot ${k}">${P[k].short}</span>`).join('')||'<span class="note">ninguno</span>'}</div></td></tr>`).join('') + '</tbody>';
 onProd();
 renderReco();
 })();
