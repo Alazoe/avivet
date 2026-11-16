@@ -335,7 +335,7 @@ python3 oxitetraciclina.py
 | `azovetril.html` | Web | Trimetoprim+Sulfadimidina · Azovetril® | Pollos broiler / Pavos | 0,125–0,25 mL/kg PV/día · 5 días |
 | `levantel.html` | Web | Levamisol · LEVANTEL® 46% | Pollos broiler | 30–40 mg base/kg PV · Dosis única |
 | `panacur.html` | Web | Fenbendazol · PANACUR® 10% (extra-etiqueta en aves) | Pollos, pollas y gallinas | 10–20 mg/kg PV · Dosis única (repetir 10–14 d) · Capillaria × 5 días |
-| `vitaminas.html` | Web (comparador) | Vitaminas solubles: Vetervit Soluble Reforzado · Promotor L 47.0 · Aminovit · Aminovital Plus (Miavit) · Chicktonic (Livisto) | Pollitos, recría, ponedoras, reproductoras | Recomienda según 12 situaciones del lote · nutrientes por 1.000 L o por ave · resumen de cada vitamina (wiki AviVet) · costo y solución madre Dosatron (Aminovital no va con dosificador) |
+| `vitaminas.html` | Web (comparador) | Vitaminas solubles: Vetervit Soluble Reforzado · Promotor L 47.0 · Aminovit · Aminovital Plus (Miavit) · Chicktonic (Livisto) | Pollitos, recría, ponedoras, reproductoras | Recomienda según 12 situaciones del lote · nutrientes por 1.000 L o por ave · resumen de cada vitamina (wiki AviVet) · dosis por litro y precio propios (guardados en el navegador) con comparación de costo real · solución madre Dosatron (Aminovital no va con dosificador) |
 | `quiflumil.html` | Web | Enrofloxacino · QUIFLUMIL® 10% | Pollos broiler / Pavos / Ponedoras crianza | 0,1 mL/kg PV/día · 5–10 días |
 | `enrofloxacino.html` | Web | Enrofloxacino · Enromic® 20% | Pollos broiler / Pollas reemplazo | 0,05 mL/kg PV/día · 3–5 días |
 | `duflosan.html` | Web | Florfenicol · DUFLOSAN® 2% | Pollos broiler / Cerdos | 0,5–0,75 mL/kg/dosis × 2/día (pollos) · 0,5 mL/kg/día (cerdos) · 5 días |
