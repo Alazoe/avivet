@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vitaminas al agua: Vetervit, Promotor L y Aminovit — AviVet</title>
+<meta name="description" content="Cuál vitamina soluble usar en aves según la situación del lote: Vetervit Soluble Reforzado, Promotor L 47.0 o Aminovit. Comparación de fichas técnicas, nutrientes por litro y calculadora de dosis y costo.">
+<link rel="canonical" href="https://avivet.cl/avivet/calculadoras-dosis/vitaminas.html">
+<meta property="og:title" content="Vitaminas al agua — AviVet">
+<meta property="og:description" content="Vetervit, Promotor L o Aminovit: cuál usar según la situación del lote, con dosis y costo.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://avivet.cl/avivet/calculadoras-dosis/vitaminas.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Layout: una columna de trabajo — situación → recomendación → fichas → tabla → calculadora → manejo */
+:root{
+  --bg:#f5f4f0; --surface:#ffffff; --ink:#1a1916; --muted:#5a5650; --line:#ddd9d0;
+  --accent:#1b4332;
+  --vv:#92400e; --pl:#1a4a7a; --am:#5b2d8e;
+  --warn:#7a5a1a;
+  --f-display:"Fraunces",Georgia,serif;
+  --f-body:"DM Sans",system-ui,sans-serif;
+  --f-mono:"DM Sans",system-ui,sans-serif;
+}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5;margin:0;font-variant-numeric:tabular-nums}
+header.site{background:var(--surface);border-bottom:1px solid var(--line);padding:0 max(16px,env(safe-area-inset-right,0px)) 0 max(16px,env(safe-area-inset-left,0px));height:56px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100}
+.hdr-back{display:flex;align-items:center;gap:5px;font-size:13px;font-weight:500;color:var(--muted);text-decoration:none;padding:5px 10px;border-radius:8px;border:1px solid var(--line);white-space:nowrap}
+.hdr-back:hover{border-color:var(--accent);color:var(--accent)}
+.logo-mark{width:32px;height:32px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.logo-text{font-family:"Fraunces",serif;font-weight:700;font-size:16px}
+.logo-sub{font-size:11px;color:#9a948c;font-weight:500}
+.hdr-sep{width:1px;height:20px;background:var(--line)}
+@media (max-width:520px){.logo-sub,.hdr-sep.second{display:none}}
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:32px 64px;display:grid;gap:48px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1}
+h1{font-size:clamp(2.1rem,5vw,3rem);font-weight:700;letter-spacing:-.01em}
+h2{font-size:1.55rem;font-weight:700}
+h3{font-size:1.15rem;font-weight:700}
+p{margin:0}
+.eyebrow{font-family:var(--f-mono);font-weight:600;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.lede{max-width:64ch;color:var(--muted);font-size:1.08rem}
+.head{display:grid;gap:12px}
+.sec{display:grid;gap:18px}
+.sec-head{display:grid;gap:6px}
+.sec-head p{color:var(--muted);max-width:68ch}
+.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+
+.vv{--c:var(--vv)} .pl{--c:var(--pl)} .am{--c:var(--am)}
+.tag{display:inline-flex;align-items:center;gap:6px;font-weight:700;color:var(--c)}
+.tag::before{content:"";width:10px;height:10px;border-radius:2px;background:var(--c)}
+
+/* Situaciones */
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font:inherit;font-size:.95rem;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:8px 14px;border-radius:999px;cursor:pointer}
+.chip:hover{border-color:var(--accent)}
+.chip[aria-pressed="true"]{background:var(--accent);color:#fff;border-color:var(--accent)}
+.chip:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.reco{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:0;background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.reco-main{padding:24px;border-top:5px solid var(--c);display:grid;gap:12px;align-content:start}
+.reco-side{padding:24px;border-left:1px solid var(--line);display:grid;gap:14px;align-content:start}
+.reco-name{font-family:var(--f-display);font-size:1.7rem;font-weight:700;color:var(--c);line-height:1.1}
+.reco .lbl{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.second{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.how{background:color-mix(in srgb,var(--c) 9%,transparent);border-radius:6px;padding:12px 14px}
+
+/* Fichas */
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px;display:grid;gap:14px;align-content:start;border-top:5px solid var(--c)}
+.card h3{color:var(--c)}
+.card .sub{color:var(--muted);font-size:.9rem}
+dl.kv{display:grid;grid-template-columns:max-content 1fr;gap:6px 12px;margin:0;font-size:.93rem}
+dl.kv dt{color:var(--muted)}
+dl.kv dd{margin:0}
+.card ul{margin:0;padding-left:18px;display:grid;gap:4px;font-size:.95rem}
+.strong{display:flex;flex-wrap:wrap;gap:6px}
+.pill{font-size:.8rem;padding:2px 9px;border-radius:999px;background:color-mix(in srgb,var(--c) 13%,transparent);color:var(--ink);border:1px solid color-mix(in srgb,var(--c) 35%,transparent)}
+.pill.no{background:transparent;border-style:dashed;color:var(--muted);border-color:var(--line)}
+.cost{display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid var(--line);padding-top:12px}
+.cost b{font-family:var(--f-mono);font-size:1.15rem}
+
+/* Tabla */
+.controls{display:flex;flex-wrap:wrap;gap:16px;align-items:center}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--surface)}
+.seg button{font:inherit;font-size:.9rem;border:0;background:transparent;color:var(--ink);padding:7px 12px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--accent);color:#fff}
+.tbl-wrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:.93rem}
+th,td{padding:8px 14px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+thead th{font-family:var(--f-display);font-weight:700;position:sticky;top:0;background:var(--surface)}
+thead th span{display:block;font-family:var(--f-mono);font-weight:400;font-size:.72rem;color:var(--muted)}
+tr.grp td{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:color-mix(in srgb,var(--accent) 6%,transparent);text-align:left}
+td.v{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+td.v.zero{color:var(--line)}
+td.v.top{color:var(--c);font-weight:700}
+td.v.top::after{content:" ●";font-size:.6rem;vertical-align:middle}
+.note{font-size:.88rem;color:var(--muted);max-width:80ch}
+
+/* Calculadora */
+.calc{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0;background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.calc-in{padding:22px;display:grid;gap:14px;grid-template-columns:1fr 1fr;align-content:start}
+.calc-in .full{grid-column:1/-1}
+.field{display:grid;gap:4px;min-width:0}
+.field label{font-size:.85rem;color:var(--muted)}
+.field input,.field select{font:inherit;font-family:var(--f-mono);font-size:.95rem;padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);width:100%;box-sizing:border-box}
+.presets{display:flex;flex-wrap:wrap;gap:6px}
+.presets button{font:inherit;font-size:.8rem;padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--ink);cursor:pointer}
+.presets button:hover{border-color:var(--accent)}
+.calc-out{padding:22px;border-left:1px solid var(--line);display:grid;gap:14px;align-content:start;background:color-mix(in srgb,var(--c) 6%,var(--surface))}
+.out-big{font-family:var(--f-display);font-size:2rem;font-weight:700;color:var(--c);line-height:1.1}
+.out-rows{display:grid;gap:8px}
+.out-row{display:flex;justify-content:space-between;gap:12px;border-bottom:1px dashed var(--line);padding-bottom:6px;font-size:.95rem}
+.out-row span:last-child{font-family:var(--f-mono);text-align:right}
+.stock{font-size:.92rem;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:10px 12px}
+
+/* Manejo */
+.rules{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 28px;margin:0;padding:0;list-style:none}
+.rules li{display:grid;gap:2px;padding-left:14px;border-left:2px solid var(--line)}
+.rules b{font-weight:700}
+.alert{border:1px solid color-mix(in srgb,var(--warn) 45%,transparent);background:color-mix(in srgb,var(--warn) 8%,transparent);border-radius:8px;padding:14px 16px;font-size:.93rem;display:grid;gap:4px}
+.alert b{color:var(--warn)}
+.src{font-size:.85rem;color:var(--muted);display:grid;gap:4px}
+.src code{font-family:var(--f-mono);font-size:.8rem}
+
+@media (max-width:820px){
+  .reco,.calc{grid-template-columns:1fr}
+  .reco-side,.calc-out{border-left:0;border-top:1px solid var(--line)}
+  .cards{grid-template-columns:1fr}
+  .rules{grid-template-columns:1fr}
+}
+@media (max-width:460px){.calc-in{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:no-preference){.reco-main,.calc-out{transition:background-color .2s}}
+</style>
+</head>
+<body>
+
+<header class="site">
+  <a href="index.html" class="hdr-back">← Volver</a>
+  <div class="hdr-sep"></div>
+  <div class="logo-mark">🐔</div>
+  <span class="logo-text">AviVet</span>
+  <span class="logo-sub">MV Andrés Lazo</span>
+  <div class="hdr-sep second"></div>
+  <span class="logo-sub">Vitaminas al agua</span>
+</header>
+
+<div class="wrap">
+
+<header class="head">
+  <div class="eyebrow">Calculadoras de dosis · Vitaminas y aminoácidos · noviembre 2026</div>
+  <h1>Vitaminas al agua</h1>
+  <p class="lede">Vetervit Soluble Reforzado, Promotor L 47.0 y Aminovit no hacen lo mismo. Uno aporta vitaminas liposolubles y vitamina C, los otros dos aportan complejo B y aminoácidos. Elige la situación del lote y la página recomienda cuál usar, con dosis y costo.</p>
+</header>
+
+<section class="sec" aria-labelledby="h-sit">
+  <div class="sec-head">
+    <h2 id="h-sit">¿Qué le pasa al lote?</h2>
+  </div>
+  <div class="chips" id="chips" role="group" aria-label="Situación del lote"></div>
+  <div class="reco" id="reco"></div>
+</section>
+
+<section class="sec" aria-labelledby="h-prod">
+  <div class="sec-head">
+    <h2 id="h-prod">Los tres productos</h2>
+    <p>Datos de las fichas técnicas. Costo por cada 1.000 litros de agua tratada, con precios de referencia.</p>
+  </div>
+  <div class="cards" id="cards"></div>
+</section>
+
+<section class="sec" aria-labelledby="h-tab">
+  <div class="sec-head">
+    <h2 id="h-tab">Qué entrega cada uno en el agua</h2>
+    <p>Cantidad de cada nutriente que llega al agua a la dosis de la ficha. El punto marca el producto que más aporta en esa fila.</p>
+  </div>
+  <div class="controls">
+    <div class="seg" role="group" aria-label="Nivel de dosis">
+      <button type="button" data-dose="min" aria-pressed="true">Dosis preventiva / mínima</button>
+      <button type="button" data-dose="max" aria-pressed="false">Curativa / máxima</button>
+    </div>
+    <div class="seg" role="group" aria-label="Base de cálculo">
+      <button type="button" data-base="1000" aria-pressed="true">Por 1.000 L de agua</button>
+      <button type="button" data-base="ave" aria-pressed="false">Por ave al día</button>
+    </div>
+  </div>
+  <div class="tbl-wrap"><table id="tbl"></table></div>
+  <p class="note" id="tbl-note"></p>
+</section>
+
+<section class="sec" aria-labelledby="h-calc">
+  <div class="sec-head">
+    <h2 id="h-calc">Calculadora de tratamiento</h2>
+    <p>Cuánto producto preparar por día y cuánto cuesta el tratamiento completo. Usa el consumo real del medidor de agua cuando lo tengas.</p>
+  </div>
+  <div class="calc" id="calc">
+    <div class="calc-in">
+      <div class="field full">
+        <label for="c-prod">Producto</label>
+        <select id="c-prod">
+          <option value="vv">Vetervit Soluble Reforzado</option>
+          <option value="pl">Promotor L 47.0</option>
+          <option value="am">Aminovit</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="c-aves">Número de aves</label>
+        <input id="c-aves" type="number" min="1" step="100" value="10000" inputmode="numeric">
+      </div>
+      <div class="field">
+        <label for="c-cons">Consumo (L/ave/día)</label>
+        <input id="c-cons" type="number" min="0.005" step="0.01" value="0.25" inputmode="decimal">
+      </div>
+      <div class="field full">
+        <div class="presets" aria-label="Consumos típicos">
+          <button type="button" data-cons="0.04">Pollito 1ª sem. 0,04</button>
+          <button type="button" data-cons="0.12">Recría 0,12</button>
+          <button type="button" data-cons="0.22">Polla prepostura 0,22</button>
+          <button type="button" data-cons="0.25">Ponedora 0,25</button>
+          <button type="button" data-cons="0.40">Ponedora con calor 0,40</button>
+        </div>
+      </div>
+      <div class="field">
+        <label for="c-dose">Dosis</label>
+        <select id="c-dose"></select>
+      </div>
+      <div class="field">
+        <label for="c-days">Días de tratamiento</label>
+        <input id="c-days" type="number" min="1" max="30" step="1" value="5" inputmode="numeric">
+      </div>
+      <div class="field">
+        <label for="c-price">Precio por envase (CLP)</label>
+        <input id="c-price" type="number" min="0" step="500" inputmode="numeric">
+      </div>
+      <div class="field">
+        <label for="c-dos">Dosificador</label>
+        <select id="c-dos">
+          <option value="0">Sin dosificador (estanque)</option>
+          <option value="1">Dosatron 1 %</option>
+          <option value="2">Dosatron 2 %</option>
+        </select>
+      </div>
+    </div>
+    <div class="calc-out" id="calc-out" aria-live="polite"></div>
+  </div>
+</section>
+
+<section class="sec" aria-labelledby="h-man">
+  <div class="sec-head">
+    <h2 id="h-man">Manejo en el agua</h2>
+  </div>
+  <ul class="rules">
+    <li><b>Nunca con la vacuna</b><span>El día de vacunar va solo agua sin cloro, con estabilizante o leche en polvo. Las vitaminas van antes y después.</span></li>
+    <li><b>Cloro apagado durante el tratamiento</b><span>El cloro degrada las vitaminas. Retomar la cloración al terminar.</span></li>
+    <li><b>Preparar solo lo del día</b><span>El agua tratada se cambia cada 24 horas. Aminovit abierto dura 28 días; Vetervit, guardado seco y sin luz.</span></li>
+    <li><b>Lavar las líneas al terminar</b><span>Aminoácidos y vitaminas alimentan el biofilm de bebederos y niples, sobre todo los líquidos.</span></li>
+    <li><b>Calcular sobre el consumo real</b><span>Con calor el consumo sube 50 a 100 %. Si dosificas por litro, el ave igual recibe la dosis; si preparas por ave, quedas corto.</span></li>
+    <li><b>El agua no corrige la dieta</b><span>Si el problema se repite en cada lote, revisar el premix y el alimento antes de seguir tratando en el agua.</span></li>
+  </ul>
+  <div class="alert">
+    <b>Uso bajo indicación veterinaria</b>
+    <span>Composición y dosis tomadas de las fichas técnicas de cada fabricante. Promotor L puede tener presentaciones con otra fórmula: esta página usa la ficha de Promotor L 47.0. Los precios son referencias de distribuidores en Chile a noviembre de 2026 y cambian; ingresa el tuyo en la calculadora.</span>
+  </div>
+  <div class="src">
+    <span><b>Fuentes</b></span>
+    <span>Vetervit Soluble Reforzado: ficha técnica Veterquimica 254-05, código 400938.</span>
+    <span>Promotor L 47.0: ficha técnica Agrovet Chile (elaborado por Laboratorios Calier, España), REG SAG Res. Ex. 5290/2013.</span>
+    <span>Aminovit: ficha técnica BTS Intrade Laboratorios, autorización SAG Res. Ex. 8326/2020.</span>
+  </div>
+</section>
+
+</div>
+
+<script>
+(function(){
+const fmtN = (n, d) => n.toLocaleString('es-CL', {maximumFractionDigits: d, minimumFractionDigits: 0});
+const clp = n => '$' + Math.round(n).toLocaleString('es-CL');
+
+/* Composición por 1.000 g (Vetervit) o 1.000 ml (líquidos), en la unidad de cada fila */
+const P = {
+  vv: {name:'Vetervit Soluble Reforzado', short:'Vetervit', lab:'Veterquimica', forma:'Polvo soluble', unit:'g',
+       envase:1000, envaseLbl:'bolsa 1 kg', precio:12500,
+       doses:{min:150, max:300}, doseLbl:{min:'Preventiva 15 g/100 L', max:'Curativa 30 g/100 L'},
+       dias:5, diasLbl:'La ficha no fija días; lo usual son 3 a 5', reg:'Suplemento, no requiere registro', retiro:'No aplica',
+       strong:['Vit. A','Vit. D3','Vit. K3','Vit. C 400 g/kg','Niacina'], lacks:['Aminoácidos'],
+       use:['Estrés por calor','Antes y después de vacunar','Después de sulfas, antibióticos o coccidiosis','Crecimiento lento en recría'],
+       comp:{A:16e6, D3:4.2e6, E:8000, K3:9.2, C:400, B1:7, B2:13, B6:5.7, B12:80, B3:60, B5:24.5}},
+  pl: {name:'Promotor L 47.0', short:'Promotor L', lab:'Calier · Agrovet', forma:'Solución oral', unit:'ml',
+       envase:1000, envaseLbl:'envase 1 L', precio:42000,
+       doses:{min:1000, max:1000}, doseLbl:{min:'1 ml/L de agua', max:'1 ml/L de agua'},
+       dias:5, diasLbl:'5 días', reg:'SAG Res. Ex. 5290/2013', retiro:'No indica',
+       strong:['17 aminoácidos (132 g/L)','Biotina','Serina, glicina, prolina'], lacks:['Vit. A, D3, E, K','Vit. C','B12'],
+       use:['Inicio de postura y subida al peak','Muda','Reproductoras: fertilidad e incubabilidad','Convalecencia'],
+       comp:{B1:1.75, B2:2.5, B6:1.125, B3:16.25, B5:7.5, BIO:1, Ala:7.4, Arg:8.6, Asp:10, Phe:5.8, Cys:4.6, Glu:17.8, Gly:10.3, His:1.5, Ile:5.6, Leu:8.7, Lys:7.6, Met:1.8, Pro:11.8, Ser:12, Thr:6.2, Tyr:3.1, Val:9.3}},
+  am: {name:'Aminovit', short:'Aminovit', lab:'BTS Intrade', forma:'Solución oral', unit:'ml',
+       envase:1000, envaseLbl:'envase 1 L', precio:24000,
+       doses:{min:500, max:1000}, doseLbl:{min:'50 ml/100 L', max:'100 ml/100 L'},
+       dias:7, diasLbl:'6 a 8 días', reg:'SAG Res. Ex. 8326/2020', retiro:'No requiere',
+       strong:['Metionina 10 g/L','B12 y ácido fólico','Niacina y pantotenato'], lacks:['Vit. A, D3, E, K','Vit. C'],
+       use:['Llegada de pollitos y pollitos débiles','Despique','Transporte y traslado','Recuperación post-infección'],
+       comp:{B1:1, B2:1.5, B6:1, B12:5, B3:10, B5:10, FOL:250, Met:10, Lys:7, Asp:6, Ala:13, Arg:6, Phe:3, Gly:8, Glu:13, Ile:1, His:1, Leu:4, Pro:4, Ser:1, Tyr:1, Thr:1, Val:3}}
+};
+const AA = ['Ala','Arg','Asp','Phe','Cys','Glu','Gly','His','Ile','Leu','Lys','Met','Pro','Ser','Thr','Tyr','Val'];
+for (const k in P){ P[k].comp.AAT = AA.reduce((s,a)=>s+(P[k].comp[a]||0),0); }
+
+const ROWS = [
+  ['g','Vitaminas liposolubles'],
+  ['A','Vitamina A','UI'],['D3','Vitamina D3','UI'],['E','Vitamina E','UI'],['K3','Vitamina K3','g'],
+  ['g','Vitamina C y complejo B'],
+  ['C','Vitamina C','g'],['B1','B1 tiamina','g'],['B2','B2 riboflavina','g'],['B6','B6 piridoxina','g'],['B12','B12 cobalamina','mg'],
+  ['B3','B3 niacina / nicotinamida','g'],['B5','B5 pantotenato / pantenol','g'],['BIO','Biotina','mg'],['FOL','Ácido fólico','mg'],
+  ['g','Aminoácidos'],
+  ['Met','Metionina','g'],['Cys','Cistina','g'],['Lys','Lisina (Aminovit: lisina HCl)','g'],['Thr','Treonina','g'],['Arg','Arginina','g'],
+  ['Val','Valina','g'],['Ile','Isoleucina','g'],['Leu','Leucina','g'],['AAT','Total aminoácidos','g']
+];
+
+/* ---- Situaciones ---- */
+const SIT = [
+  {id:'calor', label:'Ola de calor', p:'vv',
+   why:'Es el único de los tres con vitamina C (400 g/kg) y además trae A, D3 y E. El ave fabrica vitamina C, pero con calor no le alcanza.',
+   how:'Dosis curativa 30 g/100 L mientras dure el calor. Si el consumo de agua sube mucho, suma electrolitos. El calor se maneja primero con ventilación y agua fresca.'},
+  {id:'vacuna', label:'Vacunación', p:'vv', s:'am',
+   whys:'Si el lote viene decaído, el complejo B y los aminoácidos ayudan a que coma.',
+   why:'Las vitaminas A y E participan en la respuesta inmune y la mucosa donde entran las vacunas de agua y spray.',
+   how:'Dar 2 días antes y 2 a 3 días después, nunca en la misma agua que la vacuna. El día de vacunar: agua sin cloro con estabilizante o leche en polvo.'},
+  {id:'despique', label:'Despique', p:'am', s:'vv',
+   why:'Su ficha lo indica para despiques: complejo B y aminoácidos para que el ave siga comiendo con el pico sensible.',
+   whys:'Aporta vitamina K3, que ayuda a la coagulación del pico cortado.',
+   how:'Aminovit 100 ml/100 L por 6 a 8 días, partiendo el día antes. Vetervit 2 días antes y 3 después; si van el mismo día, disuelve cada uno por separado antes de juntarlos.'},
+  {id:'pollitos', label:'Llegada de pollitos', p:'am',
+   why:'La ficha lo indica para recuperar pollitos deficientes en sus primeras etapas. Es líquido, no deja residuo en los bebederos y trae metionina, B12 y ácido fólico.',
+   how:'50 ml/100 L los primeros 6 días. Si el viaje fue largo, el primer agua con azúcar o electrolitos.'},
+  {id:'traslado', label:'Traslado a postura', p:'am', s:'vv',
+   why:'La ficha lo indica para embarque y transporte.',
+   whys:'Suma A, D3, E y C para el cambio de galpón, justo antes de la madurez sexual.',
+   how:'Partir 2 días antes del traslado y seguir 5 días después.'},
+  {id:'post', label:'Después de antibiótico o coccidiosis', p:'vv',
+   why:'Las sulfas y la coccidiosis bajan la vitamina K y dañan el epitelio intestinal. Vetervit trae K3 (9,2 g/kg) y vitamina A. Los otros dos no traen vitaminas liposolubles.',
+   how:'Dosis curativa 30 g/100 L por 3 a 5 días al terminar el tratamiento.'},
+  {id:'peak', label:'Inicio de postura / peak', p:'pl', s:'vv',
+   why:'Su ficha lo indica para aumentar la puesta y es el más concentrado en aminoácidos: 132 g por litro.',
+   whys:'Agrega vitamina D3, que el ave necesita para usar el calcio de la cáscara cuando arranca la postura.',
+   how:'1 ml/L por 5 días. Antes, confirmar que el alimento de prepostura y postura esté cubriendo lo que pide la curva.'},
+  {id:'muda', label:'Muda', p:'pl', s:'am',
+   why:'La ficha lo indica para la muda. Las plumas son casi pura proteína y Promotor L trae cistina, serina, glicina y prolina, que son los aminoácidos de la pluma.',
+   whys:'Alternativa más barata si el objetivo es solo complejo B y metionina.',
+   how:'1 ml/L por 5 días, al inicio de la recuperación de la muda.'},
+  {id:'higado', label:'Hígado graso', p:'am', s:'pl',
+   why:'Por composición, Aminovit trae más de lo que el hígado usa para sacar la grasa: 10 g/L de metionina, B12 y ácido fólico. Promotor L tiene 1,8 g/L de metionina y no trae B12 ni fólico. Ninguno de los dos trae colina.',
+   whys:'Tiene el hígado graso como indicación en su ficha y aporta biotina.',
+   how:'Aminovit 100 ml/100 L por 8 días. El agua no corrige el problema: revisar la energía de la dieta, la colina y el peso del lote.'},
+  {id:'repro', label:'Reproductoras: fertilidad', p:'pl', s:'vv',
+   why:'Su ficha lo indica para fertilidad, incubabilidad y viabilidad del pollito.',
+   whys:'Agrega A y D3. Su vitamina E es baja (8.000 UI/kg) y no reemplaza un aporte de vitamina E con selenio.',
+   how:'1 ml/L por 5 días.'},
+  {id:'convalece', label:'Recuperación de una enfermedad', p:'am', s:'pl',
+   why:'La ficha lo indica para recuperar animales después de infecciones bacterianas, virales o por hongos. Es el tratamiento más largo (6 a 8 días) y cuesta menos que Promotor L por litro de agua.',
+   whys:'Más aminoácidos por litro si el lote perdió mucho peso.',
+   how:'100 ml/100 L por 8 días. Si hubo diarrea, sumar Vetervit los primeros 3 días.'},
+  {id:'recria', label:'Recría desuniforme', p:'vv', s:'am',
+   why:'Indicado como estimulante del crecimiento y es por lejos el más barato por litro de agua.',
+   whys:'Si además hubo un estrés reciente (despique, vacuna), aporta aminoácidos.',
+   how:'Dosis preventiva 15 g/100 L por 5 días. La uniformidad se corrige con densidad, espacio de comedero y alimento.'}
+];
+
+let sitSel = 'calor';
+const chips = document.getElementById('chips');
+SIT.forEach(s=>{
+  const b = document.createElement('button');
+  b.type='button'; b.className='chip'; b.textContent=s.label; b.dataset.id=s.id;
+  b.setAttribute('aria-pressed', s.id===sitSel);
+  b.addEventListener('click',()=>{ sitSel=s.id; renderReco(); });
+  chips.appendChild(b);
+});
+
+function costPer1000(k, lvl){ const p=P[k]; return p.doses[lvl]/p.envase*p.precio; }
+
+function renderReco(){
+  chips.querySelectorAll('.chip').forEach(c=>c.setAttribute('aria-pressed', c.dataset.id===sitSel));
+  const s = SIT.find(x=>x.id===sitSel), p = P[s.p], el = document.getElementById('reco');
+  el.className = 'reco ' + s.p;
+  const sec = s.s ? `<div class="second ${s.s}"><span class="lbl">Complemento</span><span class="tag">${P[s.s].name}</span></div><p>${s.whys}</p>` : '<p class="lbl">Sin complemento necesario</p>';
+  el.innerHTML = `
+    <div class="reco-main">
+      <span class="lbl">Recomendado para: ${s.label}</span>
+      <div class="reco-name">${p.name}</div>
+      <p>${s.why}</p>
+      <div class="how"><span class="lbl">Cómo darlo</span><p>${s.how}</p></div>
+    </div>
+    <div class="reco-side">
+      ${sec}
+      <div><span class="lbl">Dosis de ficha</span><p>${p.doseLbl.min}${p.doses.min!==p.doses.max?' a '+p.doseLbl.max.split(' ').slice(1).join(' '):''} · ${p.diasLbl}</p></div>
+      <div><span class="lbl">Costo aprox. por 1.000 L</span><p class="num">${clp(costPer1000(s.p,'min'))}${p.doses.min!==p.doses.max?' – '+clp(costPer1000(s.p,'max')):''}</p></div>
+      <button type="button" class="chip" id="to-calc">Calcular para mi lote</button>
+    </div>`;
+  document.getElementById('to-calc').addEventListener('click',()=>{
+    cProd.value = s.p; onProd();
+    document.getElementById('h-calc').scrollIntoView({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
+    cAves.focus({preventScroll:true});
+  });
+}
+
+/* ---- Fichas ---- */
+document.getElementById('cards').innerHTML = Object.entries(P).map(([k,p])=>`
+  <article class="card ${k}">
+    <div><h3>${p.name}</h3><p class="sub">${p.lab} · ${p.forma} · ${p.envaseLbl}</p></div>
+    <div class="strong">${p.strong.map(x=>`<span class="pill">${x}</span>`).join('')}${p.lacks.map(x=>`<span class="pill no">sin ${x}</span>`).join('')}</div>
+    <dl class="kv">
+      <dt>Dosis aves</dt><dd>${p.doseLbl.min}${p.doses.min!==p.doses.max?'<br>'+p.doseLbl.max:''}</dd>
+      <dt>Duración</dt><dd>${p.diasLbl}</dd>
+      <dt>Registro</dt><dd>${p.reg}</dd>
+      <dt>Retiro</dt><dd>${p.retiro}</dd>
+    </dl>
+    <div><span class="eyebrow">Úsalo para</span><ul>${p.use.map(u=>`<li>${u}</li>`).join('')}</ul></div>
+    <div class="cost"><span>Por 1.000 L</span><b>${clp(costPer1000(k,'min'))}${p.doses.min!==p.doses.max?' – '+clp(costPer1000(k,'max')):''}</b></div>
+  </article>`).join('');
+
+/* ---- Tabla ---- */
+let tDose='min', tBase='1000';
+document.querySelectorAll('[data-dose]').forEach(b=>b.addEventListener('click',()=>{tDose=b.dataset.dose;document.querySelectorAll('[data-dose]').forEach(x=>x.setAttribute('aria-pressed',x===b));renderTable();}));
+document.querySelectorAll('[data-base]').forEach(b=>b.addEventListener('click',()=>{tBase=b.dataset.base;document.querySelectorAll('[data-base]').forEach(x=>x.setAttribute('aria-pressed',x===b));renderTable();}));
+
+function fmtVal(v, unit){
+  if (!v) return {t:'—', u:''};
+  if (unit==='UI'){ if (v>=1e6) return {t:fmtN(v/1e6,2), u:'M UI'}; if (v>=1e4) return {t:fmtN(v/1e3,1), u:'mil UI'}; return {t:fmtN(v, v<10?1:0), u:'UI'}; }
+  // escalar g → mg → µg
+  const scale=[['g',1],['mg',1e-3],['µg',1e-6]];
+  let base = unit==='g'?v:unit==='mg'?v*1e-3:v*1e-6;
+  for (const [u,f] of scale){ if (base>=f || u==='µg'){ const x=base/f; return {t:fmtN(x, x<10?2:x<100?1:0), u}; } }
+}
+function renderTable(){
+  const cons = Math.max(0, parseFloat(cCons.value)||0.25);
+  const keys = ['vv','pl','am'];
+  let h = '<thead><tr><th>Nutriente</th>' + keys.map(k=>`<th class="${k}" style="color:var(--c)">${P[k].short}<span>${tDose==='min'?P[k].doseLbl.min:P[k].doseLbl.max}</span></th>`).join('') + '</tr></thead><tbody>';
+  ROWS.forEach(r=>{
+    if (r[0]==='g'){ h+=`<tr class="grp"><td colspan="4">${r[1]}</td></tr>`; return; }
+    const [key,label,unit] = r;
+    const vals = keys.map(k=>{ const c=P[k].comp[key]||0; let v=c*P[k].doses[tDose]/P[k].envase; if (tBase==='ave') v=v*cons/1000; return v; });
+    const mx = Math.max(...vals);
+    h+=`<tr><td>${label}</td>`+vals.map((v,i)=>{ const f=fmtVal(v,unit); const cls = !v?'zero':(v===mx && vals.filter(x=>x>0).length>1?'top':''); return `<td class="v ${keys[i]} ${cls}">${f.t}${f.u?' <small>'+f.u+'</small>':''}</td>`; }).join('')+'</tr>';
+  });
+  document.getElementById('tbl').innerHTML = h+'</tbody>';
+  document.getElementById('tbl-note').textContent = tBase==='ave'
+    ? `Por ave al día con un consumo de ${fmtN(cons,3)} L (se toma de la calculadora). Como referencia, una ponedora recibe en el alimento unas 1.000 a 1.300 UI de vitamina A al día.`
+    : 'Por cada 1.000 litros de agua preparada. Promotor L tiene una sola dosis en la ficha (1 ml/L), por eso no cambia entre preventiva y curativa.';
+}
+
+/* ---- Calculadora ---- */
+const cProd=document.getElementById('c-prod'), cAves=document.getElementById('c-aves'), cCons=document.getElementById('c-cons'),
+      cDose=document.getElementById('c-dose'), cDays=document.getElementById('c-days'), cPrice=document.getElementById('c-price'), cDos=document.getElementById('c-dos');
+function onProd(){
+  const p=P[cProd.value];
+  cDose.innerHTML = p.doses.min===p.doses.max ? `<option value="min">${p.doseLbl.min}</option>` : `<option value="min">${p.doseLbl.min}</option><option value="max">${p.doseLbl.max}</option>`;
+  cDays.value = p.dias; cPrice.value = p.precio;
+  renderCalc();
+}
+function renderCalc(){
+  const k=cProd.value, p=P[k];
+  const aves=Math.max(0,parseFloat(cAves.value)||0), cons=Math.max(0,parseFloat(cCons.value)||0);
+  const days=Math.max(1,parseInt(cDays.value)||1), price=Math.max(0,parseFloat(cPrice.value)||0), dos=parseFloat(cDos.value)||0;
+  const water=aves*cons;                         // L/día
+  const perDay=water/1000*p.doses[cDose.value];  // g o ml/día
+  const total=perDay*days, envases=total/p.envase, cost=envases*price;
+  const u=p.unit, big = v => v>=1000 ? fmtN(v/1000, 2)+(u==='g'?' kg':' L') : fmtN(v,0)+' '+u;
+  let stock='';
+  if (dos>0 && water>0){
+    const sv = water*dos/100;
+    stock = `<div class="stock">Solución madre para Dosatron ${dos} %: disolver <b class="num">${big(perDay)}</b> en <b class="num">${fmtN(sv,1)} L</b> de agua. Alcanza para un día de consumo.</div>`;
+  }
+  const el=document.getElementById('calc-out');
+  document.getElementById('calc').className='calc '+k;
+  el.innerHTML = `
+    <span class="eyebrow">${p.name}</span>
+    <div><div class="out-big">${big(perDay)} <small style="font-size:.5em">por día</small></div></div>
+    <div class="out-rows">
+      <div class="out-row"><span>Agua consumida al día</span><span>${fmtN(water,0)} L</span></div>
+      <div class="out-row"><span>Total ${days} días</span><span>${big(total)}</span></div>
+      <div class="out-row"><span>Envases (${p.envaseLbl})</span><span>${fmtN(envases,1)} → comprar ${Math.ceil(envases-1e-9)}</span></div>
+      <div class="out-row"><span>Costo del tratamiento</span><span>${clp(cost)}</span></div>
+      <div class="out-row"><span>Costo por ave</span><span>${aves?'$'+fmtN(cost/aves,1):'—'}</span></div>
+    </div>
+    ${stock}`;
+  renderTable();
+}
+cProd.addEventListener('change',onProd);
+[cAves,cCons,cDose,cDays,cPrice,cDos].forEach(i=>i.addEventListener('input',renderCalc));
+document.querySelectorAll('[data-cons]').forEach(b=>b.addEventListener('click',()=>{cCons.value=b.dataset.cons;renderCalc();}));
+
+onProd();
+renderReco();
+})();
+</script>
+</body>
+</html>

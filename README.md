@@ -12,7 +12,7 @@
 | **Vacunación Inyectable y Punción Alar** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/vacunacion-inyectable/) | Sitios de inoculación, largo de aguja, control de agujas y cadena de frío |
 | **Vacunación por Spray** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/vacunacion-spray/) | Calibración del pulverizador, tamaño de gota, papel hidrosensible y control de calidad |
 | **Vacunación en Agua de Bebida** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/vacunacion-agua/) | Volumen y dosis, calidad del agua, espacio de bebedero, cronograma del día y control de calidad |
-| **Calculadoras de Dosis** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/calculadoras-dosis/) | Cálculo de dosis de antibióticos en agua de bebida |
+| **Calculadoras de Dosis** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/calculadoras-dosis/) | Cálculo de dosis de antibióticos y antiparasitarios en agua de bebida, y comparador de vitaminas solubles |
 | **Auditoría SAG Bioseguridad** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/auditoria-sag/) | Pauta de verificación para Engorda, Ponedoras y Traspatio/AFC, Res. Ex. N°2114/2023 y 7695/2024 |
 | **Carteles de Bioseguridad** | [🔗 Abrir herramienta](https://avivet.cl/avivet/carteles-bioseguridad/) | 17 carteles SAG / NCh 1411 personalizados por plantel, serie completa en PDF A4 |
 | **Evaluación Certified Humane (HFAC)** | [🔗 Abrir herramienta](https://alazoe.github.io/avivet/evaluacion-hfac/) | Pauta de verificación para gallinas ponedoras (HFAC Ed. 21): 221 puntos, aplicabilidad por sistema, etapa producción/crianza, cálculo por ave y exportación CSV/JSON (prototipo) |
@@ -335,6 +335,7 @@ python3 oxitetraciclina.py
 | `azovetril.html` | Web | Trimetoprim+Sulfadimidina · Azovetril® | Pollos broiler / Pavos | 0,125–0,25 mL/kg PV/día · 5 días |
 | `levantel.html` | Web | Levamisol · LEVANTEL® 46% | Pollos broiler | 30–40 mg base/kg PV · Dosis única |
 | `panacur.html` | Web | Fenbendazol · PANACUR® 10% (extra-etiqueta en aves) | Pollos, pollas y gallinas | 10–20 mg/kg PV · Dosis única (repetir 10–14 d) · Capillaria × 5 días |
+| `vitaminas.html` | Web (comparador) | Vitaminas solubles: Vetervit Soluble Reforzado · Promotor L 47.0 · Aminovit | Pollitos, recría, ponedoras, reproductoras | Recomienda según 12 situaciones del lote · nutrientes por 1.000 L o por ave · costo y solución madre Dosatron |
 | `quiflumil.html` | Web | Enrofloxacino · QUIFLUMIL® 10% | Pollos broiler / Pavos / Ponedoras crianza | 0,1 mL/kg PV/día · 5–10 días |
 | `enrofloxacino.html` | Web | Enrofloxacino · Enromic® 20% | Pollos broiler / Pollas reemplazo | 0,05 mL/kg PV/día · 3–5 días |
 | `duflosan.html` | Web | Florfenicol · DUFLOSAN® 2% | Pollos broiler / Cerdos | 0,5–0,75 mL/kg/dosis × 2/día (pollos) · 0,5 mL/kg/día (cerdos) · 5 días |

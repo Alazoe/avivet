@@ -43,6 +43,7 @@ main{max-width:960px;margin:0 auto;padding:48px 20px 60px;animation:fadeIn 0.4s 
 .group-badge{display:inline-flex;align-items:center;gap:6px;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:8px;}
 .group-badge.abx{background:var(--accent-l);border:1px solid #a8dfc0;color:var(--accent);}
 .group-badge.antipar{background:var(--purple-l);border:1px solid var(--purple-b);color:var(--purple);}
+.group-badge.vit{background:var(--gold-l);border:1px solid #e8d5a8;color:#7a5a1a;}
 .group-title{font-family:"Fraunces",serif;font-size:22px;font-weight:700;margin-bottom:4px;}
 .group-sub{font-size:14px;color:var(--text2);}
 
@@ -64,6 +65,8 @@ main{max-width:960px;margin:0 auto;padding:48px 20px 60px;animation:fadeIn 0.4s 
 .drug-type-badge.liquido{background:var(--blue-l);color:var(--blue);border:1px solid #b8d0f0;}
 .drug-type-badge.restringido{background:var(--orange-l);color:var(--orange);border:1px solid var(--orange-b);}
 .drug-type-badge.antipar{background:var(--purple-l);color:var(--purple);border:1px solid var(--purple-b);}
+.drug-type-badge.vit{background:var(--gold-l);color:#7a5a1a;border:1px solid #e8d5a8;}
+.drug-grid.one{grid-template-columns:1fr;}
 .drug-name{font-family:"Fraunces",serif;font-size:22px;font-weight:700;line-height:1.15;margin-bottom:2px;}
 .drug-commercial{font-size:13px;color:var(--text3);font-weight:500;margin-bottom:14px;}
 
@@ -134,7 +137,7 @@ main{max-width:960px;margin:0 auto;padding:48px 20px 60px;animation:fadeIn 0.4s 
   <div class="hero">
     <div class="section-badge">💊 Antibióticos y Antiparasíticos</div>
     <h1 class="hero-title">Calculadoras<br>de Dosis</h1>
-    <p class="hero-sub">Dosis en agua de bebida para pollos broiler, pavos, pollas de reemplazo y cerdos. Selecciona el fármaco a calcular.</p>
+    <p class="hero-sub">Dosis en agua de bebida para pollos broiler, pavos, pollas de reemplazo y cerdos. Selecciona el fármaco a calcular, o compara vitaminas solubles.</p>
   </div>
 
   <div class="group-head">
@@ -420,6 +423,41 @@ main{max-width:960px;margin:0 auto;padding:48px 20px 60px;animation:fadeIn 0.4s 
           Dosis única · Capillaria × 5 días · mL de producto
         </div>
         <div class="drug-cta">Calcular →</div>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- Sección Vitaminas -->
+  <div class="group-head antipar-head" id="vitaminas">
+    <div class="group-badge vit">🧪 Vitaminas y aminoácidos</div>
+    <h2 class="group-title">Vitaminas al agua</h2>
+    <p class="group-sub">Cuál usar según lo que le pasa al lote: calor, vacunación, despique, inicio de postura, recuperación.</p>
+  </div>
+
+  <div class="drug-grid one">
+
+    <!-- Vetervit / Promotor L / Aminovit -->
+    <a href="vitaminas.html" class="drug-card">
+      <div class="drug-card-top">
+        <div class="drug-type-badge vit">🧪 Comparador y calculadora</div>
+        <div class="drug-name">Vetervit · Promotor L · Aminovit</div>
+        <div class="drug-commercial">Vetervit Soluble Reforzado · Promotor L 47.0 · Aminovit</div>
+        <div class="drug-species">
+          <span class="sp-badge">🐣 Pollitos y recría</span>
+          <span class="sp-badge">🐓 Ponedoras y reproductoras</span>
+        </div>
+        <div class="drug-inds">
+          <div class="drug-ind"><span class="drug-ind-icon">🎯</span><span>Recomendación según 12 situaciones del lote</span></div>
+          <div class="drug-ind"><span class="drug-ind-icon">📊</span><span>Nutrientes por 1.000 L o por ave, costo y solución madre para Dosatron</span></div>
+        </div>
+      </div>
+      <div class="drug-card-bottom">
+        <div class="drug-dose-info">
+          <strong>Liposolubles + vit. C vs. complejo B + aminoácidos</strong>
+          Dosis de ficha · g o mL de producto por día
+        </div>
+        <div class="drug-cta">Comparar →</div>
       </div>
     </a>
 
