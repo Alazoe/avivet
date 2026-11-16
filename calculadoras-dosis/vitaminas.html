@@ -202,7 +202,7 @@ td.v.top::after{content:" ●";font-size:.6rem;vertical-align:middle}
     <p>Función, signo de deficiencia con su nombre de campo y lo que el ave hace distinto a otras especies. A la derecha, cuáles de los cinco productos la traen.</p>
   </div>
   <div class="tbl-wrap"><table id="vit-tbl"></table></div>
-  <p class="note">Resumen de McDonald et al. 2022 (<em>Animal Nutrition</em>, 8.ª ed., cap. 5) y FEDNA 2018. Vitamina C en calor: Onagbesan 2023; vitamina D3 en el agua: Akter 2025.</p>
+  <p class="note">Resumen de McDonald et al. 2022 (<em>Animal Nutrition</em>, 8.ª ed., cap. 5) y FEDNA 2018. Dosis de vitaminas C y E en calor: Olayiwola y Adedokun 2025 (<em>Frontiers in Veterinary Science</em>) y Onagbesan 2023; vitamina D3 en el agua: Akter 2025. Las equivalencias por ave al día suponen 110 g de alimento y 0,22–0,25 L de agua.</p>
 </section>
 
 <section class="sec" aria-labelledby="h-calc">
@@ -270,9 +270,9 @@ td.v.top::after{content:" ●";font-size:.6rem;vertical-align:middle}
   </div>
   <ul class="rules">
     <li><b>Nunca con la vacuna</b><span>El día de vacunar va solo agua sin cloro, con estabilizante o leche en polvo. Las vitaminas van antes y después.</span></li>
-    <li><b>Cloro apagado durante el tratamiento</b><span>El cloro degrada las vitaminas. Retomar la cloración al terminar.</span></li>
+    <li><b>Cloro apagado durante el tratamiento</b><span>El cloro degrada las vitaminas. Al terminar, retomar con 3 a 5 ppm de cloro libre al final de la línea.</span></li>
     <li><b>Preparar solo lo del día</b><span>El agua tratada se cambia cada 24 horas. Aminovit abierto dura 28 días; Vetervit, guardado seco y sin luz.</span></li>
-    <li><b>Lavar las líneas al terminar</b><span>Aminoácidos y vitaminas alimentan el biofilm de bebederos y niples, sobre todo los líquidos.</span></li>
+    <li><b>Purgar las líneas al terminar</b><span>Vitaminas, electrolitos y azúcar alimentan el biofilm, que baja la eficacia de vacunas y medicamentos y vuelve en 2 a 3 días. Purga 1 minuto por cada 30 m de línea.</span></li>
     <li><b>Calcular sobre el consumo real</b><span>Con calor el consumo sube 50 a 100 %. Si dosificas por litro, el ave igual recibe la dosis; si preparas por ave, quedas corto.</span></li>
     <li><b>El agua no corrige la dieta</b><span>Si el problema se repite en cada lote, revisar el premix y el alimento antes de seguir tratando en el agua.</span></li>
   </ul>
@@ -287,6 +287,7 @@ td.v.top::after{content:" ●";font-size:.6rem;vertical-align:middle}
     <span>Aminovit: ficha técnica BTS Intrade Laboratorios, autorización SAG Res. Ex. 8326/2020.</span>
     <span>Aminovital Plus: ficha técnica Miavit GmbH (versión 20/11/2019), publicada por Solagro.</span>
     <span>Chicktonic (Livisto): composición publicada por el distribuidor Grupo Trisan; Solagro no publica ficha. Dosis 1–2 ml/L según Solagro.</span>
+    <span>Manejo de líneas de agua: Tabler, Farnell y Wells 2014, <em>Poultry Water Line Sanitation</em>, Mississippi State University Extension P2839.</span>
   </div>
 </section>
 
@@ -353,9 +354,9 @@ const ROWS = [
 const VIT = [
   {n:'A', k:['A'], f:'Mantiene epitelios y mucosas (barrera respiratoria e intestinal), visión e inmunidad.', d:'Mucosas secas y más infecciones respiratorias; ceguera nocturna.', a:'Es el mejor conversor de β-caroteno de la granja (3:1). El exceso de A sube el requerimiento de E, D y K.'},
   {n:'D3', k:['D3'], f:'Absorción de calcio y fósforo; hueso y glándula de la cáscara.', d:'Raquitismo en pollitos, cáscara delgada y hueso débil en ponedoras.', a:'La D2 vale solo ~10 % de la D3 en aves. En galpón cerrado casi no hay síntesis por sol.'},
-  {n:'E', k:['E'], f:'Antioxidante de membranas e inmunidad; trabaja junto al selenio.', d:'Encefalomalacia (<em>crazy chick disease</em>), diátesis exudativa y miopatía de pechuga.', a:'Bajo estrés oxidativo se necesita más que lo que evita la deficiencia clásica. Con calor, C + E juntas rinden más que cada una sola.'},
+  {n:'E', k:['E'], f:'Antioxidante de membranas e inmunidad; trabaja junto al selenio.', d:'Encefalomalacia (<em>crazy chick disease</em>), diátesis exudativa y miopatía de pechuga.', a:'El ave no la fabrica y el calor la agota. Los ensayos que funcionan usan 125–250 mg/kg de alimento (14–28 mg por ponedora al día); los productos al agua entregan unos 2 mg. El agua complementa la E del alimento, no la reemplaza.'},
   {n:'K', k:['K3'], f:'Coagulación (protrombina) y mineralización del hueso (osteocalcina).', d:'Hemorragias y coagulación lenta: el ave puede desangrarse por una herida.', a:'La K que hace la microbiota se forma demasiado lejos para absorberse; el ave depende del suplemento, salvo que coma cama.'},
-  {n:'C', k:['C'], f:'Antioxidante soluble; sostiene la respuesta inmune bajo estrés.', d:'Sin cuadro de deficiencia en condiciones normales.', a:'El ave la fabrica desde glucosa. Solo bajo estrés climático la demanda supera la síntesis; no es un suplemento de rutina.'},
+  {n:'C', k:['C'], f:'Antioxidante soluble; sostiene la respuesta inmune bajo estrés.', d:'Sin cuadro de deficiencia en condiciones normales.', a:'El ave la fabrica desde glucosa. Solo con calor la demanda supera la síntesis. Los ensayos en ponedoras usan 200–400 mg/kg de alimento, equivalente a unos 90–200 mg/L de agua. Sola no mejora el hueso; con E rinde más.'},
   {n:'B1 tiamina', k:['B1'], f:'Metabolismo de carbohidratos y función nerviosa.', d:'Pollitos con poco apetito, crecimiento lento y polineuritis.', a:'Los cereales la aportan; la deficiencia es rara en la práctica.'},
   {n:'B2 riboflavina', k:['B2'], f:'Metabolismo energético; nervios periféricos.', d:'<em>Curled toe paralysis</em>: pollitos sobre los corvejones con los dedos curvados. En reproductoras, baja incubabilidad.', a:'—'},
   {n:'B3 niacina', k:['B3'], f:'Metabolismo energético y de la piel.', d:'Trastornos de hueso y emplume; boca y esófago inflamados.', a:'La niacina de los cereales está ligada y no se aprovecha; el maíz es pobre en niacina y en triptófano.'},
@@ -370,8 +371,8 @@ const VIT = [
 /* ---- Situaciones ---- */
 const SIT = [
   {id:'calor', label:'Ola de calor', p:'vv', s:'ch',
-   why:'Es el que más vitamina C entrega (400 g/kg) y además trae A y D3. El ave fabrica vitamina C, pero con calor no le alcanza.',
-   whys:'Suma vitamina E: con calor, C y E juntas rinden más que cada una por separado.',
+   why:'Es el que más vitamina C entrega: a 30 g/100 L son 120 mg/L, dentro de lo que funcionó en ensayos con ponedoras en calor (unos 90 a 200 mg/L). Además trae A y D3.',
+   whys:'Suma vitamina E: con calor, C y E juntas rinden más que cada una por separado. La E del agua es poca; la base tiene que venir del alimento.',
    how:'Vetervit 30 g/100 L mientras dure el calor; Chicktonic 1 ml/L si el lote además baja postura. Con mucho consumo de agua, electrolitos. El calor se maneja primero con ventilación y agua fresca.'},
   {id:'vacuna', label:'Vacunación', p:'ch', s:'vv',
    why:'Trae A, D3 y E juntas, en líquido y con aminoácidos. A 1 ml/L entrega tanta vitamina A como Vetervit y tres veces su vitamina E, las dos vitaminas que más pesan en la mucosa y la respuesta inmune.',
