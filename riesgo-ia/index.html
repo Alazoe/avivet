@@ -2410,9 +2410,14 @@ function marcarPlantelesDetectados(lat, lon, planteles){
     const icon = L.divIcon({ className:'',
       html:`<div style="width:20px;height:20px;border-radius:50%;background:#E74C3C;border:2px solid #fff;box-shadow:0 1px 5px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;font-size:11px;cursor:pointer;">🐔</div>`,
       iconSize:[20,20], iconAnchor:[10,10] });
+    // galpones con forma típica (etapa 5 del detector, huellas de edificios); puede no venir
+    const galp = (p.n_galpones > 0)
+      ? `<br>🏚️ ${p.n_galpones} galpón(es) · ~${Math.round(p.sup_galpones_m2).toLocaleString('es-CL')} m²`
+      : (p.n_galpones === 0 ? '<br>🏚️ Galpones no dibujados en el mapa de edificios' : '');
     const m = L.marker([p.lat, p.lon], { icon })
-      .bindTooltip(`🛰️ Plantel IA · prob ${p.prob} · a ${p.dist_m} m — clic para descartar`);
-    const obj = { lat:p.lat, lon:p.lon, prob:p.prob, dist_m:p.dist_m, nuevo:!!p.nuevo, marker:m };
+      .bindTooltip(`🛰️ Plantel IA · prob ${p.prob} · a ${p.dist_m} m${galp}<br>Clic para descartar`);
+    const obj = { lat:p.lat, lon:p.lon, prob:p.prob, dist_m:p.dist_m, nuevo:!!p.nuevo,
+                  n_galpones:p.n_galpones, sup_galpones_m2:p.sup_galpones_m2, marker:m };
     m.on('click', () => quitarPlantelDetectado(obj));
     leafletMap.addLayer(m); detectorMarkers.push(m); detectorPlanteles.push(obj);
   });
@@ -2477,6 +2482,8 @@ function aplicarResultadoIA(lat, lon, d){
   const yaReg = d.planteles.length - nuevos;
   estadoIA(`✅ <strong>${d.planteles.length}</strong> plantel(es) marcado(s) a &lt;${kmR} km`
     + (yaReg > 0 ? ` · ${nuevos} nuevo(s), ${yaReg} ya registrado(s)` : '')
+    + (d.descartados_sin_forma_galpon > 0
+        ? ` · ${d.descartados_sin_forma_galpon} foco(s) descartado(s) por no tener galpones` : '')
     + ` · ${d.segundos} s. <span style="color:var(--text3)">Clic en un 🐔 para descartarlo (falso positivo).</span>`,
     'var(--ok)');
 }
@@ -2811,7 +2818,7 @@ async function abrirInforme(){
     .sort((a, b) => (b.f||0) - (a.f||0));
   inf.brotesSilv5km60d = getAllBrotes().filter(b => b.tipo === 'silvestre' && haversine(inf.lat, inf.lon, b.lat, b.lon) <= 5
     && (fechaBrote(b)?.getTime() || 0) >= hace60).length;
-  inf.detectados = (typeof detectorPlanteles !== 'undefined') ? detectorPlanteles.map(p => ({ lat:p.lat, lon:p.lon })) : [];
+  inf.detectados = (typeof detectorPlanteles !== 'undefined') ? detectorPlanteles.map(p => ({ lat:p.lat, lon:p.lon, n_galpones:p.n_galpones, sup_galpones_m2:p.sup_galpones_m2 })) : [];
   const [mapa, aves] = await Promise.all([
     mapaInformeDataURL(inf),
     avesINat(inf.lat, inf.lon).catch(() => null),
@@ -2833,7 +2840,10 @@ function htmlInforme(inf, mapa){
     if(vistos.has(k)) return false; vistos.add(k); return true; });
   const aguaL = aguaU.slice(0, 4).map(w => `<li><span class="izq">${esc((w.name || '').trim() || 'Cuerpo de agua sin nombre')}</span><span>${kmTxt(w.dist)}</span></li>`).join('') || '<li>Sin cuerpos de agua en 6 km</li>';
   const plL = inf.planteles.slice(0, 4).map(p => `<li><span class="izq">${esc(p.nombre || 'Plantel')}</span><span>${kmTxt(haversine(inf.lat, inf.lon, p.lat, p.lon))}</span></li>`).join('')
-    + (inf.detectados.length ? `<li><span class="izq">${inf.detectados.length} plantel(es) detectado(s) por IA en satélite</span><span>≤ 3 km</span></li>` : '');
+    + (inf.detectados.length ? `<li><span class="izq">${inf.detectados.length} plantel(es) detectado(s) por IA en satélite`
+        + (inf.detectados.some(p => p.n_galpones > 0)
+            ? ` · ${inf.detectados.reduce((a, p) => a + (p.n_galpones || 0), 0)} galpones (~${Math.round(inf.detectados.reduce((a, p) => a + (p.sup_galpones_m2 || 0), 0)).toLocaleString('es-CL')} m²)` : '')
+        + `</span><span>≤ 3 km</span></li>` : '');
   const resumen = [
     ['💧', aguaU[0] ? kmTxt(aguaU[0].dist) : '> 6 km', 'agua más cercana'],
     ['🦠', inf.brotes.length, `brotes a ${inf.radioBrotes} km`],
