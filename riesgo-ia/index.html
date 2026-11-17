@@ -8,6 +8,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<!-- Brotes agrupados por zona y mapa de calor de densidad (plugins oficiales de Leaflet) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
 <style>
 :root{
   --bg:#f5f4f0;--surface:#fff;--surface2:#f0ede8;
@@ -141,6 +145,12 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:0
 .btn-ubic{flex:1;background:var(--surface);color:var(--accent);border:1px solid var(--border);border-radius:8px;padding:8px 10px;font-family:"DM Sans",sans-serif;font-size:12.5px;font-weight:600;cursor:pointer;transition:all .15s;}
 .btn-ubic:hover{background:var(--accent-l);border-color:var(--accent2);}
 .btn-ubic.activo{background:var(--accent);color:#fff;border-color:var(--accent);}
+/* Grupos de brotes: color del brote más grave activo del grupo; gris si todos están resueltos */
+.cluster-brote{display:flex;align-items:center;justify-content:center;border-radius:50%;color:#fff;
+  font:700 12px/1 'DM Sans',sans-serif;border:2.5px solid rgba(255,255,255,.9);box-shadow:0 1px 5px rgba(0,0,0,.35);}
+.cluster-brote{position:relative;}
+.cluster-brote .activos{position:absolute;top:-6px;right:-8px;min-width:17px;height:17px;padding:0 4px;box-sizing:border-box;
+  border-radius:9px;background:#C0392B;border:1.5px solid #fff;font-size:10px;line-height:14px;text-align:center;}
 .filtro-brotes{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:14px;}
 .filtro-brotes-head{font-size:12px;font-weight:700;color:var(--text2);margin-bottom:10px;}
 .filtro-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap;}
@@ -466,6 +476,7 @@ table.data-table{width:100%;border-collapse:collapse;font-size:13px;}
               <div class="legend-item"><div class="legend-dot" style="background:#E67E22;"></div>Traspatio</div>
               <div class="legend-item"><div class="legend-dot" style="background:#1A6EBF;"></div>Silvestre</div>
               <div class="legend-item"><div class="legend-dot" style="background:#7f8c8d;opacity:.45;"></div>Resuelto (atenuado)</div>
+              <div class="legend-item" title="Círculo con número = brotes de esa zona; se separan al acercarse. La insignia roja indica cuántos siguen activos. El color es el del tipo más grave con brotes activos (gris: todos resueltos)."><div class="legend-dot" style="background:#E67E22;width:16px;height:16px;"></div>Grupo de brotes (<span style="color:#C0392B;font-weight:700;">●</span> activos)</div>
             </div>
           </div>
         </div>
@@ -1793,6 +1804,8 @@ document.addEventListener('DOMContentLoaded', () => {
 let leafletMap  = null;
 let mapLayers   = [];
 let broteMarkers = [];
+let broteCluster = null;      // brotes agrupados por zona (Leaflet.markercluster)
+let broteCalor   = null;      // mapa de calor de densidad de brotes (Leaflet.heat)
 let plantelMarkers = [];      // marcadores persistentes de planteles guardados
 let manualWater  = [];        // cuerpos de agua marcados a mano por el usuario
 let waterMode    = false;     // modo "marcar agua" activo
@@ -1979,9 +1992,24 @@ function initMap(){
   });
   const sateliteConEtiquetas = L.layerGroup([satelite, etiquetas]);
 
+  // Brotes: agrupados por zona (se separan al acercarse; desde zoom 11 se ven uno a uno)
+  // y, como capa opcional, mapa de calor de densidad. Ambos respetan los filtros y "resueltos".
+  if(L.markerClusterGroup){
+    broteCluster = L.markerClusterGroup({
+      maxClusterRadius: 45, disableClusteringAtZoom: 11, spiderfyOnMaxZoom: true,
+      showCoverageOnHover: false, iconCreateFunction: iconoGrupoBrotes,
+    }).addTo(leafletMap);
+  }
+  if(L.heatLayer){
+    broteCalor = L.heatLayer([], { radius: 22, blur: 18, maxZoom: 10, minOpacity: 0.25,
+      gradient: { 0.25:'#1A6EBF', 0.5:'#F1C40F', 0.75:'#E67E22', 1:'#C0392B' } });
+  }
+  const capasBrotes = {};
+  if(broteCluster) capasBrotes['🦠 Brotes (agrupados por zona)'] = broteCluster;
+  if(broteCalor)   capasBrotes['🔥 Densidad de brotes (calor)'] = broteCalor;
   L.control.layers(
     { '🗺️ Mapa claro': claro, '🛰️ Satélite': sateliteConEtiquetas },
-    null,
+    Object.keys(capasBrotes).length ? capasBrotes : null,
     { position:'topright', collapsed:false }
   ).addTo(leafletMap);
 
@@ -2033,9 +2061,29 @@ function getAllBrotes(){
 
 let mostrarResueltos = true;
 
+// Ícono de un grupo de brotes: tamaño según cantidad; color del tipo más grave con brotes
+// activos (comercial > traspatio > silvestre); gris si todos los del grupo están resueltos.
+function iconoGrupoBrotes(grupo){
+  const hijos = grupo.getAllChildMarkers();
+  const activos = hijos.filter(m => !m._brote.resuelto);
+  const orden = ['comercial','traspatio','silvestre'];
+  const tipo = orden.find(t => activos.some(m => m._brote.tipo === t));
+  const color = tipo ? (BROTE_STYLE[tipo] || BROTE_STYLE.silvestre).color : '#9AA0A6';
+  const n = hijos.length;
+  const d = n < 10 ? 30 : n < 50 ? 38 : n < 200 ? 46 : 54;
+  const act = activos.length ? `<span class="activos">${activos.length}</span>` : '';
+  return L.divIcon({
+    className: '', iconSize: [d, d],
+    html: `<div class="cluster-brote" style="width:${d}px;height:${d}px;background:${color};opacity:${tipo ? 1 : .75};"
+      title="${n} brotes${activos.length ? ' · ' + activos.length + ' activos' : ' · todos resueltos'}">${n}${act}</div>`,
+  });
+}
+
 function renderBrotes(){
-  broteMarkers.forEach(m => leafletMap.removeLayer(m));
+  broteMarkers.forEach(m => (broteCluster && broteCluster.hasLayer(m)) ? null : leafletMap.removeLayer(m));
+  if(broteCluster) broteCluster.clearLayers();
   broteMarkers = [];
+  const puntosCalor = [];
   getAllBrotes().forEach(b => {
     if(b.resuelto && !mostrarResueltos) return;
     if(!brotePasaFiltro(b)) return;
@@ -2063,9 +2111,13 @@ function renderBrotes(){
         <div style="margin-top:5px;font-size:10px;color:#aaa;border-top:1px solid #eee;padding-top:4px;">Fuente: ${b.fuente||'Registro propio'}</div>
       </div>`);
     const m = L.marker([b.lat, b.lon], { icon }).bindPopup(popup);
-    m.addTo(leafletMap);
+    m._brote = b;
     broteMarkers.push(m);
+    puntosCalor.push([b.lat, b.lon, activo ? 1 : 0.4]);   // los resueltos pesan menos en el calor
   });
+  if(broteCluster) broteCluster.addLayers(broteMarkers);
+  else broteMarkers.forEach(m => m.addTo(leafletMap));      // sin el plugin: como antes, uno a uno
+  if(broteCalor) broteCalor.setLatLngs(puntosCalor);
 }
 
 function toggleResueltos(){
