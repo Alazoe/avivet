@@ -109,6 +109,29 @@ details.calc summary{cursor:pointer;font-weight:700;color:var(--verde2)}
 .sint-resp{margin-top:12px;background:#fff;border-radius:18px;padding:16px 18px;font-size:clamp(16px,1.9vw,20px);line-height:1.4;min-height:96px}
 .sint-resp .t{font-weight:900;color:var(--verde);font-size:1.1em;margin-bottom:4px}
 .sint-resp .fte{font-size:12px;color:var(--gris);margin-top:8px}
+/* Comparar platos */
+.cmp-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:10px}
+.cmp-card{background:var(--menta);border-radius:16px;padding:12px 12px 10px;display:flex;flex-direction:column;gap:6px}
+.cmp-card.marca{background:var(--crema2);outline:3px solid var(--amar)}
+.cmp-card h3{margin:0;font-size:clamp(16px,1.8vw,20px);color:var(--verde);line-height:1.15}
+.cmp-card .ic{font-size:30px;line-height:1}
+.cmp-card .que{font-size:13px;color:var(--gris);font-weight:700;min-height:2.6em}
+.cmp-card .barra .fila{font-size:13.5px}
+.cmp-card .pista{height:14px}
+.cmp-card .veredicto{margin-top:4px;border-radius:10px;padding:7px 9px;font-size:13.5px;font-weight:700;line-height:1.3;background:#fff}
+.cmp-card .veredicto.mal{color:var(--rojo)} .cmp-card .veredicto.ojo{color:#8a5a00} .cmp-card .veredicto.bien{color:var(--verde2)}
+@media (max-width:980px){.cmp-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+/* Regla de kg por docena */
+.regla{margin-top:12px;background:#fff;border:1px solid #e4e0d4;border-radius:14px;padding:10px 12px 8px}
+.regla h3{margin:0 0 4px;font-size:15px;color:var(--verde)}
+.regla .eje{position:relative;height:30px;margin:38px 4px 66px;border-radius:999px;
+  background:linear-gradient(90deg,#52b788 0%,#52b788 15.7%,#f0a500 15.7%,#f0a500 28.6%,#e07a5f 28.6%,#c0392b 100%)}
+.regla .banda{position:absolute;top:-4px;bottom:-4px;border:2px dashed rgba(27,67,50,.65);border-radius:8px}
+.regla .ref-et{position:absolute;top:34px;transform:translateX(-50%);font-size:11.5px;font-weight:700;color:var(--gris);text-align:center;line-height:1.15;white-space:nowrap}
+.regla .pin{position:absolute;top:-34px;transform:translateX(-50%);text-align:center;transition:left .35s ease}
+.regla .pin b{display:block;background:var(--verde);color:var(--amar);border-radius:8px;padding:2px 8px;font-size:13px;white-space:nowrap}
+.regla .pin i{display:block;width:0;height:0;margin:0 auto;border:7px solid transparent;border-top-color:var(--verde)}
+.regla .ticks{display:flex;justify-content:space-between;font-size:11px;color:var(--gris);margin:0 4px}
 .costo{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:start}
 .campo{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--menta);border-radius:14px;padding:8px 12px;margin-bottom:8px}
 .campo:nth-child(even){background:var(--crema2)}
@@ -144,6 +167,7 @@ footer{font-size:11px;color:var(--gris);text-align:center;padding:2px 12px 6px}
 </header>
 <nav class="tabs">
   <button class="tab on" data-v="sim">Arme el plato</button>
+  <button class="tab" data-v="cmp">Comparar platos</button>
   <button class="tab" data-v="rem">Remedios caseros</button>
   <button class="tab" data-v="sint">¿Qué me dice el huevo?</button>
   <button class="tab" data-v="cos">Costo por docena</button>
@@ -207,6 +231,16 @@ footer{font-size:11px;color:var(--gris);text-align:center;padding:2px 12px 6px}
 </section>
 
 
+<section id="cmp" class="vista">
+  <div class="panel">
+    <h2>Cuatro platos, la misma gallina</h2>
+    <p class="ayuda" id="cmp-ayuda"></p>
+    <div class="seg" id="seg-cmp"><button data-r="rustica">Gallina de campo</button><button data-r="comercial">Gallina comercial</button></div>
+    <div class="cmp-grid" id="cmp-grid"></div>
+    <div class="leyenda">La raya verde marca lo que la gallina necesita al día (100 %). Rojo: falta mucho · amarillo: justo · verde: alcanza.</div>
+  </div>
+</section>
+
 <section id="rem" class="vista">
   <div class="rem-grid" id="remgrid"></div>
   <div class="aviso">Lo casero no tiene dosis conocida. Complementa: no reemplaza una ración balanceada ni un tratamiento veterinario.</div>
@@ -238,6 +272,17 @@ footer{font-size:11px;color:var(--gris);text-align:center;padding:2px 12px 6px}
         <div><b id="r-hdia">–</b><span>huevos por día</span></div>
       </div>
       <div class="ref" id="r-msg"></div>
+      <div class="regla">
+        <h3>¿Dónde está su gallinero? Kilos de alimento por docena de huevos</h3>
+        <div class="eje" id="regla-eje">
+          <div class="banda" style="left:14.3%;width:1.4%"></div><div class="ref-et" style="left:15%;top:66px">Criolla 4,0–4,4</div>
+          <div class="banda" style="left:28.6%;width:17.9%"></div><div class="ref-et" style="left:37.5%">Maíz + soya + cáscara<br>8–13</div>
+          <div class="banda" style="left:89.3%;width:7.1%"></div><div class="ref-et" style="left:92.5%">Solo maíz<br>25–27</div>
+          <div class="banda" style="left:7.3%;width:0.4%;border-style:solid"></div><div class="ref-et" style="left:7.5%">Productiva<br>2,1</div>
+          <div class="pin" id="regla-pin" style="left:0%"><b id="regla-txt">Su gallinero</b><i></i></div>
+        </div>
+        <div class="ticks"><span>0 kg</span><span>28 kg</span></div>
+      </div>
       <div class="ref"><b>Referencias:</b> con solo maíz se gastaron 25–27 kg de alimento por docena; con maíz + soya + cáscara de huevo, 8–13 kg (Marañón 2001). Gallina criolla: 4,0–4,4 kg por docena; gallina productiva: 2,1 kg (Rodríguez et al. 2014; Gandarillas et al. 2026).</div>
     </div>
   </div>
@@ -336,7 +381,7 @@ BARRAS.forEach(function(b){
   el.innerHTML='<div class="fila"><span>'+b.nom+'</span><span id="v-'+b.k+'">0 %</span></div><div class="pista"><div class="lleno" id="b-'+b.k+'"></div><div class="meta"></div></div>';
   barrasEl.appendChild(el);
 });
-document.querySelectorAll(".presets button").forEach(function(btn){
+document.querySelectorAll(".presets button[data-p]").forEach(function(btn){
   btn.addEventListener("click", function(){
     var p = PRESETS[btn.getAttribute("data-p")];
     ING.forEach(function(i){ plato[i.k] = p[i.k]||0; });
@@ -422,6 +467,53 @@ function pintar(){
   hv.innerHTML = '<svg viewBox="0 0 44 54"><ellipse cx="22" cy="29" rx="'+rx+'" ry="'+ry+'" fill="#e9d2b0" stroke="#b08a5c" stroke-width="2"/>'+cra+'</svg><span>'+txt+'</span>';
 }
 pintar();
+
+/* ---- comparar platos ---- */
+var CMP = [
+  {p:"cebada",    nom:"Solo cebada",            ic:"🌾", que:"110 g de cebada"},
+  {p:"trigo",     nom:"Solo trigo",             ic:"🌾", que:"110 g de trigo"},
+  {p:"casera",    nom:"Mezcla casera",          ic:"🥣", que:"Trigo 70 g + harina de soya 25 g + conchuela 10 g"},
+  {p:"campestre", nom:"Alimento La Campestre",  ic:"🥚", que:"115 g de alimento completo", marca:true}
+];
+function sumar(p){
+  var s={em:0,pb:0,lis:0,ca:0,p:0}, tot=0;
+  Object.keys(p).forEach(function(k){
+    var g=p[k]; tot+=g; s.em += MP[k].em*g/1000;
+    ["pb","lis","ca","p"].forEach(function(n){ s[n]+=MP[k][n]*g/100; });
+  });
+  return {s:s, tot:tot};
+}
+function pintarComparar(){
+  $("cmp-ayuda").textContent = "Cada tarjeta muestra cuánto de lo que necesita la gallina le da ese plato. " + REFS[ref].nota;
+  document.querySelectorAll("#seg-cmp button").forEach(function(x){ x.classList.toggle("on", x.getAttribute("data-r")===ref); });
+  $("cmp-grid").innerHTML = CMP.map(function(c){
+    var r = sumar(PRESETS[c.p]), pct={}, h='';
+    BARRAS.forEach(function(b){
+      if (NEC[b.k]===null) return;
+      pct[b.k] = r.s[b.k]/NEC[b.k]*100;
+      var w = Math.min(pct[b.k],150)/150*100;
+      h += '<div class="barra"><div class="fila"><span>'+b.nom.replace(" (cáscara)","").replace("Proteína de calidad (lisina)","Lisina")+'</span><span>'+Math.round(pct[b.k])+' %</span></div>'+
+        '<div class="pista"><div class="lleno" style="width:'+w+'%;background:'+color(pct[b.k])+'"></div><div class="meta"></div></div></div>';
+    });
+    var faltan = BARRAS.filter(function(b){ return NEC[b.k]!==null && pct[b.k] < 70; }).map(function(b){
+      return ({em:"energía", pb:"proteína", lis:"lisina", ca:"calcio", p:"fósforo"})[b.k]; });
+    var justos = BARRAS.filter(function(b){ return NEC[b.k]!==null && pct[b.k] >= 70 && pct[b.k] < 90; });
+    var lista = faltan.length > 1 ? faltan.slice(0,-1).join(", ") + " y " + faltan[faltan.length-1] : faltan[0];
+    var v = faltan.length ? ['mal', 'Le falta ' + lista + '.']
+          : justos.length ? ['ojo', 'Casi completo: hay nutrientes justos.']
+          : ['bien', 'Plato completo: alcanza para poner bien.'];
+    return '<div class="cmp-card'+(c.marca?' marca':'')+'"><div class="ic">'+c.ic+'</div><h3>'+c.nom+'</h3><div class="que">'+c.que+'</div>'+h+
+      '<div class="veredicto '+v[0]+'">'+v[1]+'</div></div>';
+  }).join("");
+}
+document.querySelectorAll("#seg-cmp button").forEach(function(b){
+  b.addEventListener("click", function(){
+    var r = b.getAttribute("data-r");
+    document.querySelector('#seg button[data-r="'+r+'"]').click();   // misma referencia en las dos pestañas
+  });
+});
+document.querySelectorAll("#seg button").forEach(function(b){ b.addEventListener("click", pintarComparar); });
+pintarComparar();
 
 
 /* ---- remedios caseros ---- */
@@ -512,6 +604,11 @@ function costo(){
   else m = "Dentro de lo esperable. Siga anotando cada semana: es la mejor forma de ver si un cambio funciona.";
   if (cons && (cons < 90 || cons > 130)) m += " Ojo: cada gallina está comiendo "+fmt(cons,0)+" g al día; lo normal es 90–120 g.";
   $("r-msg").textContent = m;
+  // regla: 0–28 kg por docena; más allá queda en el extremo
+  var pin = $("regla-pin");
+  if (h){ pin.style.display = ""; pin.style.left = (Math.min(kgdoc, 28)/28*100) + "%";
+    $("regla-txt").textContent = "Su gallinero: " + fmt(kgdoc,1) + (kgdoc > 28 ? "+" : "") + " kg"; }
+  else { pin.style.display = "none"; }
 }
 costo();
 
