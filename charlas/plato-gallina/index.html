@@ -642,19 +642,57 @@ var PREG = [
    s:"González-Cerón et al. 2020"},
   {f:"“Si el alimento es bueno, el agua da lo mismo.”", r:"m",
    e:"La gallina toma cerca del doble de agua que de alimento. Si le falta agua, deja de poner primero que nada. Agua limpia todos los días.",
-   s:"Bestman et al. 2020"}
+   s:"Bestman et al. 2020"},
+  {f:"“Una gallina sana puede poner dos huevos en un mismo día.”", r:"m",
+   e:"La yema se suelta una vez cada 26 horas más o menos: como máximo un huevo al día, y de vez en cuando se salta un día. El huevo de dos yemas sale cuando se sueltan dos juntas, pero sigue siendo un solo huevo.",
+   s:"Poultry Science 5ª ed., Cap. 4"},
+  {f:"“Si el huevo trae una manchita de sangre por dentro, es porque está fecundado.”", r:"m",
+   e:"La manchita aparece cuando se rompe un vasito al soltarse la yema, por ejemplo con un susto o una enfermedad. No tiene que ver con el gallo. En gallinas viejas es más común.",
+   s:"Poultry Science 5ª ed., Cap. 4; Jin et al. 2026"},
+  {f:"“Las rayas de sangre por fuera de la cáscara son normales.”", r:"m",
+   e:"No vienen de la formación del huevo: indican que a una gallina le están picando la cloaca o que tiene un prolapso. Revise las gallinas y sepárela si está herida, antes de que el picaje se contagie.",
+   s:"van de Braak et al. 2023"},
+  {f:"“El color café de la cáscara depende de la raza y la edad de la gallina, más que de la comida.”", r:"v",
+   e:"Con la comida casi no se cambia el color de la cáscara: mandan la raza y la edad, y con los años sale más clara. También se aclara con estrés o con bronquitis infecciosa.",
+   s:"Odabasi et al. 2007"},
+  {f:"“Ponerle cloro al agua les hace mal a las gallinas.”", r:"m",
+   e:"Bien dosificado, el cloro desinfecta el agua y ayuda a la salud del gallinero. Lo que hace mal es el exceso: con demasiado cloro las gallinas dejan de tomar. Use la dosis que le indique su veterinario.",
+   s:"Tabler 2014"},
+  {f:"“Con calor, las gallinas toman bastante más agua.”", r:"v",
+   e:"Sobre 24 °C toman entre 30 y 50 % más agua. En verano revise que los bebederos no se sequen ni se calienten al sol.",
+   s:"Greenacre 2021"},
+  {f:"“Lavar los huevos sucios los hace durar más.”", r:"m",
+   e:"Al lavarlo se daña la capa que protege la cáscara (la cutícula), y el huevo lavado hay que guardarlo en frío. Un huevo limpio y sin lavar dura muchos días a temperatura ambiente. Mejor recoger seguido y tener nidos limpios.",
+   s:"Bestman et al. 2020"},
+  {f:"“El ácaro rojo vive siempre encima de la gallina.”", r:"m",
+   e:"Pasa casi toda su vida escondido en grietas del gallinero y sube a picar a la gallina de noche. Por eso no basta con tratar las gallinas: hay que limpiar y tratar el gallinero.",
+   s:"Axtell y Arends 1990; Saif 2008"},
+  {f:"“Cuando la gallina bota las plumas, deja de poner un tiempo y después vuelve a poner.”", r:"v",
+   e:"Es la muda: dura unas 6 semanas. Con buena luz y alimento completo la gallina vuelve a poner. No es una enfermedad.",
+   s:"Karcher 2021"}
 ];
+/* Cada partida: 8 tarjetas al azar. Al jugar de nuevo salen primero las que no han salido. */
+var POR_RONDA = 8, vistas = {}, ronda = [];
+function barajar(a){ for (var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)), t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+function nuevaRonda(){
+  var todas = PREG.map(function(_,i){ return i; });
+  var nuevas = barajar(todas.filter(function(i){ return !vistas[i]; }));
+  if (nuevas.length < POR_RONDA){ vistas = {}; nuevas = nuevas.concat(barajar(todas.filter(function(i){ return nuevas.indexOf(i) < 0; }))); }
+  ronda = nuevas.slice(0, POR_RONDA);
+  ronda.forEach(function(i){ vistas[i] = true; });
+}
+nuevaRonda();
 var idx=0, pts=0, tar=$("tarjeta");
 function tarjeta(){
-  if (idx>=PREG.length){
-    tar.innerHTML='<div class="prog">¡Terminó!</div><div class="puntaje">'+pts+' de '+PREG.length+'</div>'+
-      '<div class="frase" style="font-size:clamp(20px,2.6vw,28px)">'+(pts>=5?"¡Usted sabe de gallinas!":pts>=3?"¡Bien! Ya sabe lo más importante.":"Ahora ya lo sabe: el grano solo no alcanza.")+'</div>'+
-      '<button class="sig on" id="otra">Jugar de nuevo</button>';
-    $("otra").addEventListener("click",function(){ idx=0; pts=0; tarjeta(); });
+  if (idx>=ronda.length){
+    tar.innerHTML='<div class="prog">¡Terminó!</div><div class="puntaje">'+pts+' de '+ronda.length+'</div>'+
+      '<div class="frase" style="font-size:clamp(20px,2.6vw,28px)">'+(pts>=6?"¡Usted sabe de gallinas!":pts>=4?"¡Bien! Ya sabe lo más importante.":"Ahora ya lo sabe: hay harto que aprender de la gallina.")+'</div>'+
+      '<button class="sig on" id="otra">Jugar de nuevo (otras preguntas)</button>';
+    $("otra").addEventListener("click",function(){ nuevaRonda(); idx=0; pts=0; tarjeta(); });
     return;
   }
-  var q=PREG[idx];
-  tar.innerHTML='<div class="prog">Pregunta '+(idx+1)+' de '+PREG.length+'</div><div class="frase">'+q.f+'</div>'+
+  var q=PREG[ronda[idx]];
+  tar.innerHTML='<div class="prog">Pregunta '+(idx+1)+' de '+ronda.length+'</div><div class="frase">'+q.f+'</div>'+
     '<div class="resp"><button class="v">VERDAD</button><button class="m">MITO</button></div>'+
     '<div class="explica" id="exp"></div><button class="sig" id="sig">Siguiente</button>';
   tar.querySelectorAll(".resp button").forEach(function(b){
