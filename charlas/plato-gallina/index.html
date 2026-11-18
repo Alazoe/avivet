@@ -243,7 +243,7 @@ footer{font-size:11px;color:var(--gris);text-align:center;padding:2px 12px 6px}
 
 <section id="rem" class="vista">
   <div class="rem-grid" id="remgrid"></div>
-  <div class="aviso">Lo casero no tiene dosis conocida. Complementa: no reemplaza una ración balanceada ni un tratamiento veterinario.</div>
+  <div class="aviso">Lo casero no tiene dosis conocida: complementa, no reemplaza una ración balanceada ni un tratamiento. Si una gallina se enferma, sepárela y consulte a PRODESAL o a un veterinario antes de darle cualquier cosa.</div>
 </section>
 
 <section id="sint" class="vista">
@@ -520,38 +520,38 @@ pintarComparar();
 var REM = [
  {n:"Ajo", ic:"🧄", c:"amar", v:"Efecto muy pequeño",
   t:"Un análisis de 19 ensayos en gallinas encontró que el ajo sube la postura apenas 0,3 % y el huevo 0,07 g: es real, pero muy pequeño. Contra las coccidias los resultados varían, y el aceite de ajo al 10 % redujo el ácaro del norte, menos que los productos químicos.",
-  o:"No se conoce una dosis casera y no reemplaza el tratamiento contra coccidias ni ácaros.", f:"Ogbuewu et al. 2021 (solo resumen); Ahmad et al. 2024; Lennox 2021"},
+  o:"No lo use en lugar de un remedio: no hay dosis casera conocida y por sí solo no cura coccidias ni mata ácaros.", f:"Ogbuewu et al. 2021 (solo resumen); Ahmad et al. 2024; Lennox 2021"},
  {n:"Ají", ic:"🌶️", c:"gris", v:"No espanta a la gallina",
   t:"Las aves sienten el picante pero no lo rechazan como nosotros: no sirve para que dejen de picarse o de comer huevos. Sí espanta a los ratones. El pimiento rojo, al 0,5–1,5 % de la ración, da color naranjo a la yema.",
-  o:"Como remedio no tiene efecto probado.", f:"Poultry Science 5ª ed., Cap. 5; Matache et al. 2024"},
+  o:"Sirve para alejar ratones del comedero, no como remedio.", f:"Poultry Science 5ª ed., Cap. 5; Matache et al. 2024"},
  {n:"Vinagre", ic:"🍶", c:"amar", v:"Puede ayudar con calor",
-  t:"El ácido acético, 200–600 ppm en el agua, mejoró la postura de gallinas con calor fuerte (35 °C). El agua de bebida normal tiene pH 6,8–7,5.",
-  o:"No hay una dosis casera de vinagre: su acidez varía mucho de una botella a otra. Con el frío del sur, el beneficio es incierto.", f:"Lee et al. 2025; Bryden et al. 2021"},
+  t:"El ácido acético (el que tiene el vinagre), puesto en el agua, mejoró la postura de gallinas con calor fuerte (35 °C). En una prueba se usó una cantidad muy chica, medida con instrumentos.",
+  o:"No hace falta con el frío del sur. No hay medida casera segura: la acidez cambia mucho de una botella a otra. Lo que importa es el agua limpia cada día.", f:"Lee et al. 2025; Bryden et al. 2021"},
  {n:"Orégano", ic:"🌿", c:"verde", v:"Sirve como producto formulado",
-  t:"Aceite esencial de orégano encapsulado, 200 mg por kg de alimento, mejoró la conversión y el grosor de la cáscara en gallinas de 60–72 semanas. Con el doble de dosis el efecto fue menor.",
-  o:"El ensayo usó un producto industrial, no hoja seca: la hoja no tiene una dosis conocida.", f:"Feng et al. 2021"},
+  t:"Un aceite de orégano industrial, mezclado en el alimento en cantidad muy chica y medida, mejoró el aprovechamiento del alimento y el grosor de la cáscara en gallinas de 60–72 semanas. Con el doble de dosis el efecto fue menor.",
+  o:"La prueba usó un producto industrial, no hoja seca: la hoja no tiene dosis conocida, así que no espere el mismo efecto.", f:"Feng et al. 2021"},
  {n:"Cúrcuma", ic:"🟡", c:"amar", v:"Evidencia mixta",
   t:"La curcumina frena las coccidias en laboratorio. En aves, algunos ensayos funcionaron y otros no. Tiene efecto antioxidante.",
-  o:"No es un tratamiento contra coccidias.", f:"Wang et al. 2024"},
+  o:"No lo use como remedio contra las coccidias.", f:"Wang et al. 2024"},
  {n:"Bicarbonato de sodio", ic:"🧂", c:"amar", v:"Efecto pasajero",
   t:"En gallinas nativas, 1 a 1,5 % del alimento mejoró el peso y el grosor de la cáscara solo en algunas semanas, sin cambiar el consumo ni el peso del huevo. La gallina no come de noche, cuando se forma la cáscara. Aporta sodio sin cloro, útil con calor o agua muy clorada.",
-  o:"Se probó dentro del alimento y reemplazando parte de la sal. En exceso alcaliniza la orina y favorece cálculos en los riñones: no hay dosis casera segura.", f:"Gongruttananun y Chotesangasa 2005; FEDNA 2018; Applegate y Fowler 2021"}
+  o:"No lo agregue por su cuenta: sin balanza no se puede medir bien y, en exceso, daña los riñones.", f:"Gongruttananun y Chotesangasa 2005; FEDNA 2018; Applegate y Fowler 2021"}
 ];
 $("remgrid").innerHTML = REM.map(function(r){
   return '<div class="rem"><div class="top"><div class="ic">'+r.ic+'</div><div><h3>'+r.n+'</h3><span class="chip '+r.c+'">'+r.v+'</span></div></div>'+
-    '<p>'+r.t+'</p><div class="ojo"><b>Ojo:</b> '+r.o+'</div><div class="fte">Fuente: '+r.f+'</div></div>';
+    '<p>'+r.t+'</p><div class="ojo"><b>En el patio:</b> '+r.o+'</div><div class="fte">Fuente: '+r.f+'</div></div>';
 }).join("");
 
 /* ---- ¿qué me dice el huevo? ---- */
 var SINT = [
- {n:"Cáscara delgada o quebrada", ic:"🥚", t:"Revise el calcio", d:"¿Cuánto, de qué tamaño y a qué hora? Conchuela gruesa (2–4 mm), aparte del alimento y en la tarde: 3 a 4 g por gallina. Molida fina se aprovecha peor.", f:"FEDNA 2018; Hendrix Genetics 2020"},
+ {n:"Cáscara delgada o quebrada", ic:"🥚", t:"Revise el calcio", d:"¿Cuánto, de qué tamaño y a qué hora? Conchuela gruesa (2–4 mm), aparte del alimento y en la tarde: 3 a 4 g por gallina que ya pone, no por pollitas. Molida fina se aprovecha peor.", f:"FEDNA 2018; Hendrix Genetics 2020"},
  {n:"Huevo chico en gallina adulta", ic:"🔍", t:"Revise la proteína de la ración", d:"Lo primero que falta en los granos es la lisina: con trigo o cebada solos llega a 40–44 % de lo que necesita. Si falta proteína, el huevo achica antes de que baje la postura.", f:"Rostagno et al. 2024; Bouvarel et al. 2011"},
  {n:"Yema pálida", ic:"🟡", t:"Poco pasto o poco pigmento", d:"El color de la yema viene del pasto verde y de los pigmentos del alimento. Gallinas encerradas y comiendo solo trigo o avena dan yema pálida.", f:"Gandarillas et al. 2023; Matache et al. 2024"},
  {n:"Dejan de poner en invierno", ic:"🌙", t:"Revise la luz", d:"Con menos de 10 horas de luz no hay estímulo para poner. En Máfil, a fines de junio el día dura 9 h 22 min. Una ampolleta al atardecer hasta completar 14 h resuelve.", f:"Hendrix Genetics 2020"},
  {n:"Se echa y no quiere salir", ic:"🪺", t:"Cluequera", d:"Unas 3 semanas sin poner, comiendo igual. Es normal en la criolla. Si no quiere pollitos, sacarla del nido y llevarla a un lugar ventilado.", f:"Sharp 1993; Jacob y Pescatore 2021"},
  {n:"Desaparecen las plumas del suelo", ic:"🪶", t:"Se las están comiendo", d:"Comer plumas apunta a falta de nutrientes o de fibra en la ración, y puede terminar en picaje.", f:"Bestman et al. 2020"},
  {n:"Caca oscura y pastosa", ic:"💩", t:"Normal", d:"Son los ciegos, que se vacían unas dos veces al día. Lo raro sería verla en todas las deyecciones o con sangre.", f:"Poultry Science 5ª ed., Cap. 4"},
- {n:"Más muertes de lo normal", ic:"⚠️", t:"Lleve aves a necropsia", d:"Antes de cambiar la ración, hay que saber de qué se mueren. Guarde una gallina recién muerta refrigerada y avise al veterinario.", f:"Embrapa 051; Poultry Science 5ª ed."}
+ {n:"Más muertes de lo normal", ic:"⚠️", t:"Pida que revisen una gallina muerta", d:"Antes de cambiar la ración, hay que saber de qué se mueren. Guarde una gallina recién muerta en una bolsa cerrada y en frío, y avise a PRODESAL o a un veterinario.", f:"Embrapa 051; Poultry Science 5ª ed."}
 ];
 var sg = $("sintgrid");
 SINT.forEach(function(x, i){
@@ -623,22 +623,22 @@ document.querySelectorAll(".tab").forEach(function(t){
 /* ---- trivia ---- */
 var PREG = [
   {f:"“Si mi gallina come harto trigo, pone igual.”", r:"m",
-   e:"El trigo la llena y le da energía, pero solo trae el 40 % de la lisina que necesita para el huevo y casi nada de calcio (1 %). Se llena, pero no le alcanza.",
+   e:"El trigo la llena y le da energía, pero solo trae el 40 % de la proteína de calidad (la lisina) que necesita para hacer el huevo y casi nada de calcio (1 %). Se llena, pero no le alcanza.",
    s:"Rostagno et al. 2024"},
   {f:"“La conchuela es mejor darla en la tarde.”", r:"v",
-   e:"La gallina arma la cáscara de noche. El calcio que come en la tarde lo aprovecha mucho mejor que el de la mañana. Dé 3 a 4 g por gallina al día, aparte del alimento.",
+   e:"La gallina arma la cáscara de noche. El calcio que come en la tarde lo aprovecha mucho mejor que el de la mañana. Dé 3 a 4 g por gallina que ya pone, al día y aparte del alimento. No se la dé a pollitos ni pollitas.",
    s:"FEDNA 2018; Hendrix Genetics 2020"},
   {f:"“Con solo maíz, las gallinas ponen poco y se mueren más.”", r:"v",
-   e:"En un ensayo con gallinas de campo, con solo maíz pusieron 7 a 8 % y murió cerca del 38 %. Con una mezcla de maíz, soya y cáscara de huevo, la postura subió a 35–43 %.",
+   e:"En una prueba con gallinas de campo, con solo maíz pusieron 7 a 8 % y murió cerca del 38 %. Con una mezcla de maíz, soya y cáscara de huevo, la postura subió a 35–43 %.",
    s:"Marañón 2001"},
   {f:"“Si el saco dice mucha proteína, ya está todo resuelto.”", r:"m",
-   e:"No toda la proteína sirve igual. Lo que más necesita la gallina es lisina, y la tienen la soya y un buen alimento balanceado; los granos tienen poca.",
+   e:"No toda la proteína sirve igual. Lo que más necesita la gallina es proteína de calidad (la lisina): la tienen la soya y el alimento balanceado, y los granos tienen poca.",
    s:"Rostagno et al. 2024"},
   {f:"“Una gallina come más o menos 110 g al día.”", r:"v",
    e:"Entre 100 y 115 g, según su tamaño, cuánto pone y el frío: una taza chica por gallina. Si en la tarde todavía queda alimento, está sobrando.",
    s:"Karcher 2021; Asencio 2023"},
   {f:"“Una mezcla casera de maíz y frijol rinde igual que el alimento comercial.”", r:"m",
-   e:"En un ensayo con gallinas de doble propósito, la mezcla casera (11 % de proteína) puso igual al comienzo, pero desde la semana 40 puso 17–24 % menos y los huevos salieron 5–8 % más livianos. Le faltaba proteína de calidad.",
+   e:"En una prueba con gallinas de doble propósito, la mezcla casera (11 % de proteína) puso igual al comienzo, pero desde la semana 40 puso 17–24 % menos y los huevos salieron 5–8 % más livianos. Le faltaba proteína de calidad.",
    s:"González-Cerón et al. 2020"},
   {f:"“Si el alimento es bueno, el agua da lo mismo.”", r:"m",
    e:"La gallina toma cerca del doble de agua que de alimento. Si le falta agua, deja de poner primero que nada. Agua limpia todos los días.",
@@ -655,9 +655,9 @@ var PREG = [
   {f:"“El color café de la cáscara depende de la raza y la edad de la gallina, más que de la comida.”", r:"v",
    e:"Con la comida casi no se cambia el color de la cáscara: mandan la raza y la edad, y con los años sale más clara. También se aclara con estrés o con bronquitis infecciosa.",
    s:"Odabasi et al. 2007"},
-  {f:"“Ponerle cloro al agua les hace mal a las gallinas.”", r:"m",
-   e:"Bien dosificado, el cloro desinfecta el agua y ayuda a la salud del gallinero. Lo que hace mal es el exceso: con demasiado cloro las gallinas dejan de tomar. Use la dosis que le indique su veterinario.",
-   s:"Tabler 2014"},
+  {f:"“Échele un chorrito de cloro al agua para que quede más limpia.”", r:"m",
+   e:"No lo haga a ojo. El cloro sirve solo en una cantidad muy chica y exacta: con menos no desinfecta y con más las gallinas dejan de tomar agua, y además cambia según el tipo de cloro y el agua. Lo que sí sirve en el patio: cambiar el agua todos los días y restregar el bebedero con escobilla. Nunca mezcle el cloro con otros productos de limpieza. Si quiere usarlo, pida la medida a PRODESAL o a un veterinario.",
+   s:"Tabler 2014; Karcher 2021"},
   {f:"“Con calor, las gallinas toman bastante más agua.”", r:"v",
    e:"Sobre 24 °C toman entre 30 y 50 % más agua. En verano revise que los bebederos no se sequen ni se calienten al sol.",
    s:"Greenacre 2021"},
@@ -665,7 +665,7 @@ var PREG = [
    e:"Al lavarlo se daña la capa que protege la cáscara (la cutícula), y el huevo lavado hay que guardarlo en frío. Un huevo limpio y sin lavar dura muchos días a temperatura ambiente. Mejor recoger seguido y tener nidos limpios.",
    s:"Bestman et al. 2020"},
   {f:"“El ácaro rojo vive siempre encima de la gallina.”", r:"m",
-   e:"Pasa casi toda su vida escondido en grietas del gallinero y sube a picar a la gallina de noche. Por eso no basta con tratar las gallinas: hay que limpiar y tratar el gallinero.",
+   e:"Pasa casi toda su vida escondido en grietas del gallinero y sube a picar a la gallina de noche. Por eso no basta con tratar las gallinas: hay que limpiar el gallinero a fondo y tratarlo. No use insecticidas de huerta ni remedios de otros animales: pregunte a PRODESAL o a un veterinario qué producto usar.",
    s:"Axtell y Arends 1990; Saif 2008"},
   {f:"“Cuando la gallina bota las plumas, deja de poner un tiempo y después vuelve a poner.”", r:"v",
    e:"Es la muda: dura unas 6 semanas. Con buena luz y alimento completo la gallina vuelve a poner. No es una enfermedad.",
