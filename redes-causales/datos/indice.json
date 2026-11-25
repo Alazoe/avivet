@@ -1,0 +1,14 @@
+{
+ "_nota": "Problemas que muestra la portada. estado: \"listo\" (tiene datos/<id>.json) o \"en-preparacion\". relaciones: flechas entre problemas para el mapa de la portada.",
+ "problemas": [
+  {"id": "prolapso", "titulo": "Prolapso de oviducto y cloaca", "corto": "Prolapso", "estado": "listo"},
+  {"id": "picaje", "titulo": "Picaje y canibalismo", "corto": "Picaje", "estado": "en-preparacion", "wiki": "picaje-canibalismo"},
+  {"id": "sangre", "titulo": "Huevos con sangre (cáscara manchada y manchas internas)", "corto": "Huevos con sangre", "estado": "en-preparacion", "wiki": "investigacion-alza-huevos-con-sangre"}
+ ],
+ "relaciones": [
+  {"de": "picaje", "a": "prolapso", "texto": "El picoteo de cloaca lesiona el tejido y retrasa la retracción"},
+  {"de": "prolapso", "a": "picaje", "texto": "El tejido rojo evertido atrae el picaje de las compañeras"},
+  {"de": "prolapso", "a": "sangre", "texto": "La cáscara manchada de sangre sube antes que la mortalidad"},
+  {"de": "picaje", "a": "sangre", "texto": "Las heridas de cloaca manchan la cáscara"}
+ ]
+}

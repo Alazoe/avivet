@@ -1,0 +1,14 @@
+{
+ "_nota": "Catálogo de factores que se repiten entre problemas. Un nodo de cualquier problema se enlaza con \"factor\": \"<id>\". Así la portada muestra qué problemas comparten cada factor.",
+ "factores": [
+  {"id": "recria", "nombre": "Recría: peso, uniformidad y proteína", "wiki": "recria-pollitas"},
+  {"id": "luz", "nombre": "Luz: fotoestímulo, horas e intensidad", "wiki": "iluminacion"},
+  {"id": "metionina", "nombre": "Metionina y cistina", "wiki": "aa-relacion-peso-huevo"},
+  {"id": "energia", "nombre": "Energía y peso corporal en postura", "wiki": "energia-metabolizable"},
+  {"id": "calcio", "nombre": "Calcio, fósforo y vitamina D3", "wiki": "metabolismo-calcio-fosforo"},
+  {"id": "sanidad", "nombre": "Sanidad respiratoria, reproductiva e intestinal", "wiki": "enfermedades-reproductivas"},
+  {"id": "ambiente", "nombre": "Ambiente: densidad, nidos, pico, histeria", "wiki": "densidad-ponedoras"},
+  {"id": "fibra", "nombre": "Fibra y forma física del alimento", "wiki": "fibra-dietetica-ponedoras"},
+  {"id": "picaje", "nombre": "Picaje y canibalismo", "wiki": "picaje-canibalismo"}
+ ]
+}

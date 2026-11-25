@@ -1,0 +1,1355 @@
+{
+ "id": "prolapso",
+ "titulo": "Prolapso de oviducto y cloaca",
+ "especie": "Ponedora comercial",
+ "resumen": "Síndrome multifactorial: diez factores de origen confluyen en que la vagina queda evertida demasiado tiempo tras la puesta; desde ahí prolapso y picaje se alimentan entre sí.",
+ "wiki": [
+  "prolapso-cloacal",
+  "red-causal-prolapso",
+  "investigacion-brote-prolapso"
+ ],
+ "actualizado": "2026-11-25",
+ "red": {
+  "intro": {
+   "titulo": "Las flechas van de causa a efecto",
+   "texto": "Diez factores de origen (y uno protector, en verde) confluyen en un punto común: la vagina queda evertida demasiado tiempo después de poner. Desde ahí, el prolapso y el picaje se alimentan entre sí (línea punteada)."
+  },
+  "nodos": [
+   {
+    "id": "gen",
+    "tipo": "o",
+    "texto": [
+     "Genética de alta producción",
+     "(postura precoz, huevo grande)"
+    ],
+    "y": 40,
+    "detalle": "Las líneas actuales maduran temprano y alcanzan tamaño de huevo alto pronto. Las líneas con curva de peso de huevo más plana bajan el riesgo en lotes viejos. Hoy el canibalismo es más común en híbridas marrones que en blancas.",
+    "fuentes": [
+     "espinosa-2024",
+     "lera-2022",
+     "swayne-2020-cap30"
+    ]
+   },
+   {
+    "id": "peso",
+    "tipo": "o",
+    "texto": [
+     "Peso bajo o mala uniformidad",
+     "en recría (esqueleto 4–8 sem)"
+    ],
+    "y": 104,
+    "detalle": "El esqueleto y la pelvis se definen en las primeras semanas de recría y un déficit no se compensa después. Meta: límite superior del peso objetivo entre las 4 y 8 semanas. Un lote desuniforme se estimula \"promedio\" y las livianas quedan adelantadas.",
+    "fuentes": [
+     "espinosa-2024",
+     "lera-2022",
+     "lohmann-2021-prolapso",
+     "alberta-2006-prolapso",
+     "shivaprasad-2013-aaap"
+    ],
+    "factor": "recria"
+   },
+   {
+    "id": "prot",
+    "tipo": "o",
+    "texto": [
+     "Exceso de proteína en recría"
+    ],
+    "y": 168,
+    "detalle": "Anticipa la madurez sexual: la polla llega a postura con menos hueso medular y más riesgo de prolapso al inicio.",
+    "fuentes": [
+     "hynd-2019-cap1"
+    ],
+    "factor": "recria"
+   },
+   {
+    "id": "pre",
+    "tipo": "o",
+    "texto": [
+     "Cambio de alimento en las 2 sem",
+     "previas a postura"
+    ],
+    "y": 232,
+    "detalle": "Lohmann señala como factor de riesgo el pre-postura mal aplicado y cualquier cambio nutricional en las 2 semanas previas al inicio de postura. No explica el mecanismo. Ninguna fuente respalda que el cambio de alimento por sí solo cause prolapso en cualquier etapa: pesa por lo que trae (composición, forma física, caída de consumo) y cuando hay aves susceptibles.",
+    "fuentes": [
+     "lohmann-2021-prolapso"
+    ]
+   },
+   {
+    "id": "luz",
+    "tipo": "o",
+    "texto": [
+     "Fotoestímulo precoz o brusco",
+     "(por edad, saltos grandes)"
+    ],
+    "y": 296,
+    "detalle": "Estimular antes del peso y la edad de la guía, o con aumentos grandes de horas o de intensidad, adelanta la madurez sexual y favorece ovulaciones dobles. El estímulo se decide por peso y uniformidad, nunca solo por edad.",
+    "fuentes": [
+     "espinosa-2024",
+     "lera-2022",
+     "alberta-2006-prolapso",
+     "jacob-sf-prolapso",
+     "gingerich-2021-cap16"
+    ],
+    "factor": "luz"
+   },
+   {
+    "id": "met",
+    "tipo": "o",
+    "texto": [
+     "Met+Cys fuera de su punto",
+     "(exceso o déficit)"
+    ],
+    "y": 360,
+    "detalle": "Corta en los dos sentidos. Exceso: agranda el huevo (+0,05 % de Met+Cys ≈ +0,7 g de huevo) y favorece la doble yema. Déficit: aparecen gallinas picadoras. El objetivo es la metionina en su punto, no \"más es mejor\".",
+    "fuentes": [
+     "bryden-2021",
+     "gingerich-2021-cap16",
+     "neal-1956"
+    ],
+    "factor": "metionina"
+   },
+   {
+    "id": "energia",
+    "tipo": "o",
+    "texto": [
+     "Exceso de energía",
+     "y sobrepeso en postura"
+    ],
+    "y": 424,
+    "detalle": "Dietas muy energéticas (carbohidratos, aceites, grasas) o consumo excesivo llevan a gallinas pesadas, con grasa abdominal y huevo más grande. Pesa más en gallinas viejas.",
+    "fuentes": [
+     "espinosa-2024",
+     "lera-2022",
+     "lohmann-2021-prolapso",
+     "alberta-2006-prolapso",
+     "gingerich-2021-cap16",
+     "shivaprasad-2013-aaap"
+    ],
+    "factor": "energia"
+   },
+   {
+    "id": "calcio",
+    "tipo": "o",
+    "texto": [
+     "Déficit de Ca, P o vit. D3",
+     "(Ca solo fino; aves viejas)"
+    ],
+    "y": 488,
+    "detalle": "El calcio mantiene la cáscara y también el tono muscular: con calcio bajo el oviducto tarda en retraerse. La gallina vieja activa menos vitamina D y absorbe menos calcio. El pre-postura es cuando se forma la reserva del hueso medular.",
+    "fuentes": [
+     "lera-2022",
+     "alberta-2006-prolapso",
+     "jacob-sf-prolapso",
+     "merck-hipocalcemia",
+     "bmeditores-prolapso",
+     "gingerich-2021-cap16"
+    ],
+    "factor": "calcio"
+   },
+   {
+    "id": "sanidad",
+    "tipo": "o",
+    "texto": [
+     "Enteritis, BI, caída de postura,",
+     "metapneumovirus, parásitos"
+    ],
+    "y": 552,
+    "detalle": "Enteritis: diarrea, irritación cloacal y plumas sucias que atraen picotazos. Bronquitis infecciosa y síndrome de caída de postura debilitan el oviducto. Metapneumovirus: prolapso de oviducto por tos violenta. Diarrea e impactación también se asocian a prolapso cloacal. Endo y ectoparásitos: estrés y picaje.",
+    "fuentes": [
+     "lera-2022",
+     "swayne-2020-cap30",
+     "swayne-2020-cap3"
+    ],
+    "factor": "sanidad"
+   },
+   {
+    "id": "amb",
+    "tipo": "o",
+    "texto": [
+     "Luz intensa o que sube de golpe,",
+     "densidad, histeria, nidos, pico"
+    ],
+    "y": 616,
+    "detalle": "El prolapso es más grave con densidad en jaula sobre la recomendada, histeria, una subida brusca de intensidad de luz (galpón abierto en los primeros días claros de primavera) y despique con rebrote del pico. También nidos escasos o iluminados, huevos de piso, pellet (OR 5,25 frente a harina) y cambios bruscos de dieta.",
+    "fuentes": [
+     "espinosa-2024",
+     "lera-2022",
+     "lohmann-2021-prolapso",
+     "estevez-2015",
+     "shivaprasad-2013-aaap"
+    ],
+    "factor": "ambiente"
+   },
+   {
+    "id": "fibra",
+    "tipo": "p",
+    "texto": [
+     "Fibra en la dieta",
+     "(factor protector)"
+    ],
+    "y": 680,
+    "detalle": "La fibra mejora la salud intestinal y reduce la tendencia al picaje. Es un factor protector: la flecha punteada verde indica que reduce el picoteo.",
+    "fuentes": [
+     "lera-2022"
+    ],
+    "factor": "fibra"
+   },
+   {
+    "id": "inmaduro",
+    "tipo": "m",
+    "texto": [
+     "Postura con tracto y pelvis",
+     "inmaduros"
+    ],
+    "y": 110,
+    "detalle": "El oviducto, la pelvis y los ligamentos vagino-cloacales no tienen el desarrollo para expulsar huevos repetidamente sin quedar evertidos.",
+    "fuentes": [
+     "lera-2022",
+     "lohmann-2021-prolapso",
+     "alberta-2006-prolapso",
+     "jacob-sf-prolapso",
+     "hynd-2019-cap1",
+     "shivaprasad-2013-aaap"
+    ]
+   },
+   {
+    "id": "hor",
+    "tipo": "m",
+    "texto": [
+     "Estradiol bajo → menos",
+     "prostaglandina en el oviducto"
+    ],
+    "y": 196,
+    "detalle": "El estradiol plasmático bajo se asocia a prolapso: reduce la prostaglandina del oviducto y empeora la función de su músculo liso. La regulación depende mucho del fotoestímulo. Hendrix no cita el estudio original.",
+    "fuentes": [
+     "lera-2022"
+    ]
+   },
+   {
+    "id": "huevo",
+    "tipo": "m",
+    "texto": [
+     "Huevo grande o de doble yema"
+    ],
+    "y": 282,
+    "detalle": "Exige más distensión de la vagina y la cloaca y prolonga la exposición del tejido. Si no sale, hay distocia y pujo. La doble yema es típica de las primeras semanas; en un lote viejo apunta a exceso de metionina o a un cambio de luz.",
+    "fuentes": [
+     "espinosa-2024",
+     "espinosa-2024-es",
+     "lera-2022",
+     "jacob-sf-prolapso",
+     "gingerich-2021-cap16",
+     "swayne-2020-cap30"
+    ]
+   },
+   {
+    "id": "grasa",
+    "tipo": "m",
+    "texto": [
+     "Grasa abdominal y pélvica"
+    ],
+    "y": 368,
+    "detalle": "La grasa reduce el espacio del canal pélvico y se asocia a músculo con menos tono; la gallina debe pujar más para poner. En la necropsia: almohadilla de grasa abdominal gruesa.",
+    "fuentes": [
+     "espinosa-2024",
+     "lera-2022",
+     "lohmann-2021-prolapso",
+     "alberta-2006-prolapso"
+    ]
+   },
+   {
+    "id": "tono",
+    "tipo": "m",
+    "texto": [
+     "Hipocalcemia: útero sin",
+     "fuerza contráctil"
+    ],
+    "y": 444,
+    "detalle": "Con calcio bajo el huevo se retiene y el oviducto tarda en retraerse después de la puesta.",
+    "fuentes": [
+     "alberta-2006-prolapso",
+     "merck-hipocalcemia",
+     "bmeditores-prolapso",
+     "gingerich-2021-cap16"
+    ]
+   },
+   {
+    "id": "debil",
+    "tipo": "m",
+    "texto": [
+     "Oviducto debilitado"
+    ],
+    "y": 520,
+    "detalle": "Bronquitis infecciosa y síndrome de caída de postura debilitan el oviducto (divulgación técnica, sin datos de incidencia).",
+    "fuentes": [
+     "lera-2022"
+    ]
+   },
+   {
+    "id": "pujo",
+    "tipo": "m",
+    "texto": [
+     "Pujo: tos, diarrea,",
+     "distocia, cloacitis"
+    ],
+    "y": 596,
+    "detalle": "El esfuerzo repetido empuja el tejido hacia afuera: tos violenta (metapneumovirus), diarrea o impactación, inflamación de la cloaca o un huevo que no sale (distocia).",
+    "fuentes": [
+     "swayne-2020-cap30",
+     "swayne-2020-cap3",
+     "echols-2021-cap21",
+     "graham-rozanski-2021-cap19"
+    ]
+   },
+   {
+    "id": "picoteo",
+    "tipo": "m",
+    "texto": [
+     "Picoteo de cloaca"
+    ],
+    "y": 680,
+    "detalle": "Conducta propia del inicio de postura, distinta del picaje de plumas. Lesiona la mucosa evertida: trauma y edema impiden la retracción. Swayne atribuye al picaje de cloaca al menos el 80 % de los prolapsos (cita a Glatz 2005); Alberta lo considera solo agravante.",
+    "fuentes": [
+     "lera-2022",
+     "alberta-2006-prolapso",
+     "neal-1956",
+     "estevez-2015",
+     "shivaprasad-2013-aaap",
+     "swayne-2020-cap30"
+    ],
+    "factor": "picaje",
+    "problema": "picaje"
+   },
+   {
+    "id": "retraccion",
+    "tipo": "e",
+    "texto": [
+     "Distensión excesiva y",
+     "retracción lenta tras la puesta"
+    ],
+    "y": 360,
+    "detalle": "Punto común de casi todas las vías. Un prolapso breve tras la puesta es normal; el problema es que la vagina o el útero queden evertidos más tiempo.",
+    "fuentes": [
+     "espinosa-2024",
+     "espinosa-2024-es",
+     "echols-2021-cap21",
+     "graham-rozanski-2021-cap19"
+    ]
+   },
+   {
+    "id": "prolapso",
+    "tipo": "e",
+    "texto": [
+     "PROLAPSO",
+     "de oviducto / cloaca"
+    ],
+    "y": 520,
+    "detalle": "El tramo más frecuente es el útero; también vagina, cloaca y rara vez colon. En lotes comerciales no hay tratamiento eficaz y el ave se retira. En aves de traspatio o de valor: limpiar y mantener húmedo, sacar el huevo con aguja a través de la cáscara si lo hay, reponer y poner puntos de sostén (nunca con huevo dentro).",
+    "fuentes": [
+     "espinosa-2024-es",
+     "lohmann-2021-prolapso",
+     "echols-2021-cap21",
+     "graham-rozanski-2021-cap19"
+    ],
+    "central": true
+   },
+   {
+    "id": "canib",
+    "tipo": "x",
+    "texto": [
+     "Picaje y canibalismo",
+     "(tejido rojo atrae)"
+    ],
+    "y": 440,
+    "detalle": "El tejido rojo expuesto atrae el picoteo de las compañeras, que agrava la lesión y se extiende en el lote. Ciclo de retroalimentación con el prolapso. Puede llegar a rotura cloacal y evisceración.",
+    "fuentes": [
+     "espinosa-2024",
+     "lera-2022",
+     "lohmann-2021-prolapso",
+     "jacob-sf-prolapso",
+     "neal-1956",
+     "swayne-2020-cap30"
+    ],
+    "factor": "picaje",
+    "problema": "picaje"
+   },
+   {
+    "id": "muerte",
+    "tipo": "x",
+    "texto": [
+     "Salpingitis, peritonitis,",
+     "muerte y descarte"
+    ],
+    "y": 600,
+    "detalle": "La herida cloacal permite la entrada de E. coli. El picaje de cloaca se propone como lesión inicial de la salpingitis, y los lotes con prolapso tienen más salpingitis. La mortalidad del brote es sobre todo por canibalismo.",
+    "fuentes": [
+     "espinosa-2024",
+     "espinosa-2024-es",
+     "lohmann-2021-prolapso",
+     "fossum-2009",
+     "shivaprasad-2013-aaap",
+     "swayne-2020-cap30"
+    ]
+   }
+  ],
+  "flechas": [
+   {
+    "de": "peso",
+    "a": "inmaduro"
+   },
+   {
+    "de": "prot",
+    "a": "inmaduro"
+   },
+   {
+    "de": "luz",
+    "a": "inmaduro"
+   },
+   {
+    "de": "luz",
+    "a": "hor"
+   },
+   {
+    "de": "pre",
+    "a": "retraccion"
+   },
+   {
+    "de": "gen",
+    "a": "huevo"
+   },
+   {
+    "de": "luz",
+    "a": "huevo"
+   },
+   {
+    "de": "met",
+    "a": "huevo"
+   },
+   {
+    "de": "met",
+    "a": "picoteo"
+   },
+   {
+    "de": "energia",
+    "a": "huevo"
+   },
+   {
+    "de": "energia",
+    "a": "grasa"
+   },
+   {
+    "de": "calcio",
+    "a": "tono"
+   },
+   {
+    "de": "sanidad",
+    "a": "debil"
+   },
+   {
+    "de": "sanidad",
+    "a": "pujo"
+   },
+   {
+    "de": "sanidad",
+    "a": "picoteo"
+   },
+   {
+    "de": "amb",
+    "a": "picoteo"
+   },
+   {
+    "de": "fibra",
+    "a": "picoteo",
+    "tipo": "protege"
+   },
+   {
+    "de": "inmaduro",
+    "a": "retraccion"
+   },
+   {
+    "de": "hor",
+    "a": "retraccion"
+   },
+   {
+    "de": "huevo",
+    "a": "retraccion"
+   },
+   {
+    "de": "huevo",
+    "a": "pujo"
+   },
+   {
+    "de": "grasa",
+    "a": "retraccion"
+   },
+   {
+    "de": "tono",
+    "a": "retraccion"
+   },
+   {
+    "de": "debil",
+    "a": "retraccion"
+   },
+   {
+    "de": "pujo",
+    "a": "retraccion"
+   },
+   {
+    "de": "pujo",
+    "a": "prolapso"
+   },
+   {
+    "de": "picoteo",
+    "a": "retraccion"
+   },
+   {
+    "de": "retraccion",
+    "a": "prolapso"
+   },
+   {
+    "de": "picoteo",
+    "a": "canib"
+   },
+   {
+    "de": "prolapso",
+    "a": "canib"
+   },
+   {
+    "de": "canib",
+    "a": "prolapso",
+    "tipo": "ciclo"
+   },
+   {
+    "de": "prolapso",
+    "a": "muerte"
+   },
+   {
+    "de": "canib",
+    "a": "muerte"
+   }
+  ],
+  "ventanas": {
+   "titulo": "Dos ventanas de mayor riesgo",
+   "desde": 16,
+   "hasta": 80,
+   "tramos": [
+    {
+     "desde": 17,
+     "hasta": 30,
+     "fuerte": true
+    },
+    {
+     "desde": 60,
+     "hasta": 80
+    }
+   ],
+   "marcas": [
+    16,
+    30,
+    60,
+    80
+   ],
+   "nota": "**Inicio de postura (≈ 18–28 sem):** tracto recién madurado, aves estimuladas sin el peso objetivo, aumentos bruscos de luz y doble yema frecuente. **Final del ciclo (≥ 60 sem):** huevo más grande, peor manejo del calcio y obesidad. Doble yema en un lote viejo no se explica por la edad: buscar exceso de metionina o un cambio de luz."
+  },
+  "medidas": [
+   {
+    "id": "p1",
+    "titulo": "Fotoestimular por peso, no por edad",
+    "actua": [
+     "luz",
+     "peso",
+     "inmaduro",
+     "hor"
+    ],
+    "puntos": [
+     "Dar el primer estímulo de luz solo cuando el lote alcanza el peso y la edad de la guía.",
+     "Mirar la uniformidad, no solo el promedio: con un lote disparejo, las livianas quedan adelantadas.",
+     "Si el lote está atrasado, retrasar el estímulo en vez de \"empujar\" con luz."
+    ],
+    "fuentes": [
+     "espinosa-2024",
+     "lera-2022",
+     "lohmann-2021-prolapso",
+     "alberta-2006-prolapso",
+     "jacob-sf-prolapso"
+    ]
+   },
+   {
+    "id": "p2",
+    "titulo": "Luz sin saltos de horas ni de intensidad",
+    "actua": [
+     "luz",
+     "huevo",
+     "amb"
+    ],
+    "puntos": [
+     "Subir las horas de a poco hasta el fotoperiodo de postura, según la guía.",
+     "Evitar subidas bruscas de intensidad: en galpón abierto, cortinas o malla antes de los primeros días claros de primavera.",
+     "Ante un brote: no pasar de 16 h (mejor 15); máx. 40 lux en galpón abierto y 20–30 lux en ambiente controlado."
+    ],
+    "fuentes": [
+     "espinosa-2024",
+     "lera-2022",
+     "lohmann-2021-prolapso",
+     "shivaprasad-2013-aaap"
+    ]
+   },
+   {
+    "id": "p3",
+    "titulo": "Recría bien hecha",
+    "actua": [
+     "peso",
+     "prot",
+     "inmaduro"
+    ],
+    "puntos": [
+     "Peso en el límite superior del objetivo entre las 4 y 8 semanas; un atraso no se recupera después.",
+     "Pesaje semanal de una muestra y comparación con la curva.",
+     "Proteína ajustada a la guía; espacio de comedero y bebedero suficiente."
+    ],
+    "fuentes": [
+     "lera-2022",
+     "lohmann-2021-prolapso",
+     "hynd-2019-cap1",
+     "shivaprasad-2013-aaap"
+    ]
+   },
+   {
+    "id": "p10",
+    "titulo": "No cambiar el alimento antes de la postura",
+    "actua": [
+     "pre",
+     "calcio"
+    ],
+    "puntos": [
+     "Pre-postura bien aplicado; ningún cambio nutricional en las 2 semanas previas al inicio de postura.",
+     "Después, cambios graduales según peso en recría y masa de huevo en postura.",
+     "Al cambiar de partida o de fase, revisar que la composición sea la que corresponde a la edad."
+    ],
+    "fuentes": [
+     "lera-2022",
+     "lohmann-2021-prolapso"
+    ]
+   },
+   {
+    "id": "p4",
+    "titulo": "Metionina en su punto",
+    "actua": [
+     "met",
+     "huevo",
+     "picoteo"
+    ],
+    "puntos": [
+     "Met+Cys ajustada a la fase: +0,05 % sube el huevo cerca de 0,7 g.",
+     "El exceso agranda el huevo y da doble yema; el déficit genera picadoras.",
+     "Revisar la fórmula ante un salto de peso de huevo o de doble yema."
+    ],
+    "fuentes": [
+     "bryden-2021",
+     "gingerich-2021-cap16",
+     "neal-1956"
+    ]
+   },
+   {
+    "id": "p11",
+    "titulo": "Doble yema sobre 4 %: frenar el huevo",
+    "actua": [
+     "huevo"
+    ],
+    "puntos": [
+     "Si la doble yema supera el 4 %, bajar el alimento 5–10 % del consumo a voluntad, en forma lenta.",
+     "Revisar al mismo tiempo la luz y la metionina.",
+     "Recomendación de extensión sin ensayo detrás."
+    ],
+    "fuentes": [
+     "alberta-2006-prolapso",
+     "jacob-sf-prolapso"
+    ]
+   },
+   {
+    "id": "p9",
+    "titulo": "Control de peso y energía en postura",
+    "actua": [
+     "energia",
+     "grasa",
+     "huevo"
+    ],
+    "puntos": [
+     "Seguir la curva de peso de postura; evitar gallinas sobre el estándar.",
+     "Evitar energía muy alta (carbohidratos, aceites, grasas); ante un brote, EM en el límite inferior.",
+     "Al final del ciclo la obesidad y el huevo grande pesan más."
+    ],
+    "fuentes": [
+     "lera-2022",
+     "lohmann-2021-prolapso",
+     "alberta-2006-prolapso",
+     "gingerich-2021-cap16",
+     "shivaprasad-2013-aaap"
+    ]
+   },
+   {
+    "id": "p5",
+    "titulo": "Calcio, fósforo y vitamina D3",
+    "actua": [
+     "calcio",
+     "tono"
+    ],
+    "puntos": [
+     "Pre-postura bien formulado: forma la reserva de calcio del hueso medular.",
+     "En postura, calcio de partícula gruesa para la noche y según la masa de huevo.",
+     "Fósforo disponible y vitamina D3 suficientes; revisar el premix."
+    ],
+    "fuentes": [
+     "lera-2022",
+     "alberta-2006-prolapso",
+     "merck-hipocalcemia"
+    ]
+   },
+   {
+    "id": "p6",
+    "titulo": "Sanidad del oviducto, intestino y respiratoria",
+    "actua": [
+     "sanidad",
+     "debil",
+     "pujo"
+    ],
+    "puntos": [
+     "Vacunación contra bronquitis infecciosa y, donde corresponda, metapneumovirus y caída de postura.",
+     "Control de enteritis, coccidiosis y parásitos internos y externos.",
+     "Necropsia de las aves con prolapso: buscar salpingitis, grasa abdominal y qué tramo se prolapsó."
+    ],
+    "fuentes": [
+     "lera-2022",
+     "swayne-2020-cap30",
+     "swayne-2020-cap3"
+    ]
+   },
+   {
+    "id": "p7",
+    "titulo": "Prevenir el picaje",
+    "actua": [
+     "amb",
+     "fibra",
+     "picoteo",
+     "canib"
+    ],
+    "puntos": [
+     "Densidad dentro de lo recomendado; despique bien hecho, sin rebrote del pico.",
+     "Nidos suficientes y oscuros, con horario; evitar huevos de piso. Harina en vez de pellet en lotes con historial.",
+     "Fibra en la dieta y enriquecimiento; sin cambios bruscos de dieta."
+    ],
+    "fuentes": [
+     "espinosa-2024",
+     "lera-2022",
+     "lohmann-2021-prolapso",
+     "estevez-2015",
+     "shivaprasad-2013-aaap"
+    ]
+   },
+   {
+    "id": "p8",
+    "titulo": "Vigilancia diaria y retiro rápido",
+    "actua": [
+     "prolapso",
+     "canib",
+     "muerte"
+    ],
+    "puntos": [
+     "Ronda diaria, en especial al inicio de postura, para retirar aves con prolapso o heridas.",
+     "Retirar a tiempo corta el ciclo prolapso–picaje en el resto del lote.",
+     "Revisar cada semana las cáscaras manchadas de sangre: avisan antes de que suba la mortalidad."
+    ],
+    "fuentes": [
+     "lera-2022",
+     "lohmann-2021-prolapso",
+     "echols-2021-cap21",
+     "graham-rozanski-2021-cap19"
+    ]
+   }
+  ],
+  "notaMedidas": "Las cifras son referencias habituales de las guías de las casas genéticas y deben ajustarse a la guía de su línea (Hy-Line, Lohmann, Hendrix, Novogen)."
+ },
+ "brote": {
+  "confirmar": [
+   "**¿Prolapso o canibalismo primario?** Aves vivas con tejido evertido sin heridas apuntan a prolapso primario. Heridas en la cloaca sin eversión, o picaje en otras zonas, apuntan a picaje primario. Mortalidad \"por prolapso\" puede ser canibalismo sin prolapso previo.",
+   "**Medir por semana y galpón:** casos, muertes y huevos con la cáscara manchada de sangre (suben antes que la mortalidad).",
+   "Si la sangre está dentro del huevo y no en la cáscara, es otro problema (mancha de sangre o de carne)."
+  ],
+  "hoy": [
+   "Ronda y retiro inmediato de toda ave con prolapso o herida",
+   "Bajar la intensidad de luz; luz roja de bajo watt",
+   "Oscurecer los nidos",
+   "Sal en el agua 0,5–1 kg por 1000 L durante 24–48 h",
+   "Fibra insoluble accesible (paja, alfalfa)",
+   "Ante el brote: ≤ 16 h de luz, ≤ 40 lux abierto / 20–30 lux controlado; EM al mínimo; vit. C 1 g/L por la mañana",
+   "Guardar 5–10 bajas recientes para necropsia"
+  ],
+  "notaHoy": "Las cifras de luz y la vitamina C (Lohmann) son medidas de brote sin ensayo citado; luego se vuelve a lo normal.",
+  "ventanas": [
+   {
+    "id": "ini",
+    "titulo": "Inicio de postura",
+    "rango": "≈ 18–30 sem",
+    "hasta": 30
+   },
+   {
+    "id": "pico",
+    "titulo": "Pico y mitad",
+    "rango": "≈ 30–60 sem",
+    "hasta": 60
+   },
+   {
+    "id": "fin",
+    "titulo": "Final del ciclo",
+    "rango": "≥ 60 sem",
+    "hasta": null
+   }
+  ],
+  "hipotesis": [
+   {
+    "id": "H1",
+    "titulo": "Desarrollo insuficiente al estimular",
+    "peso": {
+     "ini": 3,
+     "pico": 0,
+     "fin": 0
+    },
+    "verificar": [
+     "Pesajes de recría frente a la curva de la línea",
+     "Uniformidad al primer estímulo, no solo el promedio",
+     "Fecha, edad y peso al primer estímulo de luz"
+    ],
+    "hacer": [
+     "En lotes futuros: estimular por peso y uniformidad, no por edad",
+     "Peso en el límite superior del objetivo entre las 4 y 8 semanas",
+     "En el lote actual: bajar la luz y retirar afectadas; el atraso de esqueleto no se recupera"
+    ],
+    "fuentes": [
+     "espinosa-2024",
+     "lera-2022",
+     "lohmann-2021-prolapso",
+     "shivaprasad-2013-aaap"
+    ],
+    "nodo": "peso"
+   },
+   {
+    "id": "H2",
+    "titulo": "Luz: salto de horas o de intensidad",
+    "peso": {
+     "ini": 3,
+     "pico": 1,
+     "fin": 1
+    },
+    "verificar": [
+     "Programa de luz con fechas de cada cambio",
+     "Lux medidos a la altura de las aves, de día y de noche",
+     "% de doble yema por semana"
+    ],
+    "hacer": [
+     "Sin saltos de horas ni de intensidad; en galpón abierto, cortinas o malla antes de los primeros días claros de primavera",
+     "Ante el brote: ≤ 16 h de luz (mejor 15), ≤ 40 lux abierto / 20–30 lux controlado"
+    ],
+    "fuentes": [
+     "gingerich-2021-cap16",
+     "lera-2022",
+     "shivaprasad-2013-aaap",
+     "lohmann-2021-prolapso"
+    ],
+    "nodo": "luz"
+   },
+   {
+    "id": "H3",
+    "titulo": "Metionina o proteína alta: huevo grande",
+    "peso": {
+     "ini": 1,
+     "pico": 2,
+     "fin": 2
+    },
+    "verificar": [
+     "Fórmula y análisis de la partida: Met+Cys digestible y PB",
+     "Que la fase del alimento corresponda a la edad",
+     "Peso de huevo frente al estándar de la línea"
+    ],
+    "hacer": [
+     "Met+Cys en su punto: +0,05 % sube el huevo cerca de 0,7 g",
+     "Doble yema sobre 4 %: bajar el alimento 5–10 % lentamente"
+    ],
+    "fuentes": [
+     "bryden-2021",
+     "gingerich-2021-cap16",
+     "alberta-2006-prolapso"
+    ],
+    "nodo": "met"
+   },
+   {
+    "id": "H4",
+    "titulo": "Energía y obesidad",
+    "peso": {
+     "ini": 0,
+     "pico": 1,
+     "fin": 3
+    },
+    "verificar": [
+     "Peso corporal frente a la curva de postura",
+     "EM de la fórmula y consumo real",
+     "Grasa abdominal en necropsia"
+    ],
+    "hacer": [
+     "Ajustar energía y consumo; evitar exceso de grasa y carbohidratos",
+     "Ante el brote: EM en el límite inferior de la fase"
+    ],
+    "fuentes": [
+     "lera-2022",
+     "lohmann-2021-prolapso",
+     "espinosa-2024",
+     "shivaprasad-2013-aaap"
+    ],
+    "nodo": "energia"
+   },
+   {
+    "id": "H5",
+    "titulo": "Calcio, fósforo o vitamina D",
+    "peso": {
+     "ini": 1,
+     "pico": 1,
+     "fin": 3
+    },
+    "verificar": [
+     "Ca, P disponible y vitamina D3 de la fórmula",
+     "Granulometría: proporción de calcio grueso",
+     "Calidad de cáscara y aves postradas"
+    ],
+    "hacer": [
+     "Calcio de partícula gruesa para la noche, según masa de huevo",
+     "Revisar premix y pre-postura"
+    ],
+    "fuentes": [
+     "alberta-2006-prolapso",
+     "lera-2022",
+     "gingerich-2021-cap16"
+    ],
+    "nodo": "calcio"
+   },
+   {
+    "id": "H6",
+    "titulo": "Cambio de alimento antes de la postura",
+    "peso": {
+     "ini": 2,
+     "pico": 0,
+     "fin": 0
+    },
+    "verificar": [
+     "Fecha de cada alimento frente a la fecha del primer huevo",
+     "Cómo se aplicó el pre-postura"
+    ],
+    "hacer": [
+     "En lotes futuros: ningún cambio nutricional en las 2 semanas previas a postura",
+     "Después, cambios graduales según peso y masa de huevo"
+    ],
+    "fuentes": [
+     "lohmann-2021-prolapso",
+     "lera-2022"
+    ],
+    "nodo": "pre"
+   },
+   {
+    "id": "H7",
+    "titulo": "Enfermedad respiratoria o reproductiva",
+    "peso": {
+     "ini": 1,
+     "pico": 2,
+     "fin": 1
+    },
+    "verificar": [
+     "Serología de bronquitis infecciosa, metapneumovirus y caída de postura",
+     "Historial y fechas de vacunación",
+     "Necropsia: salpingitis, oviducto"
+    ],
+    "hacer": [
+     "Corregir el programa de vacunación",
+     "Tratar las complicaciones bacterianas según cultivo"
+    ],
+    "fuentes": [
+     "swayne-2020-cap3",
+     "lera-2022"
+    ],
+    "nodo": "sanidad"
+   },
+   {
+    "id": "H8",
+    "titulo": "Enfermedad intestinal o parásitos",
+    "peso": {
+     "ini": 1,
+     "pico": 1,
+     "fin": 1
+    },
+    "verificar": [
+     "Coprológico y necropsia intestinal",
+     "Estado de la cama y del agua"
+    ],
+    "hacer": [
+     "Control de enteritis, coccidiosis y parásitos internos y externos"
+    ],
+    "fuentes": [
+     "swayne-2020-cap30",
+     "lera-2022"
+    ],
+    "nodo": "sanidad"
+   },
+   {
+    "id": "H9",
+    "titulo": "Picaje primario y ambiente",
+    "peso": {
+     "ini": 2,
+     "pico": 2,
+     "fin": 1
+    },
+    "verificar": [
+     "Lux, densidad real y estado del pico (rebrote)",
+     "Nidos: cantidad, oscuridad, horario; huevos de piso",
+     "Forma física del alimento (pellet o harina)"
+    ],
+    "hacer": [
+     "Densidad dentro de lo recomendado; despique sin rebrote",
+     "Nidos oscuros y suficientes; harina en lotes con historial; fibra en la dieta",
+     "Revisar que la metionina no esté en déficit (picadoras)"
+    ],
+    "fuentes": [
+     "shivaprasad-2013-aaap",
+     "estevez-2015",
+     "swayne-2020-cap30",
+     "neal-1956"
+    ],
+    "nodo": "amb"
+   }
+  ],
+  "pistas": [
+   {
+    "grupo": "Recría y luz",
+    "pistas": [
+     {
+      "id": "peso_bajo",
+      "texto": "Peso bajo la curva o lote disparejo al estimular",
+      "apunta": [
+       "H1"
+      ]
+     },
+     {
+      "id": "precoz",
+      "texto": "Estimulado por edad o postura antes de lo esperado",
+      "apunta": [
+       "H1",
+       "H2"
+      ]
+     },
+     {
+      "id": "luz",
+      "texto": "Cambio reciente de horas o intensidad de luz, o galpón abierto en primavera",
+      "apunta": [
+       "H2",
+       "H9"
+      ]
+     },
+     {
+      "id": "prot",
+      "texto": "Proteína alta en la recría",
+      "apunta": [
+       "H1"
+      ]
+     }
+    ]
+   },
+   {
+    "grupo": "Huevo y alimento",
+    "pistas": [
+     {
+      "id": "doble",
+      "texto": "Doble yema sobre lo normal (más de 4 %)",
+      "apunta": [
+       "H2",
+       "H3"
+      ]
+     },
+     {
+      "id": "peso_huevo",
+      "texto": "Peso de huevo sobre el estándar",
+      "apunta": [
+       "H3",
+       "H4"
+      ]
+     },
+     {
+      "id": "cambio",
+      "texto": "Cambio de partida, fórmula o fase en las últimas semanas",
+      "apunta": [
+       "H3",
+       "H5"
+      ]
+     },
+     {
+      "id": "pre",
+      "texto": "Cambio de alimento o pre-postura en las 2 semanas previas al primer huevo",
+      "apunta": [
+       "H6"
+      ]
+     },
+     {
+      "id": "cascara",
+      "texto": "Cáscara delgada o rota, aves postradas",
+      "apunta": [
+       "H5"
+      ]
+     }
+    ]
+   },
+   {
+    "grupo": "Aves y sanidad",
+    "pistas": [
+     {
+      "id": "peso_alto",
+      "texto": "Peso corporal sobre el estándar o consumo alto",
+      "apunta": [
+       "H4"
+      ]
+     },
+     {
+      "id": "resp",
+      "texto": "Tos, estertores u otros signos respiratorios",
+      "apunta": [
+       "H7"
+      ]
+     },
+     {
+      "id": "caida",
+      "texto": "Caída de postura o huevos deformes",
+      "apunta": [
+       "H7"
+      ]
+     },
+     {
+      "id": "diarrea",
+      "texto": "Diarrea o plumas de la cloaca sucias",
+      "apunta": [
+       "H8"
+      ]
+     }
+    ]
+   },
+   {
+    "grupo": "Ambiente y conducta",
+    "pistas": [
+     {
+      "id": "heridas",
+      "texto": "Heridas de cloaca sin eversión, o picaje de plumas",
+      "apunta": [
+       "H9"
+      ]
+     },
+     {
+      "id": "amb",
+      "texto": "Luz intensa, densidad alta, histeria o pico con rebrote",
+      "apunta": [
+       "H9"
+      ]
+     },
+     {
+      "id": "nidos",
+      "texto": "Huevos de piso, nidos claros o escasos, alimento en pellet",
+      "apunta": [
+       "H9"
+      ]
+     }
+    ]
+   },
+   {
+    "grupo": "Necropsia",
+    "pistas": [
+     {
+      "id": "grasa",
+      "texto": "Grasa abdominal abundante",
+      "apunta": [
+       "H4"
+      ]
+     },
+     {
+      "id": "retenido",
+      "texto": "Huevo retenido en el oviducto",
+      "apunta": [
+       "H3",
+       "H5"
+      ]
+     },
+     {
+      "id": "salp",
+      "texto": "Salpingitis o peritonitis",
+      "apunta": [
+       "H7",
+       "H9"
+      ]
+     },
+     {
+      "id": "huesos",
+      "texto": "Huesos frágiles, poco hueso medular",
+      "apunta": [
+       "H5"
+      ]
+     }
+    ]
+   }
+  ],
+  "necropsia": [
+   "**Qué tramo se prolapsó:** útero (lo más frecuente), vagina, cloaca o colon.",
+   "**Grasa abdominal abundante** → energía y obesidad.",
+   "**Huevo retenido en el oviducto** → huevo grande o calcio.",
+   "**Salpingitis o peritonitis:** el picaje de cloaca se propone como lesión inicial; cultivo si hay mortalidad sin explicar.",
+   "**Huesos frágiles, poco hueso medular** → calcio, fósforo, vitamina D.",
+   "**Varios folículos grandes a la vez** → apoya doble ovulación (luz o metionina). *Razonamiento, sin fuente.*"
+  ],
+  "seguir": [
+   "Aplicar la medida de la hipótesis con más pistas, una a la vez cuando se pueda, para saber qué funcionó.",
+   "Seguir cada semana: casos, huevos con sangre, % de doble yema y peso de huevo.",
+   "Doble yema sobre 4 %: bajar el alimento 5–10 % del consumo a voluntad, en forma lenta (recomendación de extensión, sin ensayo)."
+  ],
+  "pedir": [
+   "Edad, estirpe y sistema (jaula, piso, pastoreo)",
+   "Pesos de recría y uniformidad; fecha y peso al primer estímulo de luz",
+   "Programa de luz con fechas de cada cambio; lux si los tiene",
+   "Fecha del primer huevo",
+   "Alimentos usados con fechas, partidas y fase",
+   "Consumo diario por ave",
+   "Peso de huevo y % de doble yema por semana",
+   "Mortalidad diaria y a qué la atribuye",
+   "Huevos con la cáscara manchada de sangre",
+   "Vacunas con fechas; tos, diarrea u otros signos",
+   "Aves por m² o por jaula; estado del despique",
+   "Nidos (cantidad, luz) y huevos de piso"
+  ],
+  "ejemplo": {
+   "semanas": 24,
+   "pistas": [
+    "doble",
+    "luz"
+   ],
+   "texto": "lote de 24 semanas con doble yema alta y un cambio de luz reciente"
+  }
+ },
+ "fuentes": [
+  {
+   "id": "espinosa-2024",
+   "cita": "Espinosa 2024 — Prolapse of the oviduct in poultry (Merck Veterinary Manual)",
+   "url": "https://www.merckvetmanual.com/poultry/disorders-of-the-reproductive-system-in-poultry/prolapse-of-the-oviduct-in-poultry",
+   "wiki": "espinosa-2024"
+  },
+  {
+   "id": "espinosa-2024-es",
+   "cita": "Espinosa 2024 — Prolapso del oviducto en aves de producción (Manual MSD, en español)",
+   "url": "https://www.msdvetmanual.com/es/aves-de-corral/trastornos-del-aparato-reproductor-en-aves-de-producci%C3%B3n/prolapso-del-oviducto-en-aves-de-producci%C3%B3n",
+   "wiki": "espinosa-2024"
+  },
+  {
+   "id": "lera-2022",
+   "cita": "Lera 2022 — Prolapse in laying hens (Hendrix Genetics)",
+   "url": "https://layinghens.hendrix-genetics.com/en/articles/prolapse-in-laying-hens/",
+   "wiki": "lera-2022"
+  },
+  {
+   "id": "lohmann-2021-prolapso",
+   "cita": "Lohmann Breeders 2021 — Prolapso (ficha en español)",
+   "url": "https://lohmann-breeders.com/media/2021/10/prolapse-spa-oct16.pdf",
+   "wiki": "lohmann-2021-prolapso"
+  },
+  {
+   "id": "alberta-2006-prolapso",
+   "cita": "Alberta Agriculture 2006 — Prolapse in laying hens",
+   "url": "https://www1.agric.gov.ab.ca/$department/deptdocs.nsf/ba3468a2a8681f69872569d60073fde1/863ff815faab52a587256bfa0070f5ce!OpenDocument",
+   "wiki": "alberta-2006-prolapso"
+  },
+  {
+   "id": "jacob-sf-prolapso",
+   "cita": "Jacob s.f. — Prolapse in hens (Poultry Extension, Univ. de Kentucky)",
+   "url": "https://poultry.extension.org/articles/poultry-anatomy/avian-reproductive-female/prolapse-in-hens/",
+   "wiki": "jacob-sf-prolapso"
+  },
+  {
+   "id": "merck-hipocalcemia",
+   "cita": "Manual Merck — Hipocalcemia y fatiga de la ponedora de jaula",
+   "url": "https://www.merckvetmanual.com/es-us/avicultura/trastornos-del-aparato-reproductor/hipocalcemia-muerte-s%C3%BAbita-osteoporosis-o-fatiga-en-las-ponedoras-de-jaula-en-aves-de-producci%C3%B3n"
+  },
+  {
+   "id": "bmeditores-prolapso",
+   "cita": "BM Editores — Prolapso en ponedoras, prevención y tratamiento (reimprime a Lohmann)",
+   "url": "https://bmeditores.mx/avicultura/prolapso-en-ponedoras-prevencion-y-tratamiento/"
+  },
+  {
+   "id": "bryden-2021",
+   "cita": "Bryden et al. 2021 — Met+Cys y peso de huevo (+0,05 % → +0,7 g)",
+   "wiki": "bryden-2021"
+  },
+  {
+   "id": "gingerich-2021-cap16",
+   "cita": "Gingerich & Shaw 2021, cap. 16 — doble yema por luz o metionina; obesidad e hipocalcemia en aves viejas",
+   "wiki": "gingerich-2021-cap16"
+  },
+  {
+   "id": "neal-1956",
+   "cita": "Neal 1956 — gallinas \"picadoras\" por déficit de metionina y \"picadas\" con prolapso",
+   "wiki": "neal-1956"
+  },
+  {
+   "id": "estevez-2015",
+   "cita": "Estévez 2015 — pellet (OR 5,25) e inicio de puesta antes de 20 sem como riesgo de picaje de cloaca",
+   "wiki": "estevez-2015"
+  },
+  {
+   "id": "hynd-2019-cap1",
+   "cita": "Hynd 2019, cap. 1 — exceso de proteína en recría y madurez anticipada",
+   "wiki": "hynd-2019-cap1"
+  },
+  {
+   "id": "fossum-2009",
+   "cita": "Fossum et al. 2009 — picaje de cloaca en el 50 % de los lotes con colibacilosis",
+   "wiki": "fossum-2009"
+  },
+  {
+   "id": "shivaprasad-2013-aaap",
+   "cita": "Shivaprasad 2013, Avian Disease Manual (AAAP, 7.ª ed.) — densidad, histeria, subida de luz en primavera, despique con rebrote, obesidad; salpingitis",
+   "wiki": "shivaprasad-2013-aaap"
+  },
+  {
+   "id": "swayne-2020-cap30",
+   "cita": "Swayne 2020, Diseases of Poultry, cap. 30 — picaje de cloaca al inicio de postura (≥ 80 % de los prolapsos, cita a Glatz 2005); diarrea, impactación, huevo retenido",
+   "wiki": "swayne-2020-cap30"
+  },
+  {
+   "id": "swayne-2020-cap3",
+   "cita": "Swayne 2020, Diseases of Poultry, cap. 3 — prolapso de oviducto por tos violenta en metapneumovirus",
+   "wiki": "swayne-2020-cap3"
+  },
+  {
+   "id": "echols-2021-cap21",
+   "cita": "Echols 2021, Backyard Poultry Medicine and Surgery, cap. 21 — qué tramo se prolapsa; manejo clínico individual",
+   "wiki": "echols-2021-cap21"
+  },
+  {
+   "id": "graham-rozanski-2021-cap19",
+   "cita": "Graham & Rozanski 2021, Backyard Poultry Medicine and Surgery, cap. 19 — urgencias reproductivas",
+   "wiki": "graham-rozanski-2021-cap19"
+  },
+  {
+   "id": "hendrix-2020-mgahs",
+   "cita": "Hendrix Genetics 2020 — Guía de manejo en sistemas alternativos (medidas ante picaje)",
+   "wiki": "hendrix-2020-mgahs"
+  },
+  {
+   "id": "miller-1937",
+   "cita": "Miller y Bearse 1937 — mortalidad atribuida a prolapso que es canibalismo",
+   "wiki": "miller-1937"
+  },
+  {
+   "id": "vandebraak-2023",
+   "cita": "Van de Braak 2023 — huevos con sangre como señal temprana",
+   "wiki": "vandebraak-2023"
+  }
+ ],
+ "notaFuentes": "Las fuentes no son todas independientes: la ficha de Lohmann (y su reimpresión en BM Editores) repite a Alberta y Kentucky, y la cifra del 80 % de Swayne cita a Glatz, el mismo autor de otra fuente de la wiki. Coinciden en peso, fotoestímulo, tamaño de huevo, obesidad y calcio. Sobre el picaje discrepan: Hendrix, Swayne y el manual AAAP le dan papel causal; Alberta lo considera solo agravante. Las cifras de manejo (4 % de doble yema, lux, horas de luz) son recomendaciones sin ensayo detrás. La relación entre pistas e hipótesis del árbol es una síntesis de la wiki, no un algoritmo validado."
+}
