@@ -1,0 +1,1400 @@
+{
+ "id": "postura",
+ "titulo": "Caída de postura y tamaño del huevo",
+ "especie": "Ponedora comercial",
+ "resumen": "Postura y tamaño del huevo son los dos factores de la **masa de huevo** y comparten causas: lo que baja el consumo o los nutrientes achica el huevo y baja la postura; lo que daña el oviducto baja la postura con huevos anómalos; el peso al final de la recría fija el tamaño del huevo del ciclo.",
+ "wiki": [
+  "red-causal-postura-tamano-huevo",
+  "aa-relacion-peso-huevo",
+  "registros-kpi"
+ ],
+ "actualizado": "2026-11-25",
+ "red": {
+  "intro": {
+   "titulo": "Dos salidas que restan del mismo número",
+   "texto": "La masa de huevo es postura × peso del huevo. Las causas se agrupan por tema. Con calor moderado cae el tamaño antes que la postura; con daño del oviducto cae la postura y salen huevos anómalos."
+  },
+  "grupos": {
+   "recria": "Recría",
+   "luz": "Luz",
+   "alimento": "Alimento",
+   "ambiente": "Agua y ambiente",
+   "sanidad": "Sanidad",
+   "lote": "Edad"
+  },
+  "nodos": [
+   {
+    "id": "o_luzrecria",
+    "tipo": "o",
+    "texto": [
+     "Fotoperíodo de recría"
+    ],
+    "detalle": "Cada hora de luz en recría sumó unos 20 g de peso corporal y +1 huevo por ave entre las 18 y 70 semanas; el peso corporal, a su vez, fija el tamaño del huevo (0,012 g de huevo por g de peso).",
+    "fuentes": [
+     "lewis-2007"
+    ],
+    "grupo": "recria",
+    "factor": "luz",
+    "cifras": [
+     "+20 g de peso corporal por hora de luz en recría",
+     "+1 huevo por ave (18–70 sem) por hora de luz en recría"
+    ]
+   },
+   {
+    "id": "o_pesorecria",
+    "tipo": "o",
+    "texto": [
+     "Peso bajo al final de la recría"
+    ],
+    "detalle": "El peso al final de la recría es el principal factor del tamaño del huevo: +100 g de peso vivo ≈ +1,0–1,1 g de huevo. El peso de recría explica el peso del huevo temprano (r² = 0,85) y el output del ciclo. La relación peso corporal–huevo se pierde hacia la semana 36.",
+    "fuentes": [
+     "fedna-2018-ponedoras",
+     "bain-2016",
+     "summers-leeson-1983",
+     "vaneck-2026-performance"
+    ],
+    "grupo": "recria",
+    "factor": "recria",
+    "cifras": [
+     "+100 g de peso vivo → +1,0–1,1 g de huevo",
+     "r² = 0,85 entre peso de recría y peso de huevo temprano",
+     "El peso corporal predice el peso del huevo solo hasta ~sem 36"
+    ]
+   },
+   {
+    "id": "o_luzpostura",
+    "tipo": "o",
+    "texto": [
+     "Menos horas de luz en postura,",
+     "cortes o reloj desajustado"
+    ],
+    "detalle": "Subir de 12 a 16 h induce la postura en un ave con edad y condición; bajar a ≤ 8 h induce la muda. La luz mantiene la FSH, que se desploma cuando la gallina deja de poner.",
+    "fuentes": [
+     "applegate-fowler-2021-cap6",
+     "prastiya-2022"
+    ],
+    "grupo": "luz",
+    "factor": "luz"
+   },
+   {
+    "id": "o_proteina",
+    "tipo": "o",
+    "texto": [
+     "Proteína bruta baja"
+    ],
+    "detalle": "+1 g de proteína por gallina y día ≈ +1,4 g de huevo. Bajar la proteína a ≤ 16,5 % redujo el huevo 1,4 g sin mover la postura (el peso del huevo es lo más sensible). En post-muda, la proteína fue lo único que movió la postura (65,2 → 71,7 %).",
+    "fuentes": [
+     "bain-2016",
+     "ji-2014",
+     "gunawardana-2008"
+    ],
+    "grupo": "alimento",
+    "cifras": [
+     "+1 g proteína/día → +1,4 g de huevo",
+     "PB ≤ 16,5 %: −1,4 g de huevo",
+     "Post-muda: postura 65,2 → 71,7 % con más proteína"
+    ]
+   },
+   {
+    "id": "o_met",
+    "tipo": "o",
+    "texto": [
+     "Met+Cys fuera de su punto"
+    ],
+    "detalle": "El aminoácido con mejor relación con el tamaño del huevo: +0,05 % de Met+Cys ≈ +0,7 g. El óptimo para peso del huevo (0,654 % digestible) es más alto que el de postura (0,638 %). En exceso agranda el huevo y da doble yema (ver red de prolapso). **Matiz:** en las primeras 12 semanas de postura ni la proteína ni la metionina ni el linoleico cambiaron el tamaño del huevo cuando el consumo era adecuado; ahí manda el peso corporal.",
+    "fuentes": [
+     "bryden-2021",
+     "carvalho-2018",
+     "summers-leeson-1983"
+    ],
+    "grupo": "alimento",
+    "factor": "metionina",
+    "cifras": [
+     "+0,05 % Met+Cys → +0,7 g de huevo",
+     "Óptimo digestible: 0,654 % peso de huevo; 0,638 % postura"
+    ]
+   },
+   {
+    "id": "o_lys",
+    "tipo": "o",
+    "texto": [
+     "Lisina baja"
+    ],
+    "detalle": "744 mg de lisina digestible por ave y día bastaron para la máxima postura en Lohmann Brown; el requerimiento depende del rasgo que se quiere optimizar.",
+    "fuentes": [
+     "scappaticcio-2021"
+    ],
+    "grupo": "alimento"
+   },
+   {
+    "id": "o_grasa",
+    "tipo": "o",
+    "texto": [
+     "Poca grasa o ácido linoleico"
+    ],
+    "detalle": "Cada 1 % de grasa añadida suma 0,20–0,35 g de huevo (3 % ≈ +0,6 g); mínimo práctico 1,35 % de linoleico. A igual energía, la dieta baja en aceite dio huevos más livianos en todas las fases, por menos clara.",
+    "fuentes": [
+     "fedna-2018-ponedoras",
+     "vaneck-2026-performance"
+    ],
+    "grupo": "alimento",
+    "cifras": [
+     "+0,20–0,35 g de huevo por 1 % de grasa",
+     "Linoleico mínimo práctico 1,35 %"
+    ]
+   },
+   {
+    "id": "o_cl",
+    "tipo": "o",
+    "texto": [
+     "Cloro alto (balance",
+     "electrolítico bajo)"
+    ],
+    "detalle": "Bajar el cloro de 0,27 a 0,15 % reemplazando sal por bicarbonato o sulfato de sodio mejoró postura y cáscara a 15–23 °C.",
+    "fuentes": [
+     "fu-2021"
+    ],
+    "grupo": "alimento"
+   },
+   {
+    "id": "o_mico",
+    "tipo": "o",
+    "texto": [
+     "Micotoxinas (aflatoxina + DON)"
+    ],
+    "detalle": "Aflatoxina más DON bajan la producción; hígado y riñón aumentan de tamaño a dosis media **antes** de que caiga la postura: son el centinela en la necropsia. El DON solo fue bien tolerado.",
+    "fuentes": [
+     "lee-2012"
+    ],
+    "grupo": "alimento"
+   },
+   {
+    "id": "o_calor",
+    "tipo": "o",
+    "texto": [
+     "Calor"
+    ],
+    "detalle": "Entre 16 y 31 °C la postura no cambió pero el huevo perdió 3,16 g, porque baja el consumo. A 38 °C la postura cayó de 68 a 60,5 %; vitamina C 200 mg/kg la recuperó a 65,8 %.",
+    "fuentes": [
+     "peguri-1991",
+     "attia-2016"
+    ],
+    "grupo": "ambiente",
+    "cifras": [
+     "16–31 °C: postura igual, huevo −3,16 g",
+     "38 °C: postura 60,5 % frente a 68 %"
+    ]
+   },
+   {
+    "id": "o_agua",
+    "tipo": "o",
+    "texto": [
+     "Agua insuficiente"
+    ],
+    "detalle": "Referencia de consumo a 21 °C: 220 L por 1.000 aves al 50 % de postura y 270 L al 90 %. La wiki no tiene un estudio que cuantifique la caída de postura por falta de agua; el consumo diario es la forma de detectarla.",
+    "fuentes": [
+     "greenacre-2021-cap29",
+     "calidad-agua-ponedoras"
+    ],
+    "grupo": "ambiente",
+    "cifras": [
+     "220–270 L/1.000 aves/día a 21 °C (50–90 % de postura)"
+    ]
+   },
+   {
+    "id": "o_acaro",
+    "tipo": "o",
+    "texto": [
+     "Ácaro rojo"
+    ],
+    "detalle": "Baja la postura y el peso del huevo y sube la conversión; está en hasta el 90 % de las granjas en Europa.",
+    "fuentes": [
+     "dermanyssus-gallinae"
+    ],
+    "grupo": "ambiente",
+    "factor": "sanidad"
+   },
+   {
+    "id": "o_bi",
+    "tipo": "o",
+    "texto": [
+     "Bronquitis infecciosa"
+    ],
+    "detalle": "Caída de postura de 5–15 % con cáscaras rugosas y clara acuosa; si la infección fue en la recría, 10–90 % y daño permanente del oviducto. Con D1466, solo el programa vivo + inactivada no difirió del control.",
+    "fuentes": [
+     "bestman-2020",
+     "dewit-2020"
+    ],
+    "grupo": "sanidad",
+    "factor": "sanidad",
+    "cifras": [
+     "Postura −5 a −15 %; infección en recría: −10 a −90 % permanente"
+    ]
+   },
+   {
+    "id": "o_ampv",
+    "tipo": "o",
+    "texto": [
+     "Metapneumovirus"
+    ],
+    "detalle": "Puede bajar la postura hasta 70 %; con tos violenta, prolapso de oviducto.",
+    "fuentes": [
+     "swayne-2020-cap3"
+    ],
+    "grupo": "sanidad",
+    "factor": "sanidad"
+   },
+   {
+    "id": "o_eds",
+    "tipo": "o",
+    "texto": [
+     "Síndrome de caída de",
+     "postura (EDS'76)"
+    ],
+    "detalle": "Adenovirus: caída de postura sin mortalidad, con huevos sin cáscara, de cáscara blanda o pálida, y sin huevos deformes.",
+    "fuentes": [
+     "adenovirus-aviar"
+    ],
+    "grupo": "sanidad",
+    "factor": "sanidad"
+   },
+   {
+    "id": "o_ms",
+    "tipo": "o",
+    "texto": [
+     "Mycoplasma synoviae"
+    ],
+    "detalle": "En infección experimental la postura bajó 11 % desde los días 21–42, con puntas vítreas (anomalía del ápice).",
+    "fuentes": [
+     "kursa-2019-eaa",
+     "bestman-2020"
+    ],
+    "grupo": "sanidad",
+    "factor": "sanidad"
+   },
+   {
+    "id": "o_edad",
+    "tipo": "o",
+    "texto": [
+     "Edad del lote"
+    ],
+    "detalle": "El huevo crece con la edad (el mismo pigmento se reparte en un huevo más grande) . La postura baja con la edad según la curva de cada línea (guía de la estirpe): una caída gradual que acompaña la curva es esperable.",
+    "fuentes": [
+     "odabasi-2007"
+    ],
+    "grupo": "lote"
+   },
+   {
+    "id": "m_reserva",
+    "tipo": "m",
+    "texto": [
+     "Poco cuerpo al inicio:",
+     "reservas y esqueleto cortos"
+    ],
+    "detalle": "El peso corporal integra la recría: con poco peso, el huevo parte chico y el output del ciclo es menor.",
+    "fuentes": [
+     "bain-2016",
+     "summers-leeson-1983"
+    ]
+   },
+   {
+    "id": "m_eje",
+    "tipo": "m",
+    "texto": [
+     "Estímulo de luz insuficiente:",
+     "baja la FSH"
+    ],
+    "detalle": "La FSH fue unas 16 veces mayor en gallinas de postura diaria que en las que ponían 3 de cada 4 días.",
+    "fuentes": [
+     "prastiya-2022"
+    ],
+    "cifras": [
+     "FSH 869 frente a 53 pg/mL"
+    ]
+   },
+   {
+    "id": "m_consumo",
+    "tipo": "m",
+    "texto": [
+     "Comen menos: entran",
+     "menos nutrientes"
+    ],
+    "detalle": "Calor, falta de agua, ácaro y enfermedad bajan el consumo. Con calor moderado (16–31 °C) cayó el peso del huevo sin cambiar la postura.",
+    "fuentes": [
+     "peguri-1991"
+    ]
+   },
+   {
+    "id": "m_nutr",
+    "tipo": "m",
+    "texto": [
+     "Aminoácidos, proteína o grasa",
+     "bajo el requerimiento"
+    ],
+    "detalle": "El peso del huevo es el parámetro más sensible a la falta de proteína; la lisina limita primero la postura.",
+    "fuentes": [
+     "ji-2014",
+     "scappaticcio-2021",
+     "bryden-2021"
+    ]
+   },
+   {
+    "id": "m_oviducto",
+    "tipo": "m",
+    "texto": [
+     "Oviducto dañado"
+    ],
+    "detalle": "BI, EDS'76, metapneumovirus y M. synoviae dañan el oviducto: baja la postura y salen huevos anómalos.",
+    "fuentes": [
+     "bestman-2020",
+     "adenovirus-aviar",
+     "kursa-2019-eaa"
+    ]
+   },
+   {
+    "id": "e_postura",
+    "tipo": "e",
+    "texto": [
+     "Caída de postura"
+    ],
+    "detalle": "Menos huevos por ave que la curva de la línea, en la misma edad.",
+    "fuentes": [
+     "bestman-2020"
+    ],
+    "central": true
+   },
+   {
+    "id": "e_chico",
+    "tipo": "e",
+    "texto": [
+     "Huevo chico"
+    ],
+    "detalle": "Peso de huevo bajo el estándar de la línea a esa edad.",
+    "fuentes": [
+     "bryden-2021",
+     "fedna-2018-ponedoras"
+    ],
+    "central": true
+   },
+   {
+    "id": "e_grande",
+    "tipo": "e",
+    "texto": [
+     "Huevo muy grande"
+    ],
+    "detalle": "Peso de huevo sobre el estándar, más doble yema.",
+    "fuentes": [
+     "bryden-2021"
+    ],
+    "central": true
+   },
+   {
+    "id": "c_masa",
+    "tipo": "x",
+    "texto": [
+     "Menos masa de huevo",
+     "(kg por ave)"
+    ],
+    "detalle": "La masa de huevo es postura × peso del huevo: los dos problemas restan del mismo número.",
+    "fuentes": [
+     "carvalho-2018"
+    ]
+   },
+   {
+    "id": "c_anomalos",
+    "tipo": "x",
+    "texto": [
+     "Huevos sin cáscara,",
+     "rugosos o pálidos"
+    ],
+    "detalle": "Señal de que el oviducto está dañado: orienta a enfermedad más que a nutrición.",
+    "fuentes": [
+     "bestman-2020",
+     "adenovirus-aviar"
+    ]
+   },
+   {
+    "id": "c_prolapso",
+    "tipo": "x",
+    "texto": [
+     "Prolapso y cáscara",
+     "más débil"
+    ],
+    "detalle": "El huevo grande exige más distensión y favorece el prolapso; ver la red de prolapso.",
+    "fuentes": [
+     "red-causal-prolapso"
+    ],
+    "problema": "prolapso"
+   }
+  ],
+  "flechas": [
+   {
+    "de": "o_luzrecria",
+    "a": "o_pesorecria"
+   },
+   {
+    "de": "o_pesorecria",
+    "a": "m_reserva"
+   },
+   {
+    "de": "o_luzpostura",
+    "a": "m_eje"
+   },
+   {
+    "de": "o_proteina",
+    "a": "m_nutr"
+   },
+   {
+    "de": "o_met",
+    "a": "m_nutr"
+   },
+   {
+    "de": "o_lys",
+    "a": "m_nutr"
+   },
+   {
+    "de": "o_grasa",
+    "a": "m_nutr"
+   },
+   {
+    "de": "o_met",
+    "a": "e_grande"
+   },
+   {
+    "de": "o_proteina",
+    "a": "e_grande"
+   },
+   {
+    "de": "o_cl",
+    "a": "e_postura"
+   },
+   {
+    "de": "o_mico",
+    "a": "e_postura"
+   },
+   {
+    "de": "o_calor",
+    "a": "m_consumo"
+   },
+   {
+    "de": "o_agua",
+    "a": "m_consumo"
+   },
+   {
+    "de": "o_acaro",
+    "a": "m_consumo"
+   },
+   {
+    "de": "o_bi",
+    "a": "m_oviducto"
+   },
+   {
+    "de": "o_ampv",
+    "a": "m_oviducto"
+   },
+   {
+    "de": "o_eds",
+    "a": "m_oviducto"
+   },
+   {
+    "de": "o_ms",
+    "a": "m_oviducto"
+   },
+   {
+    "de": "o_edad",
+    "a": "e_grande"
+   },
+   {
+    "de": "o_edad",
+    "a": "e_postura"
+   },
+   {
+    "de": "m_reserva",
+    "a": "e_chico"
+   },
+   {
+    "de": "m_reserva",
+    "a": "e_postura"
+   },
+   {
+    "de": "m_eje",
+    "a": "e_postura"
+   },
+   {
+    "de": "m_consumo",
+    "a": "m_nutr"
+   },
+   {
+    "de": "m_consumo",
+    "a": "e_postura"
+   },
+   {
+    "de": "m_nutr",
+    "a": "e_chico"
+   },
+   {
+    "de": "m_nutr",
+    "a": "e_postura"
+   },
+   {
+    "de": "m_oviducto",
+    "a": "e_postura"
+   },
+   {
+    "de": "m_oviducto",
+    "a": "c_anomalos"
+   },
+   {
+    "de": "e_postura",
+    "a": "c_masa"
+   },
+   {
+    "de": "e_chico",
+    "a": "c_masa"
+   },
+   {
+    "de": "e_grande",
+    "a": "c_prolapso"
+   }
+  ],
+  "medidas": [
+   {
+    "id": "p1",
+    "titulo": "Llegar al peso de la guía al final de la recría",
+    "actua": [
+     "o_pesorecria",
+     "o_luzrecria"
+    ],
+    "puntos": [
+     "El peso al final de la recría es el principal factor del tamaño del huevo: cada 100 g son ~1 g de huevo.",
+     "Fotoperíodo de recría según la guía de la línea; pesaje semanal."
+    ],
+    "fuentes": [
+     "fedna-2018-ponedoras",
+     "lewis-2007",
+     "bain-2016"
+    ]
+   },
+   {
+    "id": "p2",
+    "titulo": "Luz de postura estable",
+    "actua": [
+     "o_luzpostura"
+    ],
+    "puntos": [
+     "Nunca bajar las horas de luz en postura; revisar relojes y cortes.",
+     "Bajar a ≤ 8 h induce la muda."
+    ],
+    "fuentes": [
+     "applegate-fowler-2021-cap6"
+    ]
+   },
+   {
+    "id": "p3",
+    "titulo": "Proteína y aminoácidos por fase",
+    "actua": [
+     "o_proteina",
+     "o_met",
+     "o_lys"
+    ],
+    "puntos": [
+     "Met+Cys digestible según el objetivo: 0,654 % para tamaño, 0,638 % para postura.",
+     "No bajar la proteína bajo ~16,5 % sin revisar el peso del huevo.",
+     "Lisina ~744 mg/ave/día para la máxima postura (Lohmann Brown)."
+    ],
+    "fuentes": [
+     "carvalho-2018",
+     "ji-2014",
+     "scappaticcio-2021"
+    ]
+   },
+   {
+    "id": "p4",
+    "titulo": "Grasa y linoleico para el tamaño",
+    "actua": [
+     "o_grasa"
+    ],
+    "puntos": [
+     "Linoleico ≥ 1,35 %; grasa añadida suma 0,20–0,35 g por 1 %.",
+     "Primero linoleico, después grasa."
+    ],
+    "fuentes": [
+     "fedna-2018-ponedoras"
+    ]
+   },
+   {
+    "id": "p5",
+    "titulo": "Frenar el huevo grande",
+    "actua": [
+     "o_met",
+     "o_proteina",
+     "e_grande"
+    ],
+    "puntos": [
+     "Si el huevo pasa el estándar (o hay doble yema), bajar Met+Cys o proteína por fase.",
+     "Ver medidas de la red de prolapso."
+    ],
+    "fuentes": [
+     "bryden-2021"
+    ]
+   },
+   {
+    "id": "p6",
+    "titulo": "Manejo del calor",
+    "actua": [
+     "o_calor"
+    ],
+    "puntos": [
+     "Ventilación y agua fresca; densidad energética solo sirve bajo 25 °C.",
+     "Vitamina C 200 mg/kg recuperó postura a 38 °C."
+    ],
+    "fuentes": [
+     "peguri-1991",
+     "attia-2016"
+    ]
+   },
+   {
+    "id": "p7",
+    "titulo": "Medir agua y alimento cada día",
+    "actua": [
+     "o_agua",
+     "m_consumo"
+    ],
+    "puntos": [
+     "Consumo de agua de referencia: 220–270 L/1.000 aves/día a 21 °C.",
+     "Una baja de consumo avisa antes que la postura."
+    ],
+    "fuentes": [
+     "greenacre-2021-cap29",
+     "peguri-1991"
+    ]
+   },
+   {
+    "id": "p8",
+    "titulo": "Vacunación respiratoria y reproductiva",
+    "actua": [
+     "o_bi",
+     "o_ampv",
+     "o_eds"
+    ],
+    "puntos": [
+     "BI con vacuna viva + inactivada antes de la postura.",
+     "Revisar programa contra metapneumovirus y EDS'76 según la zona."
+    ],
+    "fuentes": [
+     "dewit-2020",
+     "bestman-2020"
+    ]
+   },
+   {
+    "id": "p9",
+    "titulo": "Control de ácaro rojo y micoplasma",
+    "actua": [
+     "o_acaro",
+     "o_ms"
+    ],
+    "puntos": [
+     "Revisión nocturna de ácaro rojo y tratamiento.",
+     "Monitoreo serológico de M. synoviae."
+    ],
+    "fuentes": [
+     "dermanyssus-gallinae",
+     "kursa-2019-eaa"
+    ]
+   },
+   {
+    "id": "p10",
+    "titulo": "Alimento sin micotoxinas y con buen balance electrolítico",
+    "actua": [
+     "o_mico",
+     "o_cl"
+    ],
+    "puntos": [
+     "Muestra de cada partida; análisis si cae la postura.",
+     "Revisar el cloro: bajarlo reemplazando parte de la sal mejoró postura y cáscara."
+    ],
+    "fuentes": [
+     "lee-2012",
+     "fu-2021"
+    ]
+   }
+  ],
+  "notaMedidas": "Para el tamaño del huevo, la palanca más grande está en la recría; en postura, Met+Cys, proteína y linoleico.",
+  "noFunciona": [
+   [
+    "Enzimas para subir postura o peso de huevo en la gallina adulta",
+    "Cuatro ensayos coinciden: postura, peso de huevo y consumo no se mueven; bajan el costo."
+   ],
+   [
+    "Más proteína o metionina para agrandar el huevo en las primeras 12 semanas",
+    "Con consumo adecuado no cambió el tamaño: ahí manda el peso corporal de la recría."
+   ],
+   [
+    "Subir la densidad energética con calor",
+    "Solo afectó el peso del huevo a ≤ 25 °C."
+   ],
+   [
+    "Más energía para más huevos",
+    "En post-muda la energía mejoró conversión y peso corporal, no la postura ni el peso del huevo."
+   ]
+  ]
+ },
+ "brote": {
+  "confirmar": [
+   "Comparar con la **curva de la línea a la misma edad**: una caída que sigue la curva no es un brote.",
+   "Separar los dos problemas: ¿bajó la cantidad de huevos, el peso, o ambos? Pesar 100 huevos y comparar con el estándar."
+  ],
+  "tipos": [
+   {
+    "id": "postura",
+    "titulo": "Cae la postura",
+    "pista": "Menos huevos por ave que la curva de la línea."
+   },
+   {
+    "id": "chico",
+    "titulo": "Huevo chico",
+    "pista": "Peso de huevo bajo el estándar a esa edad."
+   },
+   {
+    "id": "grande",
+    "titulo": "Huevo muy grande",
+    "pista": "Peso sobre el estándar, doble yema."
+   }
+  ],
+  "hoy": [
+   "Medir consumo de agua y alimento del día",
+   "Revisar el programa de luz: horas, relojes, cortes",
+   "Guardar una muestra de la partida de alimento",
+   "Pesar 50 aves y 100 huevos",
+   "Necropsia de 3–5 aves: oviducto, hígado, riñón",
+   "Sangre para serología pareada (ahora y en 2–3 semanas)"
+  ],
+  "ventanas": [
+   {
+    "id": "inicio",
+    "titulo": "Inicio y pico",
+    "rango": "< 30 sem",
+    "hasta": 30
+   },
+   {
+    "id": "mitad",
+    "titulo": "Mitad del ciclo",
+    "rango": "30–60 sem",
+    "hasta": 60
+   },
+   {
+    "id": "final",
+    "titulo": "Final del ciclo",
+    "rango": "≥ 60 sem",
+    "hasta": null
+   }
+  ],
+  "notaVentanas": "Use la edad del lote cuando empezó la caída.",
+  "hipotesis": [
+   {
+    "id": "H1",
+    "titulo": "Enfermedad del oviducto (BI, EDS'76, metapneumovirus, MS)",
+    "peso": {
+     "inicio": 2,
+     "mitad": 2,
+     "final": 1
+    },
+    "pesoTipo": {
+     "postura": 3
+    },
+    "verificar": [
+     "Huevos sin cáscara, blandos, rugosos o pálidos; clara acuosa",
+     "Signos respiratorios",
+     "Serología pareada (BI, aMPV, EDS, MS) e historial de vacunas"
+    ],
+    "hacer": [
+     "Corregir el programa de vacunación para el próximo lote",
+     "No hay tratamiento específico: proteger el resto del ciclo"
+    ],
+    "fuentes": [
+     "bestman-2020",
+     "dewit-2020",
+     "swayne-2020-cap3",
+     "adenovirus-aviar",
+     "kursa-2019-eaa"
+    ],
+    "nodos": [
+     "o_bi",
+     "o_ampv",
+     "o_eds",
+     "o_ms"
+    ]
+   },
+   {
+    "id": "H2",
+    "titulo": "Comen menos: calor, agua o ácaro",
+    "peso": {
+     "inicio": 1,
+     "mitad": 2,
+     "final": 2
+    },
+    "pesoTipo": {
+     "chico": 3,
+     "postura": 2
+    },
+    "verificar": [
+     "Consumo de agua y alimento diario frente a la referencia",
+     "Temperatura máxima de los días previos",
+     "Ácaro rojo de noche en perchas y grietas"
+    ],
+    "hacer": [
+     "Asegurar agua (caudal, temperatura) y ventilación",
+     "Tratar el ácaro"
+    ],
+    "fuentes": [
+     "peguri-1991",
+     "attia-2016",
+     "greenacre-2021-cap29",
+     "dermanyssus-gallinae"
+    ],
+    "nodos": [
+     "o_calor",
+     "o_agua",
+     "o_acaro"
+    ]
+   },
+   {
+    "id": "H3",
+    "titulo": "Fórmula: proteína, aminoácidos o grasa bajos",
+    "peso": {
+     "inicio": 1,
+     "mitad": 2,
+     "final": 2
+    },
+    "pesoTipo": {
+     "chico": 3,
+     "postura": 2
+    },
+    "verificar": [
+     "Fórmula y análisis de la partida: PB, Met+Cys y lisina digestibles, linoleico",
+     "Que la fase corresponda a la edad",
+     "Consumo real en g/ave/día"
+    ],
+    "hacer": [
+     "Ajustar proteína, Met+Cys y linoleico a la fase",
+     "Un cambio a la vez y pesar huevos 2 semanas"
+    ],
+    "fuentes": [
+     "bryden-2021",
+     "ji-2014",
+     "fedna-2018-ponedoras",
+     "scappaticcio-2021"
+    ],
+    "nodos": [
+     "o_proteina",
+     "o_met",
+     "o_lys",
+     "o_grasa"
+    ]
+   },
+   {
+    "id": "H4",
+    "titulo": "Huevo grande por exceso de Met o proteína",
+    "peso": {
+     "inicio": 1,
+     "mitad": 1,
+     "final": 2
+    },
+    "pesoTipo": {
+     "grande": 3
+    },
+    "verificar": [
+     "Met+Cys y PB frente a la fase",
+     "Doble yema y prolapsos"
+    ],
+    "hacer": [
+     "Bajar Met+Cys o pasar a la fase siguiente",
+     "Ver la red de prolapso"
+    ],
+    "fuentes": [
+     "bryden-2021",
+     "carvalho-2018"
+    ],
+    "nodos": [
+     "o_met",
+     "o_proteina"
+    ]
+   },
+   {
+    "id": "H5",
+    "titulo": "Luz: horas que bajan, cortes o reloj",
+    "peso": {
+     "inicio": 2,
+     "mitad": 2,
+     "final": 2
+    },
+    "pesoTipo": {
+     "postura": 3
+    },
+    "verificar": [
+     "Programa real de luz: horas, relojes, cortes",
+     "En galpón abierto, si las horas de luz natural están bajando"
+    ],
+    "hacer": [
+     "Restituir las horas; nunca bajar en postura"
+    ],
+    "fuentes": [
+     "applegate-fowler-2021-cap6",
+     "prastiya-2022"
+    ],
+    "nodos": [
+     "o_luzpostura"
+    ]
+   },
+   {
+    "id": "H6",
+    "titulo": "Recría: poco peso al inicio de postura",
+    "peso": {
+     "inicio": 3,
+     "mitad": 1,
+     "final": 0
+    },
+    "pesoTipo": {
+     "chico": 3,
+     "postura": 1
+    },
+    "verificar": [
+     "Pesos de recría y al estímulo frente a la guía",
+     "Uniformidad"
+    ],
+    "hacer": [
+     "En el próximo lote, llegar al peso de la guía",
+     "En el actual, la nutrición casi no cambia el huevo en las primeras 12 semanas"
+    ],
+    "fuentes": [
+     "fedna-2018-ponedoras",
+     "bain-2016",
+     "summers-leeson-1983",
+     "lewis-2007"
+    ],
+    "nodos": [
+     "o_pesorecria",
+     "o_luzrecria"
+    ]
+   },
+   {
+    "id": "H7",
+    "titulo": "Micotoxinas",
+    "peso": {
+     "inicio": 1,
+     "mitad": 1,
+     "final": 1
+    },
+    "pesoTipo": {
+     "postura": 2
+    },
+    "verificar": [
+     "Muestra de la partida en uso para aflatoxina y DON",
+     "Necropsia: hígado y riñón agrandados"
+    ],
+    "hacer": [
+     "Cambiar la partida; usar secuestrante si corresponde"
+    ],
+    "fuentes": [
+     "lee-2012"
+    ],
+    "nodos": [
+     "o_mico"
+    ]
+   },
+   {
+    "id": "H8",
+    "titulo": "Edad del lote: es la curva",
+    "peso": {
+     "inicio": 0,
+     "mitad": 1,
+     "final": 3
+    },
+    "pesoTipo": {
+     "postura": 1,
+     "grande": 2
+    },
+    "verificar": [
+     "Postura y peso del huevo frente a la curva de la línea a esa edad"
+    ],
+    "hacer": [
+     "Si sigue la curva, no hay brote: ajustar fase y expectativas"
+    ],
+    "fuentes": [
+     "odabasi-2007"
+    ],
+    "nodos": [
+     "o_edad"
+    ]
+   }
+  ],
+  "pistas": [
+   {
+    "grupo": "Registros",
+    "pistas": [
+     {
+      "id": "q_brusca",
+      "texto": "Caída brusca, en pocos días",
+      "apunta": {
+       "H1": 3,
+       "H5": 2,
+       "H2": 2,
+       "H7": 1
+      }
+     },
+     {
+      "id": "q_gradual",
+      "texto": "Caída lenta, siguiendo la curva",
+      "apunta": {
+       "H8": 3,
+       "H3": 1
+      }
+     },
+     {
+      "id": "q_consumo",
+      "texto": "Consumo de alimento bajo",
+      "apunta": {
+       "H2": 3,
+       "H7": 1
+      }
+     },
+     {
+      "id": "q_agua",
+      "texto": "Consumo de agua bajo o cortes de agua",
+      "apunta": {
+       "H2": 3
+      }
+     }
+    ]
+   },
+   {
+    "grupo": "Huevo",
+    "pistas": [
+     {
+      "id": "q_anomalos",
+      "texto": "Huevos sin cáscara, blandos, rugosos o pálidos; clara acuosa",
+      "apunta": {
+       "H1": 3
+      }
+     },
+     {
+      "id": "q_chico_inicio",
+      "texto": "Huevo chico desde el inicio de postura",
+      "apunta": {
+       "H6": 3,
+       "H3": 1
+      }
+     },
+     {
+      "id": "q_doble",
+      "texto": "Doble yema o huevo muy grande",
+      "apunta": {
+       "H4": 3,
+       "H8": 1
+      }
+     },
+     {
+      "id": "q_prolapso",
+      "texto": "Prolapsos o cáscara con sangre",
+      "apunta": {
+       "H4": 2
+      }
+     }
+    ]
+   },
+   {
+    "grupo": "Aves y ambiente",
+    "pistas": [
+     {
+      "id": "q_resp",
+      "texto": "Tos, estertores o cabeza hinchada",
+      "apunta": {
+       "H1": 3
+      }
+     },
+     {
+      "id": "q_calor",
+      "texto": "Días de calor",
+      "apunta": {
+       "H2": 3
+      }
+     },
+     {
+      "id": "q_acaro",
+      "texto": "Ácaro rojo en perchas o grietas",
+      "apunta": {
+       "H2": 2
+      }
+     },
+     {
+      "id": "q_peso",
+      "texto": "Peso corporal bajo el estándar o lote disparejo",
+      "apunta": {
+       "H6": 3,
+       "H2": 1
+      }
+     },
+     {
+      "id": "q_luz",
+      "texto": "Menos horas de luz, cortes o reloj desajustado",
+      "apunta": {
+       "H5": 3
+      }
+     }
+    ]
+   },
+   {
+    "grupo": "Alimento y necropsia",
+    "pistas": [
+     {
+      "id": "q_partida",
+      "texto": "Partida o fórmula nueva",
+      "apunta": {
+       "H3": 2,
+       "H7": 2,
+       "H4": 1
+      }
+     },
+     {
+      "id": "q_moho",
+      "texto": "Alimento húmedo o mohoso",
+      "apunta": {
+       "H7": 3
+      }
+     },
+     {
+      "id": "q_higado",
+      "texto": "Hígado y riñón agrandados",
+      "apunta": {
+       "H7": 2
+      }
+     },
+     {
+      "id": "q_oviducto",
+      "texto": "Oviducto inflamado o atrofiado",
+      "apunta": {
+       "H1": 3
+      }
+     }
+    ]
+   }
+  ],
+  "notaPistas": "Marque lo que había antes de la caída y lo que ve en el lote.",
+  "respuestas": [
+   {
+    "id": "r1",
+    "titulo": "Se agregó una enzima o un aditivo",
+    "nota": "En la gallina adulta las enzimas no mueven postura ni peso de huevo (4 ensayos); solo bajan costo.",
+    "fuentes": [
+     "kayan-2025",
+     "mun-2025",
+     "huang-2024",
+     "nguyen-2022-snsp"
+    ]
+   },
+   {
+    "id": "r2",
+    "titulo": "Se subió la metionina para agrandar el huevo",
+    "nota": "Funciona en postura establecida (+0,05 % ≈ +0,7 g), pero no en las primeras 12 semanas si el consumo es adecuado.",
+    "fuentes": [
+     "bryden-2021",
+     "summers-leeson-1983"
+    ]
+   },
+   {
+    "id": "r3",
+    "titulo": "Se subió la energía",
+    "nota": "La energía mejoró la conversión, no la postura ni el peso del huevo (post-muda); con calor, solo sirve bajo 25 °C.",
+    "fuentes": [
+     "gunawardana-2008",
+     "peguri-1991"
+    ]
+   },
+   {
+    "id": "r4",
+    "titulo": "Se dio vitamina C por calor",
+    "nota": "Con respaldo: 200 mg/kg recuperó la postura de 60,5 a 65,8 % a 38 °C (reproductoras doble propósito).",
+    "fuentes": [
+     "attia-2016"
+    ]
+   }
+  ],
+  "notaPuntaje": "Puntaje = tipo de problema (0–3, el mayor entre los marcados) + edad (0–3) + cada pista (1–3). Los pesos son razonamiento propio a partir de la wiki, no vienen de una fuente.",
+  "necropsia": [
+   "**Oviducto:** inflamado, con exudado o atrofiado (BI en recría deja oviducto no funcional).",
+   "**Ovario:** folículos en regresión (muda, luz, falta de nutrientes). *Razonamiento, sin fuente.*",
+   "**Hígado y riñón:** agrandados → micotoxinas.",
+   "**Condición corporal:** grasa y quilla (consumo, energía).",
+   "**Ácaro rojo** en las aves y la instalación."
+  ],
+  "seguir": [
+   "Postura diaria y peso de huevo semanal frente a la curva de la línea.",
+   "Un cambio a la vez y medir 2–3 semanas.",
+   "Si la serología pareada sube, ajustar la vacunación del próximo lote."
+  ],
+  "pedir": [
+   "Postura diaria y peso de huevo de las últimas 6–8 semanas",
+   "Curva estándar de la línea (estirpe) y edad",
+   "Consumo de agua y alimento diario",
+   "Programa de luz y cortes de luz o agua, con fecha",
+   "Temperaturas máximas",
+   "Partidas y fórmulas con fecha (fase)",
+   "Pesos de recría y peso al estímulo",
+   "Vacunas con fecha y signos respiratorios",
+   "Clasificación: huevos sin cáscara, rugosos, pálidos, doble yema"
+  ]
+ },
+ "fuentes": [
+  {
+   "id": "bryden-2021",
+   "cita": "Bryden et al. 2021 — Nutrition, feeding and laying hen welfare",
+   "wiki": "fuente-bryden-2021"
+  },
+  {
+   "id": "carvalho-2018",
+   "cita": "Carvalho et al. 2018 — Met+Cys digestible en ponedoras comerciales: producción, calidad, perfil AA de huevos y evaluación económica",
+   "wiki": "fuente-carvalho-2018"
+  },
+  {
+   "id": "bain-2016",
+   "cita": "Bain, Nys & Dunn 2016 — Persistency in lay and egg quality in longer laying cycles",
+   "wiki": "fuente-bain-2016"
+  },
+  {
+   "id": "ji-2014",
+   "cita": "Ji et al. 2014 — Proteína reducida con AA cristalinos en ponedoras: rendimiento, excreción de N y calidad de huevo",
+   "wiki": "fuente-ji-2014"
+  },
+  {
+   "id": "gunawardana-2008",
+   "cita": "Gunawardana et al. 2008 — Energía y proteína en fase post-muda (Hy-Line W-36)",
+   "wiki": "fuente-gunawardana-2008"
+  },
+  {
+   "id": "summers-leeson-1983",
+   "cita": "Summers & Leeson 1983 — Factores que influyen en el tamaño del huevo temprano",
+   "wiki": "fuente-summers-leeson-1983"
+  },
+  {
+   "id": "fedna-2018-ponedoras",
+   "cita": "FEDNA 2018 — Gallinas ponedoras (Normas FEDNA Avicultura, 2ª ed., bloque E)",
+   "wiki": "fuente-fedna-2018-ponedoras"
+  },
+  {
+   "id": "vaneck-2026-performance",
+   "cita": "van Eck et al. 2026 — Alimentar a una gallina persistente de d0 a 110 semanas: impacto en rendimiento (AFD Lys recría × energía postura; Poultry Science 105:106174)",
+   "wiki": "fuente-vaneck-2026-performance"
+  },
+  {
+   "id": "lewis-2007",
+   "cita": "Lewis, Caston & Leeson 2007 — Fotoperiodo de recría y fotoestimulación en ponedoras de huevo",
+   "wiki": "fuente-lewis-2007"
+  },
+  {
+   "id": "scappaticcio-2021",
+   "cita": "Scappaticcio et al. 2021 — Influencia de la energía y lisina digestible sobre producción y calidad de huevo en ponedoras marrones, 19-59 semanas (Poultry Science)",
+   "wiki": "fuente-scappaticcio-2021"
+  },
+  {
+   "id": "fu-2021",
+   "cita": "Fu et al. 2021 — Reemplazo parcial de NaCl por NaHCO₃ o Na₂SO₄ en ponedoras: postura, cáscara y ultraestructura",
+   "wiki": "fuente-fu-2021"
+  },
+  {
+   "id": "lee-2012",
+   "cita": "Lee et al. 2012 — Dietas con micotoxinas y compuesto desactivador en ponedoras: Parte 1",
+   "wiki": "fuente-lee-2012"
+  },
+  {
+   "id": "peguri-1991",
+   "cita": "Effect of Temperature and Dietary Energy on Layer Performance (Peguri & Coon 1991)",
+   "wiki": "fuente-peguri-1991"
+  },
+  {
+   "id": "attia-2016",
+   "cita": "Attia et al. 2016 — Betaína, vitamina C y vitamina E en gallinas doble propósito con estrés calórico crónico",
+   "wiki": "fuente-attia-2016"
+  },
+  {
+   "id": "bestman-2020",
+   "cita": "Layer Signals: A Practical Guide to Layer Focused Management (Cap. 3–4)",
+   "wiki": "fuente-bestman-2020"
+  },
+  {
+   "id": "dewit-2020",
+   "cita": "de Wit, ter Veen & Koopman 2020 — Efecto del IBV D1466 en la producción y calidad del huevo y del cebado heterólogo para aumentar la eficacia de una vacuna inactivada (Avian Pathology 49(2))",
+   "wiki": "fuente-dewit-2020"
+  },
+  {
+   "id": "swayne-2020-cap3",
+   "cita": "Swayne 2020 — Cap. 3: Newcastle Disease, Avian Paramyxoviruses y aMPV",
+   "wiki": "fuente-swayne-2020-cap3"
+  },
+  {
+   "id": "kursa-2019-eaa",
+   "cita": "Kursa et al. 2019 — EAA por dos genotipos de M. synoviae y tomografía de la cáscara (ensayo)",
+   "wiki": "fuente-kursa-2019-eaa"
+  },
+  {
+   "id": "prastiya-2022",
+   "cita": "Fuente: Prastiya et al. 2022 — FSH y LH en gallinas según frecuencia de postura",
+   "wiki": "fuente-prastiya-2022"
+  },
+  {
+   "id": "applegate-fowler-2021-cap6",
+   "cita": "Applegate & Fowler 2021 — Backyard Poultry Nutrition (Cap. 6, Backyard Poultry Medicine and Surgery, 2ª ed.)",
+   "wiki": "fuente-applegate-fowler-2021-cap6"
+  },
+  {
+   "id": "odabasi-2007",
+   "cita": "Odabaşi et al. 2007 — Cambios en el color de la cáscara marrón a medida que la gallina envejece",
+   "wiki": "fuente-odabasi-2007"
+  },
+  {
+   "id": "greenacre-2021-cap29",
+   "cita": "Greenacre 2021 — Commonly Used Medications (Cap. 29, Backyard Poultry Medicine and Surgery, 2ª ed.)",
+   "wiki": "fuente-greenacre-2021-cap29"
+  },
+  {
+   "id": "kayan-2025",
+   "cita": "Kayan, Prasongsook & Poeikhampha 2025 — Fitasa y xilanasa sobre desempeño, calidad de huevo, AME y uso de fósforo en ponedoras",
+   "wiki": "fuente-kayan-2025"
+  },
+  {
+   "id": "mun-2025",
+   "cita": "Mun et al. 2025 — Multienzima recupera el rendimiento en ponedoras con dietas reducidas en proteína y energía",
+   "wiki": "fuente-mun-2025"
+  },
+  {
+   "id": "huang-2024",
+   "cita": "Huang et al. 2024 — Multi-enzima novel en ponedoras: rendimiento, calidad de huevo y salud intestinal (Poultry Science 103:104461)",
+   "wiki": "fuente-huang-2024"
+  },
+  {
+   "id": "nguyen-2022-snsp",
+   "cita": "Nguyen et al. 2022 — Nivel de NSP soluble dietario y xilanasa: ambiente gastrointestinal y utilización de nutrientes en ponedoras (British Poultry Science)",
+   "wiki": "fuente-nguyen-2022-snsp"
+  },
+  {
+   "id": "adenovirus-aviar",
+   "cita": "Wiki AviVet — Adenovirus aviar — IBH, HPS, GEU, EDS'76, THE, MSD",
+   "wiki": "adenovirus-aviar"
+  },
+  {
+   "id": "dermanyssus-gallinae",
+   "cita": "Wiki AviVet — Dermanyssus gallinae — ácaro rojo de las aves (PRM)",
+   "wiki": "dermanyssus-gallinae"
+  },
+  {
+   "id": "calidad-agua-ponedoras",
+   "cita": "Wiki AviVet — Calidad y manejo del agua en gallinas ponedoras",
+   "wiki": "calidad-agua-ponedoras"
+  },
+  {
+   "id": "red-causal-prolapso",
+   "cita": "Wiki AviVet — Red causal del prolapso en ponedoras y punto de acción de cada medida preventiva",
+   "wiki": "red-causal-prolapso"
+  }
+ ],
+ "notaFuentes": "Varias cifras vienen de un solo ensayo con una estirpe (Met+Cys en Lohmann LSL, lisina en Lohmann Brown, calor en reproductoras doble propósito) y deben ajustarse a la guía de la línea. Tensión: en las primeras 12 semanas la nutrición no cambió el tamaño del huevo (Summers & Leeson 1983) frente a las reglas de Met+Cys y proteína de postura establecida (Bryden, Bain). Sin fuente: cuánto baja la postura por falta de agua y por ácaro rojo."
+}

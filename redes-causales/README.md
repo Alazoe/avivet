@@ -29,6 +29,7 @@ redes-causales/
 |---|---|---|
 | Prolapso | consultas `red-causal-prolapso` e `investigacion-brote-prolapso` | editar `datos/prolapso.json` a mano, siguiendo la wiki |
 | Huevos con sangre | consulta `red-causal-huevos-con-sangre` (y el protocolo `investigacion-alza-huevos-con-sangre`) | editar `datos/sangre.json` a mano, siguiendo la wiki |
+| Postura y tamaño del huevo | consulta `red-causal-postura-tamano-huevo` | editar `datos/postura.json` a mano, siguiendo la wiki |
 | Picaje | `avivet-wiki/Entregables/red-causal-picaje/datos.json` (la misma fuente que el Canvas y los artifacts de picaje) | editar ese `datos.json` en la wiki y correr `python3 redes-causales/importar/picaje.py` |
 
 

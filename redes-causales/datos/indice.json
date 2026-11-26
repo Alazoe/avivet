@@ -1,14 +1,56 @@
 {
  "_nota": "Problemas que muestra la portada. estado: \"listo\" (tiene datos/<id>.json) o \"en-preparacion\". relaciones: flechas entre problemas para el mapa de la portada.",
  "problemas": [
-  {"id": "prolapso", "titulo": "Prolapso de oviducto y cloaca", "corto": "Prolapso", "estado": "listo"},
-  {"id": "picaje", "titulo": "Picaje y canibalismo", "corto": "Picaje", "estado": "listo"},
-  {"id": "sangre", "titulo": "Huevos con sangre (cáscara manchada y manchas internas)", "corto": "Huevos con sangre", "estado": "listo"}
+  {
+   "id": "prolapso",
+   "titulo": "Prolapso de oviducto y cloaca",
+   "corto": "Prolapso",
+   "estado": "listo"
+  },
+  {
+   "id": "picaje",
+   "titulo": "Picaje y canibalismo",
+   "corto": "Picaje",
+   "estado": "listo"
+  },
+  {
+   "id": "sangre",
+   "titulo": "Huevos con sangre (cáscara manchada y manchas internas)",
+   "corto": "Huevos con sangre",
+   "estado": "listo"
+  },
+  {
+   "id": "postura",
+   "titulo": "Caída de postura y tamaño del huevo",
+   "corto": "Postura y tamaño",
+   "estado": "listo"
+  }
  ],
  "relaciones": [
-  {"de": "picaje", "a": "prolapso", "texto": "El picoteo de cloaca lesiona el tejido y retrasa la retracción"},
-  {"de": "prolapso", "a": "picaje", "texto": "El tejido rojo evertido atrae el picaje de las compañeras"},
-  {"de": "prolapso", "a": "sangre", "texto": "La cáscara manchada de sangre sube antes que la mortalidad"},
-  {"de": "picaje", "a": "sangre", "texto": "Las heridas de cloaca manchan la cáscara"}
+  {
+   "de": "picaje",
+   "a": "prolapso",
+   "texto": "El picoteo de cloaca lesiona el tejido y retrasa la retracción"
+  },
+  {
+   "de": "prolapso",
+   "a": "picaje",
+   "texto": "El tejido rojo evertido atrae el picaje de las compañeras"
+  },
+  {
+   "de": "prolapso",
+   "a": "sangre",
+   "texto": "La cáscara manchada de sangre sube antes que la mortalidad"
+  },
+  {
+   "de": "picaje",
+   "a": "sangre",
+   "texto": "Las heridas de cloaca manchan la cáscara"
+  },
+  {
+   "de": "postura",
+   "a": "prolapso",
+   "texto": "El huevo muy grande favorece el prolapso"
+  }
  ]
 }
