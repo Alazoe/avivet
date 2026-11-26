@@ -1,0 +1,2423 @@
+{
+ "id": "picaje",
+ "titulo": "Picaje y canibalismo",
+ "especie": "Ponedora comercial",
+ "resumen": "Muchas causas de origen (forrajeo sin destino, alimento, luz, sanidad, galpón, estrés social, recría, inicio de postura) convergen en pocos mecanismos, sobre todo el **forrajeo redirigido** a las plumas. Dos ciclos se retroalimentan: herida con sangre → más picaje, y picaje de cloaca ↔ prolapso.",
+ "wiki": [
+  "picaje-canibalismo",
+  "red-causal-picaje",
+  "causas-picaje-evidencia-y-acciones",
+  "pauta-verificacion-estado-basal-picaje"
+ ],
+ "actualizado": "2026-11-25",
+ "red": {
+  "intro": {
+   "titulo": "Las flechas van de causa a efecto",
+   "texto": "Las causas de origen están agrupadas por tema y llevan su nivel de evidencia (A fuerte, B moderada, C débil). Confluyen en diez mecanismos y seis tipos de picaje, que no se convierten uno en otro. La línea roja punteada es un ciclo (la sangre atrae más picaje; picaje de cloaca y prolapso); la gris punteada, una relación discutida."
+  },
+  "grupos": {
+   "forrajeo": "Forrajeo y cama",
+   "alimento": "Alimento",
+   "luz": "Luz",
+   "sanidad": "Sanidad",
+   "galpon": "Galpón y ambiente",
+   "social": "Social y sustos",
+   "cloaca": "Inicio de postura y cloaca",
+   "origen": "Recría, estirpe y pico"
+  },
+  "nodos": [
+   {
+    "id": "o_cama",
+    "tipo": "o",
+    "texto": [
+     "Sin cama ni material para",
+     "picotear"
+    ],
+    "detalle": "Piso de rejilla, cama apelmazada o sin paja: el ave no tiene dónde escarbar y redirige el picoteo a las plumas.",
+    "fuentes": [
+     "decina-2019",
+     "rodenburg-2013",
+     "michel-2022",
+     "glatz-runge-2017-cap4"
+    ],
+    "grupo": "forrajeo",
+    "evidencia": "A",
+    "cifras": [
+     "Piso todo rejilla o slat: +37,6 % de daño de plumas en 39 lotes (Canadá)",
+     "La paja reduce el picaje severo; la arena no (activa el baño de polvo, no el forrajeo)",
+     "Cama de 5–10 cm, liviana, suelta y absorbente"
+    ]
+   },
+   {
+    "id": "o_fibra",
+    "tipo": "o",
+    "texto": [
+     "Fibra insoluble insuficiente"
+    ],
+    "detalle": "Sin fibra la molleja no trabaja, el alimento se acaba rápido y el ave come plumas como fibra sustituta.",
+    "fuentes": [
+     "miller-1937",
+     "glatz-runge-2017-cap4",
+     "rodenburg-2013",
+     "hendrix-2020-mgahs"
+    ],
+    "grupo": "forrajeo",
+    "evidencia": "A",
+    "cifras": [
+     "Avena frente a maíz: 0 % frente a 95,8 % de aves picadas a las 28 semanas",
+     "Fibra cruda ≥4 % en la ponedora (3,5 % factible en dietas densas)",
+     "NSP insoluble ≥10 g/día en recría y ≥16 g/día en postura",
+     "Señal de necropsia: plumas en la molleja de las bajas"
+    ],
+    "factor": "fibra"
+   },
+   {
+    "id": "o_forma",
+    "tipo": "o",
+    "texto": [
+     "Alimento en pellet o migas"
+    ],
+    "detalle": "El pellet se come en poco tiempo y deja muchas horas de pico desocupado.",
+    "fuentes": [
+     "estevez-2015",
+     "vankrimpen-2005",
+     "aerni-2000",
+     "glatz-runge-2017-cap4"
+    ],
+    "grupo": "alimento",
+    "evidencia": "A",
+    "cifras": [
+     "Pellet: OR 5,25 para picaje de cloaca (estudios de campo del Reino Unido)",
+     "Pellet 100 min/día en el comedero frente a 234 min con harina",
+     "Picaje alto solo con pellet y sin paja: efecto que se suma (Aerni 2000)"
+    ],
+    "factor": "fibra"
+   },
+   {
+    "id": "o_energia",
+    "tipo": "o",
+    "texto": [
+     "Energía alta: el comedero se",
+     "vacía rápido"
+    ],
+    "detalle": "Con un alimento muy concentrado el ave cubre su necesidad en poco rato y le sobra tiempo para picar compañeras.",
+    "fuentes": [
+     "hendrix-2020-mgahs",
+     "sanctuary-1954"
+    ],
+    "grupo": "alimento",
+    "evidencia": "B",
+    "cifras": [
+     "Alta energía y picaje corroborados en forma independiente (Sanctuary 1954)"
+    ],
+    "factor": "energia"
+   },
+   {
+    "id": "o_aa",
+    "tipo": "o",
+    "texto": [
+     "Falta metionina + cistina,",
+     "lisina o proteína"
+    ],
+    "detalle": "La pluma es rica en cisteína; el ave con déficit de azufrados busca en las plumas de las vecinas lo que le falta.",
+    "fuentes": [
+     "neal-1956",
+     "rodenburg-2013",
+     "mcdonald-2022-cap4",
+     "glatz-runge-2017-cap4",
+     "macelline-2021"
+    ],
+    "grupo": "alimento",
+    "evidencia": "A",
+    "cifras": [
+     "Metionina: respuesta a dosis, reversible, en 575 aves de campo (Neal 1956)",
+     "Met+Cys ≥5,8 g/kg; Lys ≥8,2 g/kg; PB ≥150 g/kg (formular para la pluma, no solo para el huevo)",
+     "Metionina en agua: 1,5 g/L los primeros 4 días y 1,0 g/L los 3 siguientes",
+     "Triptófano y arginina bajos también se asocian a más picaje"
+    ],
+    "factor": "metionina"
+   },
+   {
+    "id": "o_na",
+    "tipo": "o",
+    "texto": [
+     "Sodio bajo u olvido de la sal"
+    ],
+    "detalle": "Olvidar la sal en la fórmula es un error frecuente; la falta de sodio dispara el picaje en pocos días.",
+    "fuentes": [
+     "rodenburg-2013",
+     "mcdonald-2022-cap6",
+     "hendrix-2020-mgahs"
+    ],
+    "grupo": "alimento",
+    "evidencia": "A",
+    "cifras": [
+     "Umbral de riesgo: Na <0,3 g/kg; objetivo Na ≥1,5 g/kg",
+     "En brote: sal 0,5–1 kg por 1000 L de agua por 24–48 h, solo con agua a voluntad"
+    ]
+   },
+   {
+    "id": "o_cambio",
+    "tipo": "o",
+    "texto": [
+     "Cambio brusco de alimento o de",
+     "partida"
+    ],
+    "detalle": "Un cambio de ingrediente o formulación altera el sabor y el consumo. La guía australiana pide cambios graduales en 2–4 semanas.",
+    "fuentes": [
+     "glatz-runge-2017-cap4",
+     "hendrix-2020-mgahs",
+     "heerkens-2015"
+    ],
+    "grupo": "alimento",
+    "evidencia": "C",
+    "cifras": [
+     "Cambiar en 2–4 semanas, mezclando"
+    ]
+   },
+   {
+    "id": "o_luzint",
+    "tipo": "o",
+    "texto": [
+     "Luz intensa o desigual"
+    ],
+    "detalle": "La luz fuerte hace resaltar plumas, piel y sangre. Manchas de sol, pop-holes grandes o ampolletas directas crean zonas de riesgo.",
+    "fuentes": [
+     "kjaer-1999",
+     "decina-2019",
+     "glatz-runge-2017-cap4",
+     "hendrix-2020-mgahs"
+    ],
+    "grupo": "luz",
+    "evidencia": "A",
+    "cifras": [
+     "30 lux en recría → 30,6 % de mortalidad por canibalismo en postura",
+     "Más de 10 lux en postura aumenta el riesgo",
+     "Óptimo en galpón cerrado: 3–5 lux pollitas y 5–10 lux ponedoras; nunca menos de 3 lux",
+     "Alta intensidad para la guía: más de 20 lux"
+    ],
+    "factor": "luz"
+   },
+   {
+    "id": "o_luzcambio",
+    "tipo": "o",
+    "texto": [
+     "Cambios bruscos de luz"
+    ],
+    "detalle": "Subir de golpe las horas o la intensidad, programas discontinuos o ampolletas que parpadean favorecen el picaje.",
+    "fuentes": [
+     "coton-2019",
+     "glatz-runge-2017-cap4",
+     "hendrix-2020-mgahs"
+    ],
+    "grupo": "luz",
+    "evidencia": "B",
+    "cifras": [
+     "Pasar de luz controlada a galpón abierto: problemas a los 2–4 días",
+     "Programa de luz discontinuo: más picaje en free-range"
+    ],
+    "factor": "luz"
+   },
+   {
+    "id": "o_parasitos",
+    "tipo": "o",
+    "texto": [
+     "Ácaro rojo, piojos y parásitos"
+    ],
+    "detalle": "Picazón, anemia y estrés crónico. Tratar el ácaro rojo revierte la conducta.",
+    "fuentes": [
+     "michel-2022",
+     "hendrix-2020-mgahs"
+    ],
+    "grupo": "sanidad",
+    "evidencia": "A",
+    "cifras": [
+     "El tratamiento con fluralaner redujo el picaje",
+     "Desparasitar contra Ascaridia mejora el plumaje",
+     "Revisión nocturna con linterna en perchas y grietas"
+    ],
+    "factor": "sanidad"
+   },
+   {
+    "id": "o_enfermedad",
+    "tipo": "o",
+    "texto": [
+     "Enfermedad, enteritis, aves",
+     "débiles"
+    ],
+    "detalle": "El picaje suele empezar por un problema de salud: aves enfermas, chicas, cojas o de color distinto son atacadas; cloacas inflamadas atraen picoteo.",
+    "fuentes": [
+     "glatz-runge-2017-cap4",
+     "hendrix-2020-mgahs",
+     "michel-2022"
+    ],
+    "grupo": "sanidad",
+    "evidencia": "B",
+    "cifras": [
+     "Desafío inmune en pollitas → más daño de plumas de adultas (Parmentier 2009)"
+    ],
+    "factor": "sanidad"
+   },
+   {
+    "id": "o_densidad",
+    "tipo": "o",
+    "texto": [
+     "Mucha densidad o parque poco",
+     "usado"
+    ],
+    "detalle": "Más aves por metro cuadrado, más contactos y más estrés. Si el parque no se usa, la densidad real dentro del galpón sube.",
+    "fuentes": [
+     "glatz-runge-2017-cap4",
+     "estevez-2015",
+     "coton-2019"
+    ],
+    "grupo": "galpon",
+    "evidencia": "B",
+    "cifras": [
+     "7–9 aves/m² o más: picaje al alojar; con ≥12 aves/m² persiste y aumenta con la edad",
+     "Uso del parque <50 % en un buen día = factor de riesgo",
+     "La cobertura vegetal >50 % es señal, no causa: la palanca es la densidad interior"
+    ],
+    "factor": "ambiente"
+   },
+   {
+    "id": "o_comederos",
+    "tipo": "o",
+    "texto": [
+     "Falta agua, comedero o bebedero"
+    ],
+    "detalle": "Comederos vacíos, poco espacio, niples con poca presión o corriente eléctrica en las líneas generan competencia y frustración.",
+    "fuentes": [
+     "hendrix-2020-mgahs",
+     "pauta-verificacion-estado-basal-picaje"
+    ],
+    "grupo": "galpon",
+    "evidencia": "B",
+    "cifras": [
+     "Caudal de niple en adultas: 70–100 ml/min (medido con jarro)"
+    ],
+    "factor": "ambiente"
+   },
+   {
+    "id": "o_amoniaco",
+    "tipo": "o",
+    "texto": [
+     "Amoníaco, polvo y mala",
+     "ventilación"
+    ],
+    "detalle": "El amoníaco es molesto para el ave y baja su inmunidad. Si al personal le pican los ojos, ya está alto.",
+    "fuentes": [
+     "decina-2019",
+     "glatz-runge-2017-cap4"
+    ],
+    "grupo": "galpon",
+    "evidencia": "B",
+    "cifras": [
+     "Estiércol acumulado todo el ciclo: +20,1 % de daño de plumas",
+     "NH₃ sobre 20–25 ppm"
+    ],
+    "factor": "ambiente"
+   },
+   {
+    "id": "o_calor",
+    "tipo": "o",
+    "texto": [
+     "Calor, frío o corrientes"
+    ],
+    "detalle": "El estrés térmico cambia la química del cerebro hacia más agresión y picaje.",
+    "fuentes": [
+     "oluwagbenga-2023",
+     "glatz-runge-2017-cap4",
+     "hendrix-2020-mgahs"
+    ],
+    "grupo": "galpon",
+    "evidencia": "B",
+    "cifras": [
+     "Galpón abierto: >30 °C y >75 % de humedad se toleran mal"
+    ]
+   },
+   {
+    "id": "o_social",
+    "tipo": "o",
+    "texto": [
+     "Mezclar o mover aves"
+    ],
+    "detalle": "Romper grupos estables activa conflicto. No reubicar aves entre jaulas: la que sobrevive puede ser la agresora.",
+    "fuentes": [
+     "birkl-2019",
+     "glatz-runge-2017-cap4"
+    ],
+    "grupo": "social",
+    "evidencia": "B",
+    "cifras": [
+     "Mezclar grupos: +33 % de picaje de plumas (4,6 frente a 3,1 picotazos/hora)"
+    ]
+   },
+   {
+    "id": "o_sustos",
+    "tipo": "o",
+    "texto": [
+     "Sustos: ruido, visitas,",
+     "depredadores"
+    ],
+    "detalle": "Vehículos, ruido, personal nuevo, manejo brusco, tormentas y depredadores ponen nervioso al lote; las estirpes de alta producción son más histéricas.",
+    "fuentes": [
+     "glatz-runge-2017-cap4"
+    ],
+    "grupo": "social",
+    "evidencia": "C",
+    "cifras": [
+     "Caminar el galpón al menos 4 veces al día las 2 primeras semanas de recría para habituar"
+    ]
+   },
+   {
+    "id": "o_recria",
+    "tipo": "o",
+    "texto": [
+     "Recría sin sustrato ni",
+     "habituación"
+    ],
+    "detalle": "Lo que pasa antes de la semana 10 fija hacia dónde dirige el picoteo el ave adulta. Los vicios de la recría no se corrigen en postura.",
+    "fuentes": [
+     "glatz-runge-2017-cap4",
+     "glatz-runge-2017-cap1",
+     "paneru-2024",
+     "kjaer-1999",
+     "bestman-2020"
+    ],
+    "grupo": "origen",
+    "evidencia": "A",
+    "cifras": [
+     "Hasta el 80 % del picaje en postura se atribuye al manejo de la última etapa de recría",
+     "10 días de acceso a sustrato temprano ya protegen",
+     "Pocas plumas cortas (<10 cm) en la cama de recría es señal de riesgo",
+     "Semana 16: si ≥20 % tiene daño en plumaje oculto, el lote llega pelado a la semana 30"
+    ],
+    "factor": "recria"
+   },
+   {
+    "id": "o_instal",
+    "tipo": "o",
+    "texto": [
+     "Recría distinta del galpón de",
+     "postura"
+    ],
+    "detalle": "Cambiar a un ambiente muy distinto en postura aumenta el canibalismo; criar en instalaciones parecidas lo reduce, sobre todo en free-range.",
+    "fuentes": [
+     "glatz-runge-2017-cap4"
+    ],
+    "grupo": "origen",
+    "evidencia": "B"
+   },
+   {
+    "id": "o_perchas",
+    "tipo": "o",
+    "texto": [
+     "Sin perchas antes de la semana",
+     "4"
+    ],
+    "detalle": "Las perchas tempranas protegen contra el picaje de cloaca y los huevos de piso, no contra el picaje de plumas.",
+    "fuentes": [
+     "gunnarsson-1999",
+     "glatz-runge-2017-cap1"
+    ],
+    "grupo": "cloaca",
+    "evidencia": "A",
+    "cifras": [
+     "Perchas antes de la semana 4: OR 0,46 canibalismo de cloaca y OR 0,30 huevos de piso (59 lotes)",
+     "Percha más baja a más de 0,5 m o líneas de niple usadas como percha aumentan el picaje de cloaca"
+    ],
+    "factor": "recria"
+   },
+   {
+    "id": "o_uniform",
+    "tipo": "o",
+    "texto": [
+     "Pollitas livianas o lote",
+     "disparejo"
+    ],
+    "detalle": "La pollita chica que pone antes de tiempo expone más la cloaca y sangra más al poner.",
+    "fuentes": [
+     "glatz-runge-2017-cap4",
+     "glatz-runge-2017-cap1"
+    ],
+    "grupo": "cloaca",
+    "evidencia": "B",
+    "cifras": [
+     "15 % bajo el peso estándar al inicio de postura → 3 veces más hemorragia cloacal",
+     "Uniformidad ≥80 % (ideal 90 %) dentro de ±10 % del promedio"
+    ],
+    "factor": "recria"
+   },
+   {
+    "id": "o_nidos",
+    "tipo": "o",
+    "texto": [
+     "Nidos claros, escasos o",
+     "tardíos; huevos de piso"
+    ],
+    "detalle": "Un nido iluminado deja la cloaca a la vista durante la puesta; la que pone en el piso queda expuesta frente a todo el grupo.",
+    "fuentes": [
+     "hendrix-2020-mgahs",
+     "glatz-runge-2017-cap4"
+    ],
+    "grupo": "cloaca",
+    "evidencia": "B",
+    "cifras": [
+     "Nidos disponibles 10–14 días antes del inicio de postura",
+     "Luz del nido encendida 2–3 h antes de la luz principal; interior oscuro"
+    ],
+    "factor": "ambiente"
+   },
+   {
+    "id": "o_parque",
+    "tipo": "o",
+    "texto": [
+     "Salida al parque antes del pico"
+    ],
+    "detalle": "El primer acceso al parque 1–2 semanas antes del pico sube el riesgo de picaje de cloaca; después del pico de masa de huevo, baja.",
+    "fuentes": [
+     "glatz-runge-2017-cap1",
+     "glatz-runge-2017-cap4"
+    ],
+    "grupo": "cloaca",
+    "evidencia": "B",
+    "cifras": [
+     "Ideal: sin parque desde la semana 16 hasta después del pico"
+    ]
+   },
+   {
+    "id": "o_inicio",
+    "tipo": "o",
+    "texto": [
+     "Inicio de postura y pico de",
+     "producción"
+    ],
+    "detalle": "El cambio hormonal y la cloaca abultada del primer huevo concentran el picaje de cloaca en el arranque de postura.",
+    "fuentes": [
+     "swayne-2020-cap30",
+     "glatz-runge-2017-cap1",
+     "glatz-runge-2017-cap4"
+    ],
+    "grupo": "cloaca",
+    "evidencia": "B",
+    "cifras": [
+     "El picaje de cloaca explica al menos el 80 % de los prolapsos (Glatz 2005)"
+    ]
+   },
+   {
+    "id": "o_estirpe",
+    "tipo": "o",
+    "texto": [
+     "Estirpe y estrés de la",
+     "reproductora"
+    ],
+    "detalle": "Las líneas difieren en su tendencia a picar; una reproductora estresada da pollitos más temerosos.",
+    "fuentes": [
+     "coton-2019",
+     "rodenburg-2013",
+     "glatz-runge-2017-cap4"
+    ],
+    "grupo": "origen",
+    "evidencia": "B",
+    "cifras": [
+     "Un genotipo fue mejor en jaula y en free-range en 39 granjas francesas",
+     "Corticosterona en la yema → pollito más temeroso → más picaje de adulto"
+    ]
+   },
+   {
+    "id": "o_pico",
+    "tipo": "o",
+    "texto": [
+     "Despique mal hecho o con",
+     "rebrote"
+    ],
+    "detalle": "Picos asimétricos o que rebrotan hacen más daño con cada picotazo.",
+    "fuentes": [
+     "hendrix-2020-mgahs",
+     "glatz-runge-2017-cap4",
+     "glatz-runge-2017-cap7"
+    ],
+    "grupo": "origen",
+    "evidencia": "B",
+    "cifras": [
+     "Si más del 10 % de los picos requiere corrección, revisar la técnica"
+    ],
+    "factor": "ambiente"
+   },
+   {
+    "id": "m_forrajeo",
+    "tipo": "m",
+    "texto": [
+     "Forrajeo redirigido a las",
+     "plumas"
+    ],
+    "detalle": "La explicación más aceptada del picaje severo: la necesidad de escarbar y picotear se descarga en la compañera cuando no hay otro destino.",
+    "fuentes": [
+     "michel-2022",
+     "rodenburg-2013"
+    ],
+    "cifras": [
+     "Pollitos con mucho picoteo al suelo predicen picaje severo de adultas"
+    ]
+   },
+   {
+    "id": "m_comedero",
+    "tipo": "m",
+    "texto": [
+     "Poco tiempo comiendo: sobran",
+     "horas de pico"
+    ],
+    "detalle": "Cuando el alimento se resuelve rápido, quedan muchas horas en que el pico no tiene trabajo.",
+    "fuentes": [
+     "vankrimpen-2005",
+     "aerni-2000"
+    ],
+    "cifras": [
+     "Comidas el doble de largas con harina (36–38 s frente a 15–19 s)"
+    ]
+   },
+   {
+    "id": "m_apetito",
+    "tipo": "m",
+    "texto": [
+     "Busca en la pluma el azufre y",
+     "la sal que faltan"
+    ],
+    "detalle": "La β-queratina de la pluma es rica en cisteína: la pluma de la vecina es la fuente de azufre más concentrada del galpón.",
+    "fuentes": [
+     "neal-1956",
+     "mcdonald-2022-cap4"
+    ],
+    "cifras": [
+     "El requerimiento de azufrados para la conducta supera al de producción"
+    ]
+   },
+   {
+    "id": "m_visual",
+    "tipo": "m",
+    "texto": [
+     "Plumas, piel y sangre resaltan",
+     "a la vista"
+    ],
+    "detalle": "Con luz fuerte el estímulo visual se amplifica; la piel roja y la sangre disparan más picoteo. La luz roja quita ese contraste.",
+    "fuentes": [
+     "kjaer-1999",
+     "hendrix-2020-mgahs"
+    ]
+   },
+   {
+    "id": "m_foco",
+    "tipo": "m",
+    "texto": [
+     "Ambiente pobre: la atención va",
+     "a las compañeras"
+    ],
+    "detalle": "Sin estímulos que ocupen al ave, las compañeras se vuelven el objeto más interesante y el picaje se contagia más rápido.",
+    "fuentes": [
+     "mazocco-2024"
+    ],
+    "cifras": [
+     "Cualquier objeto que ocupe la atención (bloques, cuerdas) ayuda, aunque no sea sustrato de forrajeo"
+    ]
+   },
+   {
+    "id": "m_estres",
+    "tipo": "m",
+    "texto": [
+     "Suma de estrés que supera el",
+     "umbral"
+    ],
+    "detalle": "Cada factor por separado puede estar bajo el umbral; el lote se rompe cuando la suma lo supera. Por eso corregir uno solo no basta.",
+    "fuentes": [
+     "cronin-2020",
+     "hendrix-2020-mgahs"
+    ],
+    "cifras": [
+     "La causa de un brote suele estar en 2–3 factores combinados"
+    ]
+   },
+   {
+    "id": "m_inflam",
+    "tipo": "m",
+    "texto": [
+     "Inflamación y picazón"
+    ],
+    "detalle": "Infección o parásitos activan la inmunidad; las citoquinas actúan sobre el cerebro y bajan el umbral del picaje.",
+    "fuentes": [
+     "michel-2022",
+     "brunberg-2011"
+    ]
+   },
+   {
+    "id": "m_cloaca",
+    "tipo": "m",
+    "texto": [
+     "Cloaca roja o evertida a la",
+     "vista"
+    ],
+    "detalle": "Durante y justo después de la puesta la mucosa queda expuesta; si hay luz o testigos, atrae el picoteo.",
+    "fuentes": [
+     "glatz-runge-2017-cap4",
+     "hendrix-2020-mgahs"
+    ]
+   },
+   {
+    "id": "m_aprend",
+    "tipo": "m",
+    "texto": [
+     "Se aprende y se imita en el",
+     "grupo"
+    ],
+    "detalle": "El picaje se transmite socialmente: los chillidos y saltos de la víctima atraen a otras. Las pollitas que pican plumas sueltas en la cama aprenden la pluma como blanco.",
+    "fuentes": [
+     "sanctuary-1954",
+     "glatz-runge-2017-cap4",
+     "rodenburg-2013",
+     "daigle-2015"
+    ],
+    "cifras": [
+     "El 78 % de las aves clasificadas como picadoras no lo eran en la evaluación siguiente"
+    ]
+   },
+   {
+    "id": "m_victima",
+    "tipo": "m",
+    "texto": [
+     "El ave distinta o débil se",
+     "vuelve blanco"
+    ],
+    "detalle": "Aves enfermas, chicas, cojas, de color raro o con plumas rotas atraen más picoteo.",
+    "fuentes": [
+     "glatz-runge-2017-cap4"
+    ]
+   },
+   {
+    "id": "e_gfp",
+    "tipo": "e",
+    "texto": [
+     "Picaje suave de plumas"
+    ],
+    "detalle": "Picoteo de las puntas sin arrancar. Ligado al sistema de baño de polvo. No se convierte en picaje severo, pero en una misma ave ambos se correlacionan.",
+    "fuentes": [
+     "rodenburg-2013",
+     "kjaer-1999",
+     "daigle-2015"
+    ],
+    "cifras": [
+     "A las 6 semanas casi todos los picoteos son suaves; solo ~2 % severos"
+    ]
+   },
+   {
+    "id": "e_sfp",
+    "tipo": "e",
+    "texto": [
+     "Picaje severo de plumas"
+    ],
+    "detalle": "Arranca plumas y deja zonas peladas en lomo, cola y alas. No cesa aunque la víctima se agache o se aleje. Una vez instalado es muy difícil de detener.",
+    "fuentes": [
+     "rodenburg-2013",
+     "michel-2022",
+     "bestman-2020"
+    ],
+    "cifras": [
+     "Presente en ~15 % de las aves a las 30 semanas",
+     "Hasta 86 % de los lotes afectados en sistemas sin jaula"
+    ]
+   },
+   {
+    "id": "e_agresivo",
+    "tipo": "e",
+    "texto": [
+     "Picaje agresivo"
+    ],
+    "detalle": "Cabeza, cresta y barbillas; es jerarquía o competencia por recursos. Cesa cuando la víctima se somete o escapa.",
+    "fuentes": [
+     "bestman-2020",
+     "fijn-2020"
+    ]
+   },
+   {
+    "id": "e_cloaca",
+    "tipo": "e",
+    "texto": [
+     "Picaje de cloaca"
+    ],
+    "detalle": "Ocurre durante o justo después de la puesta. Tiene su propia cadena causal; puede ser esporádico y el lote recuperarse.",
+    "fuentes": [
+     "glatz-runge-2017-cap1",
+     "gunnarsson-1999"
+    ],
+    "cifras": [
+     "Un lote normal puede volverse caníbal y matar aves en ~15 minutos"
+    ]
+   },
+   {
+    "id": "e_canibal",
+    "tipo": "e",
+    "texto": [
+     "Canibalismo de tejidos"
+    ],
+    "detalle": "Lesión con el pico y consumo de sangre y tejido de una compañera viva.",
+    "fuentes": [
+     "michel-2022",
+     "glatz-runge-2017-cap1"
+    ],
+    "cifras": [
+     "Referencia: canibalismo <1 % de la mortalidad total del lote"
+    ]
+   },
+   {
+    "id": "e_dedos",
+    "tipo": "e",
+    "texto": [
+     "Picaje de dedos en pollitos"
+    ],
+    "detalle": "Luz fuerte que deja ver los vasos sanguíneos, hambre, calor excesivo o corte de dedos; grave sobre cama oscura.",
+    "fuentes": [
+     "glatz-runge-2017-cap1"
+    ]
+   },
+   {
+    "id": "c_plumaje",
+    "tipo": "x",
+    "texto": [
+     "Plumaje perdido y piel expuesta"
+    ],
+    "detalle": "Pierde aislamiento (frío) y equilibrio en aviarios; la piel roja expuesta es un nuevo estímulo de picoteo.",
+    "fuentes": [
+     "michel-2022"
+    ]
+   },
+   {
+    "id": "c_heridas",
+    "tipo": "x",
+    "texto": [
+     "Heridas con sangre"
+    ],
+    "detalle": "La sangre visible mantiene el brote encendido: cierra el ciclo con el estímulo visual.",
+    "fuentes": [
+     "glatz-runge-2017-cap1",
+     "guia-causas-y-control-picaje"
+    ],
+    "cifras": [
+     "Lesiones de hasta 15 × 3 cm en pocos minutos"
+    ]
+   },
+   {
+    "id": "c_prolapso",
+    "tipo": "x",
+    "texto": [
+     "Prolapso"
+    ],
+    "detalle": "El picaje de cloaca lesiona y el tejido evertido atrae más picaje: un ciclo que se retroalimenta. Ver la red causal del prolapso.",
+    "fuentes": [
+     "red-causal-prolapso",
+     "glatz-runge-2017-cap1",
+     "alberta-2006-prolapso"
+    ],
+    "cifras": [
+     "≥80 % de los prolapsos por picaje de cloaca (dato discutido: Alberta no lo ve como causa principal)"
+    ],
+    "problema": "prolapso"
+   },
+   {
+    "id": "c_infeccion",
+    "tipo": "x",
+    "texto": [
+     "Colibacilosis y peritonitis"
+    ],
+    "detalle": "La cloaca herida es puerta de entrada. La colibacilosis es la primera causa de muerte en ponedoras.",
+    "fuentes": [
+     "fossum-2009"
+    ],
+    "cifras": [
+     "50 % de los lotes con colibacilosis tenían picaje de cloaca en las mismas aves"
+    ]
+   },
+   {
+    "id": "c_sangre",
+    "tipo": "x",
+    "texto": [
+     "Huevos con sangre en la cáscara"
+    ],
+    "detalle": "Alerta temprana de picaje de cloaca o de prolapso, visible antes que las heridas. Hay que revisar el ave para saber cuál de los dos es.",
+    "fuentes": [
+     "vandebraak-2023",
+     "investigacion-alza-huevos-con-sangre"
+    ],
+    "problema": "sangre"
+   },
+   {
+    "id": "c_muerte",
+    "tipo": "x",
+    "texto": [
+     "Muertes y descarte"
+    ],
+    "detalle": "La mortalidad no sigue al deterioro del plumaje: el daño productivo ocurre antes de verse en la curva.",
+    "fuentes": [
+     "estevez-2015",
+     "kjaer-1999"
+    ],
+    "cifras": [
+     "30,6 % de mortalidad por canibalismo con 30 lux en recría"
+    ]
+   }
+  ],
+  "flechas": [
+   {
+    "de": "o_cama",
+    "a": "m_forrajeo"
+   },
+   {
+    "de": "o_cama",
+    "a": "m_foco"
+   },
+   {
+    "de": "o_fibra",
+    "a": "m_forrajeo"
+   },
+   {
+    "de": "o_fibra",
+    "a": "m_comedero"
+   },
+   {
+    "de": "o_forma",
+    "a": "m_comedero"
+   },
+   {
+    "de": "o_energia",
+    "a": "m_comedero"
+   },
+   {
+    "de": "m_comedero",
+    "a": "m_forrajeo"
+   },
+   {
+    "de": "o_aa",
+    "a": "m_apetito"
+   },
+   {
+    "de": "o_na",
+    "a": "m_apetito"
+   },
+   {
+    "de": "o_cambio",
+    "a": "m_estres",
+    "tipo": "discutida"
+   },
+   {
+    "de": "o_luzint",
+    "a": "m_visual"
+   },
+   {
+    "de": "o_luzint",
+    "a": "e_dedos"
+   },
+   {
+    "de": "o_luzcambio",
+    "a": "m_estres"
+   },
+   {
+    "de": "o_parasitos",
+    "a": "m_inflam"
+   },
+   {
+    "de": "o_enfermedad",
+    "a": "m_inflam"
+   },
+   {
+    "de": "o_enfermedad",
+    "a": "m_victima"
+   },
+   {
+    "de": "o_enfermedad",
+    "a": "m_cloaca"
+   },
+   {
+    "de": "o_densidad",
+    "a": "m_estres"
+   },
+   {
+    "de": "o_comederos",
+    "a": "m_estres"
+   },
+   {
+    "de": "o_amoniaco",
+    "a": "m_estres"
+   },
+   {
+    "de": "o_calor",
+    "a": "m_estres"
+   },
+   {
+    "de": "o_social",
+    "a": "m_estres"
+   },
+   {
+    "de": "o_social",
+    "a": "e_agresivo"
+   },
+   {
+    "de": "o_sustos",
+    "a": "m_estres"
+   },
+   {
+    "de": "o_recria",
+    "a": "m_forrajeo"
+   },
+   {
+    "de": "o_recria",
+    "a": "m_aprend"
+   },
+   {
+    "de": "o_instal",
+    "a": "m_estres"
+   },
+   {
+    "de": "o_perchas",
+    "a": "e_cloaca"
+   },
+   {
+    "de": "o_uniform",
+    "a": "m_cloaca"
+   },
+   {
+    "de": "o_nidos",
+    "a": "m_cloaca"
+   },
+   {
+    "de": "o_parque",
+    "a": "m_cloaca"
+   },
+   {
+    "de": "o_inicio",
+    "a": "m_cloaca"
+   },
+   {
+    "de": "o_estirpe",
+    "a": "m_estres"
+   },
+   {
+    "de": "o_pico",
+    "a": "c_heridas"
+   },
+   {
+    "de": "m_forrajeo",
+    "a": "e_sfp"
+   },
+   {
+    "de": "m_foco",
+    "a": "e_sfp"
+   },
+   {
+    "de": "m_foco",
+    "a": "m_aprend"
+   },
+   {
+    "de": "m_apetito",
+    "a": "e_sfp"
+   },
+   {
+    "de": "m_apetito",
+    "a": "e_canibal"
+   },
+   {
+    "de": "m_visual",
+    "a": "e_sfp"
+   },
+   {
+    "de": "m_visual",
+    "a": "e_cloaca"
+   },
+   {
+    "de": "m_visual",
+    "a": "e_canibal"
+   },
+   {
+    "de": "m_estres",
+    "a": "e_sfp"
+   },
+   {
+    "de": "m_estres",
+    "a": "e_agresivo"
+   },
+   {
+    "de": "m_inflam",
+    "a": "e_sfp"
+   },
+   {
+    "de": "m_inflam",
+    "a": "m_estres"
+   },
+   {
+    "de": "m_cloaca",
+    "a": "e_cloaca"
+   },
+   {
+    "de": "m_aprend",
+    "a": "e_sfp"
+   },
+   {
+    "de": "m_aprend",
+    "a": "e_canibal"
+   },
+   {
+    "de": "m_victima",
+    "a": "e_sfp"
+   },
+   {
+    "de": "m_victima",
+    "a": "e_canibal"
+   },
+   {
+    "de": "e_gfp",
+    "a": "e_sfp",
+    "tipo": "discutida"
+   },
+   {
+    "de": "e_sfp",
+    "a": "c_plumaje"
+   },
+   {
+    "de": "c_plumaje",
+    "a": "m_visual",
+    "tipo": "ciclo"
+   },
+   {
+    "de": "e_sfp",
+    "a": "e_canibal"
+   },
+   {
+    "de": "e_canibal",
+    "a": "c_heridas"
+   },
+   {
+    "de": "e_cloaca",
+    "a": "c_heridas"
+   },
+   {
+    "de": "e_cloaca",
+    "a": "c_prolapso"
+   },
+   {
+    "de": "c_prolapso",
+    "a": "e_cloaca",
+    "tipo": "ciclo"
+   },
+   {
+    "de": "e_cloaca",
+    "a": "c_sangre"
+   },
+   {
+    "de": "c_prolapso",
+    "a": "c_sangre"
+   },
+   {
+    "de": "c_heridas",
+    "a": "m_visual",
+    "tipo": "ciclo"
+   },
+   {
+    "de": "c_heridas",
+    "a": "c_infeccion"
+   },
+   {
+    "de": "e_cloaca",
+    "a": "c_infeccion"
+   },
+   {
+    "de": "c_infeccion",
+    "a": "c_muerte"
+   },
+   {
+    "de": "e_canibal",
+    "a": "c_muerte"
+   },
+   {
+    "de": "c_prolapso",
+    "a": "c_muerte"
+   },
+   {
+    "de": "e_dedos",
+    "a": "c_heridas"
+   }
+  ],
+  "medidas": [
+   {
+    "id": "p_paja",
+    "titulo": "Paja o heno para picotear desde el día 1",
+    "actua": [
+     "o_cama",
+     "m_forrajeo"
+    ],
+    "puntos": [
+     "Fardo de paja o alfalfa, cama suelta, grano esparcido sobre la paja. Rinde mucho más antes de la semana 10.",
+     "≥10 g/pollita/día en recría y ≥16 g/gallina/día en postura",
+     "Larvas de mosca soldado: 1 g/gallina/día en la cama cada 3 días"
+    ],
+    "fuentes": [
+     "rodenburg-2013",
+     "paneru-2024",
+     "tahamtani-2025"
+    ]
+   },
+   {
+    "id": "p_fibra",
+    "titulo": "Fibra cruda ≥4 %",
+    "actua": [
+     "o_fibra"
+    ],
+    "puntos": [
+     "Cascarilla de avena o de arroz, salvado, alfalfa. Ante un problema, subir la fibra ~10 %. No es cura, baja la probabilidad."
+    ],
+    "fuentes": [
+     "glatz-runge-2017-cap4",
+     "fedna-2018-ponedoras"
+    ]
+   },
+   {
+    "id": "p_harina",
+    "titulo": "Harina gruesa en vez de pellet",
+    "actua": [
+     "m_comedero"
+    ],
+    "puntos": [
+     "Alarga el tiempo en el comedero y ocupa el pico."
+    ],
+    "fuentes": [
+     "vankrimpen-2005",
+     "glatz-runge-2017-cap4"
+    ]
+   },
+   {
+    "id": "p_luz",
+    "titulo": "Luz ≤10 lux y pareja",
+    "actua": [
+     "o_luzint"
+    ],
+    "puntos": [
+     "Medir con luxómetro a la altura de las aves; tapar manchas de sol; sin cambios bruscos. Subir la luz solo durante la inspección.",
+     "3–5 lux pollitas; 5–10 lux ponedoras; nunca menos de 3 lux"
+    ],
+    "fuentes": [
+     "glatz-runge-2017-cap4",
+     "kjaer-1999"
+    ]
+   },
+   {
+    "id": "p_luzroja",
+    "titulo": "Bajar la luz o luz roja (en brote)",
+    "actua": [
+     "m_visual"
+    ],
+    "puntos": [
+     "Efecto en horas, pero corrige el síntoma: al volver la luz, vuelve el picaje si no se encontró la causa.",
+     "Es la medida más usada (51 % de los productores)"
+    ],
+    "fuentes": [
+     "estevez-2015",
+     "coton-2019"
+    ]
+   },
+   {
+    "id": "p_formula",
+    "titulo": "Revisar la fórmula y la partida",
+    "actua": [
+     "m_apetito"
+    ],
+    "puntos": [
+     "Met+Cys, lisina, proteína y sodio; que la sal esté. Formular para la pluma, no solo para el huevo.",
+     "Met+Cys ≥5,8 g/kg · Lys ≥8,2 g/kg · PB ≥150 g/kg · Na ≥1,5 g/kg"
+    ],
+    "fuentes": [
+     "causas-picaje-evidencia-y-acciones",
+     "neal-1956"
+    ]
+   },
+   {
+    "id": "p_acaro",
+    "titulo": "Revisión nocturna de ácaro y desparasitación",
+    "actua": [
+     "o_parasitos"
+    ],
+    "puntos": [
+     "Siempre primero: linterna de noche en perchas y grietas; coprológico."
+    ],
+    "fuentes": [
+     "michel-2022",
+     "causas-picaje-evidencia-y-acciones"
+    ]
+   },
+   {
+    "id": "p_perchas",
+    "titulo": "Perchas antes de la semana 4",
+    "actua": [
+     "o_perchas"
+    ],
+    "puntos": [
+     "Específico contra picaje de cloaca y huevos de piso."
+    ],
+    "fuentes": [
+     "gunnarsson-1999"
+    ]
+   },
+   {
+    "id": "p_nidos",
+    "titulo": "Nidos oscuros, suficientes y a tiempo",
+    "actua": [
+     "o_nidos"
+    ],
+    "puntos": [
+     "Abiertos 10–14 días antes de la postura, en la zona más fresca y oscura; recoger rápido los huevos de piso."
+    ],
+    "fuentes": [
+     "glatz-runge-2017-cap4",
+     "huevos-piso-nidos"
+    ]
+   },
+   {
+    "id": "p_uniform",
+    "titulo": "Peso al estándar y uniformidad ≥80 %",
+    "actua": [
+     "o_uniform"
+    ],
+    "puntos": [
+     "Pesar en recría; separar en ≥2 grupos un lote disparejo; no adelantar la postura en pollitas chicas."
+    ],
+    "fuentes": [
+     "glatz-runge-2017-cap4"
+    ]
+   },
+   {
+    "id": "p_retirar",
+    "titulo": "Retirar heridas e instigadoras al verlas",
+    "actua": [
+     "c_heridas",
+     "m_aprend"
+    ],
+    "puntos": [
+     "Aislar toda ave con herida abierta. Ojo: retirar 'las picadoras' rinde poco, porque el rol cambia de una semana a otra."
+    ],
+    "fuentes": [
+     "glatz-runge-2017-cap4",
+     "daigle-2015"
+    ]
+   },
+   {
+    "id": "p_enriq",
+    "titulo": "Objetos para picotear desde la recría",
+    "actua": [
+     "m_foco"
+    ],
+    "puntos": [
+     "Cuerda blanca de polipropileno, bloques o piedras de picoteo colgados; rotar lugar y objeto.",
+     "Ponerlos recién en postura, como reacción: +19,1 % de daño de plumas"
+    ],
+    "fuentes": [
+     "glatz-runge-2017-cap4",
+     "decina-2019"
+    ]
+   },
+   {
+    "id": "p_despique",
+    "titulo": "Despique bien hecho",
+    "actua": [
+     "c_heridas"
+    ],
+    "puntos": [
+     "No reduce cuántas veces pican; reduce el daño de cada picotazo."
+    ],
+    "fuentes": [
+     "mens-2020",
+     "glatz-runge-2017-cap7"
+    ]
+   },
+   {
+    "id": "p_nomezclar",
+    "titulo": "No mezclar ni reubicar aves",
+    "actua": [
+     "o_social"
+    ],
+    "puntos": [
+     "Trasladar de noche; asegurar alimento y agua a la llegada."
+    ],
+    "fuentes": [
+     "birkl-2019",
+     "glatz-runge-2017-cap4"
+    ]
+   }
+  ],
+  "notaMedidas": "Cada medida corta uno o más factores de origen. Lo que se pone recién cuando aparece el problema rinde menos que lo que estaba desde la recría.",
+  "noFunciona": [
+   [
+    "Poner enriquecimiento recién cuando aparece el problema",
+    "+19,1 % de daño de plumas en lotes que no lo tuvieron en recría"
+   ],
+   [
+    "Arena como único sustrato",
+    "Activa el baño de polvo, no el forrajeo"
+   ],
+   [
+    "Retirar a las 'picadoras' identificadas",
+    "El 78 % no lo es en la evaluación siguiente"
+   ],
+   [
+    "Bajar la luz y dar por resuelto",
+    "Al subir la luz, vuelve"
+   ],
+   [
+    "Despicar como solución",
+    "Baja el daño, no la frecuencia"
+   ],
+   [
+    "Restringir el alimento",
+    "Agrava el canibalismo"
+   ],
+   [
+    "Esperar a que suba la mortalidad",
+    "El daño ocurre antes de verse en la curva"
+   ]
+  ]
+ },
+ "brote": {
+  "confirmar": [
+   "Si el picoteo **para** cuando la víctima se agacha o se aleja, es jerarquía (picaje agresivo); si **no para**, es picaje de plumas.",
+   "Picaje suave, severo, de cloaca y agresivo tienen causas en parte distintas y, a nivel de grupo, no se convierten uno en otro: marque todos los que vea."
+  ],
+  "tipos": [
+   {
+    "id": "sfp",
+    "titulo": "Picaje severo de plumas",
+    "pista": "Arranca plumas; zonas peladas en lomo, cola o alas; no para aunque la víctima se agache."
+   },
+   {
+    "id": "gfp",
+    "titulo": "Picaje suave de plumas",
+    "pista": "Picotea puntas sin arrancar; poco daño; más común en jóvenes."
+   },
+   {
+    "id": "cloaca",
+    "titulo": "Picaje de cloaca",
+    "pista": "Heridas en la cloaca, prolapsos, huevos con sangre en la cáscara."
+   },
+   {
+    "id": "canibal",
+    "titulo": "Canibalismo de tejidos",
+    "pista": "Heridas abiertas con pérdida de tejido; aves muertas comidas."
+   },
+   {
+    "id": "agresivo",
+    "titulo": "Picaje agresivo",
+    "pista": "Cabeza, cresta y barbillas; para cuando la víctima se somete."
+   },
+   {
+    "id": "dedos",
+    "titulo": "Picaje de dedos (pollitos)",
+    "pista": "Dedos picados o sangrando en la primera etapa de cría."
+   }
+  ],
+  "hoy": [
+   "Retirar y aislar toda ave con herida abierta: la sangre mantiene el brote",
+   "Bajar la luz o usar luz roja (efecto en horas; compra tiempo, no corrige la causa)",
+   "Fardo de paja o alfalfa accesible",
+   "Revisión nocturna de ácaro rojo",
+   "Sal en agua 0,5–1 kg/1000 L por 24–48 h, solo con agua a voluntad",
+   "Necropsia de 5–10 bajas: molleja, cloaca, parásitos, grasa"
+  ],
+  "notaHoy": "Bajar la luz compra tiempo pero no corrige la causa. La sal en el agua solo con agua a voluntad.",
+  "ventanas": [
+   {
+    "id": "cria",
+    "titulo": "Cría y recría",
+    "rango": "0–16 sem",
+    "hasta": 17
+   },
+   {
+    "id": "inicio",
+    "titulo": "Inicio de postura",
+    "rango": "17–30 sem",
+    "hasta": 30
+   },
+   {
+    "id": "mitad",
+    "titulo": "Pico y mitad",
+    "rango": "30–60 sem",
+    "hasta": 60
+   },
+   {
+    "id": "final",
+    "titulo": "Final del ciclo",
+    "rango": ">60 sem",
+    "hasta": null
+   }
+  ],
+  "notaVentanas": "Usar la edad del lote al inicio del brote, no la actual.",
+  "hipotesis": [
+   {
+    "id": "H1",
+    "titulo": "Sin destino para el forrajeo: cama, material, fibra",
+    "peso": {
+     "cria": 3,
+     "inicio": 2,
+     "mitad": 2,
+     "final": 2
+    },
+    "pesoTipo": {
+     "sfp": 3,
+     "canibal": 2,
+     "cloaca": 1,
+     "gfp": 1
+    },
+    "verificar": [
+     "Cama: 5–10 cm, seca y suelta; ¿hay paja, heno o fardos?",
+     "Necropsia: ¿plumas en la molleja de las bajas?",
+     "Fibra cruda de la fórmula (objetivo ≥4 %, mínimo 3,5 %)"
+    ],
+    "hacer": [
+     "Fardo de paja o alfalfa hoy; grano esparcido sobre la paja",
+     "Subir la fibra ~10 % con cascarilla de avena",
+     "Objetos para picotear y rotarlos (sirven más si ya estaban en la recría)"
+    ],
+    "fuentes": [
+     "decina-2019",
+     "rodenburg-2013",
+     "michel-2022",
+     "glatz-runge-2017-cap4",
+     "miller-1937",
+     "hendrix-2020-mgahs",
+     "mazocco-2024",
+     "paneru-2024",
+     "tahamtani-2025",
+     "fedna-2018-ponedoras"
+    ],
+    "nodos": [
+     "o_cama",
+     "o_fibra",
+     "m_forrajeo",
+     "m_foco",
+     "p_paja",
+     "p_fibra",
+     "p_enriq"
+    ]
+   },
+   {
+    "id": "H2",
+    "titulo": "El alimento se acaba rápido: ración corta, pellet, energía alta",
+    "peso": {
+     "cria": 2,
+     "inicio": 2,
+     "mitad": 2,
+     "final": 2
+    },
+    "pesoTipo": {
+     "sfp": 3,
+     "cloaca": 2,
+     "canibal": 2
+    },
+    "verificar": [
+     "¿Ración fija en gramos por ave? ¿Se recortó en las semanas previas al brote?",
+     "Forma física del alimento (pellet, migas o harina)",
+     "¿El comedero queda vacío horas antes de apagar la luz?",
+     "Energía de la fórmula frente al estándar de la línea"
+    ],
+    "hacer": [
+     "No restringir: ajustar la ración al consumo o dar a voluntad",
+     "Pasar a harina gruesa",
+     "Repartir en más entregas en el día",
+     "Ajustar la energía si está alta"
+    ],
+    "fuentes": [
+     "estevez-2015",
+     "vankrimpen-2005",
+     "aerni-2000",
+     "glatz-runge-2017-cap4",
+     "hendrix-2020-mgahs",
+     "sanctuary-1954"
+    ],
+    "nodos": [
+     "o_forma",
+     "o_energia",
+     "m_comedero",
+     "p_harina"
+    ]
+   },
+   {
+    "id": "H3",
+    "titulo": "Luz intensa, desigual o con cambios bruscos",
+    "peso": {
+     "cria": 2,
+     "inicio": 3,
+     "mitad": 2,
+     "final": 2
+    },
+    "pesoTipo": {
+     "canibal": 3,
+     "cloaca": 3,
+     "dedos": 3,
+     "sfp": 2
+    },
+    "verificar": [
+     "Luxómetro a la altura de las aves en 10 puntos",
+     "Manchas de sol, pop-holes grandes, ampolletas directas o que parpadean",
+     "Cambios recientes de horas o intensidad; traslado desde un galpón con luz controlada"
+    ],
+    "hacer": [
+     "Bajar a ≤10 lux (5–10 ponedoras; 3–5 pollitas) y repartir la luz",
+     "En brote: luz roja o atenuada para ganar tiempo",
+     "No subir horas ni intensidad de golpe"
+    ],
+    "fuentes": [
+     "kjaer-1999",
+     "decina-2019",
+     "glatz-runge-2017-cap4",
+     "hendrix-2020-mgahs",
+     "coton-2019",
+     "estevez-2015"
+    ],
+    "nodos": [
+     "o_luzint",
+     "o_luzcambio",
+     "m_visual",
+     "p_luz",
+     "p_luzroja"
+    ]
+   },
+   {
+    "id": "H4",
+    "titulo": "Falta azufre, proteína o sal en la fórmula",
+    "peso": {
+     "cria": 2,
+     "inicio": 2,
+     "mitad": 2,
+     "final": 2
+    },
+    "pesoTipo": {
+     "sfp": 3,
+     "canibal": 2,
+     "cloaca": 1,
+     "gfp": 1
+    },
+    "verificar": [
+     "Fórmula y análisis de la partida: Met+Cys ≥5,8 g/kg, Lys ≥8,2 g/kg, PB ≥150 g/kg, Na ≥1,5 g/kg",
+     "¿Cambió la partida, la fórmula o el proveedor?",
+     "Consumo real frente al estándar (si comen poco, llega menos de todo)"
+    ],
+    "hacer": [
+     "Corregir la fórmula con el nutricionista",
+     "Metionina en agua: 1,5 g/L por 4 días y 1,0 g/L por 3 días",
+     "Sal 0,5–1 kg/1000 L por 24–48 h, solo con agua a voluntad"
+    ],
+    "fuentes": [
+     "neal-1956",
+     "rodenburg-2013",
+     "mcdonald-2022-cap4",
+     "glatz-runge-2017-cap4",
+     "macelline-2021",
+     "mcdonald-2022-cap6",
+     "hendrix-2020-mgahs",
+     "heerkens-2015",
+     "causas-picaje-evidencia-y-acciones"
+    ],
+    "nodos": [
+     "o_aa",
+     "o_na",
+     "o_cambio",
+     "m_apetito",
+     "p_formula"
+    ]
+   },
+   {
+    "id": "H5",
+    "titulo": "Ácaro rojo, parásitos o enfermedad",
+    "peso": {
+     "cria": 1,
+     "inicio": 2,
+     "mitad": 3,
+     "final": 3
+    },
+    "pesoTipo": {
+     "sfp": 3,
+     "cloaca": 2,
+     "canibal": 2,
+     "agresivo": 1
+    },
+    "verificar": [
+     "Revisión nocturna con linterna: ácaro rojo en perchas, nidos y grietas",
+     "Piojos alrededor de la cloaca; coprológico",
+     "Diarrea, cloacas sucias; aves débiles, cojas o muertas en el galpón; necropsia de 5–10 bajas"
+    ],
+    "hacer": [
+     "Tratar el ácaro y desparasitar según el hallazgo",
+     "Retirar aves enfermas y muertas a diario",
+     "Tratar la causa de la diarrea"
+    ],
+    "fuentes": [
+     "michel-2022",
+     "hendrix-2020-mgahs",
+     "glatz-runge-2017-cap4",
+     "brunberg-2011",
+     "causas-picaje-evidencia-y-acciones"
+    ],
+    "nodos": [
+     "o_parasitos",
+     "o_enfermedad",
+     "m_inflam",
+     "m_victima",
+     "p_acaro"
+    ]
+   },
+   {
+    "id": "H6",
+    "titulo": "Galpón: densidad, agua, comederos, aire y temperatura",
+    "peso": {
+     "cria": 2,
+     "inicio": 2,
+     "mitad": 2,
+     "final": 2
+    },
+    "pesoTipo": {
+     "agresivo": 3,
+     "sfp": 2,
+     "canibal": 2
+    },
+    "verificar": [
+     "Aves por m² reales (con ≥12 aves/m² el picaje persiste)",
+     "Caudal de niples 70–100 ml/min; espacio de comedero; corriente en líneas",
+     "Amoníaco (pican los ojos al entrar), temperatura y corrientes; uso del parque"
+    ],
+    "hacer": [
+     "Bajar la densidad o abrir más superficie",
+     "Corregir agua y comederos",
+     "Ventilar y sacar estiércol durante el ciclo"
+    ],
+    "fuentes": [
+     "glatz-runge-2017-cap4",
+     "estevez-2015",
+     "coton-2019",
+     "hendrix-2020-mgahs",
+     "pauta-verificacion-estado-basal-picaje",
+     "decina-2019",
+     "oluwagbenga-2023",
+     "cronin-2020"
+    ],
+    "nodos": [
+     "o_densidad",
+     "o_comederos",
+     "o_amoniaco",
+     "o_calor",
+     "m_estres"
+    ]
+   },
+   {
+    "id": "H7",
+    "titulo": "Mezclas, traslados y sustos",
+    "peso": {
+     "cria": 2,
+     "inicio": 3,
+     "mitad": 1,
+     "final": 1
+    },
+    "pesoTipo": {
+     "agresivo": 3,
+     "sfp": 2,
+     "canibal": 1
+    },
+    "verificar": [
+     "¿Se mezclaron grupos o se movieron aves?",
+     "Ruido, vehículos, visitas, personal nuevo, depredadores",
+     "¿El brote empezó a los pocos días de un traslado?"
+    ],
+    "hacer": [
+     "No mezclar ni reubicar; trasladar de noche",
+     "Rutina fija y personal habitual",
+     "Cerrar el paso a depredadores"
+    ],
+    "fuentes": [
+     "birkl-2019",
+     "glatz-runge-2017-cap4",
+     "cronin-2020",
+     "hendrix-2020-mgahs",
+     "sanctuary-1954",
+     "rodenburg-2013",
+     "daigle-2015"
+    ],
+    "nodos": [
+     "o_social",
+     "o_sustos",
+     "m_estres",
+     "m_aprend",
+     "p_nomezclar"
+    ]
+   },
+   {
+    "id": "H8",
+    "titulo": "Inicio de postura: cloaca expuesta",
+    "peso": {
+     "cria": 0,
+     "inicio": 3,
+     "mitad": 1,
+     "final": 0
+    },
+    "pesoTipo": {
+     "cloaca": 3,
+     "canibal": 1
+    },
+    "verificar": [
+     "Peso y uniformidad al inicio de postura (≥80 % dentro de ±10 %)",
+     "Nidos: abiertos 10–14 días antes, oscuros y suficientes; huevos de piso",
+     "Perchas desde la semana 4; fecha de la primera salida al parque; prolapsos y huevos con sangre"
+    ],
+    "hacer": [
+     "Oscurecer el interior de los nidos; luz del nido 2–3 h antes",
+     "Recoger rápido los huevos de piso",
+     "Retrasar la salida al parque hasta después del pico; separar las livianas"
+    ],
+    "fuentes": [
+     "swayne-2020-cap30",
+     "glatz-runge-2017-cap1",
+     "glatz-runge-2017-cap4",
+     "hendrix-2020-mgahs",
+     "gunnarsson-1999",
+     "huevos-piso-nidos"
+    ],
+    "nodos": [
+     "o_inicio",
+     "o_uniform",
+     "o_nidos",
+     "o_perchas",
+     "o_parque",
+     "m_cloaca",
+     "p_nidos",
+     "p_uniform",
+     "p_perchas"
+    ]
+   },
+   {
+    "id": "H9",
+    "titulo": "El problema viene de la recría",
+    "peso": {
+     "cria": 3,
+     "inicio": 3,
+     "mitad": 1,
+     "final": 0
+    },
+    "pesoTipo": {
+     "sfp": 3,
+     "canibal": 2,
+     "gfp": 2,
+     "cloaca": 1
+    },
+    "verificar": [
+     "¿El lote ya se picaba en la recría?",
+     "Sustrato en las primeras 4 semanas; plumas cortas en la cama de recría",
+     "Scoring a la semana 16 (≥20 % con daño en plumaje oculto); instalaciones de recría parecidas a las de postura"
+    ],
+    "hacer": [
+     "Este lote: manejo de brote y material constante para picotear",
+     "Próximo lote: corregir la recría, donde la medida rinde más",
+     "Pedir al proveedor de pollitas datos de picaje en recría"
+    ],
+    "fuentes": [
+     "glatz-runge-2017-cap4",
+     "glatz-runge-2017-cap1",
+     "paneru-2024",
+     "kjaer-1999",
+     "bestman-2020",
+     "sanctuary-1954",
+     "rodenburg-2013",
+     "daigle-2015",
+     "tahamtani-2025",
+     "decina-2019"
+    ],
+    "nodos": [
+     "o_recria",
+     "o_instal",
+     "m_aprend",
+     "p_paja",
+     "p_enriq"
+    ]
+   },
+   {
+    "id": "H10",
+    "titulo": "Pico y estirpe",
+    "peso": {
+     "cria": 1,
+     "inicio": 2,
+     "mitad": 2,
+     "final": 2
+    },
+    "pesoTipo": {
+     "canibal": 2,
+     "sfp": 1,
+     "cloaca": 1
+    },
+    "verificar": [
+     "Revisar 50 picos: asimetrías o rebrote",
+     "Estirpe y su historial de plumaje en otros lotes"
+    ],
+    "hacer": [
+     "Corregir la técnica de despique en el próximo lote",
+     "Elegir líneas con mejor comportamiento de plumaje"
+    ],
+    "fuentes": [
+     "hendrix-2020-mgahs",
+     "glatz-runge-2017-cap4",
+     "glatz-runge-2017-cap7",
+     "coton-2019",
+     "rodenburg-2013",
+     "mens-2020"
+    ],
+    "nodos": [
+     "o_pico",
+     "o_estirpe",
+     "p_despique"
+    ]
+   }
+  ],
+  "pistas": [
+   {
+    "grupo": "Cama y plumas",
+    "pistas": [
+     {
+      "id": "q1",
+      "texto": "Plumas enteras o trozos en la molleja de las bajas",
+      "apunta": {
+       "H1": 2,
+       "H4": 1
+      }
+     },
+     {
+      "id": "q2",
+      "texto": "Cama húmeda, apelmazada o sin paja; piso de rejilla",
+      "apunta": {
+       "H1": 2,
+       "H6": 1
+      }
+     },
+     {
+      "id": "q3",
+      "texto": "Aves comiendo plumas del suelo",
+      "apunta": {
+       "H1": 1,
+       "H4": 2
+      }
+     }
+    ]
+   },
+   {
+    "grupo": "Alimento",
+    "pistas": [
+     {
+      "id": "q4",
+      "texto": "Alimento en pellet o migas",
+      "apunta": {
+       "H2": 2
+      }
+     },
+     {
+      "id": "q5",
+      "texto": "El comedero queda vacío horas antes de apagar la luz",
+      "apunta": {
+       "H2": 2,
+       "H6": 1
+      }
+     },
+     {
+      "id": "q6",
+      "texto": "Cambio de partida, fórmula o proveedor en las semanas previas al brote",
+      "apunta": {
+       "H4": 2
+      }
+     },
+     {
+      "id": "q7",
+      "texto": "Consumo bajo el estándar de la línea",
+      "apunta": {
+       "H4": 2,
+       "H6": 1
+      }
+     },
+     {
+      "id": "q28",
+      "texto": "Ración fija o recortada (g/ave) en las semanas previas al brote",
+      "apunta": {
+       "H2": 2,
+       "H4": 1
+      }
+     }
+    ]
+   },
+   {
+    "grupo": "Luz",
+    "pistas": [
+     {
+      "id": "q8",
+      "texto": "Manchas de sol, pop-holes grandes o ampolletas directas",
+      "apunta": {
+       "H3": 2
+      }
+     },
+     {
+      "id": "q9",
+      "texto": "Se subió la luz o cambió el programa antes del brote",
+      "apunta": {
+       "H3": 2,
+       "H8": 1
+      }
+     },
+     {
+      "id": "q10",
+      "texto": "Más de 10 lux a la altura de las aves",
+      "apunta": {
+       "H3": 2
+      }
+     }
+    ]
+   },
+   {
+    "grupo": "Salud",
+    "pistas": [
+     {
+      "id": "q11",
+      "texto": "Ácaros de noche en perchas; aves pálidas o rascándose",
+      "apunta": {
+       "H5": 3
+      }
+     },
+     {
+      "id": "q12",
+      "texto": "Diarrea o cloacas sucias o inflamadas",
+      "apunta": {
+       "H5": 2,
+       "H8": 1
+      }
+     },
+     {
+      "id": "q13",
+      "texto": "Aves débiles, cojas o muertas que quedan en el galpón",
+      "apunta": {
+       "H5": 2
+      }
+     }
+    ]
+   },
+   {
+    "grupo": "Galpón",
+    "pistas": [
+     {
+      "id": "q14",
+      "texto": "Huele a amoníaco o pican los ojos al entrar",
+      "apunta": {
+       "H6": 2
+      }
+     },
+     {
+      "id": "q15",
+      "texto": "Muchas aves por m² o casi no salen al parque",
+      "apunta": {
+       "H6": 2
+      }
+     },
+     {
+      "id": "q16",
+      "texto": "Niples con poco caudal o comederos cortos",
+      "apunta": {
+       "H6": 2
+      }
+     },
+     {
+      "id": "q17",
+      "texto": "Calor, frío o corrientes de aire",
+      "apunta": {
+       "H6": 2
+      }
+     }
+    ]
+   },
+   {
+    "grupo": "Social",
+    "pistas": [
+     {
+      "id": "q18",
+      "texto": "Se mezclaron o movieron aves",
+      "apunta": {
+       "H7": 3
+      }
+     },
+     {
+      "id": "q19",
+      "texto": "Ruido, visitas, personal nuevo o depredadores",
+      "apunta": {
+       "H7": 2
+      }
+     }
+    ]
+   },
+   {
+    "grupo": "Postura y cloaca",
+    "pistas": [
+     {
+      "id": "q20",
+      "texto": "Huevos de piso o nidos claros u ocupados",
+      "apunta": {
+       "H8": 2
+      }
+     },
+     {
+      "id": "q21",
+      "texto": "Pollitas livianas o lote disparejo",
+      "apunta": {
+       "H8": 2
+      }
+     },
+     {
+      "id": "q22",
+      "texto": "Prolapsos o huevos con sangre en la cáscara",
+      "apunta": {
+       "H8": 2
+      }
+     },
+     {
+      "id": "q23",
+      "texto": "Salieron al parque antes del pico",
+      "apunta": {
+       "H8": 2
+      }
+     }
+    ]
+   },
+   {
+    "grupo": "Origen",
+    "pistas": [
+     {
+      "id": "q24",
+      "texto": "El lote ya se picaba en la recría",
+      "apunta": {
+       "H9": 3
+      }
+     },
+     {
+      "id": "q25",
+      "texto": "Recría en instalaciones muy distintas",
+      "apunta": {
+       "H9": 2
+      }
+     },
+     {
+      "id": "q26",
+      "texto": "Despique disparejo o con rebrote",
+      "apunta": {
+       "H10": 2
+      }
+     },
+     {
+      "id": "q27",
+      "texto": "Estirpe con historial de picaje",
+      "apunta": {
+       "H10": 2
+      }
+     }
+    ]
+   }
+  ],
+  "notaPistas": "Marque solo lo que había **antes** de que empezara el brote.",
+  "respuestas": [
+   {
+    "id": "r1",
+    "titulo": "Se bajaron horas de luz",
+    "nota": "No reducir la duración de la luz en postura: lo que se asocia al picaje es la intensidad (lux), no las horas.",
+    "fuentes": [
+     "iluminacion",
+     "kjaer-1999"
+    ]
+   },
+   {
+    "id": "r2",
+    "titulo": "Se bajó la intensidad o se puso luz roja",
+    "nota": "Compra tiempo (horas). Si en ese tiempo no se encuentra la causa, el picaje vuelve al subir la luz.",
+    "fuentes": [
+     "estevez-2015",
+     "coton-2019"
+    ]
+   },
+   {
+    "id": "r3",
+    "titulo": "Se agregó grano entero (avena) o se cambió el alimento",
+    "nota": "La avena entera con cáscara puede causar impactación de buche. Dar la fibra como fardo de paja o alfalfa, o cascarilla en la fórmula.",
+    "fuentes": [
+     "impactacion-buche-molleja-fibra"
+    ]
+   },
+   {
+    "id": "r4",
+    "titulo": "Se subió la ración",
+    "nota": "Coherente: restringir el alimento agrava el canibalismo. No corrige la causa por sí sola.",
+    "fuentes": [
+     "neal-1956"
+    ]
+   },
+   {
+    "id": "r5",
+    "titulo": "Vitaminas o electrolitos en el agua",
+    "nota": "Apoyo de pocos días; no corrige la causa.",
+    "fuentes": [
+     "guia-causas-y-control-picaje"
+    ]
+   },
+   {
+    "id": "r6",
+    "titulo": "Se pusieron objetos o material para picotear recién ahora",
+    "nota": "En postura rinde poco si el lote no los tuvo en la recría (+19,1 % de daño de plumas). Igual conviene mantenerlos y rotarlos.",
+    "fuentes": [
+     "decina-2019"
+    ]
+   },
+   {
+    "id": "r7",
+    "titulo": "Se retiraron las aves picadoras",
+    "nota": "Rinde poco: el 78 % de las 'picadoras' no lo es en la evaluación siguiente. Retirar las heridas sí sirve.",
+    "fuentes": [
+     "daigle-2015"
+    ]
+   },
+   {
+    "id": "r8",
+    "titulo": "Producto calmante (melisa, pasiflora)",
+    "nota": "Sin evidencia sólida en aves (nivel C). Si se usa, medir plumaje y mortalidad antes y después, y vigilar el picaje agresivo.",
+    "fuentes": [
+     "brass-2025"
+    ]
+   }
+  ],
+  "notaPuntaje": "Puntaje = tipo de picaje (0–3, el mayor entre los marcados) + edad (0–3) + cada pista (1–3). Los pesos son razonamiento propio, no vienen de una fuente: solo ordenan qué revisar primero."
+ },
+ "fuentes": [
+  {
+   "id": "aerni-2000",
+   "cita": "Aerni, El-Lethey & Wechsler 2000 — Material de forrajeo y forma del pienso sobre picaje de plumas",
+   "wiki": "fuente-aerni-2000"
+  },
+  {
+   "id": "alberta-2006-prolapso",
+   "cita": "Alberta Agriculture 2006 — Prolapse in laying hens",
+   "wiki": "fuente-alberta-2006-prolapso"
+  },
+  {
+   "id": "estevez-2015",
+   "cita": "Análisis multifactorial del picaje en avicultura — Sistemas Alternativos (Estevez 2015)",
+   "wiki": "fuente-estevez-2015"
+  },
+  {
+   "id": "brass-2025",
+   "cita": "Brass et al. 2025 — Effect of passionflower supplementation on feather pecking in laying hens",
+   "wiki": "fuente-brass-2025"
+  },
+  {
+   "id": "brunberg-2011",
+   "cita": "Brunberg et al. 2011 — Feather pecking behavior in laying hens: Hypothalamic gene expression",
+   "wiki": "fuente-brunberg-2011"
+  },
+  {
+   "id": "coton-2019",
+   "cita": "Coton et al. 2019 — Picaje de plumas en jaulas enriquecidas y free-range (Francia)",
+   "wiki": "fuente-coton-2019"
+  },
+  {
+   "id": "cronin-2020",
+   "cita": "Cronin & Glatz 2020 — Feather Pecking and Cannibalism in Laying Hens: A Review",
+   "wiki": "fuente-cronin-2020"
+  },
+  {
+   "id": "daigle-2015",
+   "cita": "Daigle et al. 2015 — Individual consistency of feather pecking behavior in laying hens",
+   "wiki": "fuente-daigle-2015"
+  },
+  {
+   "id": "decina-2019",
+   "cita": "Decina et al. 2019 — A cross-sectional study on feather cover damage in Canadian laying hens in non-cage housing systems",
+   "wiki": "fuente-decina-2019"
+  },
+  {
+   "id": "swayne-2020-cap30",
+   "cita": "Diseases of Poultry 14ª ed. — Cap. 30: Developmental, Metabolic, and Other Noninfectious Disorders (Swayne et al. 2020)",
+   "wiki": "fuente-swayne-2020-cap30"
+  },
+  {
+   "id": "fedna-2018-ponedoras",
+   "cita": "FEDNA 2018 — Gallinas ponedoras (Normas FEDNA Avicultura, 2ª ed., bloque E)",
+   "wiki": "fuente-fedna-2018-ponedoras"
+  },
+  {
+   "id": "fijn-2020",
+   "cita": "Fijn et al. 2020 — Importance of Basic Research on the Causes of Feather Pecking in Relation to Welfare",
+   "wiki": "fuente-fijn-2020"
+  },
+  {
+   "id": "fossum-2009",
+   "cita": "Fossum et al. 2009 — Causas de mortalidad en ponedoras en distintos sistemas de alojamiento, Suecia 2001–2004",
+   "wiki": "fuente-fossum-2009"
+  },
+  {
+   "id": "macelline-2021",
+   "cita": "Fuente: Macelline et al. 2021 — Amino acid requirements for laying hens: a comprehensive review",
+   "wiki": "fuente-macelline-2021"
+  },
+  {
+   "id": "glatz-runge-2017-cap1",
+   "cita": "Glatz & Runge 2017 — Managing Fowl Behaviour, Cap. 1: Reconocer los problemas de picaje (Australian Eggs)",
+   "wiki": "fuente-glatz-runge-2017-cap1"
+  },
+  {
+   "id": "glatz-runge-2017-cap4",
+   "cita": "Glatz & Runge 2017 — Managing Fowl Behaviour, Cap. 4: Estrategias para controlar el picaje de plumas y el canibalismo (Australian Eggs)",
+   "wiki": "fuente-glatz-runge-2017-cap4"
+  },
+  {
+   "id": "glatz-runge-2017-cap7",
+   "cita": "Glatz & Runge 2017 — Managing Fowl Behaviour, Cap. 7: Evaluación de la calidad del despique (Australian Eggs)",
+   "wiki": "fuente-glatz-runge-2017-cap7"
+  },
+  {
+   "id": "gunnarsson-1999",
+   "cita": "Gunnarsson et al. 1999 — Factores de recría sobre floor eggs, canibalismo cloacal y picaje en gallinas ponedoras en sistemas sueltos",
+   "wiki": "fuente-gunnarsson-1999"
+  },
+  {
+   "id": "heerkens-2015",
+   "cita": "Heerkens et al. 2015 — Características del sistema aviario que afectan plumaje, mortalidad y producción",
+   "wiki": "fuente-heerkens-2015"
+  },
+  {
+   "id": "hendrix-2020-mgahs",
+   "cita": "Hendrix Genetics 2020 — Guía de Manejo en Sistemas Alternativos (MGAHS)",
+   "wiki": "fuente-hendrix-2020-mgahs"
+  },
+  {
+   "id": "kjaer-1999",
+   "cita": "Kjaer & Vestergaard 1999 — Desarrollo del picaje de plumas en relación a la intensidad lumínica",
+   "wiki": "fuente-kjaer-1999"
+  },
+  {
+   "id": "bestman-2020",
+   "cita": "Layer Signals: A Practical Guide to Layer Focused Management (Cap. 3–4)",
+   "wiki": "fuente-bestman-2020"
+  },
+  {
+   "id": "mazocco-2024",
+   "cita": "Mazocco et al. 2024 — Laying Hens: Why Smothering and Not Surviving?",
+   "wiki": "fuente-mazocco-2024"
+  },
+  {
+   "id": "mcdonald-2022-cap6",
+   "cita": "McDonald et al. 2022 — Minerales (Animal Nutrition 8ª ed., Cap. 6)",
+   "wiki": "fuente-mcdonald-2022-cap6"
+  },
+  {
+   "id": "mcdonald-2022-cap4",
+   "cita": "McDonald et al. 2022 — Proteínas, ácidos nucleicos y otros compuestos nitrogenados (Animal Nutrition 8ª ed., Cap. 4)",
+   "wiki": "fuente-mcdonald-2022-cap4"
+  },
+  {
+   "id": "mens-2020",
+   "cita": "Mens et al. 2020 — Nutritional approaches to reduce or prevent feather pecking in laying hens: any potential to intervene during rearing?",
+   "wiki": "fuente-mens-2020"
+  },
+  {
+   "id": "miller-1937",
+   "cita": "Miller y Bearse 1937 — Las propiedades preventivas de picaje de la avena",
+   "wiki": "fuente-miller-1937"
+  },
+  {
+   "id": "neal-1956",
+   "cita": "Neal 1956 — Canibalismo, picaje de cloaca y metionina",
+   "wiki": "fuente-neal-1956"
+  },
+  {
+   "id": "oluwagbenga-2023",
+   "cita": "Oluwagbenga & Fraley 2023 — Heat stress and poultry production: a comprehensive review",
+   "wiki": "fuente-oluwagbenga-2023"
+  },
+  {
+   "id": "paneru-2024",
+   "cita": "Paneru et al. 2024 — Seguimiento del baño de polvo mediante visión artificial en ponedoras cage-free",
+   "wiki": "fuente-paneru-2024"
+  },
+  {
+   "id": "rodenburg-2013",
+   "cita": "Rodenburg et al. 2013 — Prevención y control del picaje de plumas en ponedoras",
+   "wiki": "fuente-rodenburg-2013"
+  },
+  {
+   "id": "sanctuary-1954",
+   "cita": "Sanctuary 1954 — Hábitos viciosos y canibalismo",
+   "wiki": "fuente-sanctuary-1954"
+  },
+  {
+   "id": "tahamtani-2025",
+   "cita": "Tahamtani et al. 2025 — BSFL como enriquecimiento ambiental en ponedoras (estudio comercial a escala completa)",
+   "wiki": "fuente-tahamtani-2025"
+  },
+  {
+   "id": "michel-2022",
+   "cita": "The Relationships between Damaging Behaviours and Health in Laying Hens",
+   "wiki": "fuente-michel-2022"
+  },
+  {
+   "id": "birkl-2019",
+   "cita": "The Role of Tryptophan-Kynurenine in Feather Pecking in Domestic Chicken Lines",
+   "wiki": "fuente-birkl-2019"
+  },
+  {
+   "id": "vandebraak-2023",
+   "cita": "Van de Braak 2023 — Blood and Meat Spots found in eggs",
+   "wiki": "fuente-vandebraak-2023"
+  },
+  {
+   "id": "vankrimpen-2005",
+   "cita": "van Krimpen et al. 2005 — Impact of feeding management on feather pecking in laying hens",
+   "wiki": "fuente-vankrimpen-2005"
+  },
+  {
+   "id": "causas-picaje-evidencia-y-acciones",
+   "cita": "Wiki AviVet — Causas de picaje ordenadas por peso de la evidencia, y la acción que corresponde a cada una",
+   "wiki": "causas-picaje-evidencia-y-acciones"
+  },
+  {
+   "id": "guia-causas-y-control-picaje",
+   "cita": "Wiki AviVet — Guía práctica: causas de picaje y control desde el manejo",
+   "wiki": "guia-causas-y-control-picaje"
+  },
+  {
+   "id": "huevos-piso-nidos",
+   "cita": "Wiki AviVet — Huevos de piso y diseño de nidales",
+   "wiki": "huevos-piso-nidos"
+  },
+  {
+   "id": "iluminacion",
+   "cita": "Wiki AviVet — Iluminación en producción avícola",
+   "wiki": "iluminacion"
+  },
+  {
+   "id": "impactacion-buche-molleja-fibra",
+   "cita": "Wiki AviVet — Impactación de buche y molleja por fibra (avena con cáscara, pasto, cama) — qué hay en la wiki",
+   "wiki": "impactacion-buche-molleja-fibra"
+  },
+  {
+   "id": "pauta-verificacion-estado-basal-picaje",
+   "cita": "Wiki AviVet — Pauta de verificación del estado basal ante picaje (lote en postura)",
+   "wiki": "pauta-verificacion-estado-basal-picaje"
+  },
+  {
+   "id": "investigacion-alza-huevos-con-sangre",
+   "cita": "Wiki AviVet — Protocolo — Cómo investigar un alza de huevos con sangre en un lote de ponedoras",
+   "wiki": "investigacion-alza-huevos-con-sangre"
+  },
+  {
+   "id": "red-causal-prolapso",
+   "cita": "Wiki AviVet — Red causal del prolapso en ponedoras y punto de acción de cada medida preventiva",
+   "wiki": "red-causal-prolapso"
+  }
+ ],
+ "notaFuentes": "Niveles de evidencia A, B y C según la consulta «Causas de picaje ordenadas por peso de la evidencia». Glatz & Runge 2017 (*Managing Fowl Behaviour*) es una guía de industria casi sin citas internas. Tensiones abiertas: el cambio de alimento aumenta el picaje de cloaca en unos estudios y el efecto es opuesto en cuello en otro; la fibra dura ingerida y la forma del alimento en jaula sin efecto en algunos trabajos; el forrajeo redirigido podría ser exploración más que búsqueda de comida; picaje suave y severo se correlacionan en la misma ave aunque no se conviertan a nivel de grupo; el papel del picaje en el prolapso (≥ 80 % según Glatz frente a solo agravante según Alberta)."
+}

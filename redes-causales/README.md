@@ -15,11 +15,21 @@ redes-causales/
   index.html          estilos y esqueleto
   app.js              portada, red y brote (no cambia al agregar problemas)
   validar.mjs         revisa los datos: node redes-causales/validar.mjs
+  importar/picaje.py  convierte la red de picaje de la wiki (Entregables/red-causal-picaje/datos.json)
   datos/
     indice.json       lista de problemas (estado) y relaciones entre ellos
     factores.json     catálogo de factores compartidos (luz, metionina, densidad…)
     prolapso.json     un archivo por problema
+    picaje.json       generado con importar/picaje.py (no editar a mano)
 ```
+
+## Problemas y de dónde salen
+
+| Problema | Origen de los datos | Cómo actualizar |
+|---|---|---|
+| Prolapso | consultas `red-causal-prolapso` e `investigacion-brote-prolapso` | editar `datos/prolapso.json` a mano, siguiendo la wiki |
+| Picaje | `avivet-wiki/Entregables/red-causal-picaje/datos.json` (la misma fuente que el Canvas y los artifacts de picaje) | editar ese `datos.json` en la wiki y correr `python3 redes-causales/importar/picaje.py` |
+
 
 ## Agregar un problema nuevo (por ejemplo `picaje`)
 
@@ -53,14 +63,20 @@ redes-causales/
         "factor": "luz",                   // opcional: id de factores.json
         "problema": "picaje",              // opcional: este nodo es también otro problema
         "central": true,                   // opcional: el nodo del problema (se destaca)
+        "grupo": "luz",                    // opcional (solo origen): agrupa la columna con subtítulos de red.grupos
+        "evidencia": "A",                  // opcional: A fuerte · B moderada · C débil
+        "cifras": ["30 lux en recría → …"],// opcional: datos duros en el panel
         "y": 296                           // opcional: posición vertical; sin "y" se reparte solo
       }
     ],
     "flechas": [
       { "de": "luz", "a": "huevo" },
       { "de": "fibra", "a": "picoteo", "tipo": "protege" },   // verde punteada: reduce
-      { "de": "canib", "a": "prolapso", "tipo": "ciclo" }     // roja punteada: retroalimentación
+      { "de": "canib", "a": "prolapso", "tipo": "ciclo" },    // roja punteada: retroalimentación
+      { "de": "e_gfp", "a": "e_sfp", "tipo": "discutida" }    // gris punteada: relación discutida
     ],
+    "grupos": { "luz": "Luz" },            // opcional: nombres de los grupos de la columna de origen
+    "noFunciona": [["Medida que no sirve", "Por qué"]],     // opcional: tabla «Lo que no funciona"
     "ventanas": {                          // opcional: barra de edades de riesgo
       "titulo": "…", "desde": 16, "hasta": 80,
       "tramos": [{ "desde": 17, "hasta": 30, "fuerte": true }],
@@ -73,19 +89,24 @@ redes-causales/
   },
 
   "brote": {                               // opcional: árbol de investigación
-    "confirmar": ["…"],                    // paso 0
+    "confirmar": ["…"],                    // paso 0 (opcional)
+    "tipos": [{ "id": "cloaca", "titulo": "Picaje de cloaca", "pista": "Cómo reconocerlo" }],  // opcional: paso 0 marca tipos
     "hoy": ["…"], "notaHoy": "…",          // paso 1, medidas para cualquier causa
     "ventanas": [                          // paso 2; "hasta" = semana en que termina (null en la última)
       { "id": "ini", "titulo": "Inicio de postura", "rango": "≈ 18–30 sem", "hasta": 30 }
     ],
     "hipotesis": [
       { "id": "H1", "titulo": "…", "peso": { "ini": 3, "pico": 0, "fin": 0 },   // 0–3 por ventana
-        "verificar": ["…"], "hacer": ["…"], "fuentes": ["…"], "nodo": "peso" }   // nodo: enlace a la red
+        "verificar": ["…"], "hacer": ["…"], "fuentes": ["…"], "nodo": "peso",    // nodo (o "nodos": [...]): enlace a la red
+        "pesoTipo": { "cloaca": 3 } }      // opcional, con "tipos": suma el mayor de los tipos marcados
     ],
     "pistas": [                            // paso 3
       { "grupo": "Recría y luz", "pistas": [ { "id": "peso_bajo", "texto": "…", "apunta": ["H1"] } ] }
+      // "apunta" como lista suma 2 por hipótesis; como objeto {"H1": 3, "H4": 1} suma ese peso (1–3)
     ],
-    "necropsia": ["…"], "seguir": ["…"], "pedir": ["…"],
+    "respuestas": [{ "id": "r1", "titulo": "Se bajaron horas de luz", "nota": "Qué dice la evidencia", "fuentes": ["…"] }],  // opcional: «lo que ya se hizo», no suma
+    "notaPuntaje": "…",                    // opcional: explica el puntaje si no es el estándar
+    "necropsia": ["…"], "seguir": ["…"], "pedir": ["…"],   // opcionales
     "ejemplo": { "semanas": 24, "pistas": ["doble", "luz"], "texto": "lote de 24 semanas con…" }
   },
 
@@ -97,7 +118,9 @@ redes-causales/
 }
 ```
 
-**Puntaje del brote:** peso de la ventana de edad + 2 por cada pista marcada que apunta a la hipótesis. Es orientativo, no una probabilidad.
+**Puntaje del brote:** tipo (el mayor de los marcados, si hay tipos) + peso de la ventana de edad + peso de cada pista marcada. Sin ejemplo, la edad parte vacía y no suma. Es orientativo, no una probabilidad.
+
+**Fuentes:** `wiki` es el nombre completo de la página (`fuente-lera-2022`, `iluminacion`).
 
 **Reglas de contenido** (las mismas de la wiki): cada afirmación con su fuente; las discrepancias se dicen, no se borran; lo que es razonamiento propio se marca *(sin fuente)*.
 

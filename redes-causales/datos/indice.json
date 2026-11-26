@@ -2,7 +2,7 @@
  "_nota": "Problemas que muestra la portada. estado: \"listo\" (tiene datos/<id>.json) o \"en-preparacion\". relaciones: flechas entre problemas para el mapa de la portada.",
  "problemas": [
   {"id": "prolapso", "titulo": "Prolapso de oviducto y cloaca", "corto": "Prolapso", "estado": "listo"},
-  {"id": "picaje", "titulo": "Picaje y canibalismo", "corto": "Picaje", "estado": "en-preparacion", "wiki": "picaje-canibalismo"},
+  {"id": "picaje", "titulo": "Picaje y canibalismo", "corto": "Picaje", "estado": "listo"},
   {"id": "sangre", "titulo": "Huevos con sangre (cáscara manchada y manchas internas)", "corto": "Huevos con sangre", "estado": "en-preparacion", "wiki": "investigacion-alza-huevos-con-sangre"}
  ],
  "relaciones": [

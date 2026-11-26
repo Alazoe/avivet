@@ -33,13 +33,15 @@ for (const p of idx.problemas) {
     (n.texto || []).forEach(l => { if (l.length > 34) av(f, `nodo ${n.id}: línea larga (${l.length} car.) puede salirse de la caja`); });
     if (!n.detalle) err(f, `nodo ${n.id}: falta "detalle"`);
     if (n.factor && !fac.has(n.factor)) err(f, `nodo ${n.id}: factor "${n.factor}" no está en factores.json`);
+    if (n.evidencia && !['A', 'B', 'C'].includes(n.evidencia)) err(f, `nodo ${n.id}: evidencia "${n.evidencia}" (usar A, B o C)`);
+    if (n.grupo && !d.red.grupos?.[n.grupo]) err(f, `nodo ${n.id}: grupo "${n.grupo}" no está en red.grupos`);
     if (n.problema && !probIds.has(n.problema)) err(f, `nodo ${n.id}: problema "${n.problema}" no está en indice.json`);
     chkF(n.fuentes, `nodo ${n.id}`);
     if (!n.fuentes?.length) av(f, `nodo ${n.id}: sin fuentes`);
   }
   for (const e of d.red?.flechas || []) {
     if (!nodos.has(e.de) || !nodos.has(e.a)) err(f, `flecha ${e.de}→${e.a}: nodo inexistente`);
-    if (e.tipo && !['ciclo', 'protege'].includes(e.tipo)) err(f, `flecha ${e.de}→${e.a}: tipo "${e.tipo}"`);
+    if (e.tipo && !['ciclo', 'protege', 'discutida'].includes(e.tipo)) err(f, `flecha ${e.de}→${e.a}: tipo "${e.tipo}"`);
   }
   const conFlecha = new Set((d.red?.flechas || []).flatMap(e => [e.de, e.a]));
   for (const id of nodos.keys()) if (!conFlecha.has(id)) av(f, `nodo ${id} sin flechas`);
@@ -49,15 +51,23 @@ for (const p of idx.problemas) {
   }
   if (d.brote) {
     const B = d.brote, wins = new Set(B.ventanas.map(w => w.id)), hips = new Set(B.hipotesis.map(h => h.id));
-    for (const k of ['confirmar', 'hoy', 'ventanas', 'hipotesis', 'pistas', 'necropsia', 'seguir', 'pedir']) if (!B[k]) err(f, `brote: falta "${k}"`);
+    for (const k of ['hoy', 'ventanas', 'hipotesis', 'pistas']) if (!B[k]) err(f, `brote: falta "${k}"`);
     for (const h of B.hipotesis) {
       for (const w of wins) if (!(w in h.peso)) err(f, `hipótesis ${h.id}: falta peso para la ventana "${w}"`);
       Object.values(h.peso).forEach(v => { if (v < 0 || v > 3) err(f, `hipótesis ${h.id}: peso fuera de 0–3`); });
       if (h.nodo && !nodos.has(h.nodo)) err(f, `hipótesis ${h.id}: nodo "${h.nodo}" no existe`);
+      const medIds = new Set((d.red.medidas || []).map(m => m.id));
+      (h.nodos || []).forEach(x => { if (!nodos.has(x) && !medIds.has(x)) err(f, `hipótesis ${h.id}: nodo o medida "${x}" no existe`); });
+      const tipos = new Set((B.tipos || []).map(t => t.id));
+      Object.entries(h.pesoTipo || {}).forEach(([t, v]) => { if (!tipos.has(t)) err(f, `hipótesis ${h.id}: tipo "${t}" no está en brote.tipos`); if (v < 0 || v > 3) err(f, `hipótesis ${h.id}: pesoTipo fuera de 0–3`); });
       chkF(h.fuentes, `hipótesis ${h.id}`);
     }
     const usadas = new Set();
-    for (const g of B.pistas) for (const s of g.pistas) s.apunta.forEach(h => { usadas.add(h); if (!hips.has(h)) err(f, `pista ${s.id}: hipótesis "${h}" no existe`); });
+    for (const g of B.pistas) for (const s of g.pistas) {
+      const ap = Array.isArray(s.apunta) ? Object.fromEntries(s.apunta.map(h => [h, 2])) : s.apunta;
+      Object.entries(ap).forEach(([h, v]) => { usadas.add(h); if (!hips.has(h)) err(f, `pista ${s.id}: hipótesis "${h}" no existe`); if (v < 1 || v > 3) err(f, `pista ${s.id}: peso fuera de 1–3`); });
+    }
+    (B.respuestas || []).forEach(r => chkF(r.fuentes, `respuesta ${r.id}`));
     for (const h of hips) if (!usadas.has(h)) av(f, `hipótesis ${h} sin pistas que apunten a ella`);
     (B.ejemplo?.pistas || []).forEach(s => { if (!B.pistas.some(g => g.pistas.some(x => x.id === s))) err(f, `ejemplo: pista "${s}" no existe`); });
   }
