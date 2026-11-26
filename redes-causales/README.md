@@ -135,3 +135,5 @@ cd ~/avivet-repo && python3 -m http.server 8765
 y abrir `http://localhost:8765/redes-causales/`.
 
 Página interna: lleva `noindex` y no está en el sitemap.
+
+Al cambiar `app.js`, subir el número en `<script src="app.js?v=N">` de `index.html` para que los navegadores no mezclen código viejo con datos nuevos.
