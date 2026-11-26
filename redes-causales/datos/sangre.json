@@ -1,0 +1,1231 @@
+{
+ "id": "sangre",
+ "titulo": "Huevos con sangre",
+ "especie": "Ponedora comercial",
+ "resumen": "Bajo \"huevos con sangre\" se juntan dos problemas distintos: **sangre en la cáscara**, que viene de la cloaca (picaje o prolapso), y **manchas internas** de sangre o de carne, que vienen del folículo o del oviducto días antes de la puesta.",
+ "wiki": [
+  "red-causal-huevos-con-sangre",
+  "investigacion-alza-huevos-con-sangre",
+  "calidad-huevo"
+ ],
+ "actualizado": "2026-11-25",
+ "red": {
+  "intro": {
+   "titulo": "Tres salidas distintas",
+   "texto": "Arriba, lo que hace sangrar el folículo o el oviducto (manchas internas); abajo, la cloaca (sangre en la cáscara). La flecha gris punteada es la hipótesis de 1944 de que la mancha de carne es un coágulo degenerado: hoy explica solo una parte."
+  },
+  "grupos": {
+   "lote": "Lote y alojamiento",
+   "manejo": "Manejo y estrés",
+   "alimento": "Alimento",
+   "sanidad": "Sanidad",
+   "cloaca": "Cloaca (sangre en la cáscara)"
+  },
+  "nodos": [
+   {
+    "id": "o_estirpe",
+    "tipo": "o",
+    "texto": [
+     "Estirpe de huevo café"
+    ],
+    "detalle": "Es el predictor más fuerte: Lohmann Sandy tuvo unas 10 veces más manchas que Lohmann LSL blanca (22,7 % frente a 2,2 % en la clara). En Chile, los huevos azules y blancos también tienen menos que los cafés. La heredabilidad es baja para las manchas de sangre (0,05) y moderada para las de carne (0,20).",
+    "fuentes": [
+     "tainika-2024",
+     "jin-2026",
+     "gandarillas-2023",
+     "vandebraak-2023"
+    ],
+    "grupo": "lote",
+    "cifras": [
+     "Lohmann Sandy 22,7 % frente a LSL 2,2 % de manchas en la clara",
+     "h² mancha de sangre 0,05; mancha de carne 0,20; correlación genética entre ambas 0,93",
+     "Chile (Valdivia): manchas de sangre 26,7 % en huevo café industrial frente a 5,1 % en huevo azul"
+    ]
+   },
+   {
+    "id": "o_edad",
+    "tipo": "o",
+    "texto": [
+     "Lote viejo"
+    ],
+    "detalle": "Las manchas suben con la edad del lote, en forma gradual. Un alza gradual con la edad es esperable; un alza brusca apunta a un evento. En huevo café a las 96 semanas, al quebrar: 15,8 % con mancha de sangre y 64,8 % con mancha de carne.",
+    "fuentes": [
+     "vandebraak-2023",
+     "jin-2026",
+     "protocolo-sangre"
+    ],
+    "grupo": "lote",
+    "cifras": [
+     "Rhode Island Red, 96 sem: 15,8 % manchas de sangre y 64,8 % de carne al quebrar"
+    ]
+   },
+   {
+    "id": "o_confin",
+    "tipo": "o",
+    "texto": [
+     "Confinamiento sin pasto verde,",
+     "sobre todo en verano"
+    ],
+    "detalle": "En gallinas confinadas las manchas de sangre fueron el doble en julio (verano del hemisferio norte) que en diciembre; dar acceso a parque con pasto verde las redujo en 2 semanas. La luz UV sola y el pasto seco no sirvieron. **Tensión:** en el sur de Chile los huevos free-range tuvieron más manchas de carne que los de jaula; free-range no equivale a pasto verde y el estudio no explica la causa.",
+    "fuentes": [
+     "nalbandov-1944",
+     "gandarillas-2023"
+    ],
+    "grupo": "lote"
+   },
+   {
+    "id": "o_estres",
+    "tipo": "o",
+    "texto": [
+     "Estrés agudo de tarde o noche"
+    ],
+    "detalle": "Depredadores, ruido, captura, traslado o vacunación, sobre todo de tarde y de noche, cuando el folículo está por ovular. Es una causa de alza súbita según la nota técnica de Hendrix, sin ensayo citado.",
+    "fuentes": [
+     "vandebraak-2023"
+    ],
+    "grupo": "manejo"
+   },
+   {
+    "id": "o_agua",
+    "tipo": "o",
+    "texto": [
+     "Corte de agua"
+    ],
+    "detalle": "Estrés agudo más deshidratación → hemorragias en el oviducto (nota técnica, sin ensayo citado).",
+    "fuentes": [
+     "vandebraak-2023"
+    ],
+    "grupo": "manejo"
+   },
+   {
+    "id": "o_luz",
+    "tipo": "o",
+    "texto": [
+     "Luz continua, sin período",
+     "de oscuridad"
+    ],
+    "detalle": "Un programa sin oscuridad adecuada aumenta las manchas de sangre y de carne. La fuente no describe el mecanismo.",
+    "fuentes": [
+     "vandebraak-2023"
+    ],
+    "grupo": "manejo"
+   },
+   {
+    "id": "o_vit",
+    "tipo": "o",
+    "texto": [
+     "Déficit de vitamina A, K",
+     "o biotina"
+    ],
+    "detalle": "Vitamina A y biotina mantienen el epitelio del oviducto; la K, la coagulación. La **deficiencia** es factor de riesgo, pero suplementar por encima del requerimiento no reduce las manchas: A, C, D, E, K y P sueltas a ≥ 2× el requerimiento no cambiaron las manchas de sangre, y la vitamina K extra no cambió las de carne (72,1 % frente a 71,5 %).",
+    "fuentes": [
+     "vandebraak-2023",
+     "nalbandov-1944",
+     "denton-1946"
+    ],
+    "grupo": "alimento",
+    "cifras": [
+     "Vitamina K extra: 72,1 % frente a 71,5 % de manchas de carne (sin diferencia)"
+    ]
+   },
+   {
+    "id": "o_mg",
+    "tipo": "o",
+    "texto": [
+     "Magnesio bajo"
+    ],
+    "detalle": "Magnesio bajo → mayor fragilidad vascular (nota técnica, sin ensayo citado).",
+    "fuentes": [
+     "vandebraak-2023"
+    ],
+    "grupo": "alimento"
+   },
+   {
+    "id": "o_mico",
+    "tipo": "o",
+    "texto": [
+     "Micotoxinas o alimento",
+     "mohoso"
+    ],
+    "detalle": "Deterioran la mucosa del oviducto y el epitelio del folículo. Ante un alza súbita: guardar una muestra de la partida en uso para análisis.",
+    "fuentes": [
+     "vandebraak-2023"
+    ],
+    "grupo": "alimento"
+   },
+   {
+    "id": "o_habas",
+    "tipo": "o",
+    "texto": [
+     "Habas en la fórmula"
+    ],
+    "detalle": "Un antinutriente de las habas provoca manchas de sangre en la yema (revisión de pigmentación de yema, sin cifras).",
+    "fuentes": [
+     "zurak-2022"
+    ],
+    "grupo": "alimento"
+   },
+   {
+    "id": "o_bi",
+    "tipo": "o",
+    "texto": [
+     "Bronquitis infecciosa"
+    ],
+    "detalle": "La BI daña el oviducto y se asocia a peor calidad interna y externa. En un desafío con IBV D1466 a las 24,5 semanas, el grupo solo cebado (vacuna viva sin inactivada) tuvo más huevos con manchas internas; el cebado más inactivada no difirió del control.",
+    "fuentes": [
+     "vandebraak-2023",
+     "dewit-2020"
+    ],
+    "grupo": "sanidad"
+   },
+   {
+    "id": "o_picaje",
+    "tipo": "o",
+    "texto": [
+     "Picaje de cloaca"
+    ],
+    "detalle": "Las heridas de la cloaca manchan la cáscara al poner. Las rayas de sangre en la cáscara son el primer signo de picaje de cloaca o de prolapso, antes que la mortalidad.",
+    "fuentes": [
+     "vandebraak-2023",
+     "lera-2022",
+     "glatz-runge-2017-cap1"
+    ],
+    "grupo": "cloaca",
+    "problema": "picaje",
+    "factor": "picaje"
+   },
+   {
+    "id": "o_prolapso",
+    "tipo": "o",
+    "texto": [
+     "Prolapso de oviducto o cloaca"
+    ],
+    "detalle": "El tejido evertido sangra y mancha la cáscara; las aves con huevos muy grandes tienen más riesgo de prolapso severo.",
+    "fuentes": [
+     "vandebraak-2023",
+     "alberta-2006-prolapso",
+     "lohmann-2021-prolapso"
+    ],
+    "grupo": "cloaca",
+    "problema": "prolapso"
+   },
+   {
+    "id": "m_estigma",
+    "tipo": "m",
+    "texto": [
+     "El folículo se rompe fuera",
+     "del estigma"
+    ],
+    "detalle": "En condiciones normales la yema sale por el estigma, una franja del folículo casi sin vasos, y no sangra. Si se rompe fuera de él, los vasos sangran y la sangre acompaña a la yema. La hemorragia es intrafolicular y ocurre **días antes** de la ovulación, así que el evento causal suele estar en la semana previa al alza.",
+    "fuentes": [
+     "vandebraak-2023",
+     "nalbandov-1944",
+     "espinosa-2024-huevos-defectuosos"
+    ]
+   },
+   {
+    "id": "m_fragil",
+    "tipo": "m",
+    "texto": [
+     "Vasos frágiles o coagulación",
+     "débil"
+    ],
+    "detalle": "Déficit de vitamina K o de magnesio. Ojo: el tiempo de coagulación fue igual en gallinas productoras y no productoras, y la mancha no es anemia.",
+    "fuentes": [
+     "vandebraak-2023",
+     "nalbandov-1944"
+    ]
+   },
+   {
+    "id": "m_epitelio",
+    "tipo": "m",
+    "texto": [
+     "Epitelio del oviducto dañado"
+    ],
+    "detalle": "Vitamina A, biotina, micotoxinas y BI dañan la mucosa del oviducto: se desprende tejido que queda en el huevo como mancha de carne.",
+    "fuentes": [
+     "vandebraak-2023",
+     "jin-2026",
+     "solomon-2002"
+    ]
+   },
+   {
+    "id": "m_hemoovid",
+    "tipo": "m",
+    "texto": [
+     "Hemorragia en el oviducto",
+     "durante la formación"
+    ],
+    "detalle": "El oviducto está muy vascularizado; una perturbación durante la formación del huevo sangra dentro de él. Si ocurre antes de la cáscara, la mancha queda en la clara o la yema; si ocurre después, queda en la pared de la cáscara.",
+    "fuentes": [
+     "vandebraak-2023",
+     "nalbandov-1944"
+    ]
+   },
+   {
+    "id": "m_envej",
+    "tipo": "m",
+    "texto": [
+     "Oviducto envejecido"
+    ],
+    "detalle": "Las manchas se correlacionan negativamente con la calidad de la clara y la cáscara: serían un marcador de envejecimiento funcional del oviducto.",
+    "fuentes": [
+     "jin-2026"
+    ]
+   },
+   {
+    "id": "m_herida",
+    "tipo": "m",
+    "texto": [
+     "Herida o tejido evertido",
+     "en la cloaca"
+    ],
+    "detalle": "La sangre de la cloaca se pega a la cáscara al poner: no tiene relación con las manchas internas.",
+    "fuentes": [
+     "vandebraak-2023",
+     "protocolo-sangre"
+    ]
+   },
+   {
+    "id": "e_ms",
+    "tipo": "e",
+    "texto": [
+     "Mancha de sangre",
+     "(en la yema)"
+    ],
+    "detalle": "Glóbulos rojos, casi siempre en la superficie de la yema, únicas y pequeñas.",
+    "fuentes": [
+     "nalbandov-1944",
+     "jin-2026",
+     "vandebraak-2023"
+    ],
+    "central": true
+   },
+   {
+    "id": "e_mc",
+    "tipo": "e",
+    "texto": [
+     "Mancha de carne",
+     "(clara o chalaza)"
+    ],
+    "detalle": "Tejido del ovario o del oviducto (necrótico, detritus epitelial), a menudo varias y en la chalaza. No siempre tienen rojo, así que los equipos las detectan peor. En huevo café son más oscuras.",
+    "fuentes": [
+     "jin-2026",
+     "vandebraak-2023",
+     "solomon-2002",
+     "denton-1946"
+    ],
+    "central": true
+   },
+   {
+    "id": "e_cascara",
+    "tipo": "e",
+    "texto": [
+     "Sangre en la cáscara",
+     "(rayas por fuera)"
+    ],
+    "detalle": "Rayas de sangre en la superficie exterior: indicador directo de picaje de cloaca o prolapso. En la clasificación de granja suele anotarse junto con las manchas internas en la misma columna \"con sangre\": hay que separarlas.",
+    "fuentes": [
+     "vandebraak-2023",
+     "protocolo-sangre"
+    ],
+    "central": true
+   },
+   {
+    "id": "c_descarte",
+    "tipo": "x",
+    "texto": [
+     "Huevos descartados",
+     "o reclamos"
+    ],
+    "detalle": "La ovoscopia detecta solo alrededor del 40 % de los huevos con manchas; entre 25 y 50 % llega al consumidor. Las manchas en la chalaza o la yema se escapan 2 a 2,5 veces más que las de la clara.",
+    "fuentes": [
+     "nalbandov-1944",
+     "denton-1946"
+    ],
+    "cifras": [
+     "Ovoscopia: ~40 % de detección",
+     "Mancha de carne no detectada: 18,1 % en clara, 37,9 % en chalaza, 44,8 % en yema"
+    ]
+   },
+   {
+    "id": "c_calidad",
+    "tipo": "x",
+    "texto": [
+     "Clara y cáscara peores",
+     "(mismo oviducto)"
+    ],
+    "detalle": "Las manchas van de la mano con peor altura de clara y cáscara; no las causan, comparten el origen.",
+    "fuentes": [
+     "jin-2026"
+    ]
+   },
+   {
+    "id": "c_brote",
+    "tipo": "x",
+    "texto": [
+     "Brote de prolapso",
+     "o canibalismo"
+    ],
+    "detalle": "La cáscara manchada sube antes que la mortalidad: es la alerta temprana del brote.",
+    "fuentes": [
+     "lohmann-2021-prolapso",
+     "vandebraak-2023"
+    ],
+    "problema": "prolapso"
+   }
+  ],
+  "flechas": [
+   {
+    "de": "o_estirpe",
+    "a": "e_ms"
+   },
+   {
+    "de": "o_estirpe",
+    "a": "e_mc"
+   },
+   {
+    "de": "o_edad",
+    "a": "m_envej"
+   },
+   {
+    "de": "o_confin",
+    "a": "e_ms"
+   },
+   {
+    "de": "o_estres",
+    "a": "m_estigma"
+   },
+   {
+    "de": "o_estres",
+    "a": "m_hemoovid"
+   },
+   {
+    "de": "o_agua",
+    "a": "m_hemoovid"
+   },
+   {
+    "de": "o_luz",
+    "a": "e_ms"
+   },
+   {
+    "de": "o_luz",
+    "a": "e_mc"
+   },
+   {
+    "de": "o_vit",
+    "a": "m_fragil"
+   },
+   {
+    "de": "o_vit",
+    "a": "m_epitelio"
+   },
+   {
+    "de": "o_mg",
+    "a": "m_fragil"
+   },
+   {
+    "de": "o_mico",
+    "a": "m_epitelio"
+   },
+   {
+    "de": "o_habas",
+    "a": "e_ms"
+   },
+   {
+    "de": "o_bi",
+    "a": "m_epitelio"
+   },
+   {
+    "de": "o_picaje",
+    "a": "m_herida"
+   },
+   {
+    "de": "o_prolapso",
+    "a": "m_herida"
+   },
+   {
+    "de": "m_fragil",
+    "a": "m_estigma"
+   },
+   {
+    "de": "m_fragil",
+    "a": "m_hemoovid"
+   },
+   {
+    "de": "m_epitelio",
+    "a": "m_hemoovid"
+   },
+   {
+    "de": "m_estigma",
+    "a": "e_ms"
+   },
+   {
+    "de": "m_hemoovid",
+    "a": "e_ms"
+   },
+   {
+    "de": "m_epitelio",
+    "a": "e_mc"
+   },
+   {
+    "de": "m_envej",
+    "a": "e_ms"
+   },
+   {
+    "de": "m_envej",
+    "a": "e_mc"
+   },
+   {
+    "de": "m_herida",
+    "a": "e_cascara"
+   },
+   {
+    "de": "e_ms",
+    "a": "e_mc",
+    "tipo": "discutida"
+   },
+   {
+    "de": "e_ms",
+    "a": "c_descarte"
+   },
+   {
+    "de": "e_mc",
+    "a": "c_descarte"
+   },
+   {
+    "de": "e_cascara",
+    "a": "c_descarte"
+   },
+   {
+    "de": "m_envej",
+    "a": "c_calidad"
+   },
+   {
+    "de": "e_cascara",
+    "a": "c_brote"
+   }
+  ],
+  "medidas": [
+   {
+    "id": "p1",
+    "titulo": "Separar sangre en la cáscara de manchas internas",
+    "actua": [
+     "e_cascara",
+     "e_ms",
+     "e_mc"
+    ],
+    "puntos": [
+     "En la clasificación diaria, dos columnas: sangre en la cáscara y manchas internas.",
+     "Quiebre semanal de una muestra fija (por ejemplo 30 huevos, siempre el mismo día), separando sangre y carne.",
+     "Sin esta separación no se sabe si buscar en la cloaca o en el ovario."
+    ],
+    "fuentes": [
+     "protocolo-sangre",
+     "vandebraak-2023"
+    ]
+   },
+   {
+    "id": "p2",
+    "titulo": "Prevenir picaje de cloaca y prolapso",
+    "actua": [
+     "o_picaje",
+     "o_prolapso"
+    ],
+    "puntos": [
+     "Ver las redes de picaje y de prolapso: luz, nidos, peso al estímulo, tamaño de huevo.",
+     "La cáscara manchada avisa antes que la mortalidad: revisarla cada semana."
+    ],
+    "fuentes": [
+     "lohmann-2021-prolapso",
+     "lera-2022"
+    ]
+   },
+   {
+    "id": "p3",
+    "titulo": "Luz con oscuridad y sin cortes",
+    "actua": [
+     "o_luz"
+    ],
+    "puntos": [
+     "Programa con período de oscuridad real; nunca luz continua.",
+     "Revisar relojes y cortes de luz."
+    ],
+    "fuentes": [
+     "vandebraak-2023"
+    ]
+   },
+   {
+    "id": "p4",
+    "titulo": "Agua sin cortes",
+    "actua": [
+     "o_agua"
+    ],
+    "puntos": [
+     "Revisar caudal de bebederos y respaldo del estanque.",
+     "Anotar cada corte con fecha y hora."
+    ],
+    "fuentes": [
+     "vandebraak-2023",
+     "protocolo-sangre"
+    ]
+   },
+   {
+    "id": "p5",
+    "titulo": "Evitar sustos de tarde y noche",
+    "actua": [
+     "o_estres"
+    ],
+    "puntos": [
+     "Control de depredadores y ruido.",
+     "Capturas, traslados y vacunaciones con calma y de preferencia temprano."
+    ],
+    "fuentes": [
+     "vandebraak-2023"
+    ]
+   },
+   {
+    "id": "p6",
+    "titulo": "Premix completo, no vitaminas sueltas",
+    "actua": [
+     "o_vit",
+     "o_mg"
+    ],
+    "puntos": [
+     "Revisar en la etiqueta del premix vitamina A, K, biotina y magnesio.",
+     "Suplementar una vitamina suelta sobre el requerimiento no reduce las manchas.",
+     "No dar hierro: la mancha no es anemia."
+    ],
+    "fuentes": [
+     "vandebraak-2023",
+     "nalbandov-1944",
+     "denton-1946"
+    ]
+   },
+   {
+    "id": "p7",
+    "titulo": "Alimento sano y sin habas",
+    "actua": [
+     "o_mico",
+     "o_habas"
+    ],
+    "puntos": [
+     "Guardar una muestra de cada partida para analizar micotoxinas si hay alza.",
+     "Evitar alimento húmedo o mohoso; revisar si la fórmula usa habas."
+    ],
+    "fuentes": [
+     "vandebraak-2023",
+     "zurak-2022"
+    ]
+   },
+   {
+    "id": "p8",
+    "titulo": "Vacunación contra bronquitis infecciosa",
+    "actua": [
+     "o_bi"
+    ],
+    "puntos": [
+     "Programa con vacuna viva más inactivada antes de la postura: en el desafío con IBV D1466 fue el único grupo sin más anomalías que el control."
+    ],
+    "fuentes": [
+     "dewit-2020"
+    ]
+   },
+   {
+    "id": "p9",
+    "titulo": "Parque con pasto verde",
+    "actua": [
+     "o_confin"
+    ],
+    "puntos": [
+     "Acceso a pasto verde redujo las manchas de sangre en 2 semanas (estudio de 1944).",
+     "En confinamiento, esperar más manchas en verano."
+    ],
+    "fuentes": [
+     "nalbandov-1944"
+    ]
+   },
+   {
+    "id": "p10",
+    "titulo": "Estirpe y expectativas",
+    "actua": [
+     "o_estirpe",
+     "o_edad"
+    ],
+    "puntos": [
+     "En estirpe café y lote viejo, un nivel alto de manchas puede ser normal: comparar con el propio historial, no con huevo blanco.",
+     "Pedir a la casa genética el dato de manchas de la línea."
+    ],
+    "fuentes": [
+     "tainika-2024",
+     "jin-2026",
+     "vandebraak-2023"
+    ]
+   },
+   {
+    "id": "p11",
+    "titulo": "Ovoscopia y clasificación bien hechas",
+    "actua": [
+     "c_descarte"
+    ],
+    "puntos": [
+     "La ovoscopia detecta ~40 %: el quiebre de muestra da la frecuencia real.",
+     "Las manchas en chalaza y yema se escapan más; las de carne sin rojo, también."
+    ],
+    "fuentes": [
+     "nalbandov-1944",
+     "denton-1946"
+    ]
+   }
+  ],
+  "notaMedidas": "La primera medida es separar los dos problemas en el registro: sin eso no se sabe dónde buscar.",
+  "noFunciona": [
+   [
+    "Dar hierro",
+    "La mancha no es anemia: la coagulación es igual en gallinas productoras y no productoras; no hay fuente que relacione hierro y manchas."
+   ],
+   [
+    "Vitaminas sueltas sobre el requerimiento",
+    "A, C, D, E, K y P a ≥ 2× el requerimiento no redujeron las manchas de sangre; la K extra tampoco las de carne. La deficiencia sí es riesgo: revisar el premix."
+   ],
+   [
+    "Luz UV o pasto seco en vez de parque",
+    "No tuvieron efecto; sí lo tuvo el acceso a pasto verde."
+   ],
+   [
+    "Cambiar varias cosas a la vez",
+    "Después no se sabe qué funcionó."
+   ]
+  ]
+ },
+ "brote": {
+  "confirmar": [
+   "Antes de todo, preguntar **dónde está la sangre**: en la cáscara (cloaca) o dentro del huevo. Quebrar una muestra separa mancha de sangre (yema) y de carne (clara o chalaza).",
+   "La hemorragia interna ocurre **días antes** de la ovulación: buscar el evento en la semana previa al pico, no el mismo día."
+  ],
+  "tipos": [
+   {
+    "id": "cascara",
+    "titulo": "Sangre en la cáscara",
+    "pista": "Rayas o manchas rojas por fuera del huevo."
+   },
+   {
+    "id": "sangre",
+    "titulo": "Mancha de sangre",
+    "pista": "Punto rojo en la yema al quebrar."
+   },
+   {
+    "id": "carne",
+    "titulo": "Mancha de carne",
+    "pista": "Partícula parda o clara en la clara o la chalaza."
+   }
+  ],
+  "hoy": [
+   "Guardar una muestra de la partida de alimento en uso",
+   "Quebrar 30 huevos y separar sangre en cáscara, mancha de sangre y de carne",
+   "Revisar caudal de agua y que la luz deje oscuridad",
+   "Retirar aves heridas o con prolapso",
+   "Necropsia de 3–5 aves recientes: ovario, oviducto, hígado, cloaca",
+   "No dar hierro ni vitaminas sueltas"
+  ],
+  "ventanas": [
+   {
+    "id": "inicio",
+    "titulo": "Inicio de postura",
+    "rango": "< 30 sem",
+    "hasta": 30
+   },
+   {
+    "id": "mitad",
+    "titulo": "Pico y mitad",
+    "rango": "30–60 sem",
+    "hasta": 60
+   },
+   {
+    "id": "final",
+    "titulo": "Final del ciclo",
+    "rango": "≥ 60 sem",
+    "hasta": null
+   }
+  ],
+  "notaVentanas": "Use la edad del lote cuando empezó el alza.",
+  "hipotesis": [
+   {
+    "id": "H1",
+    "titulo": "Picaje de cloaca o prolapso",
+    "peso": {
+     "inicio": 3,
+     "mitad": 1,
+     "final": 1
+    },
+    "pesoTipo": {
+     "cascara": 3
+    },
+    "verificar": [
+     "Aves con heridas en la cloaca, prolapsos o picaje",
+     "Mortalidad y su causa en las últimas semanas",
+     "Tamaño de huevo y doble yema"
+    ],
+    "hacer": [
+     "Seguir el árbol de brote de picaje o de prolapso",
+     "Retirar aves heridas o con prolapso hoy"
+    ],
+    "fuentes": [
+     "vandebraak-2023",
+     "lera-2022",
+     "lohmann-2021-prolapso"
+    ],
+    "nodos": [
+     "o_picaje",
+     "o_prolapso"
+    ]
+   },
+   {
+    "id": "H2",
+    "titulo": "Estrés agudo o corte de agua",
+    "peso": {
+     "inicio": 1,
+     "mitad": 1,
+     "final": 1
+    },
+    "pesoTipo": {
+     "sangre": 3,
+     "carne": 1
+    },
+    "verificar": [
+     "Qué pasó la semana previa al pico: depredadores, ruido, captura, traslados, vacunación",
+     "Cortes de agua o de luz con fecha"
+    ],
+    "hacer": [
+     "Corregir la causa puntual; el alza debería bajar sola en 1–2 semanas",
+     "Anotar cada evento para la próxima vez"
+    ],
+    "fuentes": [
+     "vandebraak-2023",
+     "nalbandov-1944"
+    ],
+    "nodos": [
+     "o_estres",
+     "o_agua"
+    ]
+   },
+   {
+    "id": "H3",
+    "titulo": "Luz continua o cambio del programa",
+    "peso": {
+     "inicio": 1,
+     "mitad": 1,
+     "final": 1
+    },
+    "pesoTipo": {
+     "sangre": 2,
+     "carne": 2
+    },
+    "verificar": [
+     "Programa de luz real: horas, relojes, que haya oscuridad",
+     "Cambios de horario recientes"
+    ],
+    "hacer": [
+     "Restituir un período de oscuridad"
+    ],
+    "fuentes": [
+     "vandebraak-2023"
+    ],
+    "nodos": [
+     "o_luz"
+    ]
+   },
+   {
+    "id": "H4",
+    "titulo": "Alimento: micotoxinas, premix o ingrediente nuevo",
+    "peso": {
+     "inicio": 1,
+     "mitad": 1,
+     "final": 1
+    },
+    "pesoTipo": {
+     "sangre": 2,
+     "carne": 2
+    },
+    "verificar": [
+     "Partida o fórmula nueva en las semanas previas",
+     "Etiqueta del premix: vitamina A, K, biotina, magnesio",
+     "Muestra guardada de la partida para micotoxinas; si la fórmula usa habas"
+    ],
+    "hacer": [
+     "Analizar micotoxinas en la muestra",
+     "Corregir el premix si falta algo; no vitaminas sueltas ni hierro"
+    ],
+    "fuentes": [
+     "vandebraak-2023",
+     "nalbandov-1944",
+     "denton-1946",
+     "zurak-2022"
+    ],
+    "nodos": [
+     "o_mico",
+     "o_vit",
+     "o_mg",
+     "o_habas"
+    ]
+   },
+   {
+    "id": "H5",
+    "titulo": "Bronquitis infecciosa",
+    "peso": {
+     "inicio": 1,
+     "mitad": 2,
+     "final": 2
+    },
+    "pesoTipo": {
+     "carne": 2,
+     "sangre": 1
+    },
+    "verificar": [
+     "Signos respiratorios, caída de postura",
+     "Clara acuosa, cáscara rugosa o pálida",
+     "Serología de BI e historial de vacunas"
+    ],
+    "hacer": [
+     "Revisar el programa de vacunación (viva + inactivada antes de postura)"
+    ],
+    "fuentes": [
+     "vandebraak-2023",
+     "dewit-2020"
+    ],
+    "nodos": [
+     "o_bi"
+    ]
+   },
+   {
+    "id": "H6",
+    "titulo": "Edad y estirpe: alza esperable",
+    "peso": {
+     "inicio": 0,
+     "mitad": 1,
+     "final": 3
+    },
+    "pesoTipo": {
+     "carne": 2,
+     "sangre": 1
+    },
+    "verificar": [
+     "¿El alza es gradual a lo largo de semanas?",
+     "Estirpe (café frente a blanca) y edad del lote",
+     "Historial de manchas de otros lotes de la misma línea"
+    ],
+    "hacer": [
+     "Ajustar la expectativa y la clasificación; buscar un evento solo si el alza es brusca"
+    ],
+    "fuentes": [
+     "vandebraak-2023",
+     "jin-2026",
+     "tainika-2024"
+    ],
+    "nodos": [
+     "o_edad",
+     "o_estirpe"
+    ]
+   },
+   {
+    "id": "H7",
+    "titulo": "Confinamiento en verano",
+    "peso": {
+     "inicio": 1,
+     "mitad": 1,
+     "final": 1
+    },
+    "pesoTipo": {
+     "sangre": 2
+    },
+    "verificar": [
+     "Aves confinadas, sin pasto verde, en meses calurosos"
+    ],
+    "hacer": [
+     "Si es posible, acceso a pasto verde"
+    ],
+    "fuentes": [
+     "nalbandov-1944",
+     "gandarillas-2023"
+    ],
+    "nodos": [
+     "o_confin"
+    ]
+   }
+  ],
+  "pistas": [
+   {
+    "grupo": "Registros",
+    "pistas": [
+     {
+      "id": "q_brusca",
+      "texto": "Alza brusca, en pocos días",
+      "apunta": {
+       "H2": 3,
+       "H3": 1,
+       "H4": 1
+      }
+     },
+     {
+      "id": "q_gradual",
+      "texto": "Alza gradual a lo largo de semanas",
+      "apunta": {
+       "H6": 3,
+       "H7": 1
+      }
+     },
+     {
+      "id": "q_morta",
+      "texto": "Sube también la mortalidad",
+      "apunta": {
+       "H1": 2,
+       "H5": 1,
+       "H2": 1
+      }
+     },
+     {
+      "id": "q_postura",
+      "texto": "Baja la postura",
+      "apunta": {
+       "H5": 2,
+       "H2": 1,
+       "H4": 1
+      }
+     }
+    ]
+   },
+   {
+    "grupo": "Semana previa al alza",
+    "pistas": [
+     {
+      "id": "q_agua",
+      "texto": "Corte de agua o de luz",
+      "apunta": {
+       "H2": 3
+      }
+     },
+     {
+      "id": "q_estres",
+      "texto": "Depredadores, ruido, captura, traslado o vacunación, de tarde o noche",
+      "apunta": {
+       "H2": 3
+      }
+     },
+     {
+      "id": "q_luz",
+      "texto": "Luz continua o cambio de horario de luz",
+      "apunta": {
+       "H3": 3
+      }
+     },
+     {
+      "id": "q_partida",
+      "texto": "Partida o fórmula nueva de alimento",
+      "apunta": {
+       "H4": 2
+      }
+     },
+     {
+      "id": "q_moho",
+      "texto": "Alimento húmedo, mohoso o con grano dañado",
+      "apunta": {
+       "H4": 3
+      }
+     }
+    ]
+   },
+   {
+    "grupo": "Aves y huevo",
+    "pistas": [
+     {
+      "id": "q_heridas",
+      "texto": "Heridas de cloaca, picaje o prolapsos",
+      "apunta": {
+       "H1": 3
+      }
+     },
+     {
+      "id": "q_resp",
+      "texto": "Signos respiratorios",
+      "apunta": {
+       "H5": 3
+      }
+     },
+     {
+      "id": "q_clara",
+      "texto": "Clara acuosa o cáscara rugosa o pálida",
+      "apunta": {
+       "H5": 2,
+       "H6": 1
+      }
+     }
+    ]
+   },
+   {
+    "grupo": "Lote",
+    "pistas": [
+     {
+      "id": "q_cafe",
+      "texto": "Estirpe de huevo café",
+      "apunta": {
+       "H6": 2
+      }
+     },
+     {
+      "id": "q_verano",
+      "texto": "Confinadas, sin pasto verde, en verano",
+      "apunta": {
+       "H7": 2
+      }
+     },
+     {
+      "id": "q_habas",
+      "texto": "Habas u otro ingrediente nuevo en la fórmula",
+      "apunta": {
+       "H4": 2
+      }
+     }
+    ]
+   }
+  ],
+  "notaPistas": "Marque lo que pasó en la semana previa al alza y lo que ve en el lote.",
+  "respuestas": [
+   {
+    "id": "r1",
+    "titulo": "Se dio hierro",
+    "nota": "Sin respaldo: la mancha no es anemia y la coagulación es normal.",
+    "fuentes": [
+     "nalbandov-1944",
+     "protocolo-sangre"
+    ]
+   },
+   {
+    "id": "r2",
+    "titulo": "Se dieron vitaminas sueltas (A, K, C…)",
+    "nota": "Sobre el requerimiento no reducen las manchas. Revisar en cambio que el premix no tenga deficiencias.",
+    "fuentes": [
+     "nalbandov-1944",
+     "denton-1946"
+    ]
+   },
+   {
+    "id": "r3",
+    "titulo": "Se cambió el alimento",
+    "nota": "Puede servir si la partida era el problema, pero guarde una muestra de la anterior para micotoxinas, o no sabrá la causa.",
+    "fuentes": [
+     "vandebraak-2023"
+    ]
+   },
+   {
+    "id": "r4",
+    "titulo": "Se cambiaron varias cosas a la vez",
+    "nota": "Si el alza baja, no se sabrá qué funcionó; de aquí en adelante, una a la vez.",
+    "fuentes": [
+     "protocolo-sangre"
+    ]
+   }
+  ],
+  "notaPuntaje": "Puntaje = tipo de sangre (0–3, el mayor entre los marcados) + edad (0–3) + cada pista (1–3). Los pesos son razonamiento propio a partir de la wiki, no vienen de una fuente.",
+  "necropsia": [
+   "**Ovario:** folículos con hemorragia o rotos.",
+   "**Oviducto:** inflamación, tejido friable o necrótico (salpingitis, BI).",
+   "**Hígado:** color y hemorragias.",
+   "**Cloaca:** heridas o prolapso.",
+   "**Peritonitis.**"
+  ],
+  "seguir": [
+   "Quiebre semanal de la misma muestra, separando sangre y carne.",
+   "Un cambio a la vez y medir 2 semanas: la hemorragia es previa a la ovulación, el efecto tarda.",
+   "Si persiste: serología de BI y micotoxinas en la muestra guardada."
+  ],
+  "pedir": [
+   "Clasificación diaria de las últimas 4–6 semanas (huevos con sangre, sucios, trizados)",
+   "¿La sangre está en la cáscara o dentro del huevo?",
+   "Mortalidad diaria y su causa",
+   "Postura frente al estándar",
+   "Cortes de agua o de luz y cambios del programa de luz, con fecha",
+   "Sustos, capturas, traslados o vacunaciones, con fecha y hora",
+   "Partidas y fórmulas de alimento con fecha; etiqueta del premix",
+   "Tratamientos dados y por qué",
+   "Estirpe, edad y si tienen acceso a parque"
+  ]
+ },
+ "fuentes": [
+  {
+   "id": "vandebraak-2023",
+   "cita": "Van de Braak 2023 — Blood and Meat Spots found in eggs",
+   "wiki": "fuente-vandebraak-2023"
+  },
+  {
+   "id": "nalbandov-1944",
+   "cita": "Nalbandov & Card 1944 — The Problem of Blood Clots and Meat Spots in Chicken Eggs",
+   "wiki": "fuente-nalbandov-1944"
+  },
+  {
+   "id": "denton-1946",
+   "cita": "Denton 1946 — Observaciones sobre incidencia y características de manchas de sangre y carne en huevos de gallina (Poultry Science)",
+   "wiki": "fuente-denton-1946"
+  },
+  {
+   "id": "jin-2026",
+   "cita": "Jin et al. 2026 — Occurrence and Genetic Parameters of Blood and Meat Spots in Brown-Shelled Eggs",
+   "wiki": "fuente-jin-2026"
+  },
+  {
+   "id": "tainika-2024",
+   "cita": "Tainika et al. 2024 — Effects of Age, Housing Environment, and Strain on Physical Egg Quality",
+   "wiki": "fuente-tainika-2024"
+  },
+  {
+   "id": "gandarillas-2023",
+   "cita": "Gandarillas et al. 2023 — Calidad física de huevos industriales vs no-industriales en el sur de Chile",
+   "wiki": "fuente-gandarillas-2023"
+  },
+  {
+   "id": "dewit-2020",
+   "cita": "de Wit, ter Veen & Koopman 2020 — Efecto del IBV D1466 en la producción y calidad del huevo y del cebado heterólogo para aumentar la eficacia de una vacuna inactivada (Avian Pathology 49(2))",
+   "wiki": "fuente-dewit-2020"
+  },
+  {
+   "id": "zurak-2022",
+   "cita": "Zurak et al. 2022 — Factores nutricionales y no nutricionales sobre pigmentación de yema (revisión)",
+   "wiki": "fuente-zurak-2022"
+  },
+  {
+   "id": "solomon-2002",
+   "cita": "Solomon 2002 — The oviduct in chaos",
+   "wiki": "fuente-solomon-2002"
+  },
+  {
+   "id": "espinosa-2024-huevos-defectuosos",
+   "cita": "Espinosa 2024 — Huevos defectuosos o anómalos en aves de producción (Manual MSD)",
+   "wiki": "fuente-espinosa-2024-huevos-defectuosos"
+  },
+  {
+   "id": "alberta-2006-prolapso",
+   "cita": "Alberta Agriculture 2006 — Prolapse in laying hens",
+   "wiki": "fuente-alberta-2006-prolapso"
+  },
+  {
+   "id": "lohmann-2021-prolapso",
+   "cita": "Lohmann Breeders 2021 — Prolapso en ponedoras: prevención y tratamiento (Toolbox)",
+   "wiki": "fuente-lohmann-2021-prolapso"
+  },
+  {
+   "id": "lera-2022",
+   "cita": "Lera 2022 — Prolapse in laying hens (Hendrix Genetics)",
+   "wiki": "fuente-lera-2022"
+  },
+  {
+   "id": "glatz-runge-2017-cap1",
+   "cita": "Glatz & Runge 2017 — Managing Fowl Behaviour, Cap. 1: Reconocer los problemas de picaje (Australian Eggs)",
+   "wiki": "fuente-glatz-runge-2017-cap1"
+  },
+  {
+   "id": "protocolo-sangre",
+   "cita": "Wiki AviVet — Protocolo — Cómo investigar un alza de huevos con sangre en un lote de ponedoras",
+   "wiki": "investigacion-alza-huevos-con-sangre"
+  }
+ ],
+ "notaFuentes": "La base causal es la nota técnica de Hendrix (Van de Braak 2023), que lista causas sin ensayos citados; Nalbandov 1944 y Denton 1946 son experimentos antiguos con estirpes de la época. Tensiones: si la mancha de carne es coágulo degenerado (Nalbandov) o tejido del oviducto (Jin, histología moderna); si la transformación ocurre antes o después de la puesta (Denton); parque con pasto verde reduce manchas de sangre (Nalbandov) mientras el free-range del sur de Chile tuvo más manchas de carne (Gandarillas). Sin fuente: cuántos días antes de la ovulación ocurre la hemorragia, si el ácaro rojo aumenta las manchas internas y qué umbral justifica investigar."
+}

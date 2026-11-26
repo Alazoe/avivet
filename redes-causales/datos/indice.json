@@ -3,7 +3,7 @@
  "problemas": [
   {"id": "prolapso", "titulo": "Prolapso de oviducto y cloaca", "corto": "Prolapso", "estado": "listo"},
   {"id": "picaje", "titulo": "Picaje y canibalismo", "corto": "Picaje", "estado": "listo"},
-  {"id": "sangre", "titulo": "Huevos con sangre (cáscara manchada y manchas internas)", "corto": "Huevos con sangre", "estado": "en-preparacion", "wiki": "investigacion-alza-huevos-con-sangre"}
+  {"id": "sangre", "titulo": "Huevos con sangre (cáscara manchada y manchas internas)", "corto": "Huevos con sangre", "estado": "listo"}
  ],
  "relaciones": [
   {"de": "picaje", "a": "prolapso", "texto": "El picoteo de cloaca lesiona el tejido y retrasa la retracción"},

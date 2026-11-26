@@ -89,7 +89,7 @@ async function portada(idx){
   <section><div class="eyebrow">Wiki AviVet · ponedoras</div><h1>Redes causales y árboles de investigación</h1>
     <p class="lead">Cada problema tiene una red causal (qué lo provoca, cómo y qué medidas lo cortan) y, cuando corresponde, un árbol para investigar un brote en un lote. Los problemas comparten factores: corregir uno puede prevenir varios.</p></section>
   <section class="problemas">${cards}</section>
-  <section class="card mapa"><h2>Cómo se conectan los problemas</h2><p class="nota">Las flechas indican que un problema causa o agrava otro. Los círculos punteados están en preparación.</p>${mapaSVG(idx)}</section>
+  <section class="card mapa"><h2>Cómo se conectan los problemas</h2><p class="nota">Las flechas indican que un problema causa o agrava otro.${idx.problemas.some(p => p.estado !== 'listo') ? ' Los círculos punteados están en preparación.' : ''}</p>${mapaSVG(idx)}</section>
   <section class="card"><h2>Factores compartidos</h2><p class="nota">Factores del catálogo común (<code>datos/factores.json</code>) y dónde aparecen en cada red. Toque un nodo para abrirlo.</p>
     <div class="tabla"><table><thead><tr><th>Factor</th><th>Aparece en</th><th>Tema en la wiki</th></tr></thead><tbody>
     ${filas.map(({f, usos}) => `<tr><td>${esc(f.nombre)}</td><td>${usos.length ? usos.map(u => `<a class="chip" href="#/${u.p.id}/red/${u.n.id}">${esc(u.p.id)} · ${esc(u.n.texto[0])}</a>`).join('') : '<span class="nota">—</span>'}</td><td><code>${esc(f.wiki || '')}</code></td></tr>`).join('')}
