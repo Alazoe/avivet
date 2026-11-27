@@ -29,6 +29,7 @@ redes-causales/
 |---|---|---|
 | Prolapso | consultas `red-causal-prolapso` e `investigacion-brote-prolapso` | editar `datos/prolapso.json` a mano, siguiendo la wiki |
 | Huevos con sangre | consulta `red-causal-huevos-con-sangre` (y el protocolo `investigacion-alza-huevos-con-sangre`) | editar `datos/sangre.json` a mano, siguiendo la wiki |
+| Retraso en el inicio de postura | consulta `red-causal-inicio-postura` (y `lote-disparejo-retraso-inicio-postura`) | editar `datos/inicio-postura.json` a mano, siguiendo la wiki |
 | Postura y tamaño del huevo | consulta `red-causal-postura-tamano-huevo` | editar `datos/postura.json` a mano, siguiendo la wiki |
 | Picaje | `avivet-wiki/Entregables/red-causal-picaje/datos.json` (la misma fuente que el Canvas y los artifacts de picaje) | editar ese `datos.json` en la wiki y correr `python3 redes-causales/importar/picaje.py` |
 
@@ -108,6 +109,7 @@ redes-causales/
     ],
     "respuestas": [{ "id": "r1", "titulo": "Se bajaron horas de luz", "nota": "Qué dice la evidencia", "fuentes": ["…"] }],  // opcional: «lo que ya se hizo», no suma
     "notaPuntaje": "…",                    // opcional: explica el puntaje si no es el estándar
+    "etiquetaEdad": "Edad actual del lote",   // opcional: texto del campo de edad (por defecto «Edad al inicio del brote»)
     "necropsia": ["…"], "seguir": ["…"], "pedir": ["…"],   // opcionales
     "ejemplo": { "semanas": 24, "pistas": ["doble", "luz"], "texto": "lote de 24 semanas con…" }
   },

@@ -282,7 +282,7 @@ function vistaBrote(d){
       ${B.tipos ? `<div class="grupo" id="tipos"></div>` : ''}</section>`;
   const p1 = `<section class="card">${paso('Hoy, sirve para cualquier causa')}<div class="grupo" id="hoy"></div>${B.notaHoy ? `<p class="nota">${md(B.notaHoy)}</p>` : ''}</section>`;
   const p2 = `<section class="card">${paso('Edad del lote y pistas')}
-      <div class="semanas"><label for="wk">Edad al inicio del brote</label><input id="wk" type="number" min="0" max="120" step="1" inputmode="numeric" placeholder="—"> <span class="nota">semanas</span></div>
+      <div class="semanas"><label for="wk">${esc(B.etiquetaEdad || 'Edad al inicio del brote')}</label><input id="wk" type="number" min="0" max="120" step="1" inputmode="numeric" placeholder="—"> <span class="nota">semanas</span></div>
       <div class="seg" role="group" aria-label="Ventana de edad" id="win"></div>
       ${B.notaVentanas ? `<p class="nota">${md(B.notaVentanas)}</p>` : ''}
       ${ej ? `<div class="banner" id="exbanner"><span>Ejemplo cargado: ${esc(ej.texto)}.</span><button class="btn" type="button" id="clear">Empezar de cero</button></div>` : ''}

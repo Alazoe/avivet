@@ -24,6 +24,12 @@
    "titulo": "Caída de postura y tamaño del huevo",
    "corto": "Postura y tamaño",
    "estado": "listo"
+  },
+  {
+   "id": "inicio-postura",
+   "titulo": "Retraso en el inicio de postura",
+   "corto": "Inicio de postura",
+   "estado": "listo"
   }
  ],
  "relaciones": [
@@ -51,6 +57,21 @@
    "de": "postura",
    "a": "prolapso",
    "texto": "El huevo muy grande favorece el prolapso"
+  },
+  {
+   "de": "inicio-postura",
+   "a": "postura",
+   "texto": "Las livianas ponen huevo chico y el lote pierde masa de huevo"
+  },
+  {
+   "de": "inicio-postura",
+   "a": "prolapso",
+   "texto": "Livianas 15 % bajo el peso: 3 veces más hemorragia cloacal"
+  },
+  {
+   "de": "inicio-postura",
+   "a": "picaje",
+   "texto": "La hemorragia cloacal de las livianas atrae picaje"
   }
  ]
 }

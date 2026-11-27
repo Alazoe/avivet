@@ -1,0 +1,1197 @@
+{
+ "id": "inicio-postura",
+ "titulo": "Retraso en el inicio de postura",
+ "especie": "Ponedora comercial",
+ "resumen": "Un lote que no llega a la postura de la tabla entre las 18 y 26 semanas suele combinar un **lote disparejo o liviano que llegó al estímulo de luz sin el peso y la uniformidad de la guía** con **poco alimento o una pre-postura mal aplicada** al arrancar.",
+ "wiki": [
+  "red-causal-inicio-postura",
+  "lote-disparejo-retraso-inicio-postura",
+  "recria-pollitas"
+ ],
+ "actualizado": "2026-11-27",
+ "red": {
+  "intro": {
+   "titulo": "Recría, luz y alimento al arranque",
+   "texto": "Las causas están agrupadas por tema y llevan su nivel de evidencia (A datos experimentales, B revisión o campo, C guía de manejo sin ensayo; clasificación propia). Casi todo es C: viene de las guías de manejo Hy-Line."
+  },
+  "grupos": {
+   "recria": "Recría y origen",
+   "luz": "Luz",
+   "alimento": "Alimento y traslado",
+   "sanidad": "Sanidad"
+  },
+  "nodos": [
+   {
+    "id": "o_comederos",
+    "tipo": "o",
+    "texto": [
+     "Comederos o bebederos escasos,",
+     "amontonamiento"
+    ],
+    "detalle": "La competencia por comederos y bebederos es una causa de mala uniformidad. Referencia en piso (postura): comedero 5 cm/ave con acceso por dos lados (10 cm por uno), 1 nipple o copa cada 10 aves, 7–9 aves/m². En crianza: 2,5 cm/ave por dos lados, 12,5 aves por nipple.",
+    "fuentes": [
+     "hyline-2019-tu-pullet",
+     "hyline-2026-brn-alt-std"
+    ],
+    "grupo": "recria",
+    "evidencia": "C",
+    "factor": "ambiente"
+   },
+   {
+    "id": "o_entericas",
+    "tipo": "o",
+    "texto": [
+     "Enfermedad entérica en recría",
+     "(coccidiosis, Gumboro)"
+    ],
+    "detalle": "Coccidiosis, Gumboro, espiroquetosis, enteritis o raquitismo frenan el crecimiento de una parte del lote y lo dejan disparejo.",
+    "fuentes": [
+     "hyline-2019-tu-pullet"
+    ],
+    "grupo": "recria",
+    "evidencia": "C",
+    "factor": "sanidad"
+   },
+   {
+    "id": "o_origenes",
+    "tipo": "o",
+    "texto": [
+     "Pollitas de distintas fechas",
+     "u orígenes"
+    ],
+    "detalle": "La desigualdad inicial del lote es difícil de revertir en granjas comerciales (FEDNA). Varias fechas de nacimiento en el mismo lote empeoran la uniformidad (guía Hy-Line 2016).",
+    "fuentes": [
+     "fedna-2018-ponedoras",
+     "hyline-2019-tu-pullet"
+    ],
+    "grupo": "recria",
+    "evidencia": "B",
+    "factor": "recria"
+   },
+   {
+    "id": "o_estresrecria",
+    "tipo": "o",
+    "texto": [
+     "Estrés en recría: vacunas,",
+     "manipulación, calor"
+    ],
+    "detalle": "Vacunaciones con manipulación, despique mal hecho, calor y cualquier restricción de agua frenan el crecimiento. La guía indica volver a una fórmula más concentrada en esos momentos.",
+    "fuentes": [
+     "hyline-2019-tu-pullet"
+    ],
+    "grupo": "recria",
+    "evidencia": "C"
+   },
+   {
+    "id": "o_dieta",
+    "tipo": "o",
+    "texto": [
+     "Cambios de dieta por edad,",
+     "no por peso"
+    ],
+    "detalle": "Pasar a la siguiente dieta por edad, con el lote bajo de peso o disparejo, deja a las livianas con menos nutrientes de los que necesitan. Los cambios se hacen por peso corporal; los lotes livianos deben seguir en la fórmula más concentrada.",
+    "fuentes": [
+     "hyline-2019-tu-pullet",
+     "hyline-2024-hlb10"
+    ],
+    "grupo": "recria",
+    "evidencia": "C",
+    "factor": "recria"
+   },
+   {
+    "id": "o_peso",
+    "tipo": "o",
+    "texto": [
+     "Peso bajo al final de la recría"
+    ],
+    "detalle": "El peso al final de la recría es el principal factor del tamaño del huevo (+100 g de peso vivo ≈ +1,0–1,1 g) y explica el peso del huevo temprano (r² = 0,85). Peso bajo y estrés entre las 12 y 18 semanas retrasan el inicio de la producción. Hy-Line Brown a 17 sem: 1.363–1.428 g (sistemas alternativos), 1.380–1.459 g (jaula Chile).",
+    "fuentes": [
+     "fedna-2018-ponedoras",
+     "bain-2016",
+     "summers-leeson-1983",
+     "hyline-2019-tu-pullet",
+     "hyline-2026-brn-alt-std",
+     "hyline-2025-brn-std-chile"
+    ],
+    "grupo": "recria",
+    "evidencia": "A",
+    "factor": "recria",
+    "cifras": [
+     "+100 g de peso vivo → +1,0–1,1 g de huevo",
+     "r² = 0,85 peso de recría ↔ huevo temprano",
+     "+20 g de peso por hora de luz en recría"
+    ]
+   },
+   {
+    "id": "o_estimulo",
+    "tipo": "o",
+    "texto": [
+     "Estímulo de luz por edad, sin",
+     "peso ni uniformidad"
+    ],
+    "detalle": "La guía Hy-Line estimula con 1.350 g y 85 % de uniformidad (≈ 16 sem); si la uniformidad es < 80 %, esperar a 1,40 kg. Estimular un lote liviano o disparejo da menor pico y persistencia, más prolapso y peor cáscara.",
+    "fuentes": [
+     "hyline-2026-brn-alt-std",
+     "hyline-2024-hlb10",
+     "hendrix-2020-mgahs"
+    ],
+    "grupo": "luz",
+    "evidencia": "C",
+    "factor": "luz",
+    "cifras": [
+     "Estímulo: 1.350 g y 85 % de uniformidad",
+     "Uniformidad < 80 %: esperar a 1,40 kg"
+    ]
+   },
+   {
+    "id": "o_luz",
+    "tipo": "o",
+    "texto": [
+     "Luz que no sube, cortes o",
+     "intensidad distinta a la recría"
+    ],
+    "detalle": "Subir de 12 a 16 h induce la postura si el ave tiene edad y condición; sin aumento de horas no hay estímulo. La intensidad debe ser igual en crianza y postura (15 lux en crianza, 20–30 lux en postura).",
+    "fuentes": [
+     "applegate-fowler-2021-cap6",
+     "hyline-2024-hlb10"
+    ],
+    "grupo": "luz",
+    "evidencia": "B",
+    "factor": "luz"
+   },
+   {
+    "id": "o_prepostura",
+    "tipo": "o",
+    "texto": [
+     "Pre-postura mal aplicada"
+    ],
+    "detalle": "Debe durar 10–12 días, sincronizada con el estímulo de luz, con 2,5 % de Ca y hasta 50 % de caliza gruesa. Bajar la energía respecto de la dieta de desarrollo puede retrasar el inicio. No darla antes de 15 sem ni después del primer huevo (no tiene calcio para producir); sin pre-postura, Ca de desarrollo a 1,4 %.",
+    "fuentes": [
+     "hyline-2024-hlb10",
+     "hyline-2026-brn-alt-std"
+    ],
+    "grupo": "alimento",
+    "evidencia": "C",
+    "factor": "calcio"
+   },
+   {
+    "id": "o_racion",
+    "tipo": "o",
+    "texto": [
+     "Ración bajo la tabla al arrancar"
+    ],
+    "detalle": "Hy-Line Brown a la sem 22: 107–113 g/ave/día en sistemas alternativos y 103–110 g en jaula (Chile). Con consumo bajo, la guía usa una dieta Pre-Pico más concentrada y +30 % de vitaminas y minerales traza en el alimento.",
+    "fuentes": [
+     "hyline-2026-brn-alt-std",
+     "hyline-2025-brn-std-chile"
+    ],
+    "grupo": "alimento",
+    "evidencia": "C",
+    "cifras": [
+     "Sem 22: 107–113 g (alternativos), 103–110 g (jaula)"
+    ]
+   },
+   {
+    "id": "o_traslado",
+    "tipo": "o",
+    "texto": [
+     "Traslado a postura"
+    ],
+    "detalle": "Al trasladar al galpón de postura se pierde normalmente 10–12 % del peso por menor consumo de agua.",
+    "fuentes": [
+     "hyline-2026-brn-alt-std"
+    ],
+    "grupo": "alimento",
+    "evidencia": "C"
+   },
+   {
+    "id": "o_bi",
+    "tipo": "o",
+    "texto": [
+     "Bronquitis infecciosa",
+     "en la recría"
+    ],
+    "detalle": "Si la infección ocurre en la recría, la caída de postura puede ser de 10–90 % con daño permanente del oviducto.",
+    "fuentes": [
+     "bestman-2020"
+    ],
+    "grupo": "sanidad",
+    "evidencia": "B",
+    "factor": "sanidad"
+   },
+   {
+    "id": "m_disparejo",
+    "tipo": "m",
+    "texto": [
+     "Lote disparejo: dos grupos",
+     "de peso"
+    ],
+    "detalle": "Con mala uniformidad las pollonas inician la postura en distintos momentos y es difícil alimentar bien al lote. Meta de uniformidad Hy-Line Brown: > 85 % (sem 2), > 80 % (sem 5), > 85 % (sem 11–12), > 90 % (sem 17).",
+    "fuentes": [
+     "hyline-2019-tu-pullet",
+     "hyline-2026-brn-alt-std"
+    ]
+   },
+   {
+    "id": "m_inmaduro",
+    "tipo": "m",
+    "texto": [
+     "Livianas sin madurez",
+     "para poner"
+    ],
+    "detalle": "Las aves con menos peso inician tarde y ponen huevos pequeños.",
+    "fuentes": [
+     "hyline-2019-tu-pullet"
+    ]
+   },
+   {
+    "id": "m_desfase",
+    "tipo": "m",
+    "texto": [
+     "Estímulo desfasado del",
+     "desarrollo"
+    ],
+    "detalle": "Si se estimula por edad un lote disparejo, las aves que llegaron al peso responden y arrancan; las livianas no (razonamiento a partir de las guías). Resultado: inicio en dos tiempos y pico más bajo.",
+    "fuentes": [
+     "hyline-2026-brn-alt-std",
+     "hyline-2024-hlb10"
+    ]
+   },
+   {
+    "id": "m_nutrientes",
+    "tipo": "m",
+    "texto": [
+     "Faltan nutrientes",
+     "para arrancar"
+    ],
+    "detalle": "Ración bajo la tabla, pérdida de peso al traslado o pre-postura con poca energía dejan al ave sin lo necesario para iniciar y sostener la postura.",
+    "fuentes": [
+     "hyline-2026-brn-alt-std",
+     "hyline-2024-hlb10"
+    ]
+   },
+   {
+    "id": "m_calcio",
+    "tipo": "m",
+    "texto": [
+     "Poco calcio para la cáscara"
+    ],
+    "detalle": "La pre-postura no tiene calcio para producir: si se sigue dando después del primer huevo, falta calcio para la cáscara.",
+    "fuentes": [
+     "hyline-2026-brn-alt-std"
+    ]
+   },
+   {
+    "id": "m_oviducto",
+    "tipo": "m",
+    "texto": [
+     "Oviducto no funcional"
+    ],
+    "detalle": "El daño de la BI en la recría es permanente: aves que no ponen o ponen poco.",
+    "fuentes": [
+     "bestman-2020"
+    ]
+   },
+   {
+    "id": "e_retraso",
+    "tipo": "e",
+    "texto": [
+     "Retraso en el inicio",
+     "de postura"
+    ],
+    "detalle": "El lote no llega a la postura de la tabla. Hy-Line Brown: 50 % de postura a los 140 días (sistemas alternativos) o 142 días (jaula Chile); a la sem 22, 83–88 % de postura.",
+    "fuentes": [
+     "hyline-2026-brn-alt-std",
+     "hyline-2025-brn-std-chile"
+    ],
+    "central": true
+   },
+   {
+    "id": "e_chico",
+    "tipo": "e",
+    "texto": [
+     "Huevo chico en las livianas"
+    ],
+    "detalle": "Las aves de menor peso ponen huevos pequeños.",
+    "fuentes": [
+     "hyline-2019-tu-pullet",
+     "fedna-2018-ponedoras"
+    ],
+    "problema": "postura"
+   },
+   {
+    "id": "e_grande",
+    "tipo": "e",
+    "texto": [
+     "Huevo grande en las pesadas"
+    ],
+    "detalle": "En un lote disparejo, las aves que ya están sobre el peso arrancan antes y pueden dar huevo grande (razonamiento; la guía advierte que el exceso de peso lleva a problemas reproductivos).",
+    "fuentes": [
+     "hyline-2024-hlb10"
+    ],
+    "problema": "postura"
+   },
+   {
+    "id": "e_cascara",
+    "tipo": "e",
+    "texto": [
+     "Cáscara blanda o fina"
+    ],
+    "detalle": "En las primeras semanas es esperable algo; si persiste, revisar que el alimento ya sea de postura.",
+    "fuentes": [
+     "hyline-2026-brn-alt-std"
+    ]
+   },
+   {
+    "id": "c_pico",
+    "tipo": "x",
+    "texto": [
+     "Pico más bajo y",
+     "menos persistencia"
+    ],
+    "detalle": "El estímulo prematuro da menor pico y menor persistencia; los problemas del crecimiento no se corrigen después del inicio de la producción.",
+    "fuentes": [
+     "hendrix-2020-mgahs",
+     "hyline-2019-tu-pullet"
+    ]
+   },
+   {
+    "id": "c_cloaca",
+    "tipo": "x",
+    "texto": [
+     "Hemorragia cloacal, picaje",
+     "y prolapso"
+    ],
+    "detalle": "Una pollita 15 % bajo el peso estándar al inicio de postura tiene 3 veces más hemorragia cloacal; el huevo grande favorece el prolapso.",
+    "fuentes": [
+     "glatz-runge-2017-cap4"
+    ],
+    "problema": "prolapso",
+    "cifras": [
+     "15 % bajo el peso → 3× hemorragia cloacal"
+    ]
+   }
+  ],
+  "flechas": [
+   {
+    "de": "o_comederos",
+    "a": "m_disparejo"
+   },
+   {
+    "de": "o_entericas",
+    "a": "m_disparejo"
+   },
+   {
+    "de": "o_origenes",
+    "a": "m_disparejo"
+   },
+   {
+    "de": "o_estresrecria",
+    "a": "m_disparejo"
+   },
+   {
+    "de": "o_dieta",
+    "a": "o_peso"
+   },
+   {
+    "de": "o_dieta",
+    "a": "m_disparejo"
+   },
+   {
+    "de": "o_peso",
+    "a": "m_inmaduro"
+   },
+   {
+    "de": "m_disparejo",
+    "a": "m_inmaduro"
+   },
+   {
+    "de": "o_estimulo",
+    "a": "m_desfase"
+   },
+   {
+    "de": "m_disparejo",
+    "a": "m_desfase"
+   },
+   {
+    "de": "o_prepostura",
+    "a": "m_nutrientes"
+   },
+   {
+    "de": "o_racion",
+    "a": "m_nutrientes"
+   },
+   {
+    "de": "o_traslado",
+    "a": "m_nutrientes"
+   },
+   {
+    "de": "o_prepostura",
+    "a": "m_calcio"
+   },
+   {
+    "de": "o_bi",
+    "a": "m_oviducto"
+   },
+   {
+    "de": "m_inmaduro",
+    "a": "e_retraso"
+   },
+   {
+    "de": "m_desfase",
+    "a": "e_retraso"
+   },
+   {
+    "de": "m_nutrientes",
+    "a": "e_retraso"
+   },
+   {
+    "de": "m_oviducto",
+    "a": "e_retraso"
+   },
+   {
+    "de": "o_luz",
+    "a": "e_retraso"
+   },
+   {
+    "de": "m_inmaduro",
+    "a": "e_chico"
+   },
+   {
+    "de": "m_nutrientes",
+    "a": "e_chico"
+   },
+   {
+    "de": "m_disparejo",
+    "a": "e_grande"
+   },
+   {
+    "de": "m_calcio",
+    "a": "e_cascara"
+   },
+   {
+    "de": "e_retraso",
+    "a": "c_pico"
+   },
+   {
+    "de": "m_desfase",
+    "a": "c_pico"
+   },
+   {
+    "de": "m_inmaduro",
+    "a": "c_cloaca"
+   },
+   {
+    "de": "e_grande",
+    "a": "c_cloaca"
+   }
+  ],
+  "medidas": [
+   {
+    "id": "p1",
+    "titulo": "Pesar bien y cada semana",
+    "actua": [
+     "m_disparejo",
+     "o_peso"
+    ],
+    "puntos": [
+     "≥ 100 aves individuales por semana desde la sem 4 hasta la 32; en lotes chicos, todas.",
+     "En piso, al azar en distintos sectores; uniformidad = % dentro de ±10 % del promedio.",
+     "Diez aves no alcanzan para medir uniformidad."
+    ],
+    "fuentes": [
+     "hyline-2019-tu-pullet"
+    ]
+   },
+   {
+    "id": "p2",
+    "titulo": "Separar por peso y alimentar aparte",
+    "actua": [
+     "m_disparejo",
+     "m_inmaduro"
+    ],
+    "puntos": [
+     "En piso, corrales por clase de peso.",
+     "Si no se puede separar, alimentar el lote según las aves más livianas.",
+     "Mantener a las livianas en la fórmula más concentrada."
+    ],
+    "fuentes": [
+     "hyline-2019-tu-pullet"
+    ]
+   },
+   {
+    "id": "p3",
+    "titulo": "Estimular por peso y uniformidad",
+    "actua": [
+     "o_estimulo"
+    ],
+    "puntos": [
+     "Estimular con 1.350 g y 85 % de uniformidad.",
+     "Con uniformidad < 80 %, esperar a 1,40 kg.",
+     "No subir la luz para empujar a un lote atrasado."
+    ],
+    "fuentes": [
+     "hyline-2026-brn-alt-std",
+     "hyline-2024-hlb10"
+    ]
+   },
+   {
+    "id": "p4",
+    "titulo": "Programa de luz completo y parejo",
+    "actua": [
+     "o_luz"
+    ],
+    "puntos": [
+     "Subir según programa (+30 min por semana hasta 14–16 h).",
+     "Revisar relojes y cortes; igualar la intensidad entre crianza y postura."
+    ],
+    "fuentes": [
+     "hyline-2024-hlb10",
+     "applegate-fowler-2021-cap6"
+    ]
+   },
+   {
+    "id": "p5",
+    "titulo": "Pre-postura en su ventana",
+    "actua": [
+     "o_prepostura"
+    ],
+    "puntos": [
+     "10–12 días con el estímulo de luz, 2,5 % Ca y hasta 50 % de caliza gruesa.",
+     "Sin bajar la energía; nunca después del primer huevo."
+    ],
+    "fuentes": [
+     "hyline-2024-hlb10",
+     "hyline-2026-brn-alt-std"
+    ]
+   },
+   {
+    "id": "p6",
+    "titulo": "Ración según la tabla de la línea y el sistema",
+    "actua": [
+     "o_racion",
+     "o_traslado"
+    ],
+    "puntos": [
+     "Sem 22: 107–113 g en sistemas alternativos, 103–110 g en jaula.",
+     "Con consumo bajo: dieta Pre-Pico y +30 % de premix en el alimento.",
+     "Más repartos al día en lotes livianos o con calor."
+    ],
+    "fuentes": [
+     "hyline-2026-brn-alt-std",
+     "hyline-2025-brn-std-chile",
+     "hyline-2019-tu-pullet"
+    ]
+   },
+   {
+    "id": "p7",
+    "titulo": "Espacio de comedero y bebedero",
+    "actua": [
+     "o_comederos"
+    ],
+    "puntos": [
+     "Postura en piso: 5 cm/ave (dos lados), 1 nipple cada 10 aves, 7–9 aves/m².",
+     "Mismo tipo de comedero y bebedero en crianza y postura."
+    ],
+    "fuentes": [
+     "hyline-2026-brn-alt-std",
+     "hyline-2019-tu-pullet"
+    ]
+   },
+   {
+    "id": "p8",
+    "titulo": "Recría sana",
+    "actua": [
+     "o_entericas",
+     "o_bi"
+    ],
+    "puntos": [
+     "Control de coccidiosis y Gumboro.",
+     "Programa de vacunación contra BI completo antes del traslado."
+    ],
+    "fuentes": [
+     "hyline-2019-tu-pullet",
+     "bestman-2020"
+    ]
+   },
+   {
+    "id": "p9",
+    "titulo": "Cambios de dieta y traslados con criterio",
+    "actua": [
+     "o_dieta",
+     "o_estresrecria",
+     "o_traslado"
+    ],
+    "puntos": [
+     "Cambiar de dieta por peso, no por edad.",
+     "Retrasar los cambios después de vacunaciones con manipulación o calor."
+    ],
+    "fuentes": [
+     "hyline-2019-tu-pullet",
+     "hyline-2024-hlb10"
+    ]
+   },
+   {
+    "id": "p10",
+    "titulo": "Lote de un solo origen y edad",
+    "actua": [
+     "o_origenes"
+    ],
+    "puntos": [
+     "Recibir pollitas de una misma reproductora y fecha; la desigualdad inicial es difícil de revertir."
+    ],
+    "fuentes": [
+     "fedna-2018-ponedoras"
+    ]
+   }
+  ],
+  "notaMedidas": "Primero medir bien (≥ 100 aves) y separar por peso; después ajustar la ración. Lo de la recría sirve para el próximo lote.",
+  "noFunciona": [
+   [
+    "Subir horas de luz para empujar a un lote disparejo",
+    "Con uniformidad < 80 % la guía indica esperar a 1,40 kg."
+   ],
+   [
+    "Mantener la pre-postura hasta que pongan",
+    "Después del primer huevo no tiene calcio para la cáscara."
+   ],
+   [
+    "Vitaminas al agua como solución del arranque",
+    "Sin respaldo; la guía propone +30 % de premix en el alimento mientras el consumo sea bajo."
+   ],
+   [
+    "Subir la ración a todo el lote sin separar",
+    "Puede engordar a las pesadas (razonamiento); si no se separa, la guía indica alimentar según las livianas."
+   ]
+  ]
+ },
+ "brote": {
+  "confirmar": [
+   "Comparar la postura con la tabla de la línea **y del sistema** a la misma edad (Hy-Line Brown: 50 % a los 140–142 días).",
+   "Pesar **≥ 100 aves** (o todas) para saber si el lote está liviano, disparejo o ambas cosas."
+  ],
+  "tipos": [
+   {
+    "id": "atrasada",
+    "titulo": "Postura atrasada",
+    "pista": "El lote no llega al % de la tabla a su edad."
+   },
+   {
+    "id": "disparejo",
+    "titulo": "Lote disparejo",
+    "pista": "Dos grupos de peso; unas ponen y otras no."
+   },
+   {
+    "id": "huevo",
+    "titulo": "Huevo chico o cáscara blanda",
+    "pista": "Huevos bajo el peso esperado o con cáscara débil."
+   }
+  ],
+  "hoy": [
+   "Pesar ≥ 100 aves (o todas) al azar en distintos sectores",
+   "Comparar la ración con la tabla de la línea y el sistema",
+   "Revisar qué alimento reciben hoy (¿sigue la pre-postura?)",
+   "Revisar horas de luz, relojes, cortes e intensidad",
+   "Contar comederos y bebederos frente al número de aves",
+   "Si hay corrales, separar a las más livianas"
+  ],
+  "ventanas": [
+   {
+    "id": "temprano",
+    "titulo": "Arranque",
+    "rango": "17–20 sem",
+    "hasta": 21
+   },
+   {
+    "id": "medio",
+    "titulo": "Subida al pico",
+    "rango": "21–24 sem",
+    "hasta": 25
+   },
+   {
+    "id": "tarde",
+    "titulo": "Sigue atrasado",
+    "rango": "25–30 sem",
+    "hasta": null
+   }
+  ],
+  "notaVentanas": "Use la edad actual del lote.",
+  "hipotesis": [
+   {
+    "id": "H1",
+    "titulo": "Lote disparejo desde la recría",
+    "peso": {
+     "temprano": 2,
+     "medio": 3,
+     "tarde": 2
+    },
+    "pesoTipo": {
+     "disparejo": 3,
+     "atrasada": 2,
+     "huevo": 1
+    },
+    "verificar": [
+     "Pesaje de ≥ 100 aves: uniformidad y dos grupos",
+     "Comederos y bebederos frente a la referencia",
+     "Historia de enfermedad entérica y origen de las pollitas"
+    ],
+    "hacer": [
+     "Separar por peso y alimentar aparte",
+     "Corregir espacio de comedero y bebedero"
+    ],
+    "fuentes": [
+     "hyline-2019-tu-pullet",
+     "fedna-2018-ponedoras"
+    ],
+    "nodos": [
+     "o_comederos",
+     "o_entericas",
+     "o_origenes",
+     "o_estresrecria"
+    ]
+   },
+   {
+    "id": "H2",
+    "titulo": "Estímulo de luz antes del peso y la uniformidad",
+    "peso": {
+     "temprano": 3,
+     "medio": 3,
+     "tarde": 1
+    },
+    "pesoTipo": {
+     "atrasada": 3,
+     "disparejo": 2
+    },
+    "verificar": [
+     "Fecha del primer aumento de luz y peso del lote en ese momento",
+     "Si se pesó antes de estimular"
+    ],
+    "hacer": [
+     "En el lote actual: separar y alimentar a las livianas; no seguir subiendo luz para empujar",
+     "En el próximo: estimular con 1.350 g y 85 % (o 1,40 kg)"
+    ],
+    "fuentes": [
+     "hyline-2026-brn-alt-std",
+     "hyline-2024-hlb10",
+     "hendrix-2020-mgahs"
+    ],
+    "nodos": [
+     "o_estimulo"
+    ]
+   },
+   {
+    "id": "H3",
+    "titulo": "Peso bajo de todo el lote",
+    "peso": {
+     "temprano": 3,
+     "medio": 2,
+     "tarde": 1
+    },
+    "pesoTipo": {
+     "atrasada": 3,
+     "huevo": 2
+    },
+    "verificar": [
+     "Peso promedio frente a la tabla de la línea",
+     "Cambios de dieta por edad en la recría"
+    ],
+    "hacer": [
+     "Ración según tabla y fórmula concentrada",
+     "Pesaje semanal hasta la sem 32"
+    ],
+    "fuentes": [
+     "fedna-2018-ponedoras",
+     "bain-2016",
+     "hyline-2019-tu-pullet"
+    ],
+    "nodos": [
+     "o_peso",
+     "o_dieta"
+    ]
+   },
+   {
+    "id": "H4",
+    "titulo": "Consumo bajo al arranque",
+    "peso": {
+     "temprano": 2,
+     "medio": 3,
+     "tarde": 2
+    },
+    "pesoTipo": {
+     "atrasada": 3,
+     "huevo": 2
+    },
+    "verificar": [
+     "Gramos por ave al día frente a la tabla (alternativos o jaula)",
+     "Fecha de traslado y pérdida de peso",
+     "Cuántos repartos al día"
+    ],
+    "hacer": [
+     "Subir la ración, primero a las livianas",
+     "Pre-Pico y +30 % de premix mientras el consumo sea bajo"
+    ],
+    "fuentes": [
+     "hyline-2026-brn-alt-std",
+     "hyline-2025-brn-std-chile"
+    ],
+    "nodos": [
+     "o_racion",
+     "o_traslado"
+    ]
+   },
+   {
+    "id": "H5",
+    "titulo": "Pre-postura mal aplicada",
+    "peso": {
+     "temprano": 3,
+     "medio": 2,
+     "tarde": 1
+    },
+    "pesoTipo": {
+     "huevo": 3,
+     "atrasada": 2
+    },
+    "verificar": [
+     "Fechas de inicio y término de la pre-postura",
+     "Si se bajó la energía o se siguió después del primer huevo"
+    ],
+    "hacer": [
+     "Pasar a dieta de postura desde el primer huevo",
+     "En el próximo lote: 10–12 días, sin bajar energía"
+    ],
+    "fuentes": [
+     "hyline-2024-hlb10",
+     "hyline-2026-brn-alt-std"
+    ],
+    "nodos": [
+     "o_prepostura"
+    ]
+   },
+   {
+    "id": "H6",
+    "titulo": "Luz insuficiente o cortes",
+    "peso": {
+     "temprano": 2,
+     "medio": 2,
+     "tarde": 2
+    },
+    "pesoTipo": {
+     "atrasada": 3
+    },
+    "verificar": [
+     "Horas de luz reales, relojes, cortes",
+     "Intensidad en postura frente a la recría"
+    ],
+    "hacer": [
+     "Completar el programa de luz e igualar intensidad"
+    ],
+    "fuentes": [
+     "hyline-2024-hlb10",
+     "applegate-fowler-2021-cap6"
+    ],
+    "nodos": [
+     "o_luz"
+    ]
+   },
+   {
+    "id": "H7",
+    "titulo": "Bronquitis infecciosa en la recría",
+    "peso": {
+     "temprano": 1,
+     "medio": 2,
+     "tarde": 3
+    },
+    "pesoTipo": {
+     "atrasada": 2
+    },
+    "verificar": [
+     "Historia respiratoria y vacunas en la recría",
+     "Necropsia de aves que no ponen: oviducto"
+    ],
+    "hacer": [
+     "Revisar el programa de vacunación BI de la recría",
+     "Descartar aves que no pondrán"
+    ],
+    "fuentes": [
+     "bestman-2020"
+    ],
+    "nodos": [
+     "o_bi"
+    ]
+   }
+  ],
+  "pistas": [
+   {
+    "grupo": "Pesaje",
+    "pistas": [
+     {
+      "id": "q_dosgrupos",
+      "texto": "Dos grupos de peso en el lote",
+      "apunta": {
+       "H1": 3,
+       "H2": 1
+      }
+     },
+     {
+      "id": "q_unif",
+      "texto": "Uniformidad bajo 80 % (en ≥ 100 aves)",
+      "apunta": {
+       "H1": 3,
+       "H2": 2
+      }
+     },
+     {
+      "id": "q_pesobajo",
+      "texto": "Peso promedio bajo la tabla",
+      "apunta": {
+       "H3": 3,
+       "H4": 1
+      }
+     },
+     {
+      "id": "q_pesadas",
+      "texto": "Parte del lote sobre el peso máximo",
+      "apunta": {
+       "H1": 1,
+       "H2": 1
+      }
+     }
+    ]
+   },
+   {
+    "grupo": "Manejo y alimento",
+    "pistas": [
+     {
+      "id": "q_estimedad",
+      "texto": "Se estimuló la luz por edad o sin pesar",
+      "apunta": {
+       "H2": 3
+      }
+     },
+     {
+      "id": "q_racion",
+      "texto": "Ración bajo la tabla de la línea y el sistema",
+      "apunta": {
+       "H4": 3,
+       "H3": 1
+      }
+     },
+     {
+      "id": "q_traslado",
+      "texto": "Traslado a postura en las últimas semanas",
+      "apunta": {
+       "H4": 2
+      }
+     },
+     {
+      "id": "q_prepostura",
+      "texto": "Pre-postura más de 12 días, después del primer huevo o con menos energía",
+      "apunta": {
+       "H5": 3
+      }
+     },
+     {
+      "id": "q_luz",
+      "texto": "Horas de luz que no suben, cortes o intensidad distinta a la recría",
+      "apunta": {
+       "H6": 3
+      }
+     },
+     {
+      "id": "q_comederos",
+      "texto": "Comederos o bebederos escasos, amontonamiento",
+      "apunta": {
+       "H1": 3,
+       "H4": 1
+      }
+     },
+     {
+      "id": "q_origenes",
+      "texto": "Pollitas de distintas fechas u orígenes",
+      "apunta": {
+       "H1": 3
+      }
+     }
+    ]
+   },
+   {
+    "grupo": "Aves y huevo",
+    "pistas": [
+     {
+      "id": "q_cascara",
+      "texto": "Cáscara blanda que persiste",
+      "apunta": {
+       "H5": 2,
+       "H4": 1
+      }
+     },
+     {
+      "id": "q_chicos",
+      "texto": "Huevos chicos",
+      "apunta": {
+       "H3": 2,
+       "H1": 1
+      }
+     },
+     {
+      "id": "q_jumbo",
+      "texto": "Huevos grandes o jumbo junto a chicos",
+      "apunta": {
+       "H1": 2,
+       "H2": 2
+      }
+     },
+     {
+      "id": "q_entericas",
+      "texto": "Diarrea, coccidiosis o Gumboro en la recría",
+      "apunta": {
+       "H1": 2
+      }
+     },
+     {
+      "id": "q_bi",
+      "texto": "Historia respiratoria o de BI en la recría",
+      "apunta": {
+       "H7": 3
+      }
+     },
+     {
+      "id": "q_noponen",
+      "texto": "Aves de buen peso que no ponen",
+      "apunta": {
+       "H7": 2,
+       "H6": 1
+      }
+     }
+    ]
+   }
+  ],
+  "notaPistas": "Marque lo que encontró en el pesaje y lo que pasó desde el estímulo de luz.",
+  "respuestas": [
+   {
+    "id": "r1",
+    "titulo": "Se subió la ración a todo el lote",
+    "nota": "Si el lote está disparejo, las pesadas pueden engordar; la guía indica separar o alimentar según las livianas.",
+    "fuentes": [
+     "hyline-2019-tu-pullet"
+    ]
+   },
+   {
+    "id": "r2",
+    "titulo": "Se dieron vitaminas al agua",
+    "nota": "Sin respaldo para mejorar el arranque; la guía propone +30 % de premix en el alimento.",
+    "fuentes": [
+     "hyline-2026-brn-alt-std"
+    ]
+   },
+   {
+    "id": "r3",
+    "titulo": "Se subieron horas de luz para empujar",
+    "nota": "Con uniformidad < 80 % la guía indica esperar a 1,40 kg; más luz no hace madurar a las livianas.",
+    "fuentes": [
+     "hyline-2024-hlb10"
+    ]
+   },
+   {
+    "id": "r4",
+    "titulo": "Se mantuvo la pre-postura hasta que pusieran",
+    "nota": "Después del primer huevo no tiene calcio suficiente: pasar a dieta de postura.",
+    "fuentes": [
+     "hyline-2026-brn-alt-std"
+    ]
+   }
+  ],
+  "notaPuntaje": "Puntaje = tipo de problema (0–3, el mayor entre los marcados) + edad (0–3) + cada pista (1–3). Los pesos son razonamiento propio a partir de la wiki, no vienen de una fuente.",
+  "necropsia": [
+   "**Aves que no ponen:** ovario inactivo (inmadurez) frente a ovario activo con oviducto quístico o atrofiado (BI en la recría).",
+   "**Condición corporal:** quilla, pechuga y grasa abdominal en livianas y pesadas.",
+   "**Cloaca:** heridas o hemorragia en las livianas.",
+   "**Intestino:** lesiones de coccidiosis."
+  ],
+  "seguir": [
+   "Pesaje semanal de ≥ 100 aves hasta la sem 32.",
+   "Postura diaria y peso de huevo frente a la tabla.",
+   "Un cambio a la vez y medir 2 semanas."
+  ],
+  "pedir": [
+   "Línea genética, sistema (piso o jaula) y fecha de nacimiento",
+   "Pesajes de recría y uniformidad",
+   "Fecha y peso del lote al primer aumento de luz; programa de luz actual",
+   "Fecha de traslado a postura",
+   "Alimentos con fechas (pre-postura y postura) y gramos por ave al día",
+   "Número de comederos y bebederos",
+   "Vacunas y enfermedades en la recría",
+   "Origen de las pollitas (una o varias fechas)",
+   "Postura diaria desde el primer huevo"
+  ],
+  "etiquetaEdad": "Edad actual del lote"
+ },
+ "fuentes": [
+  {
+   "id": "hyline-2026-brn-alt-std",
+   "cita": "Hy-Line International 2026 — Guía de Rendimiento Hy-Line Brown, Sistemas Alternativos (Estándares Internacionales)",
+   "wiki": "fuente-hyline-2026-brn-alt-std"
+  },
+  {
+   "id": "hyline-2025-brn-std-chile",
+   "cita": "Hy-Line International 2025 — Guía de Rendimiento Hy-Line Brown, Estándares de Chile (sistemas convencionales)",
+   "wiki": "fuente-hyline-2025-brn-std-chile"
+  },
+  {
+   "id": "hyline-2024-hlb10",
+   "cita": "Hy-Line International 2024 — Manejo de las Variedades Hy-Line Marrón: 10 consideraciones importantes (Actualización técnica)",
+   "wiki": "fuente-hyline-2024-hlb10"
+  },
+  {
+   "id": "hyline-2019-tu-pullet",
+   "cita": "Hy-Line International 2019 — Manejo de las aves comerciales durante el crecimiento (Boletín Técnico)",
+   "wiki": "fuente-hyline-2019-tu-pullet"
+  },
+  {
+   "id": "fedna-2018-ponedoras",
+   "cita": "FEDNA 2018 — Gallinas ponedoras (Normas FEDNA Avicultura, 2ª ed., bloque E)",
+   "wiki": "fuente-fedna-2018-ponedoras"
+  },
+  {
+   "id": "bain-2016",
+   "cita": "Bain, Nys & Dunn 2016 — Persistency in lay and egg quality in longer laying cycles",
+   "wiki": "fuente-bain-2016"
+  },
+  {
+   "id": "summers-leeson-1983",
+   "cita": "Summers & Leeson 1983 — Factores que influyen en el tamaño del huevo temprano",
+   "wiki": "fuente-summers-leeson-1983"
+  },
+  {
+   "id": "lewis-2007",
+   "cita": "Lewis, Caston & Leeson 2007 — Fotoperiodo de recría y fotoestimulación en ponedoras de huevo",
+   "wiki": "fuente-lewis-2007"
+  },
+  {
+   "id": "glatz-runge-2017-cap4",
+   "cita": "Glatz & Runge 2017 — Managing Fowl Behaviour, Cap. 4: Estrategias para controlar el picaje de plumas y el canibalismo (Australian Eggs)",
+   "wiki": "fuente-glatz-runge-2017-cap4"
+  },
+  {
+   "id": "bestman-2020",
+   "cita": "Layer Signals: A Practical Guide to Layer Focused Management (Cap. 3–4)",
+   "wiki": "fuente-bestman-2020"
+  },
+  {
+   "id": "applegate-fowler-2021-cap6",
+   "cita": "Applegate & Fowler 2021 — Backyard Poultry Nutrition (Cap. 6, Backyard Poultry Medicine and Surgery, 2ª ed.)",
+   "wiki": "fuente-applegate-fowler-2021-cap6"
+  },
+  {
+   "id": "hendrix-2020-mgahs",
+   "cita": "Hendrix Genetics 2020 — Guía de Manejo en Sistemas Alternativos (MGAHS)",
+   "wiki": "fuente-hendrix-2020-mgahs"
+  },
+  {
+   "id": "lote-disparejo",
+   "cita": "Wiki AviVet — Lote disparejo que no arranca la postura: qué revisar y cómo manejarlo",
+   "wiki": "lote-disparejo-retraso-inicio-postura"
+  }
+ ],
+ "notaFuentes": "La mayor parte de la red viene de guías de manejo Hy-Line (nivel C, sin ensayos publicados detrás); el efecto del peso de recría sobre el tamaño del huevo tiene datos experimentales (FEDNA, Bain, Summers & Leeson). El paso del estímulo desfasado a un inicio en dos tiempos es razonamiento a partir de las guías. Sin fuente: cuánto se atrasa el 50 % de postura por punto de uniformidad y cuánto se recuperan las livianas separadas."
+}
