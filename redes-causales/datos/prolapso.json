@@ -8,7 +8,7 @@
   "red-causal-prolapso",
   "investigacion-brote-prolapso"
  ],
- "actualizado": "2026-11-25",
+ "actualizado": "2026-11-28",
  "red": {
   "intro": {
    "titulo": "Las flechas van de causa a efecto",
@@ -308,14 +308,15 @@
      "Picoteo de cloaca"
     ],
     "y": 680,
-    "detalle": "Conducta propia del inicio de postura, distinta del picaje de plumas. Lesiona la mucosa evertida: trauma y edema impiden la retracción. Swayne atribuye al picaje de cloaca al menos el 80 % de los prolapsos (cita a Glatz 2005); Alberta lo considera solo agravante.",
+    "detalle": "Conducta propia del inicio de postura, distinta del picaje de plumas. Lesiona la mucosa evertida: trauma y edema impiden la retracción. Swayne atribuye al picaje de cloaca al menos el 80 % de los prolapsos (cita a Glatz 2005); Alberta lo considera solo agravante. En 1.648 necropsias de lotes daneses sin jaula, el prolapso se agrupó con signos de huevo retenido y más peso en aves menores de 35 semanas, no con canibalismo (asociación en aves muertas, no secuencia causal).",
     "fuentes": [
      "lera-2022",
      "alberta-2006-prolapso",
      "neal-1956",
      "estevez-2015",
      "shivaprasad-2013-aaap",
-     "swayne-2020-cap30"
+     "swayne-2020-cap30",
+     "butler-lund-2026"
     ],
     "factor": "picaje",
     "problema": "picaje"
@@ -1349,7 +1350,13 @@
    "id": "vandebraak-2023",
    "cita": "Van de Braak 2023 — huevos con sangre como señal temprana",
    "wiki": "fuente-vandebraak-2023"
+  },
+  {
+   "id": "butler-lund-2026",
+   "cita": "Butler-Lund et al. 2026 — necropsias de ponedoras sin jaula, análisis de correspondencias múltiples (Poultry Science)",
+   "url": "https://doi.org/10.1016/j.psj.2026.106734",
+   "wiki": "butler-lund-2026-necropsia-canibalismo"
   }
  ],
- "notaFuentes": "Las fuentes no son todas independientes: la ficha de Lohmann (y su reimpresión en BM Editores) repite a Alberta y Kentucky, y la cifra del 80 % de Swayne cita a Glatz, el mismo autor de otra fuente de la wiki. Coinciden en peso, fotoestímulo, tamaño de huevo, obesidad y calcio. Sobre el picaje discrepan: Hendrix, Swayne y el manual AAAP le dan papel causal; Alberta lo considera solo agravante. Las cifras de manejo (4 % de doble yema, lux, horas de luz) son recomendaciones sin ensayo detrás. La relación entre pistas e hipótesis del árbol es una síntesis de la wiki, no un algoritmo validado."
+ "notaFuentes": "Las fuentes no son todas independientes: la ficha de Lohmann (y su reimpresión en BM Editores) repite a Alberta y Kentucky, y la cifra del 80 % de Swayne cita a Glatz, el mismo autor de otra fuente de la wiki. Coinciden en peso, fotoestímulo, tamaño de huevo, obesidad y calcio. Sobre el picaje discrepan: Hendrix, Swayne y el manual AAAP le dan papel causal; Alberta lo considera solo agravante. Las necropsias de Butler-Lund 2026 (1.648 aves) agrupan el prolapso con el huevo retenido y no con el canibalismo, lo que apoya a Alberta; no prueban la dirección causal. Las cifras de manejo (4 % de doble yema, lux, horas de luz) son recomendaciones sin ensayo detrás. La relación entre pistas e hipótesis del árbol es una síntesis de la wiki, no un algoritmo validado."
 }
